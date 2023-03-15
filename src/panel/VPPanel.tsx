@@ -4,7 +4,6 @@ import ReactFlow, {
   addEdge,
   MiniMap,
   Controls,
-  Background,
   useNodesState,
   useEdgesState,
   type Connection,
@@ -17,7 +16,7 @@ import ReactFlow, {
 
 import Setting from './VPPanelSetting';
 
-import componentType from './components';
+import componentType, { Background } from './components';
 
 import 'reactflow/dist/style.css';
 import './VPPanel.css';
@@ -56,6 +55,7 @@ const OverviewFlow = ({
     view: viewSetting,
     select: selectSetting,
     Edge: EdgeSetting,
+    background: bgSetting,
   } = Setting;
   return (
     <ReactFlow
@@ -91,7 +91,15 @@ const OverviewFlow = ({
     >
       <MiniMap style={minimapStyle} zoomable pannable />
       <Controls />
-      <Background color="#aaa" gap={16} />
+      <Background
+        type={bgSetting.type}
+        gap={bgSetting.gap}
+        dotSize={bgSetting.dotSize}
+        crossSize={bgSetting.crossSize}
+        lineWidth={bgSetting.lineWidth}
+        color={bgSetting.color}
+        className={bgSetting.className}
+      />
     </ReactFlow>
   );
 };

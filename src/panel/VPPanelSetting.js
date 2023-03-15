@@ -5,6 +5,15 @@ const PanelSetting = {
     snapGridSize: [25, 25],
     onlyRenderVisibleElements: true,
   },
+  background: {
+    type: 'dots', // 'dots', 'lines', 'cross', 'none'
+    gap: 16,
+    dotSize: 1,
+    crossSize: 2,
+    lineWidth: 1,
+    color: '#000000',
+    className: undefined,
+  },
   select: {
     selectedIfFullShapeCovered: true,
   },
