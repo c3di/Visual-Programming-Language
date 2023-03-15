@@ -35,7 +35,7 @@ const OverviewFlow = ({
   const onConnect = useCallback((params: Connection) => {
     setEdges((eds) => addEdge(params, eds));
   }, []);
-  const { view } = Setting;
+  const { view: viewSetting } = Setting;
   return (
     <ReactFlow
       nodes={nodes}
@@ -48,11 +48,11 @@ const OverviewFlow = ({
       nodeTypes={componentType.nodeTypes}
       edgesFocusable={false}
       zoomOnDoubleClick={false}
-      minZoom={view.zoomSize[0]}
-      maxZoom={view.zoomSize[1]}
-      snapToGrid={view.snapToGrid}
-      snapGrid={view.snapGridSize as [number, number]}
-      onlyRenderVisibleElements={view.onlyRenderVisibleElements}
+      minZoom={viewSetting.zoomSize[0]}
+      maxZoom={viewSetting.zoomSize[1]}
+      snapToGrid={viewSetting.snapToGrid}
+      snapGrid={viewSetting.snapGridSize as [number, number]}
+      onlyRenderVisibleElements={viewSetting.onlyRenderVisibleElements}
     >
       <MiniMap style={minimapStyle} zoomable pannable />
       <Controls />
