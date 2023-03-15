@@ -12,6 +12,8 @@ import ReactFlow, {
   type Edge,
 } from 'reactflow';
 
+import Setting from './VPPanelSetting';
+
 import componentType from './components';
 
 import 'reactflow/dist/style.css';
@@ -33,7 +35,7 @@ const OverviewFlow = ({
   const onConnect = useCallback((params: Connection) => {
     setEdges((eds) => addEdge(params, eds));
   }, []);
-
+  const { view } = Setting;
   return (
     <ReactFlow
       nodes={nodes}
@@ -44,6 +46,13 @@ const OverviewFlow = ({
       fitView
       attributionPosition="top-right"
       nodeTypes={componentType.nodeTypes}
+      edgesFocusable={false}
+      zoomOnDoubleClick={false}
+      minZoom={view.zoomSize[0]}
+      maxZoom={view.zoomSize[1]}
+      snapToGrid={view.snapToGrid}
+      snapGrid={view.snapGridSize as [number, number]}
+      onlyRenderVisibleElements={view.onlyRenderVisibleElements}
     >
       <MiniMap style={minimapStyle} zoomable pannable />
       <Controls />
