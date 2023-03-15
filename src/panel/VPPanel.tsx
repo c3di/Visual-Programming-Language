@@ -75,6 +75,9 @@ const OverviewFlow = ({
           : SelectionMode.Partial
       }
       multiSelectionKeyCode="Shift"
+      selectionKeyCode={null}
+      selectionOnDrag
+      panOnDrag={[2]} // 2 = right moues button
     >
       <MiniMap style={minimapStyle} zoomable pannable />
       <Controls />
