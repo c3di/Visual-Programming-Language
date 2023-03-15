@@ -78,6 +78,7 @@ const OverviewFlow = ({
       selectionKeyCode={null}
       selectionOnDrag
       panOnDrag={[2]} // 2 = right moues button
+      deleteKeyCode="Delete"
     >
       <MiniMap style={minimapStyle} zoomable pannable />
       <Controls />
