@@ -63,7 +63,7 @@ function Select({ value, handleId, nodeId }) {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function CustomNode({ id, data }) {
   return (
-    <>
+    <div title={data.tooltip}>
       <div className="custom-node__header">
         This is a <strong>custom node</strong>
       </div>
@@ -77,7 +77,7 @@ function CustomNode({ id, data }) {
           />
         ))}
       </div>
-    </>
+    </div>
   );
 }
 

@@ -34,6 +34,7 @@ export const nodes = [
         'handle-0': 'smoothstep',
         'handle-1': 'smoothstep',
       },
+      tooltip: 'this is a customed node',
     },
   },
   {
