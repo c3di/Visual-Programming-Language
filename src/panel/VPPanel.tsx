@@ -2,7 +2,6 @@
 import React, { useCallback, useEffect } from 'react';
 import ReactFlow, {
   addEdge,
-  MiniMap,
   useNodesState,
   useEdgesState,
   type Connection,
@@ -15,14 +14,10 @@ import ReactFlow, {
 
 import Setting from './VPPanelSetting';
 
-import componentType, { Background, ControlPanel } from './components';
+import componentType, { Background, ControlPanel, MiniMap } from './components';
 
 import 'reactflow/dist/style.css';
 import './VPPanel.css';
-
-const minimapStyle = {
-  height: 120,
-};
 
 const OverviewFlow = ({
   initialNodes,
@@ -56,6 +51,7 @@ const OverviewFlow = ({
     Edge: EdgeSetting,
     background: bgSetting,
     controlPanel: cpSetting,
+    minimap: minimpSetting,
   } = Setting;
   return (
     <ReactFlow
@@ -89,7 +85,12 @@ const OverviewFlow = ({
       }
       connectionRadius={EdgeSetting.portDetectionRadius}
     >
-      <MiniMap style={minimapStyle} zoomable pannable />
+      <MiniMap
+        width={minimpSetting.width}
+        height={minimpSetting.height}
+        zoomable={minimpSetting.zoomable}
+        pannable={minimpSetting.pannable}
+      />
       <ControlPanel
         className={cpSetting.className}
         position={cpSetting.position}
