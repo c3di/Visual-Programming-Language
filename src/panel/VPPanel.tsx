@@ -74,6 +74,7 @@ const OverviewFlow = ({
           ? SelectionMode.Full
           : SelectionMode.Partial
       }
+      multiSelectionKeyCode="Shift"
     >
       <MiniMap style={minimapStyle} zoomable pannable />
       <Controls />
