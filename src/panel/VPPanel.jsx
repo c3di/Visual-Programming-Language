@@ -12,6 +12,7 @@ import ReactFlow, {
 import componentType from './components';
 
 import 'reactflow/dist/style.css';
+import './VPPanel.css';
 
 const minimapStyle = {
   height: 120,
