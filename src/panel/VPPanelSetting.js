@@ -8,5 +8,9 @@ const PanelSetting = {
   select: {
     selectedIfFullShapeCovered: true,
   },
+  Edge: {
+    portDetectionRadius: 10,
+    type: 'step', // 'smoothstep', 'step', 'straight', 'bezier'
+  },
 };
 export default PanelSetting;

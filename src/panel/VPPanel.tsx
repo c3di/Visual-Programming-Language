@@ -12,6 +12,7 @@ import ReactFlow, {
   type Edge,
   SelectionMode,
   useKeyPress,
+  ConnectionLineType,
 } from 'reactflow';
 
 import Setting from './VPPanelSetting';
@@ -51,7 +52,11 @@ const OverviewFlow = ({
   const onConnect = useCallback((params: Connection) => {
     setEdges((eds) => addEdge(params, eds));
   }, []);
-  const { view: viewSetting, select: selectSetting } = Setting;
+  const {
+    view: viewSetting,
+    select: selectSetting,
+    Edge: EdgeSetting,
+  } = Setting;
   return (
     <ReactFlow
       nodes={nodes}
@@ -79,6 +84,10 @@ const OverviewFlow = ({
       selectionOnDrag
       panOnDrag={[2]} // 2 = right moues button
       deleteKeyCode="Delete"
+      connectionLineType={
+        (EdgeSetting.type as ConnectionLineType) || ConnectionLineType.Bezier
+      }
+      connectionRadius={EdgeSetting.portDetectionRadius}
     >
       <MiniMap style={minimapStyle} zoomable pannable />
       <Controls />
