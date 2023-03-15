@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import ReactFlow, {
   addEdge,
   MiniMap,
@@ -11,6 +11,7 @@ import ReactFlow, {
   type Node,
   type Edge,
   SelectionMode,
+  useKeyPress,
 } from 'reactflow';
 
 import Setting from './VPPanelSetting';
@@ -31,8 +32,22 @@ const OverviewFlow = ({
   initialNodes: Array<Node<any, string>>;
   initialEdges: Array<Edge<any>>;
 }): JSX.Element => {
-  const [nodes, , onNodesChange] = useNodesState(initialNodes);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const selectAllKeyPressed = useKeyPress('Control+a');
+  const cancelAllKeyPressed = useKeyPress('Escape');
+
+  const selectAll = (sure: boolean): void => {
+    setNodes((nds) => nds.map((n) => ({ ...n, selected: sure })));
+    setEdges((eds) => eds.map((e) => ({ ...e, selected: sure })));
+  };
+  useEffect(() => {
+    if (selectAllKeyPressed) selectAll(true);
+  }, [selectAllKeyPressed]);
+  useEffect(() => {
+    if (!cancelAllKeyPressed) selectAll(false);
+  }, [cancelAllKeyPressed]);
+
   const onConnect = useCallback((params: Connection) => {
     setEdges((eds) => addEdge(params, eds));
   }, []);
@@ -55,7 +70,7 @@ const OverviewFlow = ({
       snapGrid={viewSetting.snapGridSize as [number, number]}
       onlyRenderVisibleElements={viewSetting.onlyRenderVisibleElements}
       selectionMode={
-        selectSetting.selectedIfFullShapeCovered === true
+        selectSetting.selectedIfFullShapeCovered
           ? SelectionMode.Full
           : SelectionMode.Partial
       }
