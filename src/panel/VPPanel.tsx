@@ -10,6 +10,7 @@ import ReactFlow, {
   SelectionMode,
   useKeyPress,
   ConnectionLineType,
+  ReactFlowProvider,
 } from 'reactflow';
 
 import Setting from './VPPanelSetting';
@@ -19,7 +20,7 @@ import componentType, { Background, ControlPanel, MiniMap } from './components';
 import 'reactflow/dist/style.css';
 import './VPPanel.css';
 
-const OverviewFlow = ({
+const Scene = ({
   initialNodes,
   initialEdges,
 }: {
@@ -108,4 +109,16 @@ const OverviewFlow = ({
   );
 };
 
-export default OverviewFlow;
+export default function VPPanel({
+  initialNodes,
+  initialEdges,
+}: {
+  initialNodes: Array<Node<any, string>>;
+  initialEdges: Array<Edge<any>>;
+}): JSX.Element {
+  return (
+    <ReactFlowProvider>
+      <Scene initialNodes={initialNodes} initialEdges={initialEdges} />
+    </ReactFlowProvider>
+  );
+}
