@@ -14,6 +14,10 @@ const PanelSetting = {
     color: '#000000',
     className: undefined,
   },
+  controlPanel: {
+    className: undefined,
+    position: 'bottom-left', // 'top-left', 'top-center', 'top-right', 'bottom-left', 'bottom-center', 'bottom-right'
+  },
   select: {
     selectedIfFullShapeCovered: true,
   },
