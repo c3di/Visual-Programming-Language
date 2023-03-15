@@ -28,3 +28,31 @@ The build is minified and the filenames include the hashes.
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+## Interaction
+
+### View
+
+* pan: right mouse button holding
+* zoom: wheel mouse buttion
+* focus change by tab press
+* node move by arrow keys or drag by left mouse button
+
+### Selection
+
+* select element by left mouse click or Enter key press
+* multiple selection by left mouse button click + shift key press
+* marquee selecton by left mouse buttion hold and drag
+* selection all by Ctrl+A
+* cancel all selection by click the background or press Escape
+
+### Connection
+
+* drag the line for one handle to the other one by holding the left button
+
+### Delete
+
+- Delete key press
+
+
+- [X] Node Move         left mouse button drag
