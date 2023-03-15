@@ -1,7 +1,24 @@
 {
   "name": "visual-programming-editor",
   "version": "0.1.0",
+  "description": "General Node-based Visual Programing editor",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Max-ChenFei/VisualProgrammingEditor.git"
+  },
+  "keywords": [
+    "react",
+    "visual programming",
+    "drag-and-drop programming",
+    "node-based ui"
+  ],
+  "author": "Fei Chen",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Max-ChenFei/VisualProgrammingEditor/issues",
+    "email": "boxchenfei@gmail.com"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
