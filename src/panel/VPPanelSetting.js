@@ -18,6 +18,12 @@ const PanelSetting = {
     className: undefined,
     position: 'bottom-left', // 'top-left', 'top-center', 'top-right', 'bottom-left', 'bottom-center', 'bottom-right'
   },
+  minimap: {
+    height: 120,
+    width: 200,
+    zoomable: true,
+    pannable: true,
+  },
   select: {
     selectedIfFullShapeCovered: true,
   },
