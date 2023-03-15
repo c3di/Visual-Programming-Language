@@ -5,5 +5,8 @@ const PanelSetting = {
     snapGridSize: [25, 25],
     onlyRenderVisibleElements: true,
   },
+  select: {
+    selectedIfFullShapeCovered: true,
+  },
 };
 export default PanelSetting;

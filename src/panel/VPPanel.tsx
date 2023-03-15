@@ -10,6 +10,7 @@ import ReactFlow, {
   type Connection,
   type Node,
   type Edge,
+  SelectionMode,
 } from 'reactflow';
 
 import Setting from './VPPanelSetting';
@@ -35,7 +36,7 @@ const OverviewFlow = ({
   const onConnect = useCallback((params: Connection) => {
     setEdges((eds) => addEdge(params, eds));
   }, []);
-  const { view: viewSetting } = Setting;
+  const { view: viewSetting, select: selectSetting } = Setting;
   return (
     <ReactFlow
       nodes={nodes}
@@ -53,6 +54,11 @@ const OverviewFlow = ({
       snapToGrid={viewSetting.snapToGrid}
       snapGrid={viewSetting.snapGridSize as [number, number]}
       onlyRenderVisibleElements={viewSetting.onlyRenderVisibleElements}
+      selectionMode={
+        selectSetting.selectedIfFullShapeCovered === true
+          ? SelectionMode.Full
+          : SelectionMode.Partial
+      }
     >
       <MiniMap style={minimapStyle} zoomable pannable />
       <Controls />
