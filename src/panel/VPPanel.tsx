@@ -1,5 +1,10 @@
 /* eslint-disable react/prop-types */
-import React, { useCallback, useEffect } from 'react';
+import React, {
+  type Dispatch,
+  type SetStateAction,
+  useCallback,
+  useEffect,
+} from 'react';
 import ReactFlow, {
   addEdge,
   useNodesState,
@@ -20,15 +25,10 @@ import componentType, { Background, ControlPanel, MiniMap } from './components';
 import 'reactflow/dist/style.css';
 import './VPPanel.css';
 
-const Scene = ({
-  initialNodes,
-  initialEdges,
-}: {
-  initialNodes: Array<Node<any, string>>;
-  initialEdges: Array<Edge<any>>;
-}): JSX.Element => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+function selectionAllKeyBinding(
+  setNodes: Dispatch<SetStateAction<Array<Node<any>>>>,
+  setEdges: Dispatch<SetStateAction<Array<Edge<any>>>>
+): void {
   const selectAllKeyPressed = useKeyPress('Control+a');
   const cancelAllKeyPressed = useKeyPress('Escape');
 
@@ -42,7 +42,18 @@ const Scene = ({
   useEffect(() => {
     if (!cancelAllKeyPressed) selectAll(false);
   }, [cancelAllKeyPressed]);
+}
 
+const Scene = ({
+  initialNodes,
+  initialEdges,
+}: {
+  initialNodes: Array<Node<any, string>>;
+  initialEdges: Array<Edge<any>>;
+}): JSX.Element => {
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  selectionAllKeyBinding(setNodes, setEdges);
   const onConnect = useCallback((params: Connection) => {
     setEdges((eds) => addEdge(params, eds));
   }, []);
