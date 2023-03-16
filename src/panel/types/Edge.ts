@@ -5,4 +5,4 @@ interface EdgeData {
   dataType?: DataType;
 }
 
-export type EdgeType = RfEdge<EdgeData>;
+export type Edge = RfEdge<EdgeData>;
