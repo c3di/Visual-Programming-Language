@@ -8,4 +8,4 @@ interface NodeData {
   tooltip?: string;
 }
 
-export type NodeType = RfNode<NodeData>;
+export type Node = RfNode<NodeData>;
