@@ -21,7 +21,7 @@ import ReactFlow, {
 import Setting from './VPPanelSetting';
 
 import componentType, { Background, ControlPanel, MiniMap } from './components';
-
+import { type Graph } from './types';
 import 'reactflow/dist/style.css';
 import './VPPanel.css';
 
@@ -120,16 +120,10 @@ const Scene = ({
   );
 };
 
-export default function VPPanel({
-  initialNodes,
-  initialEdges,
-}: {
-  initialNodes: Array<Node<any, string>>;
-  initialEdges: Array<Edge<any>>;
-}): JSX.Element {
+export default function VPPanel({ graph }: { graph: Graph }): JSX.Element {
   return (
     <ReactFlowProvider>
-      <Scene initialNodes={initialNodes} initialEdges={initialEdges} />
+      <Scene initialNodes={graph.nodes} initialEdges={graph.edges} />
     </ReactFlowProvider>
   );
 }
