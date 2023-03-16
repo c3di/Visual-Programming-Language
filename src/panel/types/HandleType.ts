@@ -7,4 +7,5 @@ export interface HandleType {
   tooltip: string;
   dataType: DataType;
   defaultValue: any;
+  value: any;
 }
