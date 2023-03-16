@@ -48,7 +48,7 @@ const Scene = ({
   initialNodes,
   initialEdges,
 }: {
-  initialNodes: Array<Node<any, string>>;
+  initialNodes: Array<Node<any, string | undefined>>;
   initialEdges: Array<Edge<any>>;
 }): JSX.Element => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
