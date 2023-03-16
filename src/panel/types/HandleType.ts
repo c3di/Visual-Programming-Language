@@ -1,10 +1,10 @@
-import type DataTypes from './DataTypes';
+import type DataType from './DataType';
 
 export interface HandleType {
   type: 'source' | 'target';
   title: string; // keep unique for each node
   connected: boolean;
   tooltip: string;
-  dataType: DataTypes;
+  dataType: DataType;
   defaultValue: any;
 }
