@@ -29,7 +29,7 @@ const PanelSetting = {
   },
   Edge: {
     portDetectionRadius: 10,
-    type: 'step', // 'smoothstep', 'step', 'straight', 'bezier'
+    type: 'default', // 'default(bezier)', 'smoothstep', 'step', 'straight', 'bezier'
   },
 };
 export default PanelSetting;
