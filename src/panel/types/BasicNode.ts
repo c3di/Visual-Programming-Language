@@ -1,5 +1,5 @@
 import { type Node } from 'reactflow';
 export interface BasciNodeData {
-  label: string | JSX.Element;
+  tooltip?: string;
 }
 export default Node;
