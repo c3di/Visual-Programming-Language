@@ -1,7 +1,7 @@
 export { DataType, isDataTypeMatch } from './DataType';
 export type { default as Node } from './BasicNode';
 export { type Handle } from './Handle';
-export { type FunctionNode } from './FunctionNode';
+export { type FunctionNode, type FunctionNodeData } from './FunctionNode';
 export { type ConstantNode } from './ConstantNode';
 export { type VariableNode } from './VariableNode';
 export { type Edge } from './Edge';
