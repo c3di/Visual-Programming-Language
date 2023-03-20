@@ -4,6 +4,51 @@ import { MarkerType, Position } from 'reactflow';
 export const graphInstance = {
   nodes: [
     {
+      id: '11',
+      type: 'function',
+      data: {
+        label: 'function Node',
+        tooltip: 'this is a function node',
+        inputs: {
+          input1: {
+            type: 'source',
+            title: 'input1',
+            connected: false,
+            tooltip: 'input 1',
+            dataType: 'float',
+            defaultValue: '100',
+            value: '10',
+          },
+          input2: {
+            type: 'source',
+            title: 'input2',
+            connected: false,
+            tooltip: 'input 2',
+            dataType: 'bool',
+            defaultValue: 'true',
+            value: 'false',
+          },
+        },
+        outputs: {
+          output1: {
+            type: 'target',
+            title: 'output1',
+            tooltip: 'output 1',
+            dataType: 'float',
+          },
+          output2: {
+            type: 'target',
+            title: 'output2',
+            tooltip: 'output 2',
+            dataType: 'float',
+          },
+        },
+      },
+      position: { x: 200, y: 0 },
+      sourcePosition: Position.Right,
+      targetPosition: Position.Left,
+    },
+    {
       id: '1',
       type: 'input',
       data: {
