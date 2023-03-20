@@ -4,6 +4,7 @@ import type Node from './BasicNode';
 
 interface VariableNodeData extends BasciNodeData {
   value: { title: string; handle: Handle };
+  isConstant?: boolean;
   tooltip?: string;
 }
 
