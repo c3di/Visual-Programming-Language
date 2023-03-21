@@ -13,11 +13,13 @@ export default function SourceHandle({
   nodeId,
   showWidget,
   handleData,
+  showTitle,
 }: {
   id: string;
   nodeId: string;
   showWidget: boolean;
   handleData: Handle;
+  showTitle: boolean;
 }): JSX.Element {
   const [widget, setWidget] = useState(<></>);
   useEffect(() => {
@@ -31,6 +33,16 @@ export default function SourceHandle({
         />
       );
   }, [showWidget]);
+  const [title, setTitle] = useState(<></>);
+  useEffect(() => {
+    if (showTitle)
+      setTitle(
+        <label>
+          {handleData.title}
+          {widget}
+        </label>
+      );
+  }, [showTitle]);
 
   // todo: this is a hack to get the node internals, extract this into a hook
   const { setNodes } = useReactFlow();
@@ -56,7 +68,7 @@ export default function SourceHandle({
   return (
     <div className="source-handle" title={handleData.tooltip}>
       <label>
-        {handleData.title}
+        {title}
         {widget}
       </label>
       <RCHandle

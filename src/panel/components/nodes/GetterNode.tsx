@@ -17,7 +17,8 @@ function GetterNode({
       <SourceHandle
         id={data.value.title}
         nodeId={id}
-        showWidget
+        showWidget={false}
+        showTitle={true}
         handleData={data.value.handle}
       />
     </div>

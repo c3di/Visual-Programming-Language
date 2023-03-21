@@ -18,6 +18,7 @@ function MathNode({
         key={inputId}
         id={inputId}
         nodeId={id}
+        showTitle={false}
         handleData={data.inputs[inputId]}
       />
     );
@@ -31,6 +32,7 @@ function MathNode({
           id={data.output.title}
           nodeId={id}
           showWidget={false}
+          showTitle={false}
           handleData={data.output.handle}
         />
       </div>

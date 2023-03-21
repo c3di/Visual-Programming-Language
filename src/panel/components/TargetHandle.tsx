@@ -12,12 +12,15 @@ export default function TargetHandle({
   id,
   nodeId,
   handleData,
+  showTitle,
 }: {
   id: string;
   nodeId: string;
   handleData: Handle;
+  showTitle: boolean;
 }): JSX.Element {
   const [widget, setWidget] = useState(<></>);
+  const [title, setTitle] = useState(<></>);
   // todo: this is a hack to get the node internals, extract this into a hook
   const { setNodes } = useReactFlow();
   const store = useStoreApi();
@@ -55,10 +58,20 @@ export default function TargetHandle({
     );
   }, [handleData.connected]);
 
+  useEffect(() => {
+    if (showTitle)
+      setTitle(
+        <label>
+          {handleData.title}
+          {widget}
+        </label>
+      );
+  }, [showTitle]);
+
   return (
     <div className="target-handle" title={handleData.tooltip}>
       <label>
-        {handleData.title}
+        {title}
         {widget}
       </label>
       <RCHandle

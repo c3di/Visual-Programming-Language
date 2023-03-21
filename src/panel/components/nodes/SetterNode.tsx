@@ -22,12 +22,14 @@ function SetterNode({
         <TargetHandle
           id={`return_${data.value.title}`}
           nodeId={id}
+          showTitle={true}
           handleData={data.value.handle}
         />
         <SourceHandle
           id={data.value.title}
           nodeId={id}
           showWidget={false}
+          showTitle={false}
           handleData={data.value.handle}
         />
       </div>

@@ -19,6 +19,7 @@ function FunctionNode({
         key={inputId}
         id={inputId}
         nodeId={id}
+        showTitle={true}
         handleData={data.inputs[inputId]}
       />
     );
@@ -31,6 +32,7 @@ function FunctionNode({
         nodeId={id}
         handleData={data.outputs[outputId]}
         showWidget={false}
+        showTitle={true}
       />
     );
   }
