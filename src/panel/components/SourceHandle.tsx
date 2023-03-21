@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { type Handle } from '../types';
 import './Handle.css';
 import {
@@ -20,15 +20,17 @@ export default function SourceHandle({
   handleData: Handle;
 }): JSX.Element {
   const [widget, setWidget] = useState(<></>);
-  if (showWidget)
-    setWidget(
-      <input
-        defaultValue={handleData.value}
-        onChange={(e) => {
-          changeValue(e.target.value);
-        }}
-      />
-    );
+  useEffect(() => {
+    if (showWidget)
+      setWidget(
+        <input
+          defaultValue={handleData.value}
+          onChange={(e) => {
+            changeValue(e.target.value);
+          }}
+        />
+      );
+  }, [showWidget]);
 
   // todo: this is a hack to get the node internals, extract this into a hook
   const { setNodes } = useReactFlow();
