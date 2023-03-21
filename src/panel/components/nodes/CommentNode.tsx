@@ -6,7 +6,10 @@ import '@reactflow/node-resizer/dist/style.css';
 
 function CommentNode({ data }: { data: Comment }): JSX.Element {
   return (
-    <div title={data.tooltip}>
+    <div
+      title={data.tooltip}
+      style={{ width: data.width ?? 250, height: data.height ?? 150 }}
+    >
       <NodeResizer
         color="#ffffff00"
         handleStyle={{ border: 'none' }}

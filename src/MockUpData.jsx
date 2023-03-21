@@ -131,8 +131,19 @@ export const graphInstance = {
       data: {
         comment: 'This is a comment node',
         tooltip: 'this is a comment node',
+        width: 200,
+        height: 200,
       },
       position: { x: 200, y: 500 },
+    },
+    {
+      id: '18',
+      type: 'comment',
+      data: {
+        comment: 'This is a comment node',
+        tooltip: 'this is a comment node',
+      },
+      position: { x: 200, y: 600 },
     },
     {
       id: '1',
