@@ -4,6 +4,7 @@ import GetterNode from './GetterNode';
 import SetterNode from './SetterNode';
 import MathNode from './MathNode';
 import MakeLiteralNode from './MakeLiteralNode';
+import CommentNode from './CommentNode';
 
 const nodeTypes = {
   custom: CustomeNode,
@@ -12,6 +13,7 @@ const nodeTypes = {
   setter: SetterNode,
   math: MathNode,
   literal: MakeLiteralNode,
+  comment: CommentNode,
 };
 
 export default nodeTypes;
