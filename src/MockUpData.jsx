@@ -65,6 +65,22 @@ export const graphInstance = {
       position: { x: 200, y: 100 },
     },
     {
+      id: '13',
+      type: 'setter',
+      data: {
+        value: {
+          title: 'setter',
+          handle: {
+            title: 'account',
+            tooltip: 'setter handle',
+            dataType: 'float',
+            defaultValue: '100',
+          },
+        },
+      },
+      position: { x: 200, y: 100 },
+    },
+    {
       id: '1',
       type: 'input',
       data: {
