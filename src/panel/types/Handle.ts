@@ -4,7 +4,7 @@ export interface Handle {
   title: string; // keep unique for each node
   connected: boolean;
   tooltip?: string;
-  dataType?: DataType;
+  dataType: DataType;
   defaultValue?: any;
   value?: any;
 }
