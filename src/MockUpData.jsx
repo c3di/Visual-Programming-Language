@@ -81,6 +81,36 @@ export const graphInstance = {
       position: { x: 200, y: 100 },
     },
     {
+      id: '14',
+      type: 'math',
+      data: {
+        title: '+',
+        inputs: {
+          input1: {
+            title: 'input1',
+            connected: false,
+            tooltip: 'input 1',
+            dataType: 'float',
+          },
+          input2: {
+            title: 'input2',
+            connected: false,
+            tooltip: 'input 2',
+            dataType: 'bool',
+          },
+        },
+        output: {
+          title: 'output',
+          handle: {
+            title: 'output',
+            tooltip: 'output',
+            dataType: 'bool',
+          },
+        },
+      },
+      position: { x: 200, y: 600 },
+    },
+    {
       id: '1',
       type: 'input',
       data: {
