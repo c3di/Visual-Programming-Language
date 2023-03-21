@@ -49,6 +49,38 @@ export const graphInstance = {
       targetPosition: Position.Left,
     },
     {
+      id: '12',
+      type: 'getter',
+      data: {
+        value: {
+          title: 'Getter',
+          handle: {
+            title: 'handle',
+            tooltip: 'getter handle',
+            dataType: 'float',
+            defaultValue: '100',
+          },
+        },
+      },
+      position: { x: 200, y: 100 },
+    },
+    {
+      id: '13',
+      type: 'setter',
+      data: {
+        value: {
+          title: 'setter',
+          handle: {
+            title: 'account',
+            tooltip: 'setter handle',
+            dataType: 'float',
+            defaultValue: '100',
+          },
+        },
+      },
+      position: { x: 200, y: 100 },
+    },
+    {
       id: '1',
       type: 'input',
       data: {
