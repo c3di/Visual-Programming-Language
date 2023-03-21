@@ -111,6 +111,21 @@ export const graphInstance = {
       position: { x: 200, y: 600 },
     },
     {
+      id: '15',
+      type: 'literal',
+      data: {
+        value: {
+          handle: {
+            title: 'Value',
+            tooltip: 'literal handle',
+            dataType: 'float',
+            defaultValue: '100',
+          },
+        },
+      },
+      position: { x: 200, y: 500 },
+    },
+    {
       id: '1',
       type: 'input',
       data: {
