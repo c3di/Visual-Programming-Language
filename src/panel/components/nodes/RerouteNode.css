@@ -1,0 +1,29 @@
+.react-flow__node-reroute {
+  width: 8px;
+  background: #7979edf0;
+  color: #222;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 15%), 0 2px 4px -1px rgb(0 0 0 / 8%);
+  border-radius: 2px;
+}
+
+.react-flow__node-reroute.selected {
+  width: 8px;
+  background: #7979edf0;
+  color: #222;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 15%), 0 2px 4px -1px rgb(0 0 0 / 8%);
+  border-radius: 2px;
+  border-style: solid;
+  border-width: 2px;
+}
+
+.react-flow__node-reroute .react-flow__handle {
+  width: 6px;
+  height: 10px;
+  border-radius: 2px;
+  background-color: #778899;
+}
+
+.reroute-node__handle {
+  position: relative;
+  margin-bottom: 10px;
+}
