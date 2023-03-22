@@ -131,7 +131,7 @@ export const graphInstance = {
       dragHandle: '.comment-node__header',
       zIndex: -1001,
       data: {
-        comment: 'This is a comment node',
+        comment: 'This is a comment node 1',
         tooltip: 'this is a comment node',
         width: 200,
         height: 200,
@@ -144,7 +144,7 @@ export const graphInstance = {
       dragHandle: '.comment-node__header',
       zIndex: -1001,
       data: {
-        comment: 'This is a comment node',
+        comment: 'This is a comment node 2',
         tooltip: 'this is a comment node',
       },
       position: { x: 200, y: 600 },
