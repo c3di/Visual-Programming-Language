@@ -1,0 +1,43 @@
+.react-flow__node-comment {
+  font-size: 10px;
+  background: #f5f5f6c7;
+  color: #222;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 15%), 0 2px 4px -1px rgb(0 0 0 / 8%);
+  border-radius: 1px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #222;
+}
+.react-flow__node-comment.selected {
+  font-size: 10px;
+  background: #f5f5f6c7;
+  color: #222;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 15%), 0 2px 4px -1px rgb(0 0 0 / 8%);
+  border-radius: 1px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #222;
+}
+
+.comment-node__header {
+  padding: 8px 10px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.comment-node__body {
+  padding: 10px;
+}
+
+.comment-node__handle {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.react-flow__resize-control.handle {
+  width: 4px;
+  height: 4px;
+  border: 0px solid #fff;
+  border-radius: 1px;
+  background-color: #3367d9;
+  transform: translate(-50%, -50%);
+}

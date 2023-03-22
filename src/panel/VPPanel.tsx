@@ -10,7 +10,6 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
   type Connection,
-  type Node,
   type Edge,
   SelectionMode,
   useKeyPress,
@@ -21,7 +20,7 @@ import ReactFlow, {
 import Setting from './VPPanelSetting';
 
 import componentType, { Background, ControlPanel, MiniMap } from './components';
-import { type Graph } from './types';
+import { type Graph, type Node, isCommentNode } from './types';
 import 'reactflow/dist/style.css';
 import './VPPanel.css';
 
@@ -57,6 +56,63 @@ const Scene = ({
   const onConnect = useCallback((params: Connection) => {
     setEdges((eds) => addEdge(params, eds));
   }, []);
+  const nodesRefInCommentNode = React.useRef({});
+
+  const onNodeDragStart = (evt: any, node: Node): void => {
+    nodes.forEach((node) => {
+      saveNodesInSelectedCommentNode(node);
+    });
+  };
+
+  const saveNodesInSelectedCommentNode = (node: Node): void => {
+    if (!node?.selected || !isCommentNode(node.data)) return;
+    const nodesInComment = nodes.filter(
+      (n) =>
+        !n.selected &&
+        n.position.x > node.position.x &&
+        n.position.x + (n.width ?? 0) < node.position.x + (node.width ?? 0) &&
+        n.position.y > node.position.y &&
+        n.position.y + (n.height ?? 0) < node.position.y + (node.height ?? 0) &&
+        n.id !== node.id
+    );
+    if (!nodesInComment) return;
+    nodesRefInCommentNode.current = {
+      ...nodesRefInCommentNode.current,
+      [node.id]: nodesInComment,
+    };
+    // map to local coordinate
+    nodesInComment.forEach((part, index, nodes) => {
+      const n = nodes[index];
+      n.position = {
+        x: n.position.x - node.position.x,
+        y: n.position.y - node.position.y,
+      };
+      n.parentNode = node.id;
+    });
+  };
+
+  const clearNodesInSelectedCommentNode = (node: Node): void => {
+    if (!node || !isCommentNode(node.data)) return;
+    if (!nodesRefInCommentNode.current) return;
+    const nodesInComment = (nodesRefInCommentNode.current as any)[`${node.id}`];
+    if (!nodesInComment) return;
+    nodesInComment.forEach((part: any, index: number, nodes: Node[]) => {
+      const n = nodes[index];
+      n.position = {
+        x: n.position.x + node.position.x,
+        y: n.position.y + node.position.y,
+      };
+      n.parentNode = undefined;
+    });
+    nodesRefInCommentNode.current = {};
+  };
+
+  const onNodeDragStop = (evt: any, node: Node): void => {
+    nodes.forEach((node) => {
+      clearNodesInSelectedCommentNode(node);
+    });
+  };
+
   const {
     view: viewSetting,
     select: selectSetting,
@@ -96,6 +152,8 @@ const Scene = ({
         (EdgeSetting.type as ConnectionLineType) || ConnectionLineType.Bezier
       }
       connectionRadius={EdgeSetting.portDetectionRadius}
+      onNodeDragStart={onNodeDragStart}
+      onNodeDragStop={onNodeDragStop}
     >
       <MiniMap
         width={minimpSetting.width}

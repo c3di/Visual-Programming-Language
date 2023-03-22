@@ -126,6 +126,30 @@ export const graphInstance = {
       position: { x: 200, y: 500 },
     },
     {
+      id: '16',
+      type: 'comment',
+      dragHandle: '.comment-node__header',
+      zIndex: -1001,
+      data: {
+        comment: 'This is a comment node 1',
+        tooltip: 'this is a comment node',
+        width: 200,
+        height: 200,
+      },
+      position: { x: 200, y: 500 },
+    },
+    {
+      id: '18',
+      type: 'comment',
+      dragHandle: '.comment-node__header',
+      zIndex: -1001,
+      data: {
+        comment: 'This is a comment node 2',
+        tooltip: 'this is a comment node',
+      },
+      position: { x: 200, y: 600 },
+    },
+    {
       id: '1',
       type: 'input',
       data: {
