@@ -128,6 +128,7 @@ export const graphInstance = {
     {
       id: '16',
       type: 'comment',
+      dragHandle: '.comment-node__header',
       data: {
         comment: 'This is a comment node',
         tooltip: 'this is a comment node',
@@ -139,6 +140,7 @@ export const graphInstance = {
     {
       id: '18',
       type: 'comment',
+      dragHandle: '.comment-node__header',
       data: {
         comment: 'This is a comment node',
         tooltip: 'this is a comment node',
