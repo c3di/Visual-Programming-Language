@@ -150,6 +150,16 @@ export const graphInstance = {
       position: { x: 200, y: 600 },
     },
     {
+      id: '17',
+      type: 'reroute',
+      data: {
+        tooltip: 'this is a reroute node',
+        input: { title: 'input', tooltip: 'input', dataType: 'float' },
+        output: { title: 'output', tooltip: 'output', dataType: 'float' },
+      },
+      position: { x: 200, y: 700 },
+    },
+    {
       id: '1',
       type: 'input',
       data: {

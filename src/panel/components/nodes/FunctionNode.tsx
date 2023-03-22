@@ -19,6 +19,7 @@ function FunctionNode({
         key={inputId}
         id={inputId}
         nodeId={id}
+        showWidget={true}
         showTitle={true}
         handleData={data.inputs[inputId]}
       />

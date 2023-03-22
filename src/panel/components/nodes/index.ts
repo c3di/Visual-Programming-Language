@@ -5,6 +5,7 @@ import SetterNode from './SetterNode';
 import MathNode from './MathNode';
 import MakeLiteralNode from './MakeLiteralNode';
 import CommentNode from './CommentNode';
+import RerouteNode from './RerouteNode';
 
 const nodeTypes = {
   custom: CustomeNode,
@@ -14,6 +15,7 @@ const nodeTypes = {
   math: MathNode,
   literal: MakeLiteralNode,
   comment: CommentNode,
+  reroute: RerouteNode,
 };
 
 export default nodeTypes;

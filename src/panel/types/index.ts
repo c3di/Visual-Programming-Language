@@ -7,3 +7,4 @@ export { type Edge } from './Edge';
 export { type Graph } from './Graph';
 export { type MathNodeData } from './Math';
 export { type Comment, isCommentNode } from './Comment';
+export { type Reroute } from './Reroute';

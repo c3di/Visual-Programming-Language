@@ -29,6 +29,7 @@ function MakeLiteralNode({
         <TargetHandle
           id={`return_${data.value.title}`}
           nodeId={id}
+          showWidget={true}
           showTitle={true}
           handleData={data.value.handle}
         />

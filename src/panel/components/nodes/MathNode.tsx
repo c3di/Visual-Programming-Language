@@ -18,6 +18,7 @@ function MathNode({
         key={inputId}
         id={inputId}
         nodeId={id}
+        showWidget={true}
         showTitle={false}
         handleData={data.inputs[inputId]}
       />
