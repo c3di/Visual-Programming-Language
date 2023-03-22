@@ -12,11 +12,13 @@ export default function TargetHandle({
   id,
   nodeId,
   handleData,
+  showWidget,
   showTitle,
 }: {
   id: string;
   nodeId: string;
   handleData: Handle;
+  showWidget: boolean;
   showTitle: boolean;
 }): JSX.Element {
   const [widget, setWidget] = useState(<></>);
@@ -43,6 +45,7 @@ export default function TargetHandle({
   };
 
   useEffect(() => {
+    if (!showWidget) return;
     if (handleData.connected) {
       changeValue(handleData.defaultValue);
       setWidget(<></>);
