@@ -15,10 +15,10 @@ import './VPPanel.css';
 
 const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
   const graphState = useGraph(graphData);
-  const { nodes, onNodesChange, edges, onEdgesChange, onConnect, selectAll } =
-    graphState;
-  const { onNodeDragStart, onNodeDragStop } = useScene(graphState);
-  useKeyBinding(selectAll);
+  const { nodes, onNodesChange, edges, onEdgesChange, onConnect } = graphState;
+  const sceneState = useScene(graphState);
+  const { onNodeDragStart, onNodeDragStop } = sceneState;
+  useKeyBinding(sceneState);
   const {
     view: viewSetting,
     select: selectSetting,

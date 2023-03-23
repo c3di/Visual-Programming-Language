@@ -1,9 +1,14 @@
 import { useRef } from 'react';
 import { type Node, isCommentNode } from '../types';
 import { type GraphState } from './useGraph';
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function useScene(graph: GraphState) {
-  const { nodes } = graph;
+
+export interface SceneState {
+  graphState: GraphState;
+  onNodeDragStart: (evt: any, node: Node) => void;
+  onNodeDragStop: (evt: any, node: Node) => void;
+}
+export default function useScene(graphState: GraphState): SceneState {
+  const { nodes } = graphState;
   const nodesRefInCommentNode = useRef({});
   const onNodeDragStart = (evt: any, node: Node): void => {
     nodes.forEach((node) => {
@@ -60,6 +65,7 @@ export default function useScene(graph: GraphState) {
     });
   };
   return {
+    graphState,
     onNodeDragStart,
     onNodeDragStop,
   };
