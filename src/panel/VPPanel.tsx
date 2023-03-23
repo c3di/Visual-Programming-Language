@@ -20,7 +20,7 @@ import ReactFlow, {
 import Setting from './VPPanelSetting';
 
 import componentType, { Background, ControlPanel, MiniMap } from './components';
-import { type Graph, type Node, isCommentNode } from './types';
+import { Graph, type Node, isCommentNode, type GraphData } from './types';
 import 'reactflow/dist/style.css';
 import './VPPanel.css';
 
@@ -43,15 +43,10 @@ function selectionAllKeyBinding(
   }, [cancelAllKeyPressed]);
 }
 
-const Scene = ({
-  initialNodes,
-  initialEdges,
-}: {
-  initialNodes: Array<Node<any, string | undefined>>;
-  initialEdges: Array<Edge<any>>;
-}): JSX.Element => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
+  const graph = Graph(graphData);
+  const [nodes, setNodes, onNodesChange] = useNodesState(graph.data.nodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(graph.data.edges);
   selectionAllKeyBinding(setNodes, setEdges);
   const onConnect = useCallback((params: Connection) => {
     setEdges((eds) => addEdge(params, eds));
@@ -178,10 +173,14 @@ const Scene = ({
   );
 };
 
-export default function VPPanel({ graph }: { graph: Graph }): JSX.Element {
+export default function VPPanel({
+  graphData,
+}: {
+  graphData: GraphData;
+}): JSX.Element {
   return (
     <ReactFlowProvider>
-      <Scene initialNodes={graph.nodes} initialEdges={graph.edges} />
+      <Scene graphData={graphData} />
     </ReactFlowProvider>
   );
 }

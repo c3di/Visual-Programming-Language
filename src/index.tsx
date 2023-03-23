@@ -7,4 +7,4 @@ import { graphInstance } from './MockUpData';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
-root.render(<VPPanel graph={graphInstance} />);
+root.render(<VPPanel graphData={graphInstance} />);
