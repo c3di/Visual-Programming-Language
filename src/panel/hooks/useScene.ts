@@ -1,14 +1,15 @@
 import { useRef } from 'react';
-import { type Node, isCommentNode } from '../types';
+import { type Node, type ClipboardInfo, isCommentNode } from '../types';
 import { type GraphState } from './useGraph';
 
 export interface SceneState {
-  graphState: GraphState;
+  selectAll: (sure: boolean) => void;
   onNodeDragStart: (evt: any, node: Node) => void;
   onNodeDragStop: (evt: any, node: Node) => void;
+  copySelectedNodeToClipboard: () => void;
 }
 export default function useScene(graphState: GraphState): SceneState {
-  const { nodes } = graphState;
+  const { nodes, selectedNodes, edges } = graphState;
   const nodesRefInCommentNode = useRef({});
   const onNodeDragStart = (evt: any, node: Node): void => {
     nodes.forEach((node) => {
@@ -64,9 +65,35 @@ export default function useScene(graphState: GraphState): SceneState {
       clearNodesInSelectedCommentNode(node);
     });
   };
+
+  const copySelectedNodeToClipboard = (): void => {
+    const clipboard: ClipboardInfo = {
+      isEmpty: true,
+      nodes: {},
+      edges: [],
+      minX: Number.POSITIVE_INFINITY,
+      minY: Number.POSITIVE_INFINITY,
+    };
+    selectedNodes.forEach((node) => {
+      clipboard.nodes[node.id] = node;
+      clipboard.minX = Math.min(clipboard.minX, node.position.x);
+      clipboard.minY = Math.min(clipboard.minY, node.position.y);
+    });
+    clipboard.isEmpty = Object.keys(clipboard.nodes).length === 0;
+    if (clipboard.isEmpty) return;
+    clipboard.edges = edges.filter((edge) => {
+      return clipboard.nodes[edge.source] && clipboard.nodes[edge.target];
+    });
+    const clipboardStr = JSON.stringify(clipboard);
+    navigator.clipboard.writeText(clipboardStr).catch((err) => {
+      console.error('Failed to copy: ', err);
+    });
+  };
+
   return {
-    graphState,
+    selectAll: graphState.selectAll,
     onNodeDragStart,
     onNodeDragStop,
+    copySelectedNodeToClipboard,
   };
 }

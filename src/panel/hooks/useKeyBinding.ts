@@ -3,14 +3,19 @@ import { useKeyPress } from 'reactflow';
 import { type SceneState } from './useScene';
 
 export default function useKeyBinding(sceneState: SceneState): void {
-  const { selectAll } = sceneState.graphState;
   const selectAllKeyPressed = useKeyPress('Control+a');
   const cancelAllKeyPressed = useKeyPress('Escape');
+  const copyKeyPressed = useKeyPress('Control+c');
 
   useEffect(() => {
-    if (selectAllKeyPressed) selectAll(true);
+    if (selectAllKeyPressed) sceneState.selectAll(true);
   }, [selectAllKeyPressed]);
   useEffect(() => {
-    if (!cancelAllKeyPressed) selectAll(false);
+    if (!cancelAllKeyPressed) sceneState.selectAll(false);
   }, [cancelAllKeyPressed]);
+  useEffect(() => {
+    if (copyKeyPressed) {
+      sceneState.copySelectedNodeToClipboard();
+    }
+  }, [copyKeyPressed]);
 }
