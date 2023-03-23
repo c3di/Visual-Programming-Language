@@ -1,52 +1,23 @@
 /* eslint-disable react/prop-types */
-import React, { type Dispatch, type SetStateAction, useEffect } from 'react';
+import React from 'react';
 import ReactFlow, {
-  type Edge,
   SelectionMode,
-  useKeyPress,
   ConnectionLineType,
   ReactFlowProvider,
 } from 'reactflow';
 
 import Setting from './VPPanelSetting';
-import { useGraph, useScene } from './hooks';
+import { useGraph, useScene, useKeyBinding } from './hooks';
 import componentType, { Background, ControlPanel, MiniMap } from './components';
-import { type Node, type GraphData } from './types';
+import { type GraphData } from './types';
 import 'reactflow/dist/style.css';
 import './VPPanel.css';
 
-function selectionAllKeyBinding(
-  setNodes: Dispatch<SetStateAction<Array<Node<any>>>>,
-  setEdges: Dispatch<SetStateAction<Array<Edge<any>>>>
-): void {
-  const selectAllKeyPressed = useKeyPress('Control+a');
-  const cancelAllKeyPressed = useKeyPress('Escape');
-
-  const selectAll = (sure: boolean): void => {
-    setNodes((nds) => nds.map((n) => ({ ...n, selected: sure })));
-    setEdges((eds) => eds.map((e) => ({ ...e, selected: sure })));
-  };
-  useEffect(() => {
-    if (selectAllKeyPressed) selectAll(true);
-  }, [selectAllKeyPressed]);
-  useEffect(() => {
-    if (!cancelAllKeyPressed) selectAll(false);
-  }, [cancelAllKeyPressed]);
-}
-
 const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
-  const {
-    nodes,
-    setNodes,
-    onNodesChange,
-    edges,
-    setEdges,
-    onEdgesChange,
-    onConnect,
-  } = useGraph(graphData);
-  selectionAllKeyBinding(setNodes, setEdges);
-
+  const { nodes, onNodesChange, edges, onEdgesChange, onConnect, selectAll } =
+    useGraph(graphData);
   const { onNodeDragStart, onNodeDragStop } = useScene(nodes);
+  useKeyBinding(selectAll);
   const {
     view: viewSetting,
     select: selectSetting,
