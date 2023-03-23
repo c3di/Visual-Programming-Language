@@ -8,3 +8,4 @@ export { type GraphData } from './Graph';
 export { type MathNodeData } from './Math';
 export { type Comment, isCommentNode } from './Comment';
 export { type Reroute } from './Reroute';
+export { type ClipboardInfo } from './ClipboardInfo';
