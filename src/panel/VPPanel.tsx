@@ -9,9 +9,9 @@ import ReactFlow, {
 } from 'reactflow';
 
 import Setting from './VPPanelSetting';
-import { useGraph } from './hooks';
+import { useGraph, useScene } from './hooks';
 import componentType, { Background, ControlPanel, MiniMap } from './components';
-import { type Node, isCommentNode, type GraphData } from './types';
+import { type Node, type GraphData } from './types';
 import 'reactflow/dist/style.css';
 import './VPPanel.css';
 
@@ -46,63 +46,7 @@ const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
   } = useGraph(graphData);
   selectionAllKeyBinding(setNodes, setEdges);
 
-  const nodesRefInCommentNode = React.useRef({});
-
-  const onNodeDragStart = (evt: any, node: Node): void => {
-    nodes.forEach((node) => {
-      saveNodesInSelectedCommentNode(node);
-    });
-  };
-
-  const saveNodesInSelectedCommentNode = (node: Node): void => {
-    if (!node?.selected || !isCommentNode(node.data)) return;
-    const nodesInComment = nodes.filter(
-      (n) =>
-        !n.selected &&
-        n.position.x > node.position.x &&
-        n.position.x + (n.width ?? 0) < node.position.x + (node.width ?? 0) &&
-        n.position.y > node.position.y &&
-        n.position.y + (n.height ?? 0) < node.position.y + (node.height ?? 0) &&
-        n.id !== node.id
-    );
-    if (!nodesInComment) return;
-    nodesRefInCommentNode.current = {
-      ...nodesRefInCommentNode.current,
-      [node.id]: nodesInComment,
-    };
-    // map to local coordinate
-    nodesInComment.forEach((part, index, nodes) => {
-      const n = nodes[index];
-      n.position = {
-        x: n.position.x - node.position.x,
-        y: n.position.y - node.position.y,
-      };
-      n.parentNode = node.id;
-    });
-  };
-
-  const clearNodesInSelectedCommentNode = (node: Node): void => {
-    if (!node || !isCommentNode(node.data)) return;
-    if (!nodesRefInCommentNode.current) return;
-    const nodesInComment = (nodesRefInCommentNode.current as any)[`${node.id}`];
-    if (!nodesInComment) return;
-    nodesInComment.forEach((part: any, index: number, nodes: Node[]) => {
-      const n = nodes[index];
-      n.position = {
-        x: n.position.x + node.position.x,
-        y: n.position.y + node.position.y,
-      };
-      n.parentNode = undefined;
-    });
-    nodesRefInCommentNode.current = {};
-  };
-
-  const onNodeDragStop = (evt: any, node: Node): void => {
-    nodes.forEach((node) => {
-      clearNodesInSelectedCommentNode(node);
-    });
-  };
-
+  const { onNodeDragStart, onNodeDragStop } = useScene(nodes);
   const {
     view: viewSetting,
     select: selectSetting,
