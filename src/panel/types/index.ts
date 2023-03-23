@@ -9,3 +9,4 @@ export { type MathNodeData } from './Math';
 export { type Comment, isCommentNode } from './Comment';
 export { type Reroute } from './Reroute';
 export { type ClipboardInfo } from './ClipboardInfo';
+export { type MousePos } from './MousePos';
