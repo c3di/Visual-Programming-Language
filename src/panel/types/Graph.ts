@@ -5,10 +5,3 @@ export interface GraphData {
   nodes: Node[];
   edges: Edge[];
 }
-
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const Graph = (data: GraphData) => {
-  return {
-    data,
-  };
-};

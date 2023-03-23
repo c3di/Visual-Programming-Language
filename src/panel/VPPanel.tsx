@@ -1,15 +1,6 @@
 /* eslint-disable react/prop-types */
-import React, {
-  type Dispatch,
-  type SetStateAction,
-  useCallback,
-  useEffect,
-} from 'react';
+import React, { type Dispatch, type SetStateAction, useEffect } from 'react';
 import ReactFlow, {
-  addEdge,
-  useNodesState,
-  useEdgesState,
-  type Connection,
   type Edge,
   SelectionMode,
   useKeyPress,
@@ -18,9 +9,9 @@ import ReactFlow, {
 } from 'reactflow';
 
 import Setting from './VPPanelSetting';
-
+import { useGraph } from './hooks';
 import componentType, { Background, ControlPanel, MiniMap } from './components';
-import { Graph, type Node, isCommentNode, type GraphData } from './types';
+import { type Node, isCommentNode, type GraphData } from './types';
 import 'reactflow/dist/style.css';
 import './VPPanel.css';
 
@@ -44,13 +35,17 @@ function selectionAllKeyBinding(
 }
 
 const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
-  const graph = Graph(graphData);
-  const [nodes, setNodes, onNodesChange] = useNodesState(graph.data.nodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(graph.data.edges);
+  const {
+    nodes,
+    setNodes,
+    onNodesChange,
+    edges,
+    setEdges,
+    onEdgesChange,
+    onConnect,
+  } = useGraph(graphData);
   selectionAllKeyBinding(setNodes, setEdges);
-  const onConnect = useCallback((params: Connection) => {
-    setEdges((eds) => addEdge(params, eds));
-  }, []);
+
   const nodesRefInCommentNode = React.useRef({});
 
   const onNodeDragStart = (evt: any, node: Node): void => {
