@@ -4,7 +4,7 @@ import { MarkerType, Position } from 'reactflow';
 export const graphInstance = {
   nodes: [
     {
-      id: '11',
+      id: '1',
       type: 'function',
       data: {
         label: 'function Node',
@@ -44,12 +44,12 @@ export const graphInstance = {
           },
         },
       },
-      position: { x: 200, y: 0 },
+      position: { x: 0, y: 0 },
       sourcePosition: Position.Right,
       targetPosition: Position.Left,
     },
     {
-      id: '12',
+      id: '2',
       type: 'getter',
       data: {
         value: {
@@ -62,10 +62,10 @@ export const graphInstance = {
           },
         },
       },
-      position: { x: 200, y: 100 },
+      position: { x: 300, y: 0 },
     },
     {
-      id: '13',
+      id: '3',
       type: 'setter',
       data: {
         value: {
@@ -78,10 +78,10 @@ export const graphInstance = {
           },
         },
       },
-      position: { x: 200, y: 100 },
+      position: { x: 600, y: 0 },
     },
     {
-      id: '14',
+      id: '4',
       type: 'math',
       data: {
         title: '+',
@@ -108,10 +108,10 @@ export const graphInstance = {
           },
         },
       },
-      position: { x: 200, y: 600 },
+      position: { x: 300, y: 300 },
     },
     {
-      id: '15',
+      id: '5',
       type: 'literal',
       data: {
         value: {
@@ -123,10 +123,10 @@ export const graphInstance = {
           },
         },
       },
-      position: { x: 200, y: 500 },
+      position: { x: 0, y: 300 },
     },
     {
-      id: '16',
+      id: '6',
       type: 'comment',
       dragHandle: '.comment-node__header',
       zIndex: -1001,
@@ -136,10 +136,10 @@ export const graphInstance = {
         width: 200,
         height: 200,
       },
-      position: { x: 200, y: 500 },
+      position: { x: 600, y: 300 },
     },
     {
-      id: '18',
+      id: '7',
       type: 'comment',
       dragHandle: '.comment-node__header',
       zIndex: -1001,
@@ -147,82 +147,20 @@ export const graphInstance = {
         comment: 'This is a comment node 2',
         tooltip: 'this is a comment node',
       },
-      position: { x: 200, y: 600 },
+      position: { x: 0, y: 600 },
     },
     {
-      id: '17',
+      id: '8',
       type: 'reroute',
       data: {
         tooltip: 'this is a reroute node',
         input: { title: 'input', tooltip: 'input', dataType: 'float' },
         output: { title: 'output', tooltip: 'output', dataType: 'float' },
       },
-      position: { x: 200, y: 700 },
+      position: { x: 300, y: 600 },
     },
     {
-      id: '1',
-      type: 'input',
-      data: {
-        label: 'Input Node',
-      },
-      position: { x: 250, y: 0 },
-    },
-    {
-      id: '2',
-      data: {
-        label: 'Default Node',
-      },
-      position: { x: 100, y: 100 },
-    },
-    {
-      id: '3',
-      type: 'output',
-      data: {
-        label: 'Output Node',
-      },
-      position: { x: 400, y: 100 },
-    },
-    {
-      id: '4',
-      type: 'input',
-      position: { x: 100, y: 200 },
-      data: {
-        label: 'Custom Node',
-        tooltip: 'this is a customed node',
-      },
-    },
-    {
-      id: '5',
-      type: 'output',
-      data: {
-        label: 'custom style',
-      },
-      className: 'circle',
-      style: {
-        background: '#2B6CB0',
-        color: 'white',
-      },
-      position: { x: 400, y: 200 },
-      sourcePosition: Position.Right,
-      targetPosition: Position.Left,
-    },
-    {
-      id: '6',
-      type: 'output',
-      style: {
-        background: '#63B3ED',
-        color: 'white',
-        width: 100,
-      },
-      data: {
-        label: 'Node',
-      },
-      position: { x: 400, y: 325 },
-      sourcePosition: Position.Right,
-      targetPosition: Position.Left,
-    },
-    {
-      id: '7',
+      id: '9',
       type: 'default',
       className: 'annotation',
       data: {
@@ -236,29 +174,15 @@ export const graphInstance = {
       },
       draggable: false,
       selectable: false,
-      position: { x: 150, y: 400 },
+      position: { x: 600, y: 600 },
     },
   ],
   edges: [
-    { id: 'e1-2', source: '1', target: '2', label: 'this is an edge label' },
     { id: 'e1-3', source: '1', target: '3', animated: true },
     {
       id: 'e4-5',
-      source: '4',
-      target: '5',
-      type: 'smoothstep',
-      sourceHandle: 'handle-0',
-      data: {},
-      markerEnd: {
-        type: MarkerType.ArrowClosed,
-      },
-    },
-    {
-      id: 'e4-6',
-      source: '4',
-      target: '6',
-      type: 'smoothstep',
-      sourceHandle: 'handle-1',
+      source: '5',
+      target: '4',
       data: {},
       markerEnd: {
         type: MarkerType.ArrowClosed,
