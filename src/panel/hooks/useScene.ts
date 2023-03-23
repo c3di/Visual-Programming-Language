@@ -1,9 +1,9 @@
 import { useRef } from 'react';
-import { isCommentNode } from '../types';
-import { type Node } from '../types';
-
+import { type Node, isCommentNode } from '../types';
+import { type GraphState } from './useGraph';
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function useScene(nodes: Node[]) {
+export default function useScene(graph: GraphState) {
+  const { nodes } = graph;
   const nodesRefInCommentNode = useRef({});
   const onNodeDragStart = (evt: any, node: Node): void => {
     nodes.forEach((node) => {

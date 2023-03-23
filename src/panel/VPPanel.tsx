@@ -14,9 +14,10 @@ import 'reactflow/dist/style.css';
 import './VPPanel.css';
 
 const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
+  const graphState = useGraph(graphData);
   const { nodes, onNodesChange, edges, onEdgesChange, onConnect, selectAll } =
-    useGraph(graphData);
-  const { onNodeDragStart, onNodeDragStop } = useScene(nodes);
+    graphState;
+  const { onNodeDragStart, onNodeDragStop } = useScene(graphState);
   useKeyBinding(selectAll);
   const {
     view: viewSetting,
