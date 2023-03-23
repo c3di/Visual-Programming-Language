@@ -6,6 +6,7 @@ export default function useKeyBinding(sceneState: SceneState): void {
   const selectAllKeyPressed = useKeyPress('Control+a');
   const cancelAllKeyPressed = useKeyPress('Escape');
   const copyKeyPressed = useKeyPress('Control+c');
+  const pasteKeyPressed = useKeyPress('Control+v');
 
   useEffect(() => {
     if (selectAllKeyPressed) sceneState.selectAll(true);
@@ -18,4 +19,9 @@ export default function useKeyBinding(sceneState: SceneState): void {
       sceneState.copySelectedNodeToClipboard();
     }
   }, [copyKeyPressed]);
+  useEffect(() => {
+    if (pasteKeyPressed) {
+      sceneState.pasteFromClipboard();
+    }
+  }, [pasteKeyPressed]);
 }

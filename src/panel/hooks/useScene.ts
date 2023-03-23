@@ -7,9 +7,16 @@ export interface SceneState {
   onNodeDragStart: (evt: any, node: Node) => void;
   onNodeDragStop: (evt: any, node: Node) => void;
   copySelectedNodeToClipboard: () => void;
+  pasteFromClipboard: () => void;
 }
-export default function useScene(graphState: GraphState): SceneState {
-  const { nodes, selectedNodes, edges } = graphState;
+export default function useScene(
+  graphState: GraphState,
+  mousePos: React.MutableRefObject<{
+    mouseX: number;
+    mouseY: number;
+  }>
+): SceneState {
+  const { nodes, selectedNodes, edges, getFreeUniqueNodeIds } = graphState;
   const nodesRefInCommentNode = useRef({});
   const onNodeDragStart = (evt: any, node: Node): void => {
     nodes.forEach((node) => {
@@ -68,7 +75,7 @@ export default function useScene(graphState: GraphState): SceneState {
 
   const copySelectedNodeToClipboard = (): void => {
     const clipboard: ClipboardInfo = {
-      isEmpty: true,
+      hasNodes: false,
       nodes: {},
       edges: [],
       minX: Number.POSITIVE_INFINITY,
@@ -79,8 +86,8 @@ export default function useScene(graphState: GraphState): SceneState {
       clipboard.minX = Math.min(clipboard.minX, node.position.x);
       clipboard.minY = Math.min(clipboard.minY, node.position.y);
     });
-    clipboard.isEmpty = Object.keys(clipboard.nodes).length === 0;
-    if (clipboard.isEmpty) return;
+    clipboard.hasNodes = Object.keys(clipboard.nodes).length !== 0;
+    if (!clipboard.hasNodes) return;
     clipboard.edges = edges.filter((edge) => {
       return clipboard.nodes[edge.source] && clipboard.nodes[edge.target];
     });
@@ -90,10 +97,54 @@ export default function useScene(graphState: GraphState): SceneState {
     });
   };
 
+  const pasteFromClipboard = (): void => {
+    navigator.clipboard
+      .readText()
+      .then((text) => {
+        const clipboard: ClipboardInfo = JSON.parse(text);
+        if (!clipboard?.hasNodes) return;
+        const newNodes: Record<string, Node> = {};
+        const newIds = getFreeUniqueNodeIds(
+          Object.keys(clipboard.nodes).length
+        );
+        Object.keys(clipboard.nodes).forEach((id) => {
+          const node = clipboard.nodes[id];
+          const newId = newIds.shift();
+          const newNode = {
+            ...node,
+            id: newId,
+            position: {
+              x: node.position.x - clipboard.minX + mousePos.current.mouseX,
+              y: node.position.y - clipboard.minY + mousePos.current.mouseY,
+            },
+          };
+          newNodes[id] = newNode as Node;
+        });
+
+        const newEdges = clipboard.edges.map((edge) => {
+          const sourceId = newNodes[edge.source].id;
+          const targetId = newNodes[edge.target].id;
+          return {
+            ...edge,
+            id: `e${sourceId}-${targetId}`,
+            source: sourceId,
+            target: targetId,
+          };
+        });
+
+        graphState.addNodes(Object.values(newNodes));
+        graphState.addEdges(newEdges);
+        graphState.selectAll(false);
+      })
+      .catch((err) => {
+        console.error('Failed to paste: ', err);
+      });
+  };
   return {
     selectAll: graphState.selectAll,
     onNodeDragStart,
     onNodeDragStop,
     copySelectedNodeToClipboard,
+    pasteFromClipboard,
   };
 }

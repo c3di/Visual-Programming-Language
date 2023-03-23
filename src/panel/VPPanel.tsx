@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import ReactFlow, {
   SelectionMode,
   ConnectionLineType,
@@ -7,18 +7,26 @@ import ReactFlow, {
 } from 'reactflow';
 
 import Setting from './VPPanelSetting';
-import { useGraph, useScene, useKeyBinding } from './hooks';
+import { useGraph, useScene, useKeyBinding, useTrackMousePos } from './hooks';
 import componentType, { Background, ControlPanel, MiniMap } from './components';
 import { type GraphData } from './types';
 import 'reactflow/dist/style.css';
 import './VPPanel.css';
 
 const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
+  const domRef = useRef<HTMLDivElement>(null);
   const graphState = useGraph(graphData);
   const { nodes, onNodesChange, edges, onEdgesChange, onConnect } = graphState;
-  const sceneState = useScene(graphState);
+  const { mousePos, updateMousePos } = useTrackMousePos(domRef);
+  const sceneState = useScene(graphState, mousePos);
   const { onNodeDragStart, onNodeDragStop } = sceneState;
   useKeyBinding(sceneState);
+  useEffect(() => {
+    window.addEventListener('mousemove', (e) => {
+      updateMousePos(e.clientX, e.clientY);
+    });
+  }, []);
+
   const {
     view: viewSetting,
     select: selectSetting,
@@ -29,6 +37,7 @@ const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
   } = Setting;
   return (
     <ReactFlow
+      ref={domRef}
       nodes={nodes}
       edges={edges}
       onNodesChange={onNodesChange}
@@ -60,6 +69,9 @@ const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
       connectionRadius={EdgeSetting.portDetectionRadius}
       onNodeDragStart={onNodeDragStart}
       onNodeDragStop={onNodeDragStop}
+      onMove={(e) => {
+        if (e instanceof MouseEvent) updateMousePos(e.clientX, e.clientY);
+      }}
     >
       <MiniMap
         width={minimpSetting.width}
