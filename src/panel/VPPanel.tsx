@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import ReactFlow, {
   SelectionMode,
   ConnectionLineType,
@@ -21,11 +21,6 @@ const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
   const sceneState = useScene(graphState, mousePos);
   const { onNodeDragStart, onNodeDragStop } = sceneState;
   useKeyBinding(sceneState);
-  useEffect(() => {
-    window.addEventListener('mousemove', (e) => {
-      updateMousePos(e.clientX, e.clientY);
-    });
-  }, []);
 
   const {
     view: viewSetting,
@@ -37,6 +32,9 @@ const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
   } = Setting;
   return (
     <ReactFlow
+      onMouseMove={(e) => {
+        updateMousePos(e.clientX, e.clientY);
+      }}
       ref={domRef}
       nodes={nodes}
       edges={edges}
@@ -71,6 +69,9 @@ const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
       onNodeDragStop={onNodeDragStop}
       onMove={(e) => {
         if (e instanceof MouseEvent) updateMousePos(e.clientX, e.clientY);
+      }}
+      onNodeDrag={(e) => {
+        updateMousePos(e.clientX, e.clientY);
       }}
     >
       <MiniMap

@@ -22,7 +22,6 @@ export default function useTrackMousePos(
       mouseX: pos.x,
       mouseY: pos.y,
     };
-    console.log('mousemove12', mousePos.current);
   };
 
   return { mousePos, updateMousePos };

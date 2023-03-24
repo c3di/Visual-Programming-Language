@@ -114,8 +114,10 @@ export default function useScene(
             ...node,
             id: newId,
             position: {
-              x: node.position.x - clipboard.minX + mousePos.current.mouseX,
-              y: node.position.y - clipboard.minY + mousePos.current.mouseY,
+              x:
+                node.position.x - clipboard.minX + mousePos.current.mouseX + 10,
+              y:
+                node.position.y - clipboard.minY + mousePos.current.mouseY + 10,
             },
           };
           newNodes[id] = newNode as Node;
