@@ -29,7 +29,7 @@ export default function useKeyBinding(sceneState: SceneState): void {
   }, [pasteKeyPressed]);
   useEffect(() => {
     if (deleteKeyPressed) {
-      sceneState.deleteSelectedNodes();
+      sceneState.deleteSelectedElements();
     }
   }, [deleteKeyPressed]);
   useEffect(() => {

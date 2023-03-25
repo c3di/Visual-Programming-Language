@@ -25,6 +25,7 @@ export interface GraphState {
   selectedNodes: Node[];
   selectAll: (sure: boolean) => void;
   deleteSelectedNodes: () => void;
+  deleteSelectedElements: () => void;
 }
 export default function useGraph(data: GraphData): GraphState {
   const [nodes, setNodes, onNodesChange] = useNodesState(data.nodes);
@@ -69,6 +70,11 @@ export default function useGraph(data: GraphData): GraphState {
     setNodes((nds) => nds.filter((n) => !n.selected));
   };
 
+  const deleteSelectedElements = (): void => {
+    setNodes((nds) => nds.filter((n) => !n.selected));
+    setEdges((eds) => eds.filter((e) => !e.selected));
+  };
+
   return {
     getFreeUniqueNodeIds,
     nodes,
@@ -83,5 +89,6 @@ export default function useGraph(data: GraphData): GraphState {
     selectedNodes,
     selectAll,
     deleteSelectedNodes,
+    deleteSelectedElements,
   };
 }

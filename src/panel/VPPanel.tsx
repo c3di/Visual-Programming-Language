@@ -60,7 +60,6 @@ const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
       selectionKeyCode={null}
       selectionOnDrag
       panOnDrag={[2]} // 2 = right moues button
-      deleteKeyCode="Delete"
       connectionLineType={
         (EdgeSetting.type as ConnectionLineType) || ConnectionLineType.Bezier
       }

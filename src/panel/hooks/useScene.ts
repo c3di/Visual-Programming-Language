@@ -8,7 +8,7 @@ export interface SceneState {
   onNodeDragStop: (evt: any, node: Node) => void;
   copySelectedNodeToClipboard: () => void;
   pasteFromClipboard: () => void;
-  deleteSelectedNodes: () => void;
+  deleteSelectedElements: () => void;
   duplicateSelectedNodes: () => void;
   cutSelectedNodesToClipboard: () => void;
 }
@@ -162,7 +162,7 @@ export default function useScene(
     onNodeDragStop,
     copySelectedNodeToClipboard,
     pasteFromClipboard,
-    deleteSelectedNodes: graphState.deleteSelectedNodes,
+    deleteSelectedElements: graphState.deleteSelectedElements,
     duplicateSelectedNodes,
     cutSelectedNodesToClipboard,
   };
