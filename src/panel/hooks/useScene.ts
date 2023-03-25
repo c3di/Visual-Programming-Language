@@ -12,6 +12,8 @@ export interface SceneState {
   duplicateSelectedNodes: () => void;
   cutSelectedNodesToClipboard: () => void;
   deleteEdge: (id: string) => void;
+  deleteAllEdgesOfNode: (nodeId: string) => void;
+  deleteAllEdgesOfHandle: (nodeId: string, handleId: string) => void;
 }
 export default function useScene(
   graphState: GraphState,
@@ -167,5 +169,7 @@ export default function useScene(
     duplicateSelectedNodes,
     cutSelectedNodesToClipboard,
     deleteEdge: graphState.deleteEdge,
+    deleteAllEdgesOfNode: graphState.deleteAllEdgesOfNode,
+    deleteAllEdgesOfHandle: graphState.deleteAllEdgesOfHandle,
   };
 }
