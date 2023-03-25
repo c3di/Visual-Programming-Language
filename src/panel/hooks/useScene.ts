@@ -9,6 +9,7 @@ export interface SceneState {
   copySelectedNodeToClipboard: () => void;
   pasteFromClipboard: () => void;
   deleteSelectedNodes: () => void;
+  duplicateSelectedNodes: () => void;
 }
 export default function useScene(
   graphState: GraphState,
@@ -143,6 +144,12 @@ export default function useScene(
         console.error('Failed to paste: ', err);
       });
   };
+
+  const duplicateSelectedNodes = (): void => {
+    copySelectedNodeToClipboard();
+    pasteFromClipboard();
+  };
+
   return {
     selectAll: graphState.selectAll,
     onNodeDragStart,
@@ -150,5 +157,6 @@ export default function useScene(
     copySelectedNodeToClipboard,
     pasteFromClipboard,
     deleteSelectedNodes: graphState.deleteSelectedNodes,
+    duplicateSelectedNodes,
   };
 }

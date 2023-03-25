@@ -8,6 +8,7 @@ export default function useKeyBinding(sceneState: SceneState): void {
   const copyKeyPressed = useKeyPress('Control+c');
   const pasteKeyPressed = useKeyPress('Control+v');
   const deleteKeyPressed = useKeyPress('Delete');
+  const duplicateKeyPressed = useKeyPress('Control+d');
 
   useEffect(() => {
     if (selectAllKeyPressed) sceneState.selectAll(true);
@@ -30,4 +31,9 @@ export default function useKeyBinding(sceneState: SceneState): void {
       sceneState.deleteSelectedNodes();
     }
   }, [deleteKeyPressed]);
+  useEffect(() => {
+    if (duplicateKeyPressed) {
+      sceneState.duplicateSelectedNodes();
+    }
+  }, [duplicateKeyPressed]);
 }
