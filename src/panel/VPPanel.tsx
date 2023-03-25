@@ -16,7 +16,8 @@ import './VPPanel.css';
 const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
   const domRef = useRef<HTMLDivElement>(null);
   const graphState = useGraph(graphData);
-  const { nodes, onNodesChange, edges, onEdgesChange, onConnect } = graphState;
+  const { nodes, onNodesChange, edges, onEdgesChange, onConnect, deleteEdge } =
+    graphState;
   const { mousePos, updateMousePos } = useTrackMousePos(domRef);
   const sceneState = useScene(graphState, mousePos);
   const { onNodeDragStart, onNodeDragStop } = sceneState;
@@ -41,6 +42,9 @@ const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
+      onEdgeClick={(e, edge) => {
+        if (e.ctrlKey) deleteEdge(edge.id);
+      }}
       fitView
       attributionPosition="top-right"
       nodeTypes={componentType.nodeTypes}

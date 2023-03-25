@@ -26,12 +26,17 @@ export interface GraphState {
   selectAll: (sure: boolean) => void;
   deleteSelectedNodes: () => void;
   deleteSelectedElements: () => void;
+  deleteEdge: (id: string) => void;
 }
 export default function useGraph(data: GraphData): GraphState {
   const [nodes, setNodes, onNodesChange] = useNodesState(data.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(data.edges);
   const onConnect = useCallback((params: Connection) => {
     setEdges((eds) => rcAddEdge(params, eds));
+  }, []);
+
+  const deleteEdge = useCallback((id: string) => {
+    setEdges((eds) => eds.filter((e) => e.id !== id));
   }, []);
 
   const getFreeUniqueNodeIds = useCallback(
@@ -90,5 +95,6 @@ export default function useGraph(data: GraphData): GraphState {
     selectAll,
     deleteSelectedNodes,
     deleteSelectedElements,
+    deleteEdge,
   };
 }
