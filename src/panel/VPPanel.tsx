@@ -1,117 +1,27 @@
 /* eslint-disable react/prop-types */
-import React, {
-  type Dispatch,
-  type SetStateAction,
-  useCallback,
-  useEffect,
-} from 'react';
+import React, { useRef } from 'react';
 import ReactFlow, {
-  addEdge,
-  useNodesState,
-  useEdgesState,
-  type Connection,
-  type Edge,
   SelectionMode,
-  useKeyPress,
   ConnectionLineType,
   ReactFlowProvider,
 } from 'reactflow';
 
 import Setting from './VPPanelSetting';
-
+import { useGraph, useScene, useKeyBinding, useTrackMousePos } from './hooks';
 import componentType, { Background, ControlPanel, MiniMap } from './components';
-import { type Graph, type Node, isCommentNode } from './types';
+import { type GraphData } from './types';
 import 'reactflow/dist/style.css';
 import './VPPanel.css';
 
-function selectionAllKeyBinding(
-  setNodes: Dispatch<SetStateAction<Array<Node<any>>>>,
-  setEdges: Dispatch<SetStateAction<Array<Edge<any>>>>
-): void {
-  const selectAllKeyPressed = useKeyPress('Control+a');
-  const cancelAllKeyPressed = useKeyPress('Escape');
-
-  const selectAll = (sure: boolean): void => {
-    setNodes((nds) => nds.map((n) => ({ ...n, selected: sure })));
-    setEdges((eds) => eds.map((e) => ({ ...e, selected: sure })));
-  };
-  useEffect(() => {
-    if (selectAllKeyPressed) selectAll(true);
-  }, [selectAllKeyPressed]);
-  useEffect(() => {
-    if (!cancelAllKeyPressed) selectAll(false);
-  }, [cancelAllKeyPressed]);
-}
-
-const Scene = ({
-  initialNodes,
-  initialEdges,
-}: {
-  initialNodes: Array<Node<any, string | undefined>>;
-  initialEdges: Array<Edge<any>>;
-}): JSX.Element => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  selectionAllKeyBinding(setNodes, setEdges);
-  const onConnect = useCallback((params: Connection) => {
-    setEdges((eds) => addEdge(params, eds));
-  }, []);
-  const nodesRefInCommentNode = React.useRef({});
-
-  const onNodeDragStart = (evt: any, node: Node): void => {
-    nodes.forEach((node) => {
-      saveNodesInSelectedCommentNode(node);
-    });
-  };
-
-  const saveNodesInSelectedCommentNode = (node: Node): void => {
-    if (!node?.selected || !isCommentNode(node.data)) return;
-    const nodesInComment = nodes.filter(
-      (n) =>
-        !n.selected &&
-        n.position.x > node.position.x &&
-        n.position.x + (n.width ?? 0) < node.position.x + (node.width ?? 0) &&
-        n.position.y > node.position.y &&
-        n.position.y + (n.height ?? 0) < node.position.y + (node.height ?? 0) &&
-        n.id !== node.id
-    );
-    if (!nodesInComment) return;
-    nodesRefInCommentNode.current = {
-      ...nodesRefInCommentNode.current,
-      [node.id]: nodesInComment,
-    };
-    // map to local coordinate
-    nodesInComment.forEach((part, index, nodes) => {
-      const n = nodes[index];
-      n.position = {
-        x: n.position.x - node.position.x,
-        y: n.position.y - node.position.y,
-      };
-      n.parentNode = node.id;
-    });
-  };
-
-  const clearNodesInSelectedCommentNode = (node: Node): void => {
-    if (!node || !isCommentNode(node.data)) return;
-    if (!nodesRefInCommentNode.current) return;
-    const nodesInComment = (nodesRefInCommentNode.current as any)[`${node.id}`];
-    if (!nodesInComment) return;
-    nodesInComment.forEach((part: any, index: number, nodes: Node[]) => {
-      const n = nodes[index];
-      n.position = {
-        x: n.position.x + node.position.x,
-        y: n.position.y + node.position.y,
-      };
-      n.parentNode = undefined;
-    });
-    nodesRefInCommentNode.current = {};
-  };
-
-  const onNodeDragStop = (evt: any, node: Node): void => {
-    nodes.forEach((node) => {
-      clearNodesInSelectedCommentNode(node);
-    });
-  };
+const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
+  const domRef = useRef<HTMLDivElement>(null);
+  const graphState = useGraph(graphData);
+  const { nodes, onNodesChange, edges, onEdgesChange, onConnect, deleteEdge } =
+    graphState;
+  const { mousePos, updateMousePos } = useTrackMousePos(domRef);
+  const sceneState = useScene(graphState, mousePos);
+  const { onNodeDragStart, onNodeDragStop } = sceneState;
+  useKeyBinding(sceneState);
 
   const {
     view: viewSetting,
@@ -123,11 +33,18 @@ const Scene = ({
   } = Setting;
   return (
     <ReactFlow
+      onMouseMove={(e) => {
+        updateMousePos(e.clientX, e.clientY);
+      }}
+      ref={domRef}
       nodes={nodes}
       edges={edges}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
+      onEdgeClick={(e, edge) => {
+        if (e.ctrlKey) deleteEdge(edge.id);
+      }}
       fitView
       attributionPosition="top-right"
       nodeTypes={componentType.nodeTypes}
@@ -147,13 +64,18 @@ const Scene = ({
       selectionKeyCode={null}
       selectionOnDrag
       panOnDrag={[2]} // 2 = right moues button
-      deleteKeyCode="Delete"
       connectionLineType={
         (EdgeSetting.type as ConnectionLineType) || ConnectionLineType.Bezier
       }
       connectionRadius={EdgeSetting.portDetectionRadius}
       onNodeDragStart={onNodeDragStart}
       onNodeDragStop={onNodeDragStop}
+      onMove={(e) => {
+        if (e instanceof MouseEvent) updateMousePos(e.clientX, e.clientY);
+      }}
+      onNodeDrag={(e) => {
+        updateMousePos(e.clientX, e.clientY);
+      }}
     >
       <MiniMap
         width={minimpSetting.width}
@@ -178,10 +100,14 @@ const Scene = ({
   );
 };
 
-export default function VPPanel({ graph }: { graph: Graph }): JSX.Element {
+export default function VPPanel({
+  graphData,
+}: {
+  graphData: GraphData;
+}): JSX.Element {
   return (
     <ReactFlowProvider>
-      <Scene initialNodes={graph.nodes} initialEdges={graph.edges} />
+      <Scene graphData={graphData} />
     </ReactFlowProvider>
   );
 }
