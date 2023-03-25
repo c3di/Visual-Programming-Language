@@ -7,6 +7,7 @@ export default function useKeyBinding(sceneState: SceneState): void {
   const cancelAllKeyPressed = useKeyPress('Escape');
   const copyKeyPressed = useKeyPress('Control+c');
   const pasteKeyPressed = useKeyPress('Control+v');
+  const deleteKeyPressed = useKeyPress('Delete');
 
   useEffect(() => {
     if (selectAllKeyPressed) sceneState.selectAll(true);
@@ -24,4 +25,9 @@ export default function useKeyBinding(sceneState: SceneState): void {
       sceneState.pasteFromClipboard();
     }
   }, [pasteKeyPressed]);
+  useEffect(() => {
+    if (deleteKeyPressed) {
+      sceneState.deleteSelectedNodes();
+    }
+  }, [deleteKeyPressed]);
 }

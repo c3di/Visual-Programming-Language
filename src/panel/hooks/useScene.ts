@@ -8,6 +8,7 @@ export interface SceneState {
   onNodeDragStop: (evt: any, node: Node) => void;
   copySelectedNodeToClipboard: () => void;
   pasteFromClipboard: () => void;
+  deleteSelectedNodes: () => void;
 }
 export default function useScene(
   graphState: GraphState,
@@ -148,5 +149,6 @@ export default function useScene(
     onNodeDragStop,
     copySelectedNodeToClipboard,
     pasteFromClipboard,
+    deleteSelectedNodes: graphState.deleteSelectedNodes,
   };
 }
