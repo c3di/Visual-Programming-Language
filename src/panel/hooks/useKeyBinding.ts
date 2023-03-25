@@ -9,6 +9,7 @@ export default function useKeyBinding(sceneState: SceneState): void {
   const pasteKeyPressed = useKeyPress('Control+v');
   const deleteKeyPressed = useKeyPress('Delete');
   const duplicateKeyPressed = useKeyPress('Control+d');
+  const cutKeyPressed = useKeyPress('Control+x');
 
   useEffect(() => {
     if (selectAllKeyPressed) sceneState.selectAll(true);
@@ -36,4 +37,9 @@ export default function useKeyBinding(sceneState: SceneState): void {
       sceneState.duplicateSelectedNodes();
     }
   }, [duplicateKeyPressed]);
+  useEffect(() => {
+    if (cutKeyPressed) {
+      sceneState.cutSelectedNodesToClipboard();
+    }
+  }, [cutKeyPressed]);
 }
