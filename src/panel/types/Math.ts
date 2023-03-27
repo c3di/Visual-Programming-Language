@@ -4,5 +4,5 @@ import { type BasciNodeData } from './BasicNode';
 export interface MathNodeData extends BasciNodeData {
   title: string | JSX.Element;
   inputs: Record<string, Handle>;
-  output: { title: string; handle: Handle };
+  outputs: Record<string, Handle>;
 }

@@ -99,9 +99,8 @@ export const graphInstance = {
             dataType: 'bool',
           },
         },
-        output: {
-          title: 'output',
-          handle: {
+        outputs: {
+          output: {
             title: 'output',
             tooltip: 'output',
             dataType: 'bool',
