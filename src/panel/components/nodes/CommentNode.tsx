@@ -16,10 +16,10 @@ function CommentNode({ data }: { data: Comment }): JSX.Element {
         minWidth={20}
         minHeight={10}
       />
-      <div className="comment-node__header">
+      <div className="node__header">
         <strong>{data.comment}</strong>
       </div>
-      <div className="comment-node__body"></div>
+      <div className="node__body"></div>
     </div>
   );
 }

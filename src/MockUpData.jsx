@@ -128,7 +128,7 @@ export const graphInstance = {
     {
       id: '6',
       type: 'comment',
-      dragHandle: '.comment-node__header',
+      dragHandle: '.node__header',
       zIndex: -1001,
       data: {
         comment: 'This is a comment node 1',
@@ -141,7 +141,7 @@ export const graphInstance = {
     {
       id: '7',
       type: 'comment',
-      dragHandle: '.comment-node__header',
+      dragHandle: '.node__header',
       zIndex: -1001,
       data: {
         comment: 'This is a comment node 2',

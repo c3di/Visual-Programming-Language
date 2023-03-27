@@ -25,7 +25,7 @@ function MakeLiteralNode({
           `}
         </strong>
       </div>
-      <div className="setter-node__body">
+      <div className="node__body">
         <TargetHandle
           id={`return_${data.value.title}`}
           nodeId={id}
@@ -43,6 +43,7 @@ function MakeLiteralNode({
             title: `Return ${data.value.handle.title}`,
           }}
         />
+        <div className="node__clear"></div>
       </div>
     </div>
   );

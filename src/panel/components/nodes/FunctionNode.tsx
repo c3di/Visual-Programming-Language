@@ -1,6 +1,5 @@
 import React, { memo } from 'react';
 // import { useReactFlow, useStoreApi, Position } from 'reactflow';
-import './FunctionNode.css';
 import TargetHandle from '../TargetHandle';
 import SourceHandle from '../SourceHandle';
 import { type FunctionNodeData } from '../../types';
@@ -12,9 +11,9 @@ function FunctionNode({
   id: string;
   data: FunctionNodeData;
 }): JSX.Element {
-  const handles = [];
+  const inputhandles = [];
   for (const inputId in data.inputs) {
-    handles.push(
+    inputhandles.push(
       <TargetHandle
         key={inputId}
         id={inputId}
@@ -25,8 +24,9 @@ function FunctionNode({
       />
     );
   }
+  const outputHandles = [];
   for (const outputId in data.outputs) {
-    handles.push(
+    outputHandles.push(
       <SourceHandle
         key={outputId}
         id={outputId}
@@ -39,10 +39,14 @@ function FunctionNode({
   }
   return (
     <div title={data.tooltip}>
-      <div className="function-node__header">
+      <div className="node__header">
         This is a <strong>function node</strong>
       </div>
-      <div className="function-node__body">{handles}</div>
+      <div className="node__body">
+        <div className="node__input-handles">{inputhandles}</div>
+        <div className="node__output-handles">{outputHandles}</div>
+        <div className="node__clear"></div>
+      </div>
     </div>
   );
 }
