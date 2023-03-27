@@ -26,12 +26,19 @@ export default function useScene(
   const nodesRefInCommentNode = useRef({});
   const onNodeDragStart = (evt: any, node: Node): void => {
     nodes.forEach((node) => {
-      saveNodesInSelectedCommentNode(node);
+      saveNodesInSelectedCommentNode(node, node.id);
     });
   };
 
-  const saveNodesInSelectedCommentNode = (node: Node): void => {
-    if (!node?.selected || !isCommentNode(node.data)) return;
+  const saveNodesInSelectedCommentNode = (
+    node: Node,
+    toBeDragNodeId: string
+  ): void => {
+    if (
+      !isCommentNode(node.data) ||
+      (!node?.selected && node.id !== toBeDragNodeId)
+    )
+      return;
     const nodesInComment = nodes.filter(
       (n) =>
         !n.selected &&
