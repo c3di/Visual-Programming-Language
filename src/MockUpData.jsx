@@ -52,10 +52,9 @@ export const graphInstance = {
       id: '2',
       type: 'getter',
       data: {
-        value: {
-          title: 'Getter',
-          handle: {
-            title: 'handle',
+        outputs: {
+          Getter: {
+            title: 'Getter',
             tooltip: 'getter handle',
             dataType: 'float',
             defaultValue: '100',
@@ -68,8 +67,7 @@ export const graphInstance = {
       id: '3',
       type: 'setter',
       data: {
-        value: {
-          title: 'setter',
+        inputs: {
           handle: {
             title: 'account',
             tooltip: 'setter handle',
@@ -113,8 +111,9 @@ export const graphInstance = {
       id: '5',
       type: 'literal',
       data: {
-        value: {
-          handle: {
+        type: 'float',
+        inputs: {
+          value: {
             title: 'Value',
             tooltip: 'literal handle',
             dataType: 'float',
@@ -153,8 +152,12 @@ export const graphInstance = {
       type: 'reroute',
       data: {
         tooltip: 'this is a reroute node',
-        input: { title: 'input', tooltip: 'input', dataType: 'float' },
-        output: { title: 'output', tooltip: 'output', dataType: 'float' },
+        inputs: {
+          input: { title: 'input', tooltip: 'input', dataType: 'float' },
+        },
+        outputs: {
+          output: { title: 'output', tooltip: 'output', dataType: 'float' },
+        },
       },
       position: { x: 300, y: 600 },
     },

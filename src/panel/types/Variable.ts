@@ -1,7 +1,6 @@
-import { type Handle } from './Handle';
-import { type BasciNodeData } from './BasicNode';
+import { type ConnectableData } from './Connectable';
 
-export interface VariableNodeData extends BasciNodeData {
-  value: { title: string; handle: Handle };
+export interface VariableNodeData extends ConnectableData {
   isConstant?: boolean;
+  type: string;
 }

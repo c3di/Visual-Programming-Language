@@ -10,19 +10,20 @@ function GetterNode({
   id: string;
   data: VariableNodeData;
 }): JSX.Element {
-  if (data.tooltip === undefined)
-    data.tooltip = `Get the value of ${data.value.title}`;
-  return (
-    <div title={data.tooltip}>
+  const outputHandles = [];
+  for (const outputId in data.outputs) {
+    outputHandles.push(
       <SourceHandle
-        id={data.value.title}
+        key={outputId}
+        id={outputId}
         nodeId={id}
+        handleData={data.outputs[outputId]}
         showWidget={false}
         showTitle={true}
-        handleData={data.value.handle}
       />
-    </div>
-  );
+    );
+  }
+  return <div title={data.tooltip}>{outputHandles}</div>;
 }
 
 export default memo(GetterNode);

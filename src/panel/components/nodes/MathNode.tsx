@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import './MathNode.css';
-import { type MathNodeData } from '../../types';
+import { type ConnectableData } from '../../types';
 import SourceHandle from '../SourceHandle';
 import TargetHandle from '../TargetHandle';
 
@@ -9,7 +9,7 @@ function MathNode({
   data,
 }: {
   id: string;
-  data: MathNodeData;
+  data: ConnectableData;
 }): JSX.Element {
   const inputHandles = [];
   for (const inputId in data.inputs) {
