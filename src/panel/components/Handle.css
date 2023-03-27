@@ -1,8 +1,42 @@
 .source-handle {
   position: relative;
-  margin-bottom: 0px;
+  display: flex;
+  align-items: center;
+  height: 20px;
+  justify-content: flex-end;
 }
+
+.source-handle .handle-title {
+  padding-left: 4px;
+  padding-right: 10px;
+}
+
 .target-handle {
   position: relative;
-  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.target-handle .handle-title {
+  padding-left: 10px;
+  padding-right: 4px;
+}
+
+.target-handle .react-flow__handle {
+  width: 8px;
+  height: 10px;
+  border-radius: 2px;
+  background-color: #778899;
+}
+
+.source-handle .react-flow__handle {
+  width: 8px;
+  height: 10px;
+  border-radius: 2px;
+  background-color: #778899;
+}
+
+.handle-widget {
+  width: 100%;
+  max-width: 100px;
 }
