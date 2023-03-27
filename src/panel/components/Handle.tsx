@@ -65,7 +65,7 @@ export default function Handle({
         (!toHideWidgetWhenConnected ||
           (toHideWidgetWhenConnected && !handleData.connected)) ? (
           <input
-            className="handle-widget"
+            className="nodrag handle-widget"
             defaultValue={handleData.value}
             onChange={(e) => {
               changeValue(e.target.value);
