@@ -25,10 +25,12 @@ function MathNode({
     );
   }
   return (
-    <div title={data.tooltip}>
-      <div className="math-node__body">
+    <div title={data.tooltip} className="math-node__body">
+      <div className="math-node__input-handles">{targetHandles}</div>
+      <div className="math-node__header">
         <strong>{data.title}</strong>
-        {targetHandles}
+      </div>
+      <div className="math-node__output-handles">
         <SourceHandle
           id={data.output.title}
           nodeId={id}

@@ -18,7 +18,7 @@ function SetterNode({
       <div className="setter-node__header">
         <strong>Set</strong>
       </div>
-      <div className="setter-node__body">
+      <div className="node__body">
         <TargetHandle
           id={`return_${data.value.title}`}
           nodeId={id}
@@ -33,6 +33,7 @@ function SetterNode({
           showTitle={false}
           handleData={data.value.handle}
         />
+        <div className="node__clear"></div>
       </div>
     </div>
   );

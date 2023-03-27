@@ -1,6 +1,6 @@
 export { DataType, isDataTypeMatch } from './DataType';
 export type { default as Node } from './BasicNode';
-export { type Handle } from './Handle';
+export { type Handle as HandleData } from './Handle';
 export { type FunctionNodeData } from './Function';
 export { type VariableNodeData } from './Variable';
 export { type Edge } from './Edge';
