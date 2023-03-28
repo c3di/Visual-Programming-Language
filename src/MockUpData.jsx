@@ -32,7 +32,7 @@ export const graphInstance = {
         outputs: {
           output1: {
             type: 'target',
-            connection: 0,
+            connection: 1,
             title: 'output1',
             tooltip: 'output 1',
             dataType: 'float',
@@ -72,7 +72,7 @@ export const graphInstance = {
         inputs: {
           handle: {
             title: 'account',
-            connected: false,
+            connection: 1,
             tooltip: 'setter handle',
             dataType: 'float',
             defaultValue: '100',
@@ -97,13 +97,12 @@ export const graphInstance = {
         inputs: {
           input1: {
             title: 'input1',
-            connected: false,
+            connection: 1,
             tooltip: 'input 1',
             dataType: 'float',
           },
           input2: {
             title: 'input2',
-            connected: false,
             tooltip: 'input 2',
             dataType: 'bool',
           },
@@ -134,6 +133,7 @@ export const graphInstance = {
         // the same as the inputs except the title, tooltip, for easy indexing
         outputs: {
           output: {
+            connection: 1,
             title: 'return Value',
             tooltip: 'return Value',
             dataType: 'float',
@@ -199,12 +199,21 @@ export const graphInstance = {
     },
   ],
   edges: [
-    { id: 'e1-3', source: '1', target: '3', animated: true },
+    {
+      id: 'e1-3',
+      source: '1',
+      target: '3',
+      animated: true,
+      sourceHandle: 'output1',
+      targetHandle: 'handle',
+    },
     {
       id: 'e4-5',
       source: '5',
       target: '4',
       data: {},
+      sourceHandle: 'output',
+      targetHandle: 'input1',
       markerEnd: {
         type: MarkerType.ArrowClosed,
       },
