@@ -61,6 +61,7 @@ const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
           : SelectionMode.Partial
       }
       multiSelectionKeyCode="Shift"
+      deleteKeyCode="null"
       selectionKeyCode={null}
       selectionOnDrag
       panOnDrag={[2]} // 2 = right moues button
