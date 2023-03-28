@@ -1,4 +1,10 @@
-import { type GraphData, type Node, type Edge } from '../types';
+import {
+  type GraphData,
+  type Node,
+  type Edge,
+  isDataTypeMatch,
+  getMaxConnection,
+} from '../types';
 import {
   useNodesState,
   useEdgesState,
@@ -21,6 +27,7 @@ export interface GraphState {
   setEdges: (edges: Edge[]) => void;
   onEdgesChange: OnChange<EdgeChange>;
   onConnect: (params: Connection) => void;
+  isValidConnection: (params: Connection) => boolean;
   selectedNodes: () => Node[];
   selectAll: (sure: boolean) => void;
   deleteSelectedNodes: () => void;
@@ -80,7 +87,25 @@ export default function useGraph(data: GraphData): GraphState {
     addEdge(params);
   }, []);
 
+  const deleteEdgesIfReachMaxConnection = useCallback(
+    (params: Connection): void => {
+      const { source, sourceHandle, target, targetHandle } = params;
+      if (!source || !sourceHandle || !target || !targetHandle) return;
+      const sHandle = getNode(source)?.data.outputs?.[sourceHandle];
+      const tHandle = getNode(target)?.data.inputs?.[targetHandle];
+      if (!sHandle || !tHandle) return;
+      if (sHandle.connection === getMaxConnection('source', sHandle.type)) {
+        deleteAllEdgesOfHandle(source, sourceHandle);
+      }
+      if (tHandle.connection === getMaxConnection('target', tHandle.type)) {
+        deleteAllEdgesOfHandle(target, targetHandle);
+      }
+    },
+    []
+  );
+
   const addEdge = useCallback((params: Connection) => {
+    deleteEdgesIfReachMaxConnection(params);
     setEdges((eds) => rcAddEdge(params, eds));
     updateHandleConnection(params.source, params.sourceHandle, true, true);
     updateHandleConnection(params.target, params.targetHandle, true, false);
@@ -169,6 +194,34 @@ export default function useGraph(data: GraphData): GraphState {
     []
   );
 
+  const isValidConnection = useCallback((params: Connection): boolean => {
+    if (!params.source || !params.target) {
+      console.log('no source or target in connection');
+      return false;
+    }
+    const sourceNode = getNode(params.source);
+    const targetNode = getNode(params.target);
+    if (!sourceNode || !targetNode) {
+      console.log('no source or target node found');
+      return false;
+    }
+    if (!params.sourceHandle || !params.targetHandle) {
+      console.log('no source or target handle in connection');
+      return false;
+    }
+    const sourceHandle = sourceNode.data.outputs?.[params.sourceHandle];
+    const targetHandle = targetNode.data.inputs?.[params.targetHandle];
+    if (!sourceHandle || !targetHandle) {
+      console.log('no source or target handle found');
+      return false;
+    }
+    if (isDataTypeMatch(sourceHandle.type, targetHandle.type)) {
+      console.log('source and target handle type do not match');
+      return false;
+    }
+    return true;
+  }, []);
+
   return {
     getFreeUniqueNodeIds,
     nodes,
@@ -178,6 +231,7 @@ export default function useGraph(data: GraphData): GraphState {
     setEdges,
     onEdgesChange,
     onConnect,
+    isValidConnection,
     selectedNodes,
     selectAll,
     deleteSelectedNodes,

@@ -1,4 +1,4 @@
-export { DataType, isDataTypeMatch } from './DataType';
+export { DataType, isDataTypeMatch, getMaxConnection } from './DataType';
 export type { default as Node } from './BasicNode';
 export { type Handle as HandleData } from './Handle';
 export { type ConnectableData } from './Connectable';
