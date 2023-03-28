@@ -1,8 +1,8 @@
 import type DataType from './DataType';
 
 export interface Handle {
-  title: string; // keep unique for each node
-  connected: boolean;
+  title: string;
+  connection: number;
   tooltip?: string;
   dataType: DataType;
   defaultValue?: any;

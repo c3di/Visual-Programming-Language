@@ -53,7 +53,7 @@ export default function useGraph(data: GraphData): GraphState {
     if (!handle) {
       return;
     }
-    handle.connected = connected;
+    handle.connection = Number(handle.connection ?? 0) + (connected ? 1 : -1);
 
     setNodes(
       nodes.map((node) => {
