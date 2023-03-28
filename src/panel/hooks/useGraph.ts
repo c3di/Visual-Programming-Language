@@ -77,17 +77,20 @@ export default function useGraph(data: GraphData): GraphState {
     updateHandleConnection(params.target, params.targetHandle, true, false);
   }, []);
 
-  const deleteEdges = (delEdgeSelctor: (e: Edge) => boolean): void => {
-    const toBeDel = edges.filter((e) => delEdgeSelctor(e));
-    if (!toBeDel) {
-      return;
-    }
-    toBeDel.forEach((e) => {
-      updateHandleConnection(e.source, e.sourceHandle, false, true);
-      updateHandleConnection(e.target, e.targetHandle, false, false);
-    });
-    setEdges((eds) => eds.filter((e) => !delEdgeSelctor(e)));
-  };
+  const deleteEdges = useCallback(
+    (delEdgeSelctor: (e: Edge) => boolean): void => {
+      const toBeDel = edges.filter((e) => delEdgeSelctor(e));
+      if (!toBeDel) {
+        return;
+      }
+      toBeDel.forEach((e) => {
+        updateHandleConnection(e.source, e.sourceHandle, false, true);
+        updateHandleConnection(e.target, e.targetHandle, false, false);
+      });
+      setEdges((eds) => eds.filter((e) => !delEdgeSelctor(e)));
+    },
+    []
+  );
 
   const deleteEdge = (id: string): void => {
     deleteEdges((e) => e.id === id);
@@ -119,12 +122,12 @@ export default function useGraph(data: GraphData): GraphState {
     return nodes.filter((n) => n.selected);
   }, []);
 
-  const selectAll = (sure: boolean): void => {
+  const selectAll = useCallback((sure: boolean): void => {
     setNodes((nds) => nds.map((n) => ({ ...n, selected: sure })));
     setEdges((eds) => eds.map((e) => ({ ...e, selected: sure })));
-  };
+  }, []);
 
-  const deleteSelectedNodes = (): void => {
+  const deleteSelectedNodes = useCallback((): void => {
     deleteEdges((e) => {
       const selectedNodesId = nodes.filter((n) => n.selected).map((n) => n.id);
       return (
@@ -132,24 +135,27 @@ export default function useGraph(data: GraphData): GraphState {
       );
     });
     setNodes((nds) => nds.filter((n) => !n.selected));
-  };
+  }, []);
 
-  const deleteSelectedElements = (): void => {
+  const deleteSelectedElements = useCallback((): void => {
     deleteEdges((e) => e.selected ?? false);
     deleteSelectedNodes();
-  };
+  }, []);
 
-  const deleteAllEdgesOfNode = (nodeId: string): void => {
+  const deleteAllEdgesOfNode = useCallback((nodeId: string): void => {
     deleteEdges((e) => e.source === nodeId || e.target === nodeId);
-  };
+  }, []);
 
-  const deleteAllEdgesOfHandle = (nodeId: string, handleId: string): void => {
-    deleteEdges(
-      (e) =>
-        (e.source === nodeId && e.sourceHandle === handleId) ||
-        (e.target === nodeId && e.targetHandle === handleId)
-    );
-  };
+  const deleteAllEdgesOfHandle = useCallback(
+    (nodeId: string, handleId: string): void => {
+      deleteEdges(
+        (e) =>
+          (e.source === nodeId && e.sourceHandle === handleId) ||
+          (e.target === nodeId && e.targetHandle === handleId)
+      );
+    },
+    []
+  );
 
   return {
     getFreeUniqueNodeIds,
