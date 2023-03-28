@@ -25,15 +25,15 @@ function MakeLiteralNode({
     );
   }
   const outputHandles = [];
-  for (const id in data.outputs) {
+  for (const outputId in data.outputs) {
     outputHandles.push(
       <SourceHandle
-        key={id}
-        id={id}
+        key={outputId}
+        id={outputId}
         nodeId={id}
-        handleData={data.outputs[id]}
         showWidget={false}
         showTitle={true}
+        handleData={data.outputs[outputId]}
       />
     );
   }
