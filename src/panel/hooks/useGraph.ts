@@ -49,25 +49,14 @@ export default function useGraph(data: GraphData): GraphState {
       connected: boolean,
       isSource: boolean
     ): void => {
-      if (!nodeId) {
-        return;
-      }
+      if (!nodeId || !handleId) return;
       const node = getNode(nodeId);
-      if (!node) {
-        return;
-      }
-      if (!handleId) {
-        return;
-      }
-
+      if (!node) return;
       const handle = isSource
         ? node.data.outputs?.[handleId]
         : node.data.inputs?.[handleId];
-      if (!handle) {
-        return;
-      }
+      if (!handle) return;
       handle.connection = Number(handle.connection ?? 0) + (connected ? 1 : -1);
-
       setNodes((nds) => {
         const newNodes = nds.map((n) => {
           if (n.id === nodeId) {

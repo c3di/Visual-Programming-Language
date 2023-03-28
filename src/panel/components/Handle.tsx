@@ -6,7 +6,6 @@ import {
   type HandleType,
   type Position,
   useReactFlow,
-  useStoreApi,
 } from 'reactflow';
 
 export default function Handle({
@@ -31,29 +30,26 @@ export default function Handle({
   handlePosition: Position;
 }): JSX.Element {
   const [label, setLabel] = useState(<></>);
-  // todo: this is a hack to get the node internals, extract this into a hook
+  const isSourceHandle = handleType === 'source';
   const { setNodes } = useReactFlow();
-  const store = useStoreApi();
-  const changeValue = (newVa: string): void => {
-    const { nodeInternals } = store.getState();
-    setNodes(
-      Array.from(nodeInternals.values()).map((node) => {
-        if (node.id === nodeId) {
-          node.data = {
-            ...node.data,
-            handleData: {
-              ...node.data.handleData,
-              value: newVa,
-            },
-          };
+  if (!handleData) {
+    console.error('handleData is undefined');
+  }
+  const changeValue = (newVa: any): void => {
+    setNodes((nds) =>
+      nds.map((n) => {
+        if (n.id === nodeId) {
+          if (isSourceHandle) n.data.outputs[id].value = newVa;
+          else n.data.inputs[id].value = newVa;
         }
-        return node;
+        return n;
       })
     );
   };
+
   useEffect(() => {
     const isConnected = handleData.connection > 0;
-    if (isConnected) {
+    if (isConnected && showWidget) {
       changeValue(handleData.defaultValue);
     }
 
@@ -67,7 +63,7 @@ export default function Handle({
           (toHideWidgetWhenConnected && !isConnected)) ? (
           <input
             className="nodrag handle-widget"
-            defaultValue={handleData.value}
+            defaultValue={handleData.defaultValue}
             onChange={(e) => {
               changeValue(e.target.value);
             }}
