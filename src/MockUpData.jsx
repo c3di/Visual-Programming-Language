@@ -78,6 +78,14 @@ export const graphInstance = {
             defaultValue: '100',
           },
         },
+        // the same as the inputs except the title, tooltip, for easy indexing
+        outputs: {
+          output: {
+            title: 'return account',
+            tooltip: 'return acclunt',
+            dataType: 'float',
+          },
+        },
       },
       position: { x: 600, y: 0 },
     },
@@ -121,6 +129,14 @@ export const graphInstance = {
             tooltip: 'literal handle',
             dataType: 'float',
             defaultValue: '100',
+          },
+        },
+        // the same as the inputs except the title, tooltip, for easy indexing
+        outputs: {
+          output: {
+            title: 'return Value',
+            tooltip: 'return Value',
+            dataType: 'float',
           },
         },
       },

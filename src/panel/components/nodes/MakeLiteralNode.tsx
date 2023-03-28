@@ -25,16 +25,13 @@ function MakeLiteralNode({
     );
   }
   const outputHandles = [];
-  for (const id in data.inputs) {
+  for (const id in data.outputs) {
     outputHandles.push(
       <SourceHandle
         key={id}
         id={id}
         nodeId={id}
-        handleData={{
-          ...data.inputs[id],
-          title: `Return ${data.inputs[id].title}`,
-        }}
+        handleData={data.outputs[id]}
         showWidget={false}
         showTitle={true}
       />

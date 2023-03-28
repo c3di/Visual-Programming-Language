@@ -25,13 +25,13 @@ function SetterNode({
     );
   }
   const outputHandles = [];
-  for (const id in data.inputs) {
+  for (const id in data.outputs) {
     outputHandles.push(
       <SourceHandle
         key={id}
         id={id}
         nodeId={id}
-        handleData={data.inputs[id]}
+        handleData={data.outputs[id]}
         showWidget={false}
         showTitle={false}
       />
