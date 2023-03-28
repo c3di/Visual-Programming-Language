@@ -6,6 +6,7 @@ import {
   addEdge as rcAddEdge,
   type NodeChange,
   type EdgeChange,
+  useReactFlow,
 } from 'reactflow';
 import { useCallback } from 'react';
 
@@ -32,40 +33,48 @@ export interface GraphState {
 export default function useGraph(data: GraphData): GraphState {
   const [nodes, setNodes, onNodesChange] = useNodesState(data.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(data.edges);
+  // the nodes will added more properties by reactflow, so we need to get the nodes from reactflow
+  const { getNodes, getNode, getEdges } = useReactFlow();
+  const updateHandleConnection = useCallback(
+    (
+      nodeId: string | null,
+      handleId: string | null | undefined,
+      connected: boolean,
+      isSource: boolean
+    ): void => {
+      if (!nodeId) {
+        return;
+      }
+      const node = getNode(nodeId);
+      if (!node) {
+        return;
+      }
+      if (!handleId) {
+        return;
+      }
 
-  const updateHandleConnection = (
-    nodeId: string | null,
-    handleId: string | null | undefined,
-    connected: boolean,
-    isSource: boolean
-  ): void => {
-    const node = nodes.find((n) => n.id === nodeId);
-    if (!node) {
-      return;
-    }
-    if (!handleId) {
-      return;
-    }
+      const handle = isSource
+        ? node.data.outputs?.[handleId]
+        : node.data.inputs?.[handleId];
+      if (!handle) {
+        return;
+      }
+      handle.connection = Number(handle.connection ?? 0) + (connected ? 1 : -1);
 
-    const handle = isSource
-      ? node.data.outputs?.[handleId]
-      : node.data.inputs?.[handleId];
-    if (!handle) {
-      return;
-    }
-    handle.connection = Number(handle.connection ?? 0) + (connected ? 1 : -1);
-
-    setNodes(
-      nodes.map((node) => {
-        if (node.id === nodeId) {
-          node.data = {
-            ...node.data,
-          };
-        }
-        return node;
-      })
-    );
-  };
+      setNodes((nds) => {
+        const newNodes = nds.map((n) => {
+          if (n.id === nodeId) {
+            n.data = {
+              ...n.data,
+            };
+          }
+          return n;
+        });
+        return newNodes;
+      });
+    },
+    []
+  );
 
   const onConnect = useCallback((params: Connection) => {
     addEdge(params);
@@ -79,7 +88,7 @@ export default function useGraph(data: GraphData): GraphState {
 
   const deleteEdges = useCallback(
     (delEdgeSelctor: (e: Edge) => boolean): void => {
-      const toBeDel = edges.filter((e) => delEdgeSelctor(e));
+      const toBeDel = getEdges().filter((e) => delEdgeSelctor(e));
       if (!toBeDel) {
         return;
       }
@@ -98,7 +107,7 @@ export default function useGraph(data: GraphData): GraphState {
 
   const getFreeUniqueNodeIds = useCallback(
     (count: number): string[] => {
-      const ids = nodes.map((n) => n.id);
+      const ids = getNodes().map((n) => n.id);
       const newIds = [];
       let id = 0;
       while (newIds.length < count) {
@@ -119,7 +128,7 @@ export default function useGraph(data: GraphData): GraphState {
   }, []);
 
   const selectedNodes = useCallback(() => {
-    return nodes.filter((n) => n.selected);
+    return getNodes().filter((n) => n.selected);
   }, []);
 
   const selectAll = useCallback((sure: boolean): void => {
@@ -129,7 +138,9 @@ export default function useGraph(data: GraphData): GraphState {
 
   const deleteSelectedNodes = useCallback((): void => {
     deleteEdges((e) => {
-      const selectedNodesId = nodes.filter((n) => n.selected).map((n) => n.id);
+      const selectedNodesId = getNodes()
+        .filter((n) => n.selected)
+        .map((n) => n.id);
       return (
         selectedNodesId.includes(e.source) || selectedNodesId.includes(e.target)
       );
@@ -138,8 +149,9 @@ export default function useGraph(data: GraphData): GraphState {
   }, []);
 
   const deleteSelectedElements = useCallback((): void => {
-    deleteEdges((e) => e.selected ?? false);
-    deleteSelectedNodes();
+    if (getEdges().find((e) => e.selected) !== undefined)
+      deleteEdges((e) => e.selected ?? false);
+    if (getNodes().find((n) => n.selected) !== undefined) deleteSelectedNodes();
   }, []);
 
   const deleteAllEdgesOfNode = useCallback((nodeId: string): void => {
