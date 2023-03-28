@@ -94,7 +94,7 @@ export default function useScene(
       minX: Number.POSITIVE_INFINITY,
       minY: Number.POSITIVE_INFINITY,
     };
-    selectedNodes.forEach((node) => {
+    selectedNodes().forEach((node) => {
       clipboard.nodes[node.id] = node;
       clipboard.minX = Math.min(clipboard.minX, node.position.x);
       clipboard.minY = Math.min(clipboard.minY, node.position.y);
@@ -147,8 +147,7 @@ export default function useScene(
           };
         });
 
-        graphState.addNodes(Object.values(newNodes));
-        graphState.addEdges(newEdges);
+        graphState.pasteElements(Object.values(newNodes), newEdges);
         graphState.selectAll(false);
       })
       .catch((err) => {

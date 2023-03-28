@@ -32,12 +32,14 @@ export const graphInstance = {
         outputs: {
           output1: {
             type: 'target',
+            connected: false,
             title: 'output1',
             tooltip: 'output 1',
             dataType: 'float',
           },
           output2: {
             type: 'target',
+            connected: false,
             title: 'output2',
             tooltip: 'output 2',
             dataType: 'float',
@@ -70,6 +72,7 @@ export const graphInstance = {
         inputs: {
           handle: {
             title: 'account',
+            connected: false,
             tooltip: 'setter handle',
             dataType: 'float',
             defaultValue: '100',
