@@ -20,7 +20,7 @@ const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
     graphState;
   const { mousePos, updateMousePos } = useTrackMousePos(domRef);
   const sceneState = useScene(graphState, mousePos);
-  const { onNodeDragStart, onNodeDragStop } = sceneState;
+  const { onNodeDragStart, onNodeDragStop, isValidConnection } = sceneState;
   useKeyBinding(sceneState);
 
   const {
@@ -42,6 +42,7 @@ const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
+      isValidConnection={isValidConnection}
       onEdgeClick={(e, edge) => {
         if (e.ctrlKey) deleteEdge(edge.id);
       }}
@@ -61,6 +62,7 @@ const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
           : SelectionMode.Partial
       }
       multiSelectionKeyCode="Shift"
+      deleteKeyCode="null"
       selectionKeyCode={null}
       selectionOnDrag
       panOnDrag={[2]} // 2 = right moues button

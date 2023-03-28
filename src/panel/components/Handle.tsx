@@ -52,7 +52,8 @@ export default function Handle({
     );
   };
   useEffect(() => {
-    if (handleData.connected) {
+    const isConnected = handleData.connection > 0;
+    if (isConnected) {
       changeValue(handleData.defaultValue);
     }
 
@@ -63,7 +64,7 @@ export default function Handle({
         ) : null}
         {showWidget &&
         (!toHideWidgetWhenConnected ||
-          (toHideWidgetWhenConnected && !handleData.connected)) ? (
+          (toHideWidgetWhenConnected && !isConnected)) ? (
           <input
             className="nodrag handle-widget"
             defaultValue={handleData.value}
@@ -74,7 +75,7 @@ export default function Handle({
         ) : null}
       </label>
     );
-  }, [handleData.connected]);
+  }, [handleData.connection]);
 
   return (
     <div className={className} title={handleData.tooltip}>

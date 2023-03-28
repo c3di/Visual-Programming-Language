@@ -13,7 +13,7 @@ export const graphInstance = {
           input1: {
             type: 'source',
             title: 'input1',
-            connected: false,
+            connection: 0,
             tooltip: 'input 1',
             dataType: 'float',
             defaultValue: '100',
@@ -22,7 +22,7 @@ export const graphInstance = {
           input2: {
             type: 'source',
             title: 'input2',
-            connected: false,
+            connection: 0,
             tooltip: 'input 2',
             dataType: 'bool',
             defaultValue: 'true',
@@ -32,12 +32,14 @@ export const graphInstance = {
         outputs: {
           output1: {
             type: 'target',
+            connection: 1,
             title: 'output1',
             tooltip: 'output 1',
             dataType: 'float',
           },
           output2: {
             type: 'target',
+            connection: 0,
             title: 'output2',
             tooltip: 'output 2',
             dataType: 'float',
@@ -52,10 +54,9 @@ export const graphInstance = {
       id: '2',
       type: 'getter',
       data: {
-        value: {
-          title: 'Getter',
-          handle: {
-            title: 'handle',
+        outputs: {
+          Getter: {
+            title: 'Getter',
             tooltip: 'getter handle',
             dataType: 'float',
             defaultValue: '100',
@@ -68,13 +69,21 @@ export const graphInstance = {
       id: '3',
       type: 'setter',
       data: {
-        value: {
-          title: 'setter',
+        inputs: {
           handle: {
             title: 'account',
+            connection: 1,
             tooltip: 'setter handle',
             dataType: 'float',
             defaultValue: '100',
+          },
+        },
+        // the same as the inputs except the title, tooltip, for easy indexing
+        outputs: {
+          output: {
+            title: 'return account',
+            tooltip: 'return acclunt',
+            dataType: 'float',
           },
         },
       },
@@ -88,20 +97,18 @@ export const graphInstance = {
         inputs: {
           input1: {
             title: 'input1',
-            connected: false,
+            connection: 1,
             tooltip: 'input 1',
             dataType: 'float',
           },
           input2: {
             title: 'input2',
-            connected: false,
             tooltip: 'input 2',
             dataType: 'bool',
           },
         },
-        output: {
-          title: 'output',
-          handle: {
+        outputs: {
+          output: {
             title: 'output',
             tooltip: 'output',
             dataType: 'bool',
@@ -114,12 +121,22 @@ export const graphInstance = {
       id: '5',
       type: 'literal',
       data: {
-        value: {
-          handle: {
+        type: 'float',
+        inputs: {
+          value: {
             title: 'Value',
             tooltip: 'literal handle',
             dataType: 'float',
             defaultValue: '100',
+          },
+        },
+        // the same as the inputs except the title, tooltip, for easy indexing
+        outputs: {
+          output: {
+            connection: 1,
+            title: 'return Value',
+            tooltip: 'return Value',
+            dataType: 'float',
           },
         },
       },
@@ -154,8 +171,12 @@ export const graphInstance = {
       type: 'reroute',
       data: {
         tooltip: 'this is a reroute node',
-        input: { title: 'input', tooltip: 'input', dataType: 'float' },
-        output: { title: 'output', tooltip: 'output', dataType: 'float' },
+        inputs: {
+          input: { title: 'input', tooltip: 'input', dataType: 'float' },
+        },
+        outputs: {
+          output: { title: 'output', tooltip: 'output', dataType: 'float' },
+        },
       },
       position: { x: 300, y: 600 },
     },
@@ -178,12 +199,21 @@ export const graphInstance = {
     },
   ],
   edges: [
-    { id: 'e1-3', source: '1', target: '3', animated: true },
+    {
+      id: 'e1-3',
+      source: '1',
+      target: '3',
+      animated: true,
+      sourceHandle: 'output1',
+      targetHandle: 'handle',
+    },
     {
       id: 'e4-5',
       source: '5',
       target: '4',
       data: {},
+      sourceHandle: 'output',
+      targetHandle: 'input1',
       markerEnd: {
         type: MarkerType.ArrowClosed,
       },

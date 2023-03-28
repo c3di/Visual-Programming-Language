@@ -2,14 +2,14 @@ import React, { memo } from 'react';
 // import { useReactFlow, useStoreApi, Position } from 'reactflow';
 import TargetHandle from '../TargetHandle';
 import SourceHandle from '../SourceHandle';
-import { type FunctionNodeData } from '../../types';
+import { type ConnectableData } from '../../types';
 
 function FunctionNode({
   id,
   data,
 }: {
   id: string;
-  data: FunctionNodeData;
+  data: ConnectableData;
 }): JSX.Element {
   const inputhandles = [];
   for (const inputId in data.inputs) {

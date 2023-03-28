@@ -1,12 +1,10 @@
-export { DataType, isDataTypeMatch } from './DataType';
+export { DataType, isDataTypeMatch, getMaxConnection } from './DataType';
 export type { default as Node } from './BasicNode';
 export { type Handle as HandleData } from './Handle';
-export { type FunctionNodeData } from './Function';
+export { type ConnectableData } from './Connectable';
 export { type VariableNodeData } from './Variable';
 export { type Edge } from './Edge';
 export { type GraphData } from './Graph';
-export { type MathNodeData } from './Math';
 export { type Comment, isCommentNode } from './Comment';
-export { type Reroute } from './Reroute';
 export { type ClipboardInfo } from './ClipboardInfo';
 export { type MousePos } from './MousePos';

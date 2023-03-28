@@ -14,6 +14,7 @@ export interface SceneState {
   deleteEdge: (id: string) => void;
   deleteAllEdgesOfNode: (nodeId: string) => void;
   deleteAllEdgesOfHandle: (nodeId: string, handleId: string) => void;
+  isValidConnection: (params: any) => boolean;
 }
 export default function useScene(
   graphState: GraphState,
@@ -94,7 +95,7 @@ export default function useScene(
       minX: Number.POSITIVE_INFINITY,
       minY: Number.POSITIVE_INFINITY,
     };
-    selectedNodes.forEach((node) => {
+    selectedNodes().forEach((node) => {
       clipboard.nodes[node.id] = node;
       clipboard.minX = Math.min(clipboard.minX, node.position.x);
       clipboard.minY = Math.min(clipboard.minY, node.position.y);
@@ -147,8 +148,7 @@ export default function useScene(
           };
         });
 
-        graphState.addNodes(Object.values(newNodes));
-        graphState.addEdges(newEdges);
+        graphState.pasteElements(Object.values(newNodes), newEdges);
         graphState.selectAll(false);
       })
       .catch((err) => {
@@ -178,5 +178,6 @@ export default function useScene(
     deleteEdge: graphState.deleteEdge,
     deleteAllEdgesOfNode: graphState.deleteAllEdgesOfNode,
     deleteAllEdgesOfHandle: graphState.deleteAllEdgesOfHandle,
+    isValidConnection: graphState.isValidConnection,
   };
 }

@@ -11,28 +11,40 @@ function SetterNode({
   id: string;
   data: VariableNodeData;
 }): JSX.Element {
-  if (data.tooltip === undefined)
-    data.tooltip = `Get the value of ${data.value.title}`;
+  const inputhandles = [];
+  for (const inputId in data.inputs) {
+    inputhandles.push(
+      <TargetHandle
+        key={inputId}
+        id={inputId}
+        nodeId={id}
+        showWidget={true}
+        showTitle={true}
+        handleData={data.inputs[inputId]}
+      />
+    );
+  }
+  const outputHandles = [];
+  for (const id in data.outputs) {
+    outputHandles.push(
+      <SourceHandle
+        key={id}
+        id={id}
+        nodeId={id}
+        handleData={data.outputs[id]}
+        showWidget={false}
+        showTitle={false}
+      />
+    );
+  }
   return (
     <div title={data.tooltip}>
       <div className="setter-node__header">
         <strong>Set</strong>
       </div>
       <div className="node__body">
-        <TargetHandle
-          id={`return_${data.value.title}`}
-          nodeId={id}
-          showWidget={true}
-          showTitle={true}
-          handleData={data.value.handle}
-        />
-        <SourceHandle
-          id={data.value.title}
-          nodeId={id}
-          showWidget={false}
-          showTitle={false}
-          handleData={data.value.handle}
-        />
+        {inputhandles}
+        {outputHandles}
         <div className="node__clear"></div>
       </div>
     </div>
