@@ -63,6 +63,7 @@ export default function Handle({
     )
       widget.current = widgetFactory.createWidget(handleData.dataType, {
         value: handleData.defaultValue,
+        className: `nodrag handle-widget ${handleData.dataType}`,
         onChange: changeValue,
       });
     if (showTitle && !title.current)
@@ -78,7 +79,6 @@ export default function Handle({
   return (
     <div className={className} title={handleData.tooltip}>
       {label}
-      {handleData.dataType}
       <RCHandle
         id={id}
         type={handleType}

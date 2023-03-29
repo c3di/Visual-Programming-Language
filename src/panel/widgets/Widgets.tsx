@@ -6,10 +6,10 @@ interface InputProps extends WidgetProps {
 }
 
 export function Input(props: InputProps): JSX.Element {
-  const { type, value, onChange } = props;
+  const { type, value, className, onChange } = props;
   return (
     <input
-      className="nodrag handle-widget"
+      className={className}
       type={type}
       defaultValue={value}
       onChange={(e) => {
