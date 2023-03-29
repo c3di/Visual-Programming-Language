@@ -1,29 +1,44 @@
 import React from 'react';
 import { type WidgetProps } from './WidgetProps';
 
-interface InputProps extends WidgetProps {
-  type: string;
-}
-
-export function Input(props: InputProps): JSX.Element {
-  const { type, value, className, onChange } = props;
+export function NumberInput(props: WidgetProps): JSX.Element {
+  const { value, className, onChange } = props;
   return (
     <input
       className={className}
-      type={type}
+      type={'number'}
+      defaultValue={value}
+      onChange={(e) => {
+        if (e.target.value === '') {
+          onChange(0.0);
+        } else {
+          // avoid start with 0
+          const val = Number(e.target.value);
+          onChange(val);
+          e.target.value = val.toString();
+        }
+      }}
+      onBlur={(e) => {
+        if (e.target.value === '') {
+          e.target.value = '0.0';
+        }
+      }}
+    />
+  );
+}
+
+export function TextInput(props: WidgetProps): JSX.Element {
+  const { value, className, onChange } = props;
+  return (
+    <input
+      className={className}
+      type={'text'}
       defaultValue={value}
       onChange={(e) => {
         onChange(e.target.value);
       }}
     />
   );
-}
-export function NumberInput(props: WidgetProps): JSX.Element {
-  return Input({ type: 'number', ...props });
-}
-
-export function TextInput(props: WidgetProps): JSX.Element {
-  return Input({ type: 'text', ...props });
 }
 
 export function BooleanInput(props: WidgetProps): JSX.Element {
@@ -62,18 +77,30 @@ export function EnumSelect(props: WidgetProps): JSX.Element {
 }
 
 export const IntegerInput = (props: WidgetProps): JSX.Element => {
-  const { value, className, onChange } = props;
+  const { value: defaultVal, className, onChange } = props;
   return (
     <input
       className={className}
       type={'number'}
-      defaultValue={value}
+      defaultValue={defaultVal}
       onChange={(e) => {
-        onChange(e.target.value);
+        if (e.target.value === '') onChange(0);
+        else {
+          // avoid start with 0
+          const val = Number(e.target.value);
+          onChange(val);
+          e.target.value = val.toString();
+        }
       }}
-      onKeyDown={(event) => {
-        if (/[.]/.test(event.key)) {
-          event.preventDefault();
+      onBlur={(e) => {
+        if (e.target.value === '') {
+          e.target.value = '0';
+        }
+      }}
+      // avoid float number
+      onKeyDown={(e) => {
+        if (e.key === '.') {
+          e.preventDefault();
         }
       }}
     />
