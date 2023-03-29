@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { type HandleData } from '../types';
 import './Handle.css';
 import {
@@ -31,6 +31,8 @@ export default function Handle({
   handlePosition: Position;
 }): JSX.Element {
   const [label, setLabel] = useState(<></>);
+  const widget = useRef<null | JSX.Element>();
+  const title = useRef<null | JSX.Element>();
   const isSourceHandle = handleType === 'source';
   const { setNodes } = useReactFlow();
   const widgetFactory = useWidgetFactory();
@@ -54,20 +56,21 @@ export default function Handle({
     if (isConnected && showWidget) {
       changeValue(handleData.defaultValue);
     }
-
+    if (
+      showWidget &&
+      (!toHideWidgetWhenConnected ||
+        (toHideWidgetWhenConnected && !isConnected && !widget.current))
+    )
+      widget.current = widgetFactory.createWidget('NumberInput', {
+        value: handleData.defaultValue,
+        onChange: changeValue,
+      });
+    if (showTitle && !title.current)
+      title.current = <span className="handle-title">{handleData.title}</span>;
     setLabel(
       <label>
-        {showTitle ? (
-          <span className="handle-title">{handleData.title}</span>
-        ) : null}
-        {showWidget &&
-        (!toHideWidgetWhenConnected ||
-          (toHideWidgetWhenConnected && !isConnected))
-          ? widgetFactory.createWidget('NumberInput', {
-              value: handleData.defaultValue,
-              onChange: changeValue,
-            })
-          : null}
+        {title.current}
+        {(!toHideWidgetWhenConnected || !isConnected) && widget.current}
       </label>
     );
   }, [handleData.connection]);
