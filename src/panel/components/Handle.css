@@ -40,3 +40,9 @@
   width: 100%;
   max-width: 100px;
 }
+
+input.float[type='number']::-webkit-outer-spin-button,
+input.float[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
