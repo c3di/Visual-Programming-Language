@@ -3,7 +3,7 @@ import { type HandleType } from 'reactflow';
 export enum DataType {
   float = 'float',
   int = 'int',
-  bool = 'bool',
+  boolean = 'boolean',
   string = 'string',
   exec = 'exec',
   any = 'any',

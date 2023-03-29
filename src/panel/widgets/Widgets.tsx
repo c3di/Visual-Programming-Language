@@ -25,3 +25,7 @@ export function NumberInput(props: WidgetProps): JSX.Element {
 export function TextInput(props: WidgetProps): JSX.Element {
   return Input({ type: 'text', ...props });
 }
+
+export function BooleanInput(props: WidgetProps): JSX.Element {
+  return Input({ type: 'checkbox', ...props });
+}

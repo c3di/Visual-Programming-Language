@@ -1,5 +1,5 @@
 import React from 'react';
-import { NumberInput, TextInput } from './Widgets';
+import { BooleanInput, NumberInput, TextInput } from './Widgets';
 import { DataType } from '.././types';
 import { type WidgetProps } from './WidgetProps';
 
@@ -15,11 +15,13 @@ export class WidgetFactory {
   private readonly dataTypeToWidgetType: Record<string, string> = {
     [DataType.float]: 'NumberInput',
     [DataType.string]: 'TextInput',
+    [DataType.boolean]: 'BooleanInput',
   };
 
   private readonly _availableWidgets: Record<string, JSX.Element> = {
     NumberInput: <NumberInput {...this.defaultWidgetProps} />,
     TextInput: <TextInput {...this.defaultWidgetProps} />,
+    BooleanInput: <BooleanInput {...this.defaultWidgetProps} />,
   };
 
   private constructor() {}
