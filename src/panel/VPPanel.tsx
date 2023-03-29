@@ -37,6 +37,11 @@ const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
       onMouseMove={(e) => {
         updateMousePos(e.clientX, e.clientY);
       }}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === 'Escape') {
+          (e.target as HTMLElement).blur();
+        }
+      }}
       ref={domRef}
       nodes={nodes}
       edges={edges}
