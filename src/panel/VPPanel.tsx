@@ -5,6 +5,7 @@ import ReactFlow, {
   ConnectionLineType,
   ReactFlowProvider,
 } from 'reactflow';
+import { WidgetFactoryProvider } from './Context';
 
 import Setting from './VPPanelSetting';
 import { useGraph, useScene, useKeyBinding, useTrackMousePos } from './hooks';
@@ -108,8 +109,10 @@ export default function VPPanel({
   graphData: GraphData;
 }): JSX.Element {
   return (
-    <ReactFlowProvider>
-      <Scene graphData={graphData} />
-    </ReactFlowProvider>
+    <WidgetFactoryProvider>
+      <ReactFlowProvider>
+        <Scene graphData={graphData} />
+      </ReactFlowProvider>
+    </WidgetFactoryProvider>
   );
 }
