@@ -16,8 +16,8 @@ export const graphInstance = {
             connection: 0,
             tooltip: 'input 1',
             dataType: 'float',
-            defaultValue: '100',
-            value: '10',
+            defaultValue: 100,
+            value: 10,
           },
           input2: {
             type: 'source',
@@ -33,8 +33,8 @@ export const graphInstance = {
             connection: 0,
             tooltip: 'input 3',
             dataType: 'string',
-            defaultValue: 'true',
-            value: 'false',
+            defaultValue: 'hello',
+            value: 'world',
           },
         },
         outputs: {
@@ -67,7 +67,7 @@ export const graphInstance = {
             title: 'Getter',
             tooltip: 'getter handle',
             dataType: 'float',
-            defaultValue: '100',
+            defaultValue: 100,
           },
         },
       },
@@ -83,7 +83,7 @@ export const graphInstance = {
             connection: 1,
             tooltip: 'setter handle',
             dataType: 'float',
-            defaultValue: '100',
+            defaultValue: 100,
           },
         },
         // the same as the inputs except the title, tooltip, for easy indexing
@@ -136,7 +136,7 @@ export const graphInstance = {
             title: 'Value',
             tooltip: 'literal handle',
             dataType: 'float',
-            defaultValue: '100',
+            defaultValue: 100,
           },
         },
         // the same as the inputs except the title, tooltip, for easy indexing
@@ -181,10 +181,10 @@ export const graphInstance = {
       data: {
         tooltip: 'this is a reroute node',
         inputs: {
-          input: { title: 'input', tooltip: 'input', dataType: 'float' },
+          input: { title: 'input', tooltip: 'input', dataType: 'any' },
         },
         outputs: {
-          output: { title: 'output', tooltip: 'output', dataType: 'float' },
+          output: { title: 'output', tooltip: 'output', dataType: 'any' },
         },
       },
       position: { x: 300, y: 600 },

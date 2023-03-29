@@ -62,7 +62,7 @@ export default function Handle({
         (toHideWidgetWhenConnected && !isConnected && !widget.current))
     )
       widget.current = widgetFactory.createWidget(handleData.dataType, {
-        value: handleData.defaultValue,
+        value: handleData.value ?? handleData.defaultValue,
         className: `nodrag handle-widget ${handleData.dataType}`,
         onChange: changeValue,
       });
