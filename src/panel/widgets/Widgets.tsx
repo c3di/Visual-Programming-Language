@@ -1,15 +1,23 @@
 import React from 'react';
 import { type WidgetProps } from './WidgetProps';
 
-export function NumberInput(props: WidgetProps): JSX.Element {
-  const { value, onChange } = props;
+interface InputProps extends WidgetProps {
+  type: string;
+}
+
+export function Input(props: InputProps): JSX.Element {
+  const { type, value, onChange } = props;
   return (
     <input
       className="nodrag handle-widget"
+      type={type}
       defaultValue={value}
       onChange={(e) => {
         onChange(e.target.value);
       }}
     />
   );
+}
+export function NumberInput(props: WidgetProps): JSX.Element {
+  return Input({ type: 'number', ...props });
 }
