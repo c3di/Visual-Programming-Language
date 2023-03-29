@@ -3,19 +3,18 @@ import { NumberInput } from './Widgets';
 
 export class WidgetFactory {
   private static instance: WidgetFactory;
-  private readonly _availableWidgets: Record<string, JSX.Element> = {};
-
-  private constructor() {
-    this.registerWidget(
-      'NumberInput',
+  private readonly _availableWidgets: Record<string, JSX.Element> = {
+    NumberInput: (
       <NumberInput
         value={undefined}
         onChange={function (value: any): void {
           throw new Error('Function not implemented.');
         }}
       />
-    );
-  }
+    ),
+  };
+
+  private constructor() {}
 
   public static getInstance(): WidgetFactory {
     if (!WidgetFactory.instance) {
