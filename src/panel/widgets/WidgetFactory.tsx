@@ -1,6 +1,6 @@
 import React from 'react';
 import { BooleanInput, NumberInput, TextInput } from './Widgets';
-import { DataType } from '.././types';
+import { DataTypes } from '.././types';
 import { type WidgetProps } from './WidgetProps';
 
 export class WidgetFactory {
@@ -13,9 +13,9 @@ export class WidgetFactory {
   };
 
   private readonly dataTypeToWidgetType: Record<string, string> = {
-    [DataType.float]: 'NumberInput',
-    [DataType.string]: 'TextInput',
-    [DataType.boolean]: 'BooleanInput',
+    float: 'NumberInput',
+    string: 'TextInput',
+    boolean: 'BooleanInput',
   };
 
   private readonly _availableWidgets: Record<string, JSX.Element> = {
@@ -47,14 +47,12 @@ export class WidgetFactory {
     this._availableWidgets[widgetType] = widget;
   }
 
-  public createWidget(
-    type: DataType | string,
-    widgetOptions: any
-  ): JSX.Element {
+  public createWidget(type: string, widgetOptions: any): JSX.Element {
     const widgetTypeToUse = this.dataTypeToWidgetType[type] || type;
+    const options = DataTypes[type];
     const widget = this._availableWidgets[widgetTypeToUse];
     if (widget) {
-      return React.cloneElement(widget, widgetOptions);
+      return React.cloneElement(widget, { ...widgetOptions, options });
     } else {
       console.warn('Invalid widget type, return <></> element.');
       return <></>;
