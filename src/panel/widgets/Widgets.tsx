@@ -21,3 +21,7 @@ export function Input(props: InputProps): JSX.Element {
 export function NumberInput(props: WidgetProps): JSX.Element {
   return Input({ type: 'number', ...props });
 }
+
+export function TextInput(props: WidgetProps): JSX.Element {
+  return Input({ type: 'text', ...props });
+}

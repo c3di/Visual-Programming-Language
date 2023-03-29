@@ -1,5 +1,5 @@
 import React from 'react';
-import { NumberInput } from './Widgets';
+import { NumberInput, TextInput } from './Widgets';
 import { DataType } from '.././types';
 import { type WidgetProps } from './WidgetProps';
 
@@ -14,10 +14,12 @@ export class WidgetFactory {
 
   private readonly dataTypeToWidgetType: Record<string, string> = {
     [DataType.float]: 'NumberInput',
+    [DataType.string]: 'TextInput',
   };
 
   private readonly _availableWidgets: Record<string, JSX.Element> = {
     NumberInput: <NumberInput {...this.defaultWidgetProps} />,
+    TextInput: <TextInput {...this.defaultWidgetProps} />,
   };
 
   private constructor() {}

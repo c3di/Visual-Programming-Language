@@ -28,6 +28,15 @@ export const graphInstance = {
             defaultValue: 'true',
             value: 'false',
           },
+          input3: {
+            type: 'source',
+            title: 'input3',
+            connection: 0,
+            tooltip: 'input 3',
+            dataType: 'string',
+            defaultValue: 'true',
+            value: 'false',
+          },
         },
         outputs: {
           output1: {
