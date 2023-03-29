@@ -2,7 +2,7 @@ import { type HandleType } from 'reactflow';
 
 export const DataTypes: Record<string, any> = {
   float: {},
-  int: {},
+  integer: {},
   boolean: {},
   string: {},
   exec: {},
@@ -10,7 +10,7 @@ export const DataTypes: Record<string, any> = {
   // enum example
   EDataType: {
     float: 'float',
-    int: 'int',
+    integer: 'integer',
     boolean: 'boolean',
     string: 'string',
     exec: 'exec',

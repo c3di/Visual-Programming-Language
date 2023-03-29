@@ -120,8 +120,8 @@ export const graphInstance = {
           input2: {
             title: 'input2',
             tooltip: 'input 2',
-            dataType: 'boolean',
-            defaultValue: false,
+            dataType: 'integer',
+            defaultValue: -1,
           },
         },
         outputs: {

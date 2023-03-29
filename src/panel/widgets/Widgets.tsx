@@ -60,3 +60,22 @@ export function EnumSelect(props: WidgetProps): JSX.Element {
     </select>
   );
 }
+
+export const IntegerInput = (props: WidgetProps): JSX.Element => {
+  const { value, className, onChange } = props;
+  return (
+    <input
+      className={className}
+      type={'number'}
+      defaultValue={value}
+      onChange={(e) => {
+        onChange(e.target.value);
+      }}
+      onKeyDown={(event) => {
+        if (/[.]/.test(event.key)) {
+          event.preventDefault();
+        }
+      }}
+    />
+  );
+};
