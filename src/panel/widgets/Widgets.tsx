@@ -27,5 +27,15 @@ export function TextInput(props: WidgetProps): JSX.Element {
 }
 
 export function BooleanInput(props: WidgetProps): JSX.Element {
-  return Input({ type: 'checkbox', ...props });
+  const { value, className, onChange } = props;
+  return (
+    <input
+      className={className}
+      type={'checkbox'}
+      defaultChecked={value}
+      onChange={(e) => {
+        onChange(e.target.checked);
+      }}
+    />
+  );
 }

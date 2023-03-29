@@ -25,8 +25,7 @@ export const graphInstance = {
             connection: 0,
             tooltip: 'input 2',
             dataType: 'boolean',
-            defaultValue: 'true',
-            value: 'false',
+            defaultValue: true,
           },
           input3: {
             type: 'source',
@@ -114,6 +113,7 @@ export const graphInstance = {
             title: 'input2',
             tooltip: 'input 2',
             dataType: 'boolean',
+            defaultValue: false,
           },
         },
         outputs: {
