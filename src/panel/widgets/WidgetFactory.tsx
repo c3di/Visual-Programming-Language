@@ -27,11 +27,11 @@ export class WidgetFactory {
   };
 
   private readonly _availableWidgets: Record<string, JSX.Element> = {
+    IntegerInput: <IntegerInput {...this.defaultWidgetProps} />,
     NumberInput: <NumberInput {...this.defaultWidgetProps} />,
     TextInput: <TextInput {...this.defaultWidgetProps} />,
     BooleanInput: <BooleanInput {...this.defaultWidgetProps} />,
     EnumSelect: <EnumSelect {...this.defaultWidgetProps} />,
-    IntegerInput: <IntegerInput {...this.defaultWidgetProps} />,
   };
 
   private constructor() {}
