@@ -1,5 +1,5 @@
 import React from 'react';
-import { BooleanInput, NumberInput, TextInput } from './Widgets';
+import { BooleanInput, EnumSelect, NumberInput, TextInput } from './Widgets';
 import { DataTypes } from '.././types';
 import { type WidgetProps } from './WidgetProps';
 
@@ -16,12 +16,14 @@ export class WidgetFactory {
     float: 'NumberInput',
     string: 'TextInput',
     boolean: 'BooleanInput',
+    EDataType: 'EnumSelect',
   };
 
   private readonly _availableWidgets: Record<string, JSX.Element> = {
     NumberInput: <NumberInput {...this.defaultWidgetProps} />,
     TextInput: <TextInput {...this.defaultWidgetProps} />,
     BooleanInput: <BooleanInput {...this.defaultWidgetProps} />,
+    EnumSelect: <EnumSelect {...this.defaultWidgetProps} />,
   };
 
   private constructor() {}

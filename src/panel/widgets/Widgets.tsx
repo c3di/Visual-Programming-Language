@@ -39,3 +39,24 @@ export function BooleanInput(props: WidgetProps): JSX.Element {
     />
   );
 }
+
+export function EnumSelect(props: WidgetProps): JSX.Element {
+  const { value, className, onChange, options } = props;
+  const defaultValue = value ?? Object.values(options)[0];
+  return (
+    <select
+      className={className}
+      defaultValue={defaultValue}
+      onChange={(e) => {
+        onChange(e.target.value);
+      }}
+    >
+      {options &&
+        Object.keys(options).map((k) => (
+          <option key={k} value={options[k]}>
+            {k}
+          </option>
+        ))}
+    </select>
+  );
+}

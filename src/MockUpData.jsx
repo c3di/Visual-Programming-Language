@@ -36,6 +36,14 @@ export const graphInstance = {
             defaultValue: 'hello',
             value: 'world',
           },
+          input4: {
+            type: 'source',
+            title: 'input4',
+            connection: 0,
+            tooltip: 'input 4',
+            dataType: 'EDataType',
+            defaultValue: 'string',
+          },
         },
         outputs: {
           output1: {

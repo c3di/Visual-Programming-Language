@@ -8,7 +8,7 @@ export const DataTypes: Record<string, any> = {
   exec: {},
   any: {},
   // enum example
-  DataType: {
+  EDataType: {
     float: 'float',
     int: 'int',
     boolean: 'boolean',
