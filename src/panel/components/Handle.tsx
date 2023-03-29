@@ -65,7 +65,7 @@ export default function Handle({
           (toHideWidgetWhenConnected && !isConnected))
           ? widgetFactory.createWidget('NumberInput', {
               value: handleData.defaultValue,
-              changeValue,
+              onChange: changeValue,
             })
           : null}
       </label>
