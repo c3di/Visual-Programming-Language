@@ -1,8 +1,13 @@
 import React from 'react';
 import { NumberInput } from './Widgets';
+import { DataType } from '.././types';
 
 export class WidgetFactory {
   private static instance: WidgetFactory;
+  private readonly dataTypeToWidgetType: Record<string, string> = {
+    [DataType.float]: 'NumberInput',
+  };
+
   private readonly _availableWidgets: Record<string, JSX.Element> = {
     NumberInput: (
       <NumberInput
@@ -37,8 +42,12 @@ export class WidgetFactory {
     this._availableWidgets[widgetType] = widget;
   }
 
-  public createWidget(widgetType: string, widgetOptions: any): JSX.Element {
-    const widget = this._availableWidgets[widgetType];
+  public createWidget(
+    type: DataType | string,
+    widgetOptions: any
+  ): JSX.Element {
+    const widgetTypeToUse = this.dataTypeToWidgetType[type] || type;
+    const widget = this._availableWidgets[widgetTypeToUse];
     if (widget) {
       return React.cloneElement(widget, widgetOptions);
     } else {

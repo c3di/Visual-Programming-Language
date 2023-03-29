@@ -61,7 +61,7 @@ export default function Handle({
       (!toHideWidgetWhenConnected ||
         (toHideWidgetWhenConnected && !isConnected && !widget.current))
     )
-      widget.current = widgetFactory.createWidget('NumberInput', {
+      widget.current = widgetFactory.createWidget(handleData.dataType, {
         value: handleData.defaultValue,
         onChange: changeValue,
       });
@@ -78,6 +78,7 @@ export default function Handle({
   return (
     <div className={className} title={handleData.tooltip}>
       {label}
+      {handleData.dataType}
       <RCHandle
         id={id}
         type={handleType}
