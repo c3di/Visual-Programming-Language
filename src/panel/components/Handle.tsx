@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { type HandleData } from '../types';
 import './Handle.css';
 import {
@@ -7,6 +7,7 @@ import {
   type Position,
   useReactFlow,
 } from 'reactflow';
+import { useWidgetFactory } from '../Context';
 
 export default function Handle({
   id,
@@ -30,12 +31,15 @@ export default function Handle({
   handlePosition: Position;
 }): JSX.Element {
   const [label, setLabel] = useState(<></>);
+  const widget = useRef<null | JSX.Element>();
+  const title = useRef<null | JSX.Element>();
   const isSourceHandle = handleType === 'source';
   const { setNodes } = useReactFlow();
+  const widgetFactory = useWidgetFactory();
   if (!handleData) {
     console.error('handleData is undefined');
   }
-  const changeValue = (newVa: any): void => {
+  const changeValue = useCallback((newVa: any): void => {
     setNodes((nds) =>
       nds.map((n) => {
         if (n.id === nodeId) {
@@ -45,30 +49,29 @@ export default function Handle({
         return n;
       })
     );
-  };
+  }, []);
 
   useEffect(() => {
     const isConnected = handleData.connection > 0;
     if (isConnected && showWidget) {
       changeValue(handleData.defaultValue);
     }
-
+    if (
+      showWidget &&
+      (!toHideWidgetWhenConnected ||
+        (toHideWidgetWhenConnected && !isConnected && !widget.current))
+    )
+      widget.current = widgetFactory.createWidget(handleData.dataType, {
+        value: handleData.value ?? handleData.defaultValue,
+        className: `nodrag handle-widget ${handleData.dataType}`,
+        onChange: changeValue,
+      });
+    if (showTitle && !title.current)
+      title.current = <span className="handle-title">{handleData.title}</span>;
     setLabel(
       <label>
-        {showTitle ? (
-          <span className="handle-title">{handleData.title}</span>
-        ) : null}
-        {showWidget &&
-        (!toHideWidgetWhenConnected ||
-          (toHideWidgetWhenConnected && !isConnected)) ? (
-          <input
-            className="nodrag handle-widget"
-            defaultValue={handleData.defaultValue}
-            onChange={(e) => {
-              changeValue(e.target.value);
-            }}
-          />
-        ) : null}
+        {title.current}
+        {(!toHideWidgetWhenConnected || !isConnected) && widget.current}
       </label>
     );
   }, [handleData.connection]);

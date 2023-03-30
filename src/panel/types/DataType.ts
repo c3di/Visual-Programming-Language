@@ -1,27 +1,37 @@
 import { type HandleType } from 'reactflow';
 
-export enum DataType {
-  float = 'float',
-  int = 'int',
-  bool = 'bool',
-  string = 'string',
-  exec = 'exec',
-  any = 'any',
-}
-export default DataType;
-export function isDataTypeMatch(type1: DataType, type2: DataType): boolean {
-  return type1 === type2 || type1 === DataType.any || type2 === DataType.any;
+export const DataTypes: Record<string, any> = {
+  float: {},
+  integer: {},
+  boolean: {},
+  string: {},
+  exec: {},
+  any: {},
+  // enum example
+  EDataType: {
+    float: 'float',
+    integer: 'integer',
+    boolean: 'boolean',
+    string: 'string',
+    exec: 'exec',
+    any: 'any',
+  },
+};
+export default DataTypes;
+
+export function isDataTypeMatch(type1: string, type2: string): boolean {
+  return type1 === type2 || type1 === 'any' || type2 === 'any';
 }
 
 export const getMaxConnection = (
   handletype: HandleType,
-  type: DataType
+  type: string
 ): number => {
   switch (handletype) {
     case 'source':
-      return type === DataType.exec ? 1 : Number.POSITIVE_INFINITY;
+      return type === 'exec' ? 1 : Number.POSITIVE_INFINITY;
     case 'target':
-      return type === DataType.exec ? Number.POSITIVE_INFINITY : 1;
+      return type === 'exec' ? Number.POSITIVE_INFINITY : 1;
     default:
       return 0;
   }

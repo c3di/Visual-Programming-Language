@@ -1,10 +1,8 @@
-import type DataType from './DataType';
-
 export interface Handle {
   title: string;
   connection: number;
   tooltip?: string;
-  dataType: DataType;
+  dataType: string;
   defaultValue?: any;
   value?: any;
 }

@@ -5,6 +5,7 @@ import ReactFlow, {
   ConnectionLineType,
   ReactFlowProvider,
 } from 'reactflow';
+import { WidgetFactoryProvider } from './Context';
 
 import Setting from './VPPanelSetting';
 import { useGraph, useScene, useKeyBinding, useTrackMousePos } from './hooks';
@@ -35,6 +36,11 @@ const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
     <ReactFlow
       onMouseMove={(e) => {
         updateMousePos(e.clientX, e.clientY);
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === 'Escape') {
+          (e.target as HTMLElement).blur();
+        }
       }}
       ref={domRef}
       nodes={nodes}
@@ -108,8 +114,10 @@ export default function VPPanel({
   graphData: GraphData;
 }): JSX.Element {
   return (
-    <ReactFlowProvider>
-      <Scene graphData={graphData} />
-    </ReactFlowProvider>
+    <WidgetFactoryProvider>
+      <ReactFlowProvider>
+        <Scene graphData={graphData} />
+      </ReactFlowProvider>
+    </WidgetFactoryProvider>
   );
 }
