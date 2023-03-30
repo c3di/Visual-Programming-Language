@@ -8,14 +8,12 @@ export default function useKeyDown(sceneState: SceneState): {
   const selectAllKeyPressed = useKeyPress('Control+a');
   useEffect(() => {
     if (selectAllKeyPressed) {
-      console.log('selectAllKeyPressed', selectAllKeyPressed);
       sceneState.selectAll(true);
     }
   }, [selectAllKeyPressed]);
 
   const cancelAllKeyPressed = useKeyPress('Escape');
   useEffect(() => {
-    console.log('cancelAllKeyPressed', cancelAllKeyPressed);
     if (!cancelAllKeyPressed) sceneState.selectAll(false);
   }, [cancelAllKeyPressed]);
 
@@ -55,10 +53,20 @@ export default function useKeyDown(sceneState: SceneState): {
   }, [deleteKeyPressed]);
 
   const onKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
-    console.log('onKeyDown', e.key, e.ctrlKey, e.shiftKey, e.altKey);
-    if (e.key === 'Enter' || e.key === 'Escape') {
-      (e.target as HTMLElement).blur();
+    const target = e.target as HTMLElement;
+    if (target.classList.contains('handle-widget')) {
+      onHandleKeyDown(e);
+      e.stopPropagation();
     }
   }, []);
+
+  const onHandleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === 'Enter' || e.key === 'Escape') {
+        (e.target as HTMLElement).blur();
+      }
+    },
+    []
+  );
   return { onKeyDown };
 }
