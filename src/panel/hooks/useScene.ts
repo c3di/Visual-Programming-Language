@@ -95,7 +95,9 @@ export default function useScene(
       minX: Number.POSITIVE_INFINITY,
       minY: Number.POSITIVE_INFINITY,
     };
-    selectedNodes().forEach((node) => {
+    const selectedNds = selectedNodes();
+    if (selectedNds.length === 0) return;
+    selectedNds.forEach((node) => {
       clipboard.nodes[node.id] = node;
       clipboard.minX = Math.min(clipboard.minX, node.position.x);
       clipboard.minY = Math.min(clipboard.minY, node.position.y);
