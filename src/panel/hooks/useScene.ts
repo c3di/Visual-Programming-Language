@@ -95,7 +95,9 @@ export default function useScene(
       minX: Number.POSITIVE_INFINITY,
       minY: Number.POSITIVE_INFINITY,
     };
-    selectedNodes().forEach((node) => {
+    const selectedNds = selectedNodes();
+    if (selectedNds.length === 0) return;
+    selectedNds.forEach((node) => {
       clipboard.nodes[node.id] = node;
       clipboard.minX = Math.min(clipboard.minX, node.position.x);
       clipboard.minY = Math.min(clipboard.minY, node.position.y);
@@ -127,6 +129,7 @@ export default function useScene(
           const newNode = {
             ...node,
             id: newId,
+            selected: true,
             position: {
               x:
                 node.position.x - clipboard.minX + mousePos.current.mouseX + 10,
@@ -143,13 +146,13 @@ export default function useScene(
           return {
             ...edge,
             id: `e${sourceId}-${targetId}`,
+            selected: true,
             source: sourceId,
             target: targetId,
           };
         });
-
-        graphState.pasteElements(Object.values(newNodes), newEdges);
         graphState.selectAll(false);
+        graphState.addElements(Object.values(newNodes), newEdges);
       })
       .catch((err) => {
         console.error('Failed to paste: ', err);

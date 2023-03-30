@@ -35,7 +35,7 @@ export interface GraphState {
   deleteEdge: (id: string) => void;
   deleteAllEdgesOfNode: (nodeId: string) => void;
   deleteAllEdgesOfHandle: (nodeId: string, handleId: string) => void;
-  pasteElements: (newNodes: Node[], newEdges: Edge[]) => void;
+  addElements: (newNodes: Node[], newEdges: Edge[]) => void;
 }
 export default function useGraph(data: GraphData): GraphState {
   const [nodes, setNodes, onNodesChange] = useNodesState(data.nodes);
@@ -136,7 +136,7 @@ export default function useGraph(data: GraphData): GraphState {
     [nodes]
   );
 
-  const pasteElements = useCallback((newNodes: Node[], newEdges: Edge[]) => {
+  const addElements = useCallback((newNodes: Node[], newEdges: Edge[]) => {
     setNodes((nds) => [...nds, ...newNodes]);
     setEdges((eds) => [...eds, ...newEdges]);
   }, []);
@@ -228,6 +228,6 @@ export default function useGraph(data: GraphData): GraphState {
     deleteEdge,
     deleteAllEdgesOfNode,
     deleteAllEdgesOfHandle,
-    pasteElements,
+    addElements,
   };
 }

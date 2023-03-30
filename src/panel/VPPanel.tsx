@@ -8,7 +8,7 @@ import ReactFlow, {
 import { WidgetFactoryProvider } from './Context';
 
 import Setting from './VPPanelSetting';
-import { useGraph, useScene, useKeyBinding, useTrackMousePos } from './hooks';
+import { useGraph, useScene, useKeyDown, useTrackMousePos } from './hooks';
 import componentType, { Background, ControlPanel, MiniMap } from './components';
 import { type GraphData } from './types';
 import 'reactflow/dist/style.css';
@@ -22,7 +22,7 @@ const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
   const { mousePos, updateMousePos } = useTrackMousePos(domRef);
   const sceneState = useScene(graphState, mousePos);
   const { onNodeDragStart, onNodeDragStop, isValidConnection } = sceneState;
-  useKeyBinding(sceneState);
+  const { onKeyDown } = useKeyDown(sceneState);
 
   const {
     view: viewSetting,
@@ -37,11 +37,7 @@ const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
       onMouseMove={(e) => {
         updateMousePos(e.clientX, e.clientY);
       }}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === 'Escape') {
-          (e.target as HTMLElement).blur();
-        }
-      }}
+      onKeyDown={onKeyDown}
       ref={domRef}
       nodes={nodes}
       edges={edges}
