@@ -1,4 +1,3 @@
-import React from 'react';
 import { MarkerType, Position } from 'reactflow';
 
 export const graphInstance = {
@@ -196,23 +195,6 @@ export const graphInstance = {
         },
       },
       position: { x: 300, y: 600 },
-    },
-    {
-      id: '9',
-      type: 'default',
-      className: 'annotation',
-      data: {
-        label: (
-          <>
-            On the bottom left you see the <strong>Controls</strong> and the
-            bottom right the <strong>MiniMap</strong>. This is also just a node
-            🥳
-          </>
-        ),
-      },
-      draggable: false,
-      selectable: false,
-      position: { x: 600, y: 600 },
     },
   ],
   edges: [
