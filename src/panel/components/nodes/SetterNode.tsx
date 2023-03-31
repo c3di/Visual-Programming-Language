@@ -38,9 +38,9 @@ function SetterNode({
     );
   }
   return (
-    <div title={data.tooltip}>
+    <div title={'Set the value of variable'}>
       <div className="setter-node__header">
-        <strong>Set</strong>
+        <strong>SET</strong>
       </div>
       <div className="node__body">
         {inputhandles}

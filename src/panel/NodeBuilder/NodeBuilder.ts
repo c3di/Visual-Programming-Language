@@ -48,6 +48,21 @@ export class NodeBuilder {
         },
       };
     },
+    setter: (options: GraphNodeConfig): Node => {
+      const { id, title, inputs, tooltip, position } = options;
+      if (!id) throw new Error('No id provided for getter node');
+      return {
+        id,
+        type: 'setter',
+        position: position || { x: 0, y: 0 },
+        data: {
+          title,
+          tooltip,
+          inputs,
+          outputs: inputs,
+        },
+      };
+    },
   };
 
   public build(graphData: GraphData): Graph {

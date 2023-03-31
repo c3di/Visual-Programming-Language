@@ -70,30 +70,20 @@ export const graphInstance: GraphData = {
       },
       position: { x: 300, y: 0 },
     },
-    // {
-    //   id: '3',
-    //   type: 'setter',
-    //   data: {
-    //     inputs: {
-    //       handle: {
-    //         title: 'account',
-    //         connection: 1,
-    //         tooltip: 'setter handle',
-    //         dataType: 'float',
-    //         defaultValue: 100,
-    //       },
-    //     },
-    //     // the same as the inputs except the title, tooltip, for easy indexing
-    //     outputs: {
-    //       output: {
-    //         title: 'return account',
-    //         tooltip: 'return acclunt',
-    //         dataType: 'float',
-    //       },
-    //     },
-    //   },
-    //   position: { x: 600, y: 0 },
-    // },
+    {
+      id: '3',
+      category: 'setter',
+      inputs: {
+        account: {
+          title: 'account',
+          connection: 1,
+          tooltip: 'setter handle',
+          dataType: 'float',
+          defaultValue: 100,
+        },
+      },
+      position: { x: 600, y: 0 },
+    },
     // {
     //   id: '4',
     //   type: 'math',
