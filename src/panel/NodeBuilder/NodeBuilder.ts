@@ -16,7 +16,7 @@ export class NodeBuilder {
   }
 
   private readonly defaultBuilder = (config: GraphNodeConfig): Node => {
-    const { id, title, inputs, outputs, tooltip, position } = config;
+    const { id, title, inputs, outputs, tooltip, position, dataType } = config;
     const type = config.category;
     return {
       id,
@@ -24,6 +24,7 @@ export class NodeBuilder {
       position: position || { x: 0, y: 0 },
       data: {
         title,
+        dataType,
         tooltip,
         inputs,
         outputs,
@@ -36,6 +37,10 @@ export class NodeBuilder {
     (config: GraphNodeConfig) => Node
   > = {
     setter: (config: GraphNodeConfig): Node => {
+      config.outputs = config.inputs;
+      return this.defaultBuilder(config);
+    },
+    literal: (config: GraphNodeConfig): Node => {
       config.outputs = config.inputs;
       return this.defaultBuilder(config);
     },
