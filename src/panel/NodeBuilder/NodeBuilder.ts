@@ -44,6 +44,23 @@ export class NodeBuilder {
       config.outputs = config.inputs;
       return this.defaultBuilder(config);
     },
+    comment: (config: GraphNodeConfig): Node => {
+      const { id, category, comment, tooltip, position, width, height } =
+        config;
+      return {
+        id,
+        type: category,
+        dragHandle: '.node__header',
+        zIndex: -1001,
+        data: {
+          comment,
+          tooltip,
+          width,
+          height,
+        },
+        position,
+      };
+    },
   };
 
   public build(graphData: GraphData): Graph {

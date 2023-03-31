@@ -21,6 +21,7 @@ export interface GraphNodeConfig extends NodeConfig {
   dataType?: string; // the data type for all the handles
   inputs?: Record<string, HandleData>;
   outputs?: Record<string, HandleData>;
+  [key: string]: any;
 }
 
 export interface serializedNode {
