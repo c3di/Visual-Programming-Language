@@ -6,7 +6,7 @@ export const graphInstance = {
       id: '1',
       type: 'function',
       data: {
-        label: 'function Node',
+        title: 'function Node',
         tooltip: 'this is a function node',
         inputs: {
           input1: {
