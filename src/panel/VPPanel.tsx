@@ -5,6 +5,7 @@ import ReactFlow, {
   ConnectionLineType,
   ReactFlowProvider,
 } from 'reactflow';
+import { nodeBuilder } from './NodeBuilder';
 import { WidgetFactoryProvider } from './Context';
 
 import Setting from './VPPanelSetting';
@@ -16,7 +17,7 @@ import './VPPanel.css';
 
 const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
   const domRef = useRef<HTMLDivElement>(null);
-  const graphState = useGraph(graphData);
+  const graphState = useGraph(nodeBuilder.build(graphData));
   const { nodes, onNodesChange, edges, onEdgesChange, onConnect, deleteEdge } =
     graphState;
   const { mousePos, updateMousePos } = useTrackMousePos(domRef);
