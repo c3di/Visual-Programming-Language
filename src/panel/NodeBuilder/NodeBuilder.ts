@@ -19,7 +19,7 @@ export class NodeBuilder {
     string,
     (options: GraphNodeConfig) => Node
   > = {
-    function: (options: any) => {
+    function: (options: GraphNodeConfig): Node => {
       const { id, title, inputs, outputs, tooltip, position } = options;
       if (!id) throw new Error('No id provided for function node');
       return {
@@ -30,6 +30,20 @@ export class NodeBuilder {
           title,
           tooltip,
           inputs,
+          outputs,
+        },
+      };
+    },
+    constant: (options: GraphNodeConfig): Node => {
+      const { id, title, outputs, tooltip, position } = options;
+      if (!id) throw new Error('No id provided for constant node');
+      return {
+        id,
+        type: 'getter',
+        position: position || { x: 0, y: 0 },
+        data: {
+          title,
+          tooltip,
           outputs,
         },
       };

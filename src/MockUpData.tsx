@@ -1,4 +1,6 @@
-export const graphInstance = {
+import { type GraphData } from './panel/types';
+
+export const graphInstance: GraphData = {
   nodeConfigs: [
     {
       id: '1',
@@ -53,21 +55,21 @@ export const graphInstance = {
       },
       position: { x: 0, y: 0 },
     },
-    // {
-    //   id: '2',
-    //   type: 'getter',
-    //   data: {
-    //     outputs: {
-    //       Getter: {
-    //         title: 'Getter',
-    //         tooltip: 'getter handle',
-    //         dataType: 'float',
-    //         defaultValue: 100,
-    //       },
-    //     },
-    //   },
-    //   position: { x: 300, y: 0 },
-    // },
+    {
+      id: '2',
+      category: 'constant',
+      tooltip: 'this is a constant node',
+      outputs: {
+        gettter: {
+          connection: 1,
+          title: 'Getter',
+          tooltip: 'getter handle',
+          dataType: 'float',
+          defaultValue: 100,
+        },
+      },
+      position: { x: 300, y: 0 },
+    },
     // {
     //   id: '3',
     //   type: 'setter',
