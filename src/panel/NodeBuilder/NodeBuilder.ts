@@ -15,53 +15,29 @@ export class NodeBuilder {
     return NodeBuilder.instance;
   }
 
-  private readonly nodeBuilders: Record<
+  private readonly defaultBuilder = (config: GraphNodeConfig): Node => {
+    const { id, title, inputs, outputs, tooltip, position } = config;
+    const type = config.category;
+    return {
+      id,
+      type,
+      position: position || { x: 0, y: 0 },
+      data: {
+        title,
+        tooltip,
+        inputs,
+        outputs,
+      },
+    };
+  };
+
+  private readonly overrideBuilders: Record<
     string,
-    (options: GraphNodeConfig) => Node
+    (config: GraphNodeConfig) => Node
   > = {
-    function: (options: GraphNodeConfig): Node => {
-      const { id, title, inputs, outputs, tooltip, position } = options;
-      if (!id) throw new Error('No id provided for function node');
-      return {
-        id,
-        type: 'function',
-        position: position || { x: 0, y: 0 },
-        data: {
-          title,
-          tooltip,
-          inputs,
-          outputs,
-        },
-      };
-    },
-    getter: (options: GraphNodeConfig): Node => {
-      const { id, title, outputs, tooltip, position } = options;
-      if (!id) throw new Error('No id provided for constant node');
-      return {
-        id,
-        type: 'getter',
-        position: position || { x: 0, y: 0 },
-        data: {
-          title,
-          tooltip,
-          outputs,
-        },
-      };
-    },
-    setter: (options: GraphNodeConfig): Node => {
-      const { id, title, inputs, tooltip, position } = options;
-      if (!id) throw new Error('No id provided for getter node');
-      return {
-        id,
-        type: 'setter',
-        position: position || { x: 0, y: 0 },
-        data: {
-          title,
-          tooltip,
-          inputs,
-          outputs: inputs,
-        },
-      };
+    setter: (config: GraphNodeConfig): Node => {
+      config.outputs = config.inputs;
+      return this.defaultBuilder(config);
     },
   };
 
@@ -75,11 +51,9 @@ export class NodeBuilder {
   }
 
   private buildNode(config: GraphNodeConfig): Node | undefined {
-    const builder = this.nodeBuilders[config.category];
-    if (builder) return builder(config);
-    else {
-      console.warn(`No build rules for category ${config.category}`);
-    }
+    const builder =
+      this.overrideBuilders[config.category] ?? this.defaultBuilder;
+    return builder(config);
   }
 }
 
