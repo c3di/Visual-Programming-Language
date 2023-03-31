@@ -9,7 +9,7 @@ export interface HandleConfig {
 
 export interface NodeConfig {
   category: string;
-  title: string;
+  title?: string;
   inputs?: Record<string, HandleConfig>;
   outputs?: Record<string, HandleConfig>;
   tooltip?: string;
