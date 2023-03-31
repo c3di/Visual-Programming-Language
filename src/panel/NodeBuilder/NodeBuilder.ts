@@ -34,7 +34,7 @@ export class NodeBuilder {
         },
       };
     },
-    constant: (options: GraphNodeConfig): Node => {
+    getter: (options: GraphNodeConfig): Node => {
       const { id, title, outputs, tooltip, position } = options;
       if (!id) throw new Error('No id provided for constant node');
       return {

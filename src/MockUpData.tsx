@@ -57,7 +57,7 @@ export const graphInstance: GraphData = {
     },
     {
       id: '2',
-      category: 'constant',
+      category: 'getter',
       tooltip: 'this is a constant node',
       outputs: {
         gettter: {
