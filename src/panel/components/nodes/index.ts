@@ -6,7 +6,7 @@ import MakeLiteralNode from './MakeLiteralNode';
 import CommentNode from './CommentNode';
 import RerouteNode from './RerouteNode';
 
-const nodeTypes = {
+const VisualNodeTypes = {
   function: FunctionNode,
   getter: GetterNode,
   setter: SetterNode,
@@ -16,4 +16,4 @@ const nodeTypes = {
   reroute: RerouteNode,
 };
 
-export default nodeTypes;
+export default VisualNodeTypes;
