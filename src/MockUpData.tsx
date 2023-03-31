@@ -153,20 +153,29 @@ export const graphInstance: GraphData = {
     //   },
     //   position: { x: 0, y: 600 },
     // },
-    // {
-    //   id: '8',
-    //   type: 'reroute',
-    //   data: {
-    //     tooltip: 'this is a reroute node',
-    //     inputs: {
-    //       input: { title: 'input', tooltip: 'input', dataType: 'any' },
-    //     },
-    //     outputs: {
-    //       output: { title: 'output', tooltip: 'output', dataType: 'any' },
-    //     },
-    //   },
-    //   position: { x: 300, y: 600 },
-    // },
+    {
+      id: '8',
+      category: 'reroute',
+      tooltip: 'this is a reroute node',
+      inputs: {
+        input: {
+          connection: 0,
+          title: 'input',
+          tooltip: 'input',
+          dataType: 'any',
+        },
+      },
+      outputs: {
+        output: {
+          connection: 0,
+          title: 'output',
+          tooltip: 'output',
+          dataType: 'any',
+        },
+      },
+
+      position: { x: 300, y: 600 },
+    },
   ],
   edgeConfigs: [
     // {
