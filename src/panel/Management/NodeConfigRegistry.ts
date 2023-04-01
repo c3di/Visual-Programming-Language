@@ -55,6 +55,15 @@ export class NodeConfigRegistry {
         },
       },
     },
+    setter: {
+      category: 'setter',
+      inputs: {
+        setter: {
+          tooltip: 'setter handle',
+        },
+      },
+      position: { x: 600, y: 0 },
+    },
   };
 
   private constructor() {}

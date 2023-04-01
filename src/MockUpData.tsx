@@ -44,20 +44,19 @@ export const graphInstance: GraphData = {
       },
       position: { x: 300, y: 0 },
     },
-    // {
-    //   id: '3',
-    //   category: 'setter',
-    //   inputs: {
-    //     account: {
-    //       title: 'account',
-    //       connection: 1,
-    //       tooltip: 'setter handle',
-    //       dataType: 'float',
-    //       defaultValue: 100,
-    //     },
-    //   },
-    //   position: { x: 600, y: 0 },
-    // },
+    {
+      id: '3',
+      type: 'setter',
+      inputs: {
+        setter: {
+          title: 'account',
+          connection: 1,
+          dataType: 'float',
+          defaultValue: 100,
+        },
+      },
+      position: { x: 600, y: 0 },
+    },
     // {
     //   id: '4',
     //   category: 'math',
