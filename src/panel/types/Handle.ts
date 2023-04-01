@@ -1,8 +1,8 @@
 export interface Handle {
-  title: string;
+  title?: string;
   connection: number;
   tooltip?: string;
-  dataType: string;
+  dataType?: string;
   defaultValue?: any;
   value?: any;
 }

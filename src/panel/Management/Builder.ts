@@ -97,7 +97,7 @@ export class Builder {
         if (!nodeConfig.inputs?.[title]) return acc;
         acc[title] = {
           ...nodeConfig.inputs?.[title],
-          value: sHandle.value,
+          ...sHandle,
           connection: sHandle.connection ?? 0,
         };
         return acc;
@@ -108,7 +108,7 @@ export class Builder {
         if (!nodeConfig.outputs?.[title]) return acc;
         acc[title] = {
           ...nodeConfig.outputs?.[title],
-          value: sHandle.value,
+          ...sHandle,
           connection: sHandle.connection ?? 0,
         };
         return acc;

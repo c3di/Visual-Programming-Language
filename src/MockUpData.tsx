@@ -35,7 +35,8 @@ export const graphInstance: GraphData = {
       id: '2',
       type: 'getter',
       outputs: {
-        gettter: {
+        getter: {
+          title: 'variable',
           connection: 1,
           dataType: 'float',
           defaultValue: 100,

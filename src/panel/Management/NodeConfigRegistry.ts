@@ -48,13 +48,10 @@ export class NodeConfigRegistry {
     },
     getter: {
       category: 'getter',
-      tooltip: 'this is a constant node',
+      tooltip: 'Return the value',
       outputs: {
-        gettter: {
-          title: 'Getter',
+        getter: {
           tooltip: 'getter handle',
-          dataType: 'float',
-          defaultValue: 100,
         },
       },
     },

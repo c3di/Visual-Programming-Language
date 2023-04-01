@@ -1,8 +1,8 @@
 import { type Handle as HandleData } from './Handle';
 
 export interface HandleConfig {
-  title: string;
-  dataType: string;
+  title?: string;
+  dataType?: string;
   defaultValue?: any;
   tooltip?: string;
 }
