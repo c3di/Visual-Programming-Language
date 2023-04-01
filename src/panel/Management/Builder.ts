@@ -114,6 +114,7 @@ export class Builder {
         return acc;
       }, {});
       return {
+        ...sNode,
         ...nodeConfig,
         id: sNode.id,
         position: sNode.position,

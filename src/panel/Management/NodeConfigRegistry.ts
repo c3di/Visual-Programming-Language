@@ -81,6 +81,14 @@ export class NodeConfigRegistry {
         },
       },
     },
+    literal: {
+      category: 'literal',
+      inputs: {
+        input: {
+          tooltip: 'literal handle',
+        },
+      },
+    },
   };
 
   private constructor() {}

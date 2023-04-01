@@ -84,21 +84,20 @@ export const graphInstance: GraphData = {
       },
       position: { x: 300, y: 300 },
     },
-    // {
-    //   id: '5',
-    //   category: 'literal',
-    //   dataType: 'float',
-    //   inputs: {
-    //     value: {
-    //       title: 'Value',
-    //       connection: 0,
-    //       tooltip: 'literal handle',
-    //       dataType: 'float',
-    //       defaultValue: 100,
-    //     },
-    //   },
-    //   position: { x: 0, y: 300 },
-    // },
+    {
+      id: '5',
+      type: 'literal',
+      dataType: 'float',
+      inputs: {
+        input: {
+          title: 'Value',
+          connection: 0,
+          dataType: 'float',
+          defaultValue: 100,
+        },
+      },
+      position: { x: 0, y: 300 },
+    },
     // {
     //   id: '6',
     //   category: 'comment',
