@@ -46,6 +46,18 @@ export class NodeConfigRegistry {
         },
       },
     },
+    getter: {
+      category: 'getter',
+      tooltip: 'this is a constant node',
+      outputs: {
+        gettter: {
+          title: 'Getter',
+          tooltip: 'getter handle',
+          dataType: 'float',
+          defaultValue: 100,
+        },
+      },
+    },
   };
 
   private constructor() {}

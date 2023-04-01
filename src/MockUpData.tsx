@@ -31,21 +31,18 @@ export const graphInstance: GraphData = {
       },
       position: { x: 0, y: 0 },
     },
-    // {
-    //   id: '2',
-    //   category: 'getter',
-    //   tooltip: 'this is a constant node',
-    //   outputs: {
-    //     gettter: {
-    //       connection: 1,
-    //       title: 'Getter',
-    //       tooltip: 'getter handle',
-    //       dataType: 'float',
-    //       defaultValue: 100,
-    //     },
-    //   },
-    //   position: { x: 300, y: 0 },
-    // },
+    {
+      id: '2',
+      type: 'getter',
+      outputs: {
+        gettter: {
+          connection: 1,
+          dataType: 'float',
+          defaultValue: 100,
+        },
+      },
+      position: { x: 300, y: 0 },
+    },
     // {
     //   id: '3',
     //   category: 'setter',

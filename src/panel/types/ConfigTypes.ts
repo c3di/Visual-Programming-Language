@@ -36,6 +36,7 @@ export interface GraphEdgeConfig {
 export interface serializedHandle {
   value?: any;
   connection?: number;
+  [key: string]: any;
 }
 
 export interface SerializedGraphNode {
