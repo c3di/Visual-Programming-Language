@@ -123,20 +123,20 @@ export const graphInstance: GraphData = {
     },
   ],
   edgeConfigs: [
-    // {
-    //   id: 'e1-3',
-    //   output: '1',
-    //   input: '3',
-    //   outputHandle: 'output1',
-    //   inputHandle: 'handle',
-    // },
-    // {
-    //   id: 'e4-5',
-    //   output: '5',
-    //   input: '4',
-    //   dataType: 'float',
-    //   outputHandle: 'output',
-    //   inputHandle: 'input1',
-    // },
+    {
+      id: 'e1-3',
+      output: '1',
+      input: '3',
+      outputHandle: 'output1',
+      inputHandle: 'setter',
+    },
+    {
+      id: 'e4-5',
+      output: '5',
+      input: '4',
+      dataType: 'float',
+      outputHandle: 'output',
+      inputHandle: 'input1',
+    },
   ],
 };
