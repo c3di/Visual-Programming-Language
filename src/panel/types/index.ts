@@ -1,6 +1,6 @@
 export { DataTypes, isDataTypeMatch, getMaxConnection } from './DataType';
 export type { default as Node } from './BasicNode';
-export { type GraphNodeConfig } from './ConfigTypes';
+export type { GraphNodeConfig, GraphEdgeConfig } from './ConfigTypes';
 export { type Handle as HandleData } from './Handle';
 export { type ConnectableData } from './Connectable';
 export { type VariableNodeData } from './Variable';

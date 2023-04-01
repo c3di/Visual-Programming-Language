@@ -165,24 +165,20 @@ export const graphInstance: GraphData = {
     },
   ],
   edgeConfigs: [
-    // {
-    //   id: 'e1-3',
-    //   source: '1',
-    //   target: '3',
-    //   animated: true,
-    //   sourceHandle: 'output1',
-    //   targetHandle: 'handle',
-    // },
-    // {
-    //   id: 'e4-5',
-    //   source: '5',
-    //   target: '4',
-    //   data: {},
-    //   sourceHandle: 'output',
-    //   targetHandle: 'input1',
-    //   markerEnd: {
-    //     type: MarkerType.ArrowClosed,
-    //   },
-    // },
+    {
+      id: 'e1-3',
+      output: '1',
+      input: '3',
+      outputHandle: 'output1',
+      inputHandle: 'handle',
+    },
+    {
+      id: 'e4-5',
+      output: '5',
+      input: '4',
+      dataType: 'float',
+      outputHandle: 'output',
+      inputHandle: 'input1',
+    },
   ],
 };

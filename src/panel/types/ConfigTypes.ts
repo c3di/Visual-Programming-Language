@@ -24,6 +24,15 @@ export interface GraphNodeConfig extends NodeConfig {
   [key: string]: any;
 }
 
+export interface GraphEdgeConfig {
+  id: string;
+  input: string;
+  output: string;
+  inputHandle: string;
+  outputHandle: string;
+  dataType?: string;
+}
+
 export interface serializedNode {
   id: string;
   type: string;
