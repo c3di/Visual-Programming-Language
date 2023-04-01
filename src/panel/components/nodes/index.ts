@@ -1,4 +1,3 @@
-import CustomeNode from './CustomNode';
 import FunctionNode from './FunctionNode';
 import GetterNode from './GetterNode';
 import SetterNode from './SetterNode';
@@ -7,8 +6,7 @@ import MakeLiteralNode from './MakeLiteralNode';
 import CommentNode from './CommentNode';
 import RerouteNode from './RerouteNode';
 
-const nodeTypes = {
-  custom: CustomeNode,
+const VisualNodeTypes = {
   function: FunctionNode,
   getter: GetterNode,
   setter: SetterNode,
@@ -18,4 +16,4 @@ const nodeTypes = {
   reroute: RerouteNode,
 };
 
-export default nodeTypes;
+export default VisualNodeTypes;

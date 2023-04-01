@@ -40,11 +40,7 @@ function MakeLiteralNode({
   return (
     <div title={data.tooltip}>
       <div className="setter-node__header">
-        <strong>
-          Make Literal&nbsp;
-          {`${data.type[0].toUpperCase() + data.type.slice(1)}
-          `}
-        </strong>
+        <strong>Make Literal&nbsp;{data.dataType}</strong>
       </div>
       <div className="node__body">
         {inputhandles}

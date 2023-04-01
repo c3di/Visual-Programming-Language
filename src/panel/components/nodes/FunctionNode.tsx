@@ -40,7 +40,7 @@ function FunctionNode({
   return (
     <div title={data.tooltip}>
       <div className="node__header">
-        This is a <strong>function node</strong>
+        <strong>{data.title}</strong>
       </div>
       <div className="node__body">
         <div className="node__input-handles">{inputhandles}</div>

@@ -1,5 +1,5 @@
 import {
-  type GraphData,
+  type Graph,
   type Node,
   type Edge,
   isDataTypeMatch,
@@ -37,7 +37,7 @@ export interface GraphState {
   deleteAllEdgesOfHandle: (nodeId: string, handleId: string) => void;
   addElements: (newNodes: Node[], newEdges: Edge[]) => void;
 }
-export default function useGraph(data: GraphData): GraphState {
+export default function useGraph(data: Graph): GraphState {
   const [nodes, setNodes, onNodesChange] = useNodesState(data.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(data.edges);
   // the nodes will added more properties by reactflow, so we need to get the nodes from reactflow
