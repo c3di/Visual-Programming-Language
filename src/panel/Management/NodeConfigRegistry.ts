@@ -95,6 +95,24 @@ export class NodeConfigRegistry {
       zIndex: -1001,
       tooltip: 'this is a comment',
     },
+    reroute: {
+      category: 'reroute',
+      tooltip: 'this is a reroute',
+      inputs: {
+        input: {
+          title: 'input',
+          tooltip: 'input',
+          dataType: 'any',
+        },
+      },
+      outputs: {
+        output: {
+          title: 'output',
+          tooltip: 'output',
+          dataType: 'any',
+        },
+      },
+    },
   };
 
   private constructor() {}
