@@ -89,6 +89,12 @@ export class NodeConfigRegistry {
         },
       },
     },
+    comment: {
+      category: 'comment',
+      dragHandle: '.node__header',
+      zIndex: -1001,
+      tooltip: 'this is a comment',
+    },
   };
 
   private constructor() {}
