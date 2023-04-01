@@ -58,6 +58,7 @@ export default function Handle({
     }
     if (
       showWidget &&
+      handleData.dataType !== undefined &&
       (!toHideWidgetWhenConnected ||
         (toHideWidgetWhenConnected && !isConnected && !widget.current))
     )

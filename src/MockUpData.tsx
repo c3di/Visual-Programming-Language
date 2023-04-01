@@ -1,69 +1,43 @@
 import { type GraphData } from './panel/types';
 
 export const graphInstance: GraphData = {
-  nodeConfigs: [
+  serializedNodes: [
     {
       id: '1',
-      category: 'function',
-      title: 'function Node',
-      tooltip: 'this is a function node',
+      type: 'function1',
       inputs: {
         input1: {
-          title: 'input1',
           connection: 0,
-          tooltip: 'input 1',
-          dataType: 'float',
-          defaultValue: 100,
           value: 10,
         },
         input2: {
-          title: 'input2',
           connection: 0,
-          tooltip: 'input 2',
-          dataType: 'boolean',
-          defaultValue: true,
         },
         input3: {
-          title: 'input3',
           connection: 0,
-          tooltip: 'input 3',
-          dataType: 'string',
-          defaultValue: 'hello',
           value: 'world',
         },
         input4: {
-          title: 'input4',
           connection: 0,
-          tooltip: 'input 4',
-          dataType: 'EDataType',
-          defaultValue: 'string',
         },
       },
       outputs: {
         output1: {
           connection: 1,
-          title: 'output1',
-          tooltip: 'output 1',
-          dataType: 'float',
         },
         output2: {
           connection: 0,
-          title: 'output2',
-          tooltip: 'output 2',
-          dataType: 'float',
         },
       },
       position: { x: 0, y: 0 },
     },
     {
       id: '2',
-      category: 'getter',
-      tooltip: 'this is a constant node',
+      type: 'getter',
       outputs: {
-        gettter: {
+        getter: {
+          title: 'variable',
           connection: 1,
-          title: 'Getter',
-          tooltip: 'getter handle',
           dataType: 'float',
           defaultValue: 100,
         },
@@ -72,12 +46,11 @@ export const graphInstance: GraphData = {
     },
     {
       id: '3',
-      category: 'setter',
+      type: 'setter',
       inputs: {
-        account: {
+        setter: {
           title: 'account',
           connection: 1,
-          tooltip: 'setter handle',
           dataType: 'float',
           defaultValue: 100,
         },
@@ -86,9 +59,7 @@ export const graphInstance: GraphData = {
     },
     {
       id: '4',
-      category: 'math',
-      title: '+',
-      tooltip: 'this is a math node',
+      type: 'PlusMath',
       inputs: {
         input1: {
           title: 'input1',
@@ -99,7 +70,6 @@ export const graphInstance: GraphData = {
         input2: {
           title: 'input2',
           connection: 0,
-          tooltip: 'input 2',
           dataType: 'integer',
           defaultValue: -1,
         },
@@ -116,13 +86,12 @@ export const graphInstance: GraphData = {
     },
     {
       id: '5',
-      category: 'literal',
+      type: 'literal',
       dataType: 'float',
       inputs: {
-        value: {
+        input: {
           title: 'Value',
           connection: 0,
-          tooltip: 'literal handle',
           dataType: 'float',
           defaultValue: 100,
         },
@@ -131,36 +100,25 @@ export const graphInstance: GraphData = {
     },
     {
       id: '6',
-      category: 'comment',
-      dragHandle: '.node__header',
-      zIndex: -1001,
+      type: 'comment',
       comment: 'This is a comment node',
-      tooltip: 'this is a comment node',
       position: { x: 600, y: 300 },
       width: 250,
       height: 150,
     },
     {
       id: '8',
-      category: 'reroute',
-      tooltip: 'this is a reroute node',
+      type: 'reroute',
       inputs: {
         input: {
           connection: 0,
-          title: 'input',
-          tooltip: 'input',
-          dataType: 'any',
         },
       },
       outputs: {
         output: {
           connection: 0,
-          title: 'output',
-          tooltip: 'output',
-          dataType: 'any',
         },
       },
-
       position: { x: 300, y: 600 },
     },
   ],
@@ -170,7 +128,7 @@ export const graphInstance: GraphData = {
       output: '1',
       input: '3',
       outputHandle: 'output1',
-      inputHandle: 'handle',
+      inputHandle: 'setter',
     },
     {
       id: 'e4-5',

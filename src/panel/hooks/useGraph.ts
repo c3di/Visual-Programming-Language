@@ -204,7 +204,7 @@ export default function useGraph(data: Graph): GraphState {
       console.log('no source or target handle found');
       return false;
     }
-    if (isDataTypeMatch(sourceHandle.type, targetHandle.type)) {
+    if (!isDataTypeMatch(sourceHandle.dataType, targetHandle.dataType)) {
       console.log('source and target handle type do not match');
       return false;
     }
