@@ -57,36 +57,33 @@ export const graphInstance: GraphData = {
       },
       position: { x: 600, y: 0 },
     },
-    // {
-    //   id: '4',
-    //   category: 'math',
-    //   title: '+',
-    //   tooltip: 'this is a math node',
-    //   inputs: {
-    //     input1: {
-    //       title: 'input1',
-    //       connection: 1,
-    //       tooltip: 'input 1',
-    //       dataType: 'float',
-    //     },
-    //     input2: {
-    //       title: 'input2',
-    //       connection: 0,
-    //       tooltip: 'input 2',
-    //       dataType: 'integer',
-    //       defaultValue: -1,
-    //     },
-    //   },
-    //   outputs: {
-    //     output: {
-    //       title: 'output',
-    //       connection: 0,
-    //       tooltip: 'output',
-    //       dataType: 'boolean',
-    //     },
-    //   },
-    //   position: { x: 300, y: 300 },
-    // },
+    {
+      id: '4',
+      type: 'PlusMath',
+      inputs: {
+        input1: {
+          title: 'input1',
+          connection: 1,
+          tooltip: 'input 1',
+          dataType: 'float',
+        },
+        input2: {
+          title: 'input2',
+          connection: 0,
+          dataType: 'integer',
+          defaultValue: -1,
+        },
+      },
+      outputs: {
+        output: {
+          title: 'output',
+          connection: 0,
+          tooltip: 'output',
+          dataType: 'boolean',
+        },
+      },
+      position: { x: 300, y: 300 },
+    },
     // {
     //   id: '5',
     //   category: 'literal',

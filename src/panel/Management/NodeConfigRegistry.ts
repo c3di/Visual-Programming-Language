@@ -63,6 +63,24 @@ export class NodeConfigRegistry {
         },
       },
     },
+    PlusMath: {
+      category: 'math',
+      title: '+',
+      tooltip: 'Addition',
+      inputs: {
+        input1: {
+          tooltip: 'input 1',
+        },
+        input2: {
+          tooltip: 'input 2',
+        },
+      },
+      outputs: {
+        output: {
+          tooltip: 'output',
+        },
+      },
+    },
   };
 
   private constructor() {}
