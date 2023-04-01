@@ -1,9 +1,9 @@
 import { type Edge } from './Edge';
 import { type Node } from './BasicNode';
-import type { GraphEdgeConfig, GraphNodeConfig } from './ConfigTypes';
+import type { GraphEdgeConfig, SerializedGraphNode } from './ConfigTypes';
 
 export interface GraphData {
-  nodeConfigs: GraphNodeConfig[];
+  serializedNodes: SerializedGraphNode[];
   edgeConfigs: GraphEdgeConfig[];
 }
 

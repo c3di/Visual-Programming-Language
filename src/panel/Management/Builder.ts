@@ -5,8 +5,11 @@ import type {
   Graph,
   GraphEdgeConfig,
   Edge,
+  HandleData,
+  SerializedGraphNode,
 } from '../types';
 import { MarkerType } from 'reactflow';
+import { nodeConfigRegistry } from './NodeConfigRegistry';
 
 export class Builder {
   private static instance: Builder;
@@ -83,9 +86,49 @@ export class Builder {
     },
   };
 
+  private readonly serializedToGraphNodeConfigs = (
+    serializedNodes: SerializedGraphNode[]
+  ): GraphNodeConfig[] => {
+    return serializedNodes.map((sNode) => {
+      const nodeConfig = nodeConfigRegistry.getNodeConfig(sNode.type);
+      const inputs = Object.entries(sNode.inputs ?? {}).reduce<
+        Record<string, HandleData>
+      >((acc, [title, sHandle]) => {
+        if (!nodeConfig.inputs?.[title]) return acc;
+        acc[title] = {
+          ...nodeConfig.inputs?.[title],
+          value: sHandle.value,
+          connection: sHandle.connection ?? 0,
+        };
+        return acc;
+      }, {});
+      const outputs = Object.entries(sNode.outputs ?? {}).reduce<
+        Record<string, HandleData>
+      >((acc, [title, sHandle]) => {
+        if (!nodeConfig.outputs?.[title]) return acc;
+        acc[title] = {
+          ...nodeConfig.outputs?.[title],
+          value: sHandle.value,
+          connection: sHandle.connection ?? 0,
+        };
+        return acc;
+      }, {});
+      return {
+        ...nodeConfig,
+        id: sNode.id,
+        position: sNode.position,
+        inputs,
+        outputs,
+      };
+    });
+  };
+
   public build(graphData: GraphData): Graph {
+    const graphNodeConfigs = this.serializedToGraphNodeConfigs(
+      graphData.serializedNodes
+    );
     return {
-      nodes: graphData.nodeConfigs.map((config) => this.buildNode(config)),
+      nodes: graphNodeConfigs.map((config) => this.buildNode(config)),
       edges: graphData.edgeConfigs.map((config) => this.buildEdge(config)),
     };
   }
