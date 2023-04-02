@@ -6,6 +6,7 @@ export type {
   NodeConfig,
   SerializedGraphNode,
 } from './ConfigTypes';
+export { addNewType } from './DataType';
 export { type Handle as HandleData } from './Handle';
 export { type ConnectableData } from './Connectable';
 export { type VariableNodeData } from './Variable';

@@ -5,7 +5,7 @@ import ReactFlow, {
   ConnectionLineType,
   ReactFlowProvider,
 } from 'reactflow';
-import { builder } from './Management';
+import { builder } from './Builder';
 import { WidgetFactoryProvider } from './Context';
 
 import Setting from './VPPanelSetting';
