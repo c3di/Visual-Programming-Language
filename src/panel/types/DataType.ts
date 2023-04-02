@@ -7,17 +7,12 @@ export const DataTypes: Record<string, any> = {
   string: {},
   exec: {},
   any: {},
-  // enum example
-  EDataType: {
-    float: 'float',
-    integer: 'integer',
-    boolean: 'boolean',
-    string: 'string',
-    exec: 'exec',
-    any: 'any',
-  },
 };
 export default DataTypes;
+
+export function addNewType(type: string, options: any): void {
+  DataTypes[type] = options;
+}
 
 export function isDataTypeMatch(type1: string, type2: string): boolean {
   return type1 === type2 || type1 === 'any' || type2 === 'any';

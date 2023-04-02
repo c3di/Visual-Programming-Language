@@ -110,5 +110,15 @@
         }
       }
     }
+  },
+  "Types": {
+    "EDataType": {
+      "float": "float",
+      "integer": "integer",
+      "boolean": "boolean",
+      "string": "string",
+      "exec": "exec",
+      "any": "any"
+    }
   }
 }
