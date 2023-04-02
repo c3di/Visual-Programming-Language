@@ -7,7 +7,7 @@ import type {
   Edge,
   HandleData,
   SerializedGraphNode,
-} from '../types';
+} from '../panel/types';
 import { MarkerType } from 'reactflow';
 import { nodeConfigRegistry } from './NodeConfigRegistry';
 
