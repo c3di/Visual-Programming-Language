@@ -7,7 +7,6 @@ import { extensionLoad } from './Extension';
 import { type SerializedGraph } from './panel/types';
 
 extensionLoad();
-console.log(mockData);
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
