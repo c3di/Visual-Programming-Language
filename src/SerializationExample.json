@@ -1,0 +1,155 @@
+{
+  "nodes": [
+    {
+      "id": "1",
+      "type": "function1",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "inputs": {
+        "input1": {
+          "connection": 0,
+          "value": 10
+        },
+        "input2": {
+          "connection": 0
+        },
+        "input3": {
+          "connection": 0,
+          "value": "world"
+        },
+        "input4": {
+          "connection": 0
+        }
+      },
+      "outputs": {
+        "output1": {
+          "connection": 1
+        },
+        "output2": {
+          "connection": 0
+        }
+      }
+    },
+    {
+      "id": "2",
+      "type": "getter",
+      "position": {
+        "x": 300,
+        "y": 0
+      },
+      "outputs": {
+        "getter": {
+          "title": "variable",
+          "connection": 1,
+          "dataType": "float"
+        }
+      }
+    },
+    {
+      "id": "3",
+      "type": "setter",
+      "position": {
+        "x": 600,
+        "y": 0
+      },
+      "inputs": {
+        "setter": {
+          "title": "account",
+          "connection": 1,
+          "dataType": "float"
+        }
+      }
+    },
+    {
+      "id": "4",
+      "type": "PlusMath",
+      "position": {
+        "x": 300,
+        "y": 300
+      },
+      "inputs": {
+        "input1": {
+          "title": "input1",
+          "connection": 1,
+          "dataType": "float"
+        },
+        "input2": {
+          "title": "input2",
+          "connection": 0,
+          "dataType": "integer"
+        }
+      },
+      "outputs": {
+        "output": {
+          "title": "output",
+          "connection": 0,
+          "dataType": "boolean"
+        }
+      }
+    },
+    {
+      "id": "5",
+      "type": "literal",
+      "position": {
+        "x": 0,
+        "y": 300
+      },
+      "inputs": {
+        "input": {
+          "title": "Value",
+          "connection": 0,
+          "dataType": "float"
+        }
+      },
+      "dataType": "float"
+    },
+    {
+      "id": "6",
+      "type": "comment",
+      "comment": "This is a comment node",
+      "position": {
+        "x": 600,
+        "y": 300
+      },
+      "width": 250,
+      "height": 150
+    },
+    {
+      "id": "8",
+      "type": "reroute",
+      "position": {
+        "x": 300,
+        "y": 600
+      },
+      "inputs": {
+        "input": {
+          "connection": 0
+        }
+      },
+      "outputs": {
+        "output": {
+          "connection": 0
+        }
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1-3",
+      "output": "1",
+      "input": "3",
+      "outputHandle": "output1",
+      "inputHandle": "setter"
+    },
+    {
+      "id": "e4-5",
+      "output": "5",
+      "input": "4",
+      "outputHandle": "output",
+      "inputHandle": "input1",
+      "dataType": "float"
+    }
+  ]
+}

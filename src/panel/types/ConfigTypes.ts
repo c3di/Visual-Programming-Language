@@ -19,6 +19,7 @@ export interface NodeConfig {
 
 export interface GraphNodeConfig extends NodeConfig {
   id: string;
+  type: string;
   position: { x: number; y: number };
   inputs?: Record<string, HandleData>;
   outputs?: Record<string, HandleData>;
@@ -33,7 +34,7 @@ export interface GraphEdgeConfig {
   dataType?: string;
 }
 
-export interface serializedHandle {
+export interface SerializedHandle {
   value?: any;
   connection?: number;
   [key: string]: any;
@@ -43,7 +44,9 @@ export interface SerializedGraphNode {
   id: string;
   type: string;
   position: { x: number; y: number };
-  inputs?: Record<string, serializedHandle>;
-  outputs?: Record<string, serializedHandle>;
+  inputs?: Record<string, SerializedHandle>;
+  outputs?: Record<string, SerializedHandle>;
   [key: string]: any;
 }
+
+export type SerializedGraphEdge = GraphEdgeConfig;
