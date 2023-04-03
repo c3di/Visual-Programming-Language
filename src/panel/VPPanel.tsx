@@ -5,7 +5,6 @@ import ReactFlow, {
   ConnectionLineType,
   ReactFlowProvider,
 } from 'reactflow';
-import { deserializer } from './Deserializer';
 import { WidgetFactoryProvider } from './Context';
 
 import Setting from './VPPanelSetting';
@@ -16,12 +15,12 @@ import 'reactflow/dist/style.css';
 import './VPPanel.css';
 
 const Scene = ({
-  serializedGraph,
+  graph,
 }: {
-  serializedGraph: SerializedGraph | undefined;
+  graph: SerializedGraph | undefined;
 }): JSX.Element => {
   const domRef = useRef<HTMLDivElement>(null);
-  const graphState = useGraph(deserializer.deserialize(serializedGraph));
+  const graphState = useGraph(graph);
   const { nodes, onNodesChange, edges, onEdgesChange, onConnect, deleteEdge } =
     graphState;
   const { mousePos, updateMousePos } = useTrackMousePos(domRef);
@@ -109,14 +108,14 @@ const Scene = ({
 };
 
 export default function VPPanel({
-  serializedGraph,
+  graph,
 }: {
-  serializedGraph: SerializedGraph;
+  graph: SerializedGraph;
 }): JSX.Element {
   return (
     <WidgetFactoryProvider>
       <ReactFlowProvider>
-        <Scene serializedGraph={serializedGraph} />
+        <Scene graph={graph} />
       </ReactFlowProvider>
     </WidgetFactoryProvider>
   );
