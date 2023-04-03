@@ -5,7 +5,7 @@ import ReactFlow, {
   ConnectionLineType,
   ReactFlowProvider,
 } from 'reactflow';
-import { builder } from './Builder';
+import { deserializer } from './Deserializer';
 import { WidgetFactoryProvider } from './Context';
 
 import Setting from './VPPanelSetting';
@@ -21,7 +21,7 @@ const Scene = ({
   serializedGraph: SerializedGraph | undefined;
 }): JSX.Element => {
   const domRef = useRef<HTMLDivElement>(null);
-  const graphState = useGraph(builder.build(serializedGraph));
+  const graphState = useGraph(deserializer.deserialize(serializedGraph));
   const { nodes, onNodesChange, edges, onEdgesChange, onConnect, deleteEdge } =
     graphState;
   const { mousePos, updateMousePos } = useTrackMousePos(domRef);
