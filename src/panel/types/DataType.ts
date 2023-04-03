@@ -1,10 +1,10 @@
 import { type HandleType } from 'reactflow';
 
 export const DataTypes: Record<string, any> = {
-  float: {},
-  integer: {},
-  boolean: {},
-  string: {},
+  float: { defaultValue: 0.0 },
+  integer: { defaultValue: 0 },
+  boolean: { defaultValue: false },
+  string: { defaultValue: '' },
   exec: {},
   any: {},
 };

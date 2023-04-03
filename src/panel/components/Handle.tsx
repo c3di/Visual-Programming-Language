@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { type HandleData } from '../types';
+import { type HandleData, DataTypes } from '../types';
 import './Handle.css';
 import {
   Handle as RCHandle,
@@ -63,7 +63,10 @@ export default function Handle({
         (toHideWidgetWhenConnected && !isConnected && !widget.current))
     )
       widget.current = widgetFactory.createWidget(handleData.dataType, {
-        value: handleData.value ?? handleData.defaultValue,
+        value:
+          handleData.value ??
+          handleData.defaultValue ??
+          DataTypes[handleData.dataType]?.defaultValue,
         className: `nodrag handle-widget ${handleData.dataType}`,
         onChange: changeValue,
       });
