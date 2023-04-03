@@ -4,6 +4,7 @@ export type {
   GraphNodeConfig,
   GraphEdgeConfig,
   NodeConfig,
+  SerializedHandle,
   SerializedGraphNode,
   SerializedGraphEdge,
 } from './ConfigTypes';

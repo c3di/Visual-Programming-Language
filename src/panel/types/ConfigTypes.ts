@@ -19,6 +19,7 @@ export interface NodeConfig {
 
 export interface GraphNodeConfig extends NodeConfig {
   id: string;
+  type: string;
   position: { x: number; y: number };
   inputs?: Record<string, HandleData>;
   outputs?: Record<string, HandleData>;

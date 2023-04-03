@@ -56,8 +56,6 @@ export class Deserializer {
       return {
         ...sNode,
         ...nodeConfig,
-        id: sNode.id,
-        position: sNode.position,
         inputs,
         outputs,
       };
@@ -77,7 +75,7 @@ export class Deserializer {
       return this.defaultConfigToNode(config);
     },
     comment: (config: GraphNodeConfig): Node => {
-      const { id, category, comment, tooltip, position, width, height } =
+      const { id, category, comment, tooltip, position, width, height, type } =
         config;
       return {
         id,
@@ -89,6 +87,7 @@ export class Deserializer {
           tooltip,
           width,
           height,
+          configType: type,
         },
         position,
       };
@@ -96,11 +95,11 @@ export class Deserializer {
   };
 
   private readonly defaultConfigToNode = (config: GraphNodeConfig): Node => {
-    const { id, title, inputs, outputs, tooltip, position, dataType } = config;
-    const type = config.category;
+    const { id, title, inputs, outputs, tooltip, position, dataType, type } =
+      config;
     return {
       id,
-      type,
+      type: config.category,
       position: position || { x: 0, y: 0 },
       data: {
         title,
@@ -108,6 +107,7 @@ export class Deserializer {
         tooltip,
         inputs,
         outputs,
+        configType: type,
       },
     };
   };
@@ -133,12 +133,12 @@ export class Deserializer {
     if (!sGraph) return { nodes: [], edges: [] };
     const graphNodeConfigs = this.serializedToGraphNodeConfigs(sGraph.nodes);
     return {
-      nodes: graphNodeConfigs.map((config) => this.configToNodes(config)),
+      nodes: graphNodeConfigs.map((config) => this.configToNode(config)),
       edges: sGraph.edges.map((config) => this.configToEdge(config)),
     };
   }
 
-  private configToNodes(config: GraphNodeConfig): Node {
+  private configToNode(config: GraphNodeConfig): Node {
     const mapper =
       this.overrideConfigToNode[config.category] ?? this.defaultConfigToNode;
     return mapper(config);
