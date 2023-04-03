@@ -10,4 +10,4 @@ extensionLoad();
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
-root.render(<VPPanel graphData={graphInstance} />);
+root.render(<VPPanel serializedGraph={graphInstance} />);

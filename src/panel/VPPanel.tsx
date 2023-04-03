@@ -11,20 +11,23 @@ import { WidgetFactoryProvider } from './Context';
 import Setting from './VPPanelSetting';
 import { useGraph, useScene, useKeyDown, useTrackMousePos } from './hooks';
 import componentType, { Background, ControlPanel, MiniMap } from './components';
-import { type GraphData } from './types';
+import { type SerializedGraph } from './types';
 import 'reactflow/dist/style.css';
 import './VPPanel.css';
 
-const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
+const Scene = ({
+  serializedGraph,
+}: {
+  serializedGraph: SerializedGraph | undefined;
+}): JSX.Element => {
   const domRef = useRef<HTMLDivElement>(null);
-  const graphState = useGraph(builder.build(graphData));
+  const graphState = useGraph(builder.build(serializedGraph));
   const { nodes, onNodesChange, edges, onEdgesChange, onConnect, deleteEdge } =
     graphState;
   const { mousePos, updateMousePos } = useTrackMousePos(domRef);
   const sceneState = useScene(graphState, mousePos);
   const { onNodeDragStart, onNodeDragStop, isValidConnection } = sceneState;
   const { onKeyDown } = useKeyDown(sceneState);
-
   const {
     view: viewSetting,
     select: selectSetting,
@@ -106,14 +109,14 @@ const Scene = ({ graphData }: { graphData: GraphData }): JSX.Element => {
 };
 
 export default function VPPanel({
-  graphData,
+  serializedGraph,
 }: {
-  graphData: GraphData;
+  serializedGraph: SerializedGraph;
 }): JSX.Element {
   return (
     <WidgetFactoryProvider>
       <ReactFlowProvider>
-        <Scene graphData={graphData} />
+        <Scene serializedGraph={serializedGraph} />
       </ReactFlowProvider>
     </WidgetFactoryProvider>
   );

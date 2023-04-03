@@ -5,13 +5,14 @@ export type {
   GraphEdgeConfig,
   NodeConfig,
   SerializedGraphNode,
+  SerializedGraphEdge,
 } from './ConfigTypes';
 export { addNewType } from './DataType';
 export { type Handle as HandleData } from './Handle';
 export { type ConnectableData } from './Connectable';
 export { type VariableNodeData } from './Variable';
 export { type Edge } from './Edge';
-export { type GraphData, type Graph } from './Graph';
+export { type SerializedGraph, type Graph } from './Graph';
 export { type Comment, isCommentNode } from './Comment';
 export { type ClipboardInfo } from './ClipboardInfo';
 export { type MousePos } from './MousePos';

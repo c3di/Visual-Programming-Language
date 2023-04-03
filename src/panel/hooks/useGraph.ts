@@ -4,6 +4,8 @@ import {
   type Edge,
   isDataTypeMatch,
   getMaxConnection,
+  type SerializedGraph,
+  type SerializedGraphEdge,
 } from '../types';
 import {
   useNodesState,

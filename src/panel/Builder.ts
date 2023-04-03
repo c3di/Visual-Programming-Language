@@ -1,5 +1,5 @@
 import type {
-  GraphData,
+  SerializedGraph,
   Node,
   GraphNodeConfig,
   Graph,
@@ -124,13 +124,12 @@ export class Builder {
     });
   };
 
-  public build(graphData: GraphData): Graph {
-    const graphNodeConfigs = this.serializedToGraphNodeConfigs(
-      graphData.serializedNodes
-    );
+  public build(sGraph: SerializedGraph | undefined): Graph {
+    if (!sGraph) return { nodes: [], edges: [] };
+    const graphNodeConfigs = this.serializedToGraphNodeConfigs(sGraph.nodes);
     return {
       nodes: graphNodeConfigs.map((config) => this.buildNode(config)),
-      edges: graphData.edgeConfigs.map((config) => this.buildEdge(config)),
+      edges: sGraph.edges.map((config) => this.buildEdge(config)),
     };
   }
 

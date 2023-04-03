@@ -1,7 +1,7 @@
-import { type GraphData } from './panel/types';
+import { type SerializedGraph } from './panel/types';
 
-export const graphInstance: GraphData = {
-  serializedNodes: [
+export const graphInstance: SerializedGraph = {
+  nodes: [
     {
       id: '1',
       type: 'function1',
@@ -122,7 +122,7 @@ export const graphInstance: GraphData = {
       position: { x: 300, y: 600 },
     },
   ],
-  edgeConfigs: [
+  edges: [
     {
       id: 'e1-3',
       output: '1',
