@@ -117,7 +117,7 @@ export class Serializer {
     };
   };
 
-  public serialize(graph: Graph): SerializedGraph | undefined {
+  public serialize(graph: Graph): SerializedGraph {
     if (!graph) return { nodes: [], edges: [] };
     return {
       nodes: graph.nodes.map((node) => this.serializeNode(node)),

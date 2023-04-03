@@ -4,8 +4,6 @@ import {
   type Edge,
   isDataTypeMatch,
   getMaxConnection,
-  type SerializedGraph,
-  type SerializedGraphEdge,
 } from '../types';
 import {
   useNodesState,
@@ -17,6 +15,9 @@ import {
   useReactFlow,
 } from 'reactflow';
 import { useCallback } from 'react';
+import { serializer } from '../Serializer';
+import { deserializer } from '../Deserializer';
+// import { Deserializer } from '../Deserializer';
 
 type OnChange<ChangesType> = (changes: ChangesType[]) => void;
 
@@ -38,6 +39,8 @@ export interface GraphState {
   deleteAllEdgesOfNode: (nodeId: string) => void;
   deleteAllEdgesOfHandle: (nodeId: string, handleId: string) => void;
   addElements: (newNodes: Node[], newEdges: Edge[]) => void;
+  toJSON: () => string;
+  fromJSON: (json: string) => void;
 }
 export default function useGraph(data: Graph): GraphState {
   const [nodes, setNodes, onNodesChange] = useNodesState(data.nodes);
@@ -213,6 +216,21 @@ export default function useGraph(data: Graph): GraphState {
     return true;
   }, []);
 
+  const toJSON = useCallback((): string => {
+    const graph = serializer.serialize({
+      nodes: getNodes(),
+      edges: getEdges(),
+    });
+    return JSON.stringify(graph);
+  }, []);
+
+  const fromJSON = useCallback((json: string): void => {
+    const graph = JSON.parse(json);
+    const { nodes, edges } = deserializer.deserialize(graph);
+    setNodes(nodes);
+    setEdges(edges);
+  }, []);
+
   return {
     getFreeUniqueNodeIds,
     nodes,
@@ -231,5 +249,7 @@ export default function useGraph(data: Graph): GraphState {
     deleteAllEdgesOfNode,
     deleteAllEdgesOfHandle,
     addElements,
+    toJSON,
+    fromJSON,
   };
 }
