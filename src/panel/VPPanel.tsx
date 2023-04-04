@@ -68,8 +68,9 @@ const Scene = ({
           updateMousePos(e.clientX, e.clientY);
         }}
         onKeyDown={onKeyDown}
-        onNodeContextMenu={(e) => {
+        onNodeContextMenu={(e, node) => {
           e.preventDefault();
+          if (!node.selected) sceneState.selectNode(node.id);
           setShowNodeMenu(true);
           setContextMenuPosition({ left: e.clientX, top: e.clientY });
         }}

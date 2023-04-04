@@ -32,6 +32,7 @@ export interface GraphState {
   isValidConnection: (params: Connection) => boolean;
   selectedNodes: () => Node[];
   selectAll: (sure: boolean) => void;
+  selectNode: (nodeId: string) => void;
   deleteSelectedNodes: () => void;
   deleteSelectedElements: () => void;
   deleteEdge: (id: string) => void;
@@ -157,6 +158,10 @@ export default function useGraph(
     setEdges((eds) => eds.map((e) => ({ ...e, selected: sure })));
   }, []);
 
+  const selectNode = useCallback((nodeId: string): void => {
+    setNodes((nds) => nds.map((n) => ({ ...n, selected: n.id === nodeId })));
+  }, []);
+
   const deleteSelectedNodes = useCallback((): void => {
     deleteEdges((e) => {
       const selectedNodesId = getNodes()
@@ -255,6 +260,7 @@ export default function useGraph(
     isValidConnection,
     selectedNodes,
     selectAll,
+    selectNode,
     deleteSelectedNodes,
     deleteSelectedElements,
     deleteAllEdgesOfSelectedNodes,

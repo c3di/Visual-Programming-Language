@@ -4,6 +4,7 @@ import { type GraphState } from './useGraph';
 
 export interface SceneState {
   selectAll: (sure: boolean) => void;
+  selectNode: (nodeId: string) => void;
   onNodeDragStart: (evt: any, node: Node) => void;
   onNodeDragStop: (evt: any, node: Node) => void;
   copySelectedNodeToClipboard: () => void;
@@ -171,6 +172,7 @@ export default function useScene(
   };
 
   return {
+    selectNode: graphState.selectNode,
     selectAll: graphState.selectAll,
     onNodeDragStart,
     onNodeDragStop,
