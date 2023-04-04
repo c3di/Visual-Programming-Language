@@ -18,7 +18,7 @@ import componentType, { Background, ControlPanel, MiniMap } from './components';
 import { type SerializedGraph } from './types';
 import 'reactflow/dist/style.css';
 import './VPPanel.css';
-import { NodeMenu, EdgeMenu } from './contextmenu';
+import { NodeMenu, EdgeMenu, HandleMenu } from './contextmenu';
 
 const Scene = ({
   graph,
@@ -38,8 +38,12 @@ const Scene = ({
     setShowNodeMenu,
     showEdgeMenu,
     setShowEdgeMenu,
+    showHandleMenu,
+    setShowHandleMenu,
     contextMenuPosiont,
     setContextMenuPosition,
+    clickedHandle,
+    clickedNodeId,
   } = useContextMenu();
   const {
     view: viewSetting,
@@ -74,6 +78,21 @@ const Scene = ({
         anchorPosition={contextMenuPosiont}
         onDelete={sceneState.deleteSelectedElements}
       />
+      <HandleMenu
+        open={showHandleMenu}
+        onClose={() => {
+          setShowHandleMenu(false);
+        }}
+        connection={clickedHandle.current?.connection}
+        anchorPosition={contextMenuPosiont}
+        onBreakLinks={() => {
+          if (clickedHandle.current && clickedNodeId.current)
+            sceneState.deleteAllEdgesOfHandle(
+              clickedNodeId.current,
+              clickedHandle.current.id
+            );
+        }}
+      />
       <ReactFlow
         onMouseMove={(e) => {
           updateMousePos(e.clientX, e.clientY);
@@ -83,7 +102,20 @@ const Scene = ({
           e.preventDefault();
           if (!node.selected) sceneState.selectNode(node.id);
           setContextMenuPosition({ left: e.clientX, top: e.clientY });
-          setShowNodeMenu(true);
+          const handle = e.target as HTMLElement;
+          if (handle?.classList.contains('react-flow__handle')) {
+            const id = handle.dataset.handleid;
+            if (!id) return;
+            sceneState.clearEdgeSelection();
+            const connection = sceneState.getHandleConnectionCounts(
+              node.id,
+              id
+            );
+            if (connection === null) return;
+            clickedHandle.current = { id, connection };
+            clickedNodeId.current = node.id;
+            setShowHandleMenu(true);
+          } else setShowNodeMenu(true);
         }}
         onEdgeContextMenu={(e, edge) => {
           e.preventDefault();

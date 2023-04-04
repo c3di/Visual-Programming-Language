@@ -34,6 +34,7 @@ export interface GraphState {
   selectAll: (sure: boolean) => void;
   selectNode: (nodeId: string) => void;
   selectEdge: (edgeId: string) => void;
+  clearEdgeSelection: () => void;
   deleteSelectedNodes: () => void;
   deleteSelectedElements: () => void;
   deleteEdge: (id: string) => void;
@@ -41,6 +42,7 @@ export interface GraphState {
   deleteAllEdgesOfSelectedNodes: () => void;
   deleteAllEdgesOfHandle: (nodeId: string, handleId: string) => void;
   addElements: (newNodes: Node[], newEdges: Edge[]) => void;
+  getHandleConnectionCounts: (nodeId: string, handleId: string) => number;
   toJSON: () => string;
   fromJSON: (graph: SerializedGraph) => void;
 }
@@ -159,6 +161,10 @@ export default function useGraph(
     setEdges((eds) => eds.map((e) => ({ ...e, selected: e.id === edgeId })));
   }, []);
 
+  const clearEdgeSelection = useCallback((): void => {
+    setEdges((eds) => eds.map((e) => ({ ...e, selected: false })));
+  }, []);
+
   const selectAll = useCallback((sure: boolean): void => {
     setNodes((nds) => nds.map((n) => ({ ...n, selected: sure })));
     setEdges((eds) => eds.map((e) => ({ ...e, selected: sure })));
@@ -199,6 +205,7 @@ export default function useGraph(
 
   const deleteAllEdgesOfHandle = useCallback(
     (nodeId: string, handleId: string): void => {
+      console.log('deleteAllEdgesOfHandle', nodeId, handleId);
       deleteEdges(
         (e) =>
           (e.source === nodeId && e.sourceHandle === handleId) ||
@@ -236,6 +243,24 @@ export default function useGraph(
     return true;
   }, []);
 
+  const getHandleConnectionCounts = useCallback(
+    (nodeId: string, handleId: string) => {
+      const node = getNode(nodeId);
+      if (!node) {
+        console.log('no node found');
+        return null;
+      }
+      const handle =
+        node.data.inputs?.[handleId] ?? node.data.outputs?.[handleId];
+      if (!handle) {
+        console.log('no handle found');
+        return null;
+      }
+      return handle.connection;
+    },
+    []
+  );
+
   const toJSON = useCallback((): string => {
     const graph = serializer.serialize({
       nodes: getNodes(),
@@ -268,6 +293,7 @@ export default function useGraph(
     selectAll,
     selectNode,
     selectEdge,
+    clearEdgeSelection,
     deleteSelectedNodes,
     deleteSelectedElements,
     deleteAllEdgesOfSelectedNodes,
@@ -275,6 +301,7 @@ export default function useGraph(
     deleteAllEdgesOfNode,
     deleteAllEdgesOfHandle,
     addElements,
+    getHandleConnectionCounts,
     toJSON,
     fromJSON,
   };

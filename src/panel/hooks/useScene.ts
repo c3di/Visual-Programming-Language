@@ -6,6 +6,8 @@ export interface SceneState {
   selectAll: (sure: boolean) => void;
   selectEdge: (edgeId: string) => void;
   selectNode: (nodeId: string) => void;
+  clearEdgeSelection: () => void;
+  getHandleConnectionCounts: (nodeId: string, handleId: string) => number;
   onNodeDragStart: (evt: any, node: Node) => void;
   onNodeDragStop: (evt: any, node: Node) => void;
   copySelectedNodeToClipboard: () => void;
@@ -176,6 +178,8 @@ export default function useScene(
     selectNode: graphState.selectNode,
     selectEdge: graphState.selectEdge,
     selectAll: graphState.selectAll,
+    clearEdgeSelection: graphState.clearEdgeSelection,
+    getHandleConnectionCounts: graphState.getHandleConnectionCounts,
     onNodeDragStart,
     onNodeDragStop,
     copySelectedNodeToClipboard,
