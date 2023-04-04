@@ -42,7 +42,12 @@ const NodeMenu = memo(function NodeMenu({
       anchorPosition={anchorPosition}
     >
       <MenuList>
-        <MenuItem onClick={onDelete}>
+        <MenuItem
+          onClick={() => {
+            onDelete();
+            onClose();
+          }}
+        >
           <ListItemIcon>
             <DeleteIcon fontSize="small" />
           </ListItemIcon>
@@ -51,7 +56,12 @@ const NodeMenu = memo(function NodeMenu({
             DELETE
           </Typography>
         </MenuItem>
-        <MenuItem onClick={onCut}>
+        <MenuItem
+          onClick={() => {
+            onCut();
+            onClose();
+          }}
+        >
           <ListItemIcon>
             <ContentCut fontSize="small" />
           </ListItemIcon>
@@ -60,7 +70,12 @@ const NodeMenu = memo(function NodeMenu({
             CTRL+X
           </Typography>
         </MenuItem>
-        <MenuItem onClick={onCopy}>
+        <MenuItem
+          onClick={() => {
+            onCopy();
+            onClose();
+          }}
+        >
           <ListItemIcon>
             <ContentCopy fontSize="small" />
           </ListItemIcon>
@@ -69,7 +84,12 @@ const NodeMenu = memo(function NodeMenu({
             CTRL+C
           </Typography>
         </MenuItem>
-        <MenuItem onClick={onDuplicate}>
+        <MenuItem
+          onClick={() => {
+            onDuplicate();
+            onClose();
+          }}
+        >
           <ListItemIcon>
             <DifferenceIcon fontSize="small" />
           </ListItemIcon>
@@ -78,7 +98,12 @@ const NodeMenu = memo(function NodeMenu({
             CTRL+D
           </Typography>
         </MenuItem>
-        <MenuItem onClick={onPaste}>
+        <MenuItem
+          onClick={() => {
+            onPaste();
+            onClose();
+          }}
+        >
           <ListItemIcon>
             <ContentPaste fontSize="small" />
           </ListItemIcon>
@@ -87,7 +112,14 @@ const NodeMenu = memo(function NodeMenu({
             CTRL+V
           </Typography>
         </MenuItem>
-        <MenuItem onClick={onBreakNodeLinks}>Break Node Link(s)</MenuItem>
+        <MenuItem
+          onClick={() => {
+            onBreakNodeLinks();
+            onClose();
+          }}
+        >
+          Break Node Link(s)
+        </MenuItem>
       </MenuList>
     </Menu>
   );
