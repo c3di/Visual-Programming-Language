@@ -36,6 +36,7 @@ export interface GraphState {
   deleteSelectedElements: () => void;
   deleteEdge: (id: string) => void;
   deleteAllEdgesOfNode: (nodeId: string) => void;
+  deleteAllEdgesOfSelectedNodes: () => void;
   deleteAllEdgesOfHandle: (nodeId: string, handleId: string) => void;
   addElements: (newNodes: Node[], newEdges: Edge[]) => void;
   toJSON: () => string;
@@ -178,6 +179,13 @@ export default function useGraph(
     deleteEdges((e) => e.source === nodeId || e.target === nodeId);
   }, []);
 
+  const deleteAllEdgesOfSelectedNodes = useCallback((): void => {
+    const selectedNodesIds = selectedNodes().map((n) => n.id);
+    selectedNodesIds.forEach((id) => {
+      deleteAllEdgesOfNode(id);
+    });
+  }, []);
+
   const deleteAllEdgesOfHandle = useCallback(
     (nodeId: string, handleId: string): void => {
       deleteEdges(
@@ -249,6 +257,7 @@ export default function useGraph(
     selectAll,
     deleteSelectedNodes,
     deleteSelectedElements,
+    deleteAllEdgesOfSelectedNodes,
     deleteEdge,
     deleteAllEdgesOfNode,
     deleteAllEdgesOfHandle,

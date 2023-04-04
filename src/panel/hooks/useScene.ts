@@ -14,6 +14,7 @@ export interface SceneState {
   deleteEdge: (id: string) => void;
   deleteAllEdgesOfNode: (nodeId: string) => void;
   deleteAllEdgesOfHandle: (nodeId: string, handleId: string) => void;
+  deleteAllEdgesOfSelectedNodes: () => void;
   isValidConnection: (params: any) => boolean;
 }
 export default function useScene(
@@ -181,6 +182,7 @@ export default function useScene(
     deleteEdge: graphState.deleteEdge,
     deleteAllEdgesOfNode: graphState.deleteAllEdgesOfNode,
     deleteAllEdgesOfHandle: graphState.deleteAllEdgesOfHandle,
+    deleteAllEdgesOfSelectedNodes: graphState.deleteAllEdgesOfSelectedNodes,
     isValidConnection: graphState.isValidConnection,
   };
 }
