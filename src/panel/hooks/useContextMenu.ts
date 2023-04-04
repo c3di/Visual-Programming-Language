@@ -3,6 +3,8 @@ import { useState } from 'react';
 export default function useContextMenu(): {
   showNodeMenu: boolean;
   setShowNodeMenu: (showNodeMenu: boolean) => void;
+  showEdgeMenu: boolean;
+  setShowEdgeMenu: (showEdgeMenu: boolean) => void;
   contextMenuPosiont: { top: number; left: number };
   setContextMenuPosition: (contextMenuPosiont: {
     top: number;
@@ -10,6 +12,7 @@ export default function useContextMenu(): {
   }) => void;
 } {
   const [showNodeMenu, setShowNodeMenu] = useState(false);
+  const [showEdgeMenu, setShowEdgeMenu] = useState(false);
   const [contextMenuPosiont, setContextMenuPosition] = useState<{
     top: number;
     left: number;
@@ -17,6 +20,8 @@ export default function useContextMenu(): {
   return {
     showNodeMenu,
     setShowNodeMenu,
+    showEdgeMenu,
+    setShowEdgeMenu,
     contextMenuPosiont,
     setContextMenuPosition,
   };

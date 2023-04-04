@@ -33,6 +33,7 @@ export interface GraphState {
   selectedNodes: () => Node[];
   selectAll: (sure: boolean) => void;
   selectNode: (nodeId: string) => void;
+  selectEdge: (edgeId: string) => void;
   deleteSelectedNodes: () => void;
   deleteSelectedElements: () => void;
   deleteEdge: (id: string) => void;
@@ -153,6 +154,11 @@ export default function useGraph(
     return getNodes().filter((n) => n.selected);
   }, []);
 
+  const selectEdge = useCallback((edgeId: string): void => {
+    setNodes((nds) => nds.map((n) => ({ ...n, selected: false })));
+    setEdges((eds) => eds.map((e) => ({ ...e, selected: e.id === edgeId })));
+  }, []);
+
   const selectAll = useCallback((sure: boolean): void => {
     setNodes((nds) => nds.map((n) => ({ ...n, selected: sure })));
     setEdges((eds) => eds.map((e) => ({ ...e, selected: sure })));
@@ -261,6 +267,7 @@ export default function useGraph(
     selectedNodes,
     selectAll,
     selectNode,
+    selectEdge,
     deleteSelectedNodes,
     deleteSelectedElements,
     deleteAllEdgesOfSelectedNodes,

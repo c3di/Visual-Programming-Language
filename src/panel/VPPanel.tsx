@@ -18,7 +18,7 @@ import componentType, { Background, ControlPanel, MiniMap } from './components';
 import { type SerializedGraph } from './types';
 import 'reactflow/dist/style.css';
 import './VPPanel.css';
-import { NodeMenu } from './contextmenu';
+import { NodeMenu, EdgeMenu } from './contextmenu';
 
 const Scene = ({
   graph,
@@ -36,6 +36,8 @@ const Scene = ({
   const {
     showNodeMenu,
     setShowNodeMenu,
+    showEdgeMenu,
+    setShowEdgeMenu,
     contextMenuPosiont,
     setContextMenuPosition,
   } = useContextMenu();
@@ -63,6 +65,15 @@ const Scene = ({
         onPaste={sceneState.pasteFromClipboard}
         onBreakNodeLinks={sceneState.deleteAllEdgesOfSelectedNodes}
       />
+      <EdgeMenu
+        open={showEdgeMenu}
+        onClose={() => {
+          setShowEdgeMenu(false);
+        }}
+        anchorReference="anchorPosition"
+        anchorPosition={contextMenuPosiont}
+        onDelete={sceneState.deleteSelectedElements}
+      />
       <ReactFlow
         onMouseMove={(e) => {
           updateMousePos(e.clientX, e.clientY);
@@ -71,8 +82,14 @@ const Scene = ({
         onNodeContextMenu={(e, node) => {
           e.preventDefault();
           if (!node.selected) sceneState.selectNode(node.id);
-          setShowNodeMenu(true);
           setContextMenuPosition({ left: e.clientX, top: e.clientY });
+          setShowNodeMenu(true);
+        }}
+        onEdgeContextMenu={(e, edge) => {
+          e.preventDefault();
+          sceneState.selectEdge(edge.id);
+          setContextMenuPosition({ left: e.clientX, top: e.clientY });
+          setShowEdgeMenu(true);
         }}
         ref={domRef}
         nodes={nodes}

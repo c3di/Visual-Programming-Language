@@ -4,6 +4,7 @@ import { type GraphState } from './useGraph';
 
 export interface SceneState {
   selectAll: (sure: boolean) => void;
+  selectEdge: (edgeId: string) => void;
   selectNode: (nodeId: string) => void;
   onNodeDragStart: (evt: any, node: Node) => void;
   onNodeDragStop: (evt: any, node: Node) => void;
@@ -173,6 +174,7 @@ export default function useScene(
 
   return {
     selectNode: graphState.selectNode,
+    selectEdge: graphState.selectEdge,
     selectAll: graphState.selectAll,
     onNodeDragStart,
     onNodeDragStop,
