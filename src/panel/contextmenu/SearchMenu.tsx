@@ -1,4 +1,4 @@
-import { IconButton, Input, InputAdornment } from '@mui/material';
+import { IconButton, Input, InputAdornment, Menu } from '@mui/material';
 import { TreeView } from '@mui/lab';
 import TreeItem from '@mui/lab/TreeItem';
 import SearchIcon from '@mui/icons-material/Search';
@@ -65,7 +65,6 @@ function SearchInput({
   return (
     <Input
       inputRef={inputRef}
-      sx={{ border: 1 }}
       placeholder="Search"
       id="input-with-icon-adornment"
       startAdornment={
@@ -148,9 +147,9 @@ const SearchMenu = memo(function SearchMenu({
   onClose,
   anchorPosition,
 }: {
-  open?: boolean;
-  onClose?: () => void;
-  anchorPosition?: { top: number; left: number };
+  open: boolean;
+  onClose: () => void;
+  anchorPosition: { top: number; left: number };
 }): JSX.Element {
   const [treeData] = useState<TreeItemData[]>([root, root2]);
   const [filteredTreeData, setFilteredTreeData] =
@@ -190,10 +189,18 @@ const SearchMenu = memo(function SearchMenu({
   }, []);
 
   return (
-    <div>
+    <Menu
+      onContextMenu={(e) => {
+        e.preventDefault();
+      }}
+      open={open}
+      onClose={onClose}
+      anchorReference="anchorPosition"
+      anchorPosition={anchorPosition}
+    >
       <SearchInput onChange={search} />
       <ControlledTreeView treeData={filteredTreeData} toExpand={toExapand} />
-    </div>
+    </Menu>
   );
 });
 

@@ -7,6 +7,8 @@ export default function useContextMenu(): {
   setShowEdgeMenu: (showEdgeMenu: boolean) => void;
   showHandleMenu: boolean;
   setShowHandleMenu: (showHandleMenu: boolean) => void;
+  showSearchMenu: boolean;
+  setShowSearchMenu: (showSearchMenu: boolean) => void;
   clickedHandle: React.MutableRefObject<{
     connection: number;
     id: string;
@@ -21,6 +23,7 @@ export default function useContextMenu(): {
   const [showNodeMenu, setShowNodeMenu] = useState(false);
   const [showEdgeMenu, setShowEdgeMenu] = useState(false);
   const [showHandleMenu, setShowHandleMenu] = useState(false);
+  const [showSearchMenu, setShowSearchMenu] = useState(false);
   const clickedHandle = useRef(null);
   const clickedNodeId = useRef(null);
   const [contextMenuPosiont, setContextMenuPosition] = useState<{
@@ -33,6 +36,8 @@ export default function useContextMenu(): {
     showEdgeMenu,
     setShowEdgeMenu,
     showHandleMenu,
+    showSearchMenu,
+    setShowSearchMenu,
     clickedHandle,
     clickedNodeId,
     setShowHandleMenu,

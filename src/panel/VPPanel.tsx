@@ -41,6 +41,8 @@ const Scene = ({
     showHandleMenu,
     setShowHandleMenu,
     contextMenuPosiont,
+    showSearchMenu,
+    setShowSearchMenu,
     setContextMenuPosition,
     clickedHandle,
     clickedNodeId,
@@ -55,7 +57,13 @@ const Scene = ({
   } = Setting;
   return (
     <>
-      <SearchMenu />
+      <SearchMenu
+        open={showSearchMenu}
+        onClose={() => {
+          setShowSearchMenu(false);
+        }}
+        anchorPosition={contextMenuPosiont}
+      />
       <NodeMenu
         open={showNodeMenu}
         onClose={() => {
@@ -97,6 +105,12 @@ const Scene = ({
           updateMousePos(e.clientX, e.clientY);
         }}
         onKeyDown={onKeyDown}
+        onPaneContextMenu={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setContextMenuPosition({ left: e.clientX, top: e.clientY });
+          setShowSearchMenu(true);
+        }}
         onNodeContextMenu={(e, node) => {
           e.preventDefault();
           if (!node.selected) sceneState.selectNode(node.id);
