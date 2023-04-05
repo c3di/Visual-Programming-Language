@@ -17,8 +17,17 @@ export class NodeConfigRegistry {
     this.registry[name] = node;
   }
 
+  public getAllNodeConfigs(): Record<string, NodeConfig> {
+    return this.registry;
+  }
+
   public getNodeConfig(name: string): NodeConfig {
-    return this.registry[name];
+    const path = name.split('.');
+    let node = this.registry[path[0]];
+    for (let i = 1; i < path.length; i++) {
+      node = node?.[path[i]];
+    }
+    return node;
   }
 }
 
