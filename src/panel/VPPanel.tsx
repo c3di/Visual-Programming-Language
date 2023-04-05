@@ -19,6 +19,7 @@ import { type SerializedGraph } from './types';
 import 'reactflow/dist/style.css';
 import './VPPanel.css';
 import { NodeMenu, EdgeMenu, HandleMenu, SearchMenu } from './contextmenu';
+import { nodeConfigRegistry } from '../Extension';
 
 const Scene = ({
   graph,
@@ -63,6 +64,7 @@ const Scene = ({
           setShowSearchMenu(false);
         }}
         anchorPosition={contextMenuPosiont}
+        configs={nodeConfigRegistry.getAllNodeConfigs()}
       />
       <NodeMenu
         open={showNodeMenu}

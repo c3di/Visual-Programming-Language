@@ -6,6 +6,9 @@ import ClearIcon from '@mui/icons-material/Clear';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import React, { memo, useCallback, useEffect, useState } from 'react';
+import { type NodeConfig } from '../types';
+
+let itemId = 0;
 
 interface TreeItemData {
   id: string;
@@ -13,45 +16,25 @@ interface TreeItemData {
   children?: readonly TreeItemData[];
 }
 
-const root: TreeItemData = {
-  id: 'root',
-  name: 'Parent',
-  children: [
-    {
-      id: '1',
-      name: 'Child - 1',
-    },
-    {
-      id: '3',
-      name: 'Child - 3',
-      children: [
-        {
-          id: '4',
-          name: 'Child - 4',
-        },
-      ],
-    },
-  ],
+const nodeConfigsToTreeData = (
+  nodeConfigs: Record<string, NodeConfig>
+): TreeItemData[] => {
+  return Object.entries(nodeConfigs).map(([name, config]) =>
+    nodeConfigToTreeItemData(name, config)
+  );
 };
-const root2: TreeItemData = {
-  id: 'root2',
-  name: 'Parent2',
-  children: [
-    {
-      id: '5',
-      name: 'Child - 1',
-    },
-    {
-      id: '6',
-      name: 'Child - 3',
-      children: [
-        {
-          id: '7',
-          name: 'Child - 4',
-        },
-      ],
-    },
-  ],
+
+const nodeConfigToTreeItemData = (
+  name: string,
+  nodeConfig: any
+): TreeItemData => {
+  return {
+    id: String(itemId++),
+    name,
+    children: Object.entries(nodeConfig.isDir ? nodeConfig.nodes : {}).map(
+      ([name, config]) => nodeConfigToTreeItemData(name, config)
+    ),
+  };
 };
 
 function SearchInput({
@@ -146,12 +129,14 @@ const SearchMenu = memo(function SearchMenu({
   open,
   onClose,
   anchorPosition,
+  configs,
 }: {
   open: boolean;
   onClose: () => void;
   anchorPosition: { top: number; left: number };
+  configs: Record<string, any>;
 }): JSX.Element {
-  const [treeData] = useState<TreeItemData[]>([root, root2]);
+  const [treeData] = useState<TreeItemData[]>(nodeConfigsToTreeData(configs));
   const [filteredTreeData, setFilteredTreeData] =
     useState<TreeItemData[]>(treeData);
   const [toExapand, setToExapand] = useState<boolean>(false);

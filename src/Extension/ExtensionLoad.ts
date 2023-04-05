@@ -1,7 +1,7 @@
 import buildin from './buildin.json';
 import example from './example.json';
 import { nodeConfigRegistry } from './NodeConfigRegistry';
-import { addNewType } from '../panel/types';
+import { addNewType, type NodeConfig } from '../panel/types';
 
 const libraries = [buildin, example];
 
@@ -25,10 +25,14 @@ export const extensionLoad = (): void => {
           };
         }
       );
-      if (lib.name) nodeConfigRegistry.registerNodeConfig(lib.name, nodes);
+      if (lib.name)
+        nodeConfigRegistry.registerNodeConfig(lib.name, {
+          isDir: true,
+          nodes,
+        });
       else
         Object.entries(nodes).forEach(([name, node]) => {
-          nodeConfigRegistry.registerNodeConfig(name, node);
+          nodeConfigRegistry.registerNodeConfig(name, node as NodeConfig);
         });
     }
     if (lib.Types)
