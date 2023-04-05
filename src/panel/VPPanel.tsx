@@ -18,7 +18,7 @@ import componentType, { Background, ControlPanel, MiniMap } from './components';
 import { type SerializedGraph } from './types';
 import 'reactflow/dist/style.css';
 import './VPPanel.css';
-import { NodeMenu, EdgeMenu, HandleMenu } from './contextmenu';
+import { NodeMenu, EdgeMenu, HandleMenu, SearchMenu } from './contextmenu';
 
 const Scene = ({
   graph,
@@ -55,6 +55,7 @@ const Scene = ({
   } = Setting;
   return (
     <>
+      <SearchMenu />
       <NodeMenu
         open={showNodeMenu}
         onClose={() => {
