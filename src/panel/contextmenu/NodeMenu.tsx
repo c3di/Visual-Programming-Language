@@ -14,7 +14,6 @@ import DifferenceIcon from '@mui/icons-material/Difference';
 const NodeMenu = memo(function NodeMenu({
   open,
   onClose,
-  anchorReference = 'anchorPosition',
   anchorPosition,
   onDelete,
   onCut,
@@ -25,7 +24,6 @@ const NodeMenu = memo(function NodeMenu({
 }: {
   open: boolean;
   onClose: () => void;
-  anchorReference: 'anchorPosition' | 'anchorEl' | undefined;
   anchorPosition: { top: number; left: number };
   onDelete: () => void;
   onCut: () => void;
@@ -38,7 +36,7 @@ const NodeMenu = memo(function NodeMenu({
     <Menu
       open={open}
       onClose={onClose}
-      anchorReference={anchorReference}
+      anchorReference="anchorPosition"
       anchorPosition={anchorPosition}
     >
       <MenuList>

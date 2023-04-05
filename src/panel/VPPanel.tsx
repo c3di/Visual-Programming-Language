@@ -60,7 +60,6 @@ const Scene = ({
         onClose={() => {
           setShowNodeMenu(false);
         }}
-        anchorReference="anchorPosition"
         anchorPosition={contextMenuPosiont}
         onDelete={sceneState.deleteSelectedElements}
         onCut={sceneState.cutSelectedNodesToClipboard}
@@ -74,7 +73,6 @@ const Scene = ({
         onClose={() => {
           setShowEdgeMenu(false);
         }}
-        anchorReference="anchorPosition"
         anchorPosition={contextMenuPosiont}
         onDelete={sceneState.deleteSelectedElements}
       />

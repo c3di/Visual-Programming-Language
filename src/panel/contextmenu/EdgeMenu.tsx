@@ -10,13 +10,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 const EdgeMenu = memo(function EdgeMenu({
   open,
   onClose,
-  anchorReference = 'anchorPosition',
   anchorPosition,
   onDelete,
 }: {
   open: boolean;
   onClose: () => void;
-  anchorReference: 'anchorPosition' | 'anchorEl' | undefined;
   anchorPosition: { top: number; left: number };
   onDelete: () => void;
 }): JSX.Element {
@@ -24,7 +22,7 @@ const EdgeMenu = memo(function EdgeMenu({
     <Menu
       open={open}
       onClose={onClose}
-      anchorReference={anchorReference}
+      anchorReference="anchorPosition"
       anchorPosition={anchorPosition}
     >
       <MenuList>
