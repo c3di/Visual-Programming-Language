@@ -111,6 +111,7 @@ const Scene = ({
         onPaneContextMenu={(e) => {
           e.preventDefault();
           e.stopPropagation();
+          sceneState.selectAll(false);
           setContextMenuPosition({ left: e.clientX, top: e.clientY });
           setShowSearchMenu(true);
         }}
