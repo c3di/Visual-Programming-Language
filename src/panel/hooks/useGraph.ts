@@ -41,7 +41,13 @@ export interface GraphState {
   deleteAllEdgesOfNode: (nodeId: string) => void;
   deleteAllEdgesOfSelectedNodes: () => void;
   deleteAllEdgesOfHandle: (nodeId: string, handleId: string) => void;
-  addElements: (newNodes: Node[], newEdges: Edge[]) => void;
+  addElements: ({
+    newNodes,
+    newEdges,
+  }: {
+    newNodes?: Node[];
+    newEdges?: Edge[];
+  }) => void;
   getHandleConnectionCounts: (nodeId: string, handleId: string) => number;
   toJSON: () => string;
   fromJSON: (graph: SerializedGraph) => void;
@@ -147,10 +153,13 @@ export default function useGraph(
     [nodes]
   );
 
-  const addElements = useCallback((newNodes: Node[], newEdges: Edge[]) => {
-    setNodes((nds) => [...nds, ...newNodes]);
-    setEdges((eds) => [...eds, ...newEdges]);
-  }, []);
+  const addElements = useCallback(
+    ({ newNodes, newEdges }: { newNodes?: Node[]; newEdges?: Edge[] }) => {
+      if (newNodes?.length) setNodes((nds) => [...nds, ...newNodes]);
+      if (newEdges?.length) setEdges((eds) => [...eds, ...newEdges]);
+    },
+    []
+  );
 
   const selectedNodes = useCallback(() => {
     return getNodes().filter((n) => n.selected);

@@ -157,7 +157,10 @@ export default function useScene(
           };
         });
         graphState.selectAll(false);
-        graphState.addElements(Object.values(newNodes), newEdges);
+        graphState.addElements({
+          newNodes: Object.values(newNodes),
+          newEdges,
+        });
       })
       .catch((err) => {
         console.error('Failed to paste: ', err);
