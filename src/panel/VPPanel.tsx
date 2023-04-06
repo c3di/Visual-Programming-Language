@@ -53,7 +53,6 @@ const Scene = ({
         anchorPosition={contextMenu.contextMenuPosiont}
         nodeConfigs={nodeConfigRegistry.getAllNodeConfigs()}
         addNode={sceneState.addNode}
-        extraCommands={contextMenu.extraCommands}
       />
       <NodeMenu
         open={contextMenu.showNodeMenu}

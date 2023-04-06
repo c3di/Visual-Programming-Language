@@ -96,13 +96,13 @@ function ControlledTreeView({
   toExpand,
   onItemClick,
   onClose,
-  extraCommands,
+  commands,
 }: {
   treeData: TreeItemData[];
   toExpand: boolean;
   onItemClick: (configType: string | undefined) => void;
   onClose: () => void;
-  extraCommands?: Command[];
+  commands?: Command[];
 }): JSX.Element {
   const [expanded, setExpanded] = useState<string[]>([]);
   const handleToggle = (e: React.SyntheticEvent, nodeIds: string[]): void => {
@@ -150,13 +150,13 @@ function ControlledTreeView({
       sx={{ height: 110, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
     >
       {treeData.map((root) => renderTreeItem(root))}
-      {extraCommands?.map((command) => (
+      {commands?.map((command) => (
         <TreeItem
           key={command.name}
           nodeId={command.name}
           label={command.name}
           onClick={() => {
-            command.onClick();
+            command.action();
             onClose();
           }}
         />
@@ -171,14 +171,14 @@ const SearchMenu = memo(function SearchMenu({
   anchorPosition,
   nodeConfigs,
   addNode,
-  extraCommands,
+  moreCommands,
 }: {
   open: boolean;
   onClose: () => void;
   anchorPosition: { top: number; left: number };
   nodeConfigs: Record<string, any>;
   addNode: (configType: string) => void;
-  extraCommands?: Command[];
+  moreCommands?: Command[];
 }): JSX.Element {
   const [treeData] = useState<TreeItemData[]>(
     nodeConfigsToTreeData(nodeConfigs)
@@ -226,6 +226,21 @@ const SearchMenu = memo(function SearchMenu({
     }
   }, []);
 
+  const [commands] = useState<Command[]>([
+    {
+      name: 'Add Comment...',
+      action: () => {
+        addNode('comment');
+      },
+    },
+    {
+      name: 'Add Reroute...',
+      action: () => {
+        addNode('reroute');
+      },
+    },
+  ]);
+
   return (
     <Menu
       onContextMenu={(e) => {
@@ -242,7 +257,7 @@ const SearchMenu = memo(function SearchMenu({
         toExpand={toExapand}
         onItemClick={onItemClick}
         onClose={onClose}
-        extraCommands={extraCommands}
+        commands={commands}
       />
     </Menu>
   );
