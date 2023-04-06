@@ -34,20 +34,7 @@ const Scene = ({
   const sceneState = useScene(graphState, mousePos);
   const { onNodeDragStart, onNodeDragStop, isValidConnection } = sceneState;
   const { onKeyDown } = useKeyDown(sceneState);
-  const {
-    showNodeMenu,
-    setShowNodeMenu,
-    showEdgeMenu,
-    setShowEdgeMenu,
-    showHandleMenu,
-    setShowHandleMenu,
-    contextMenuPosiont,
-    showSearchMenu,
-    setShowSearchMenu,
-    setContextMenuPosition,
-    clickedHandle,
-    clickedNodeId,
-  } = useContextMenu();
+  const contextMenu = useContextMenu();
   const {
     view: viewSetting,
     select: selectSetting,
@@ -59,20 +46,21 @@ const Scene = ({
   return (
     <>
       <SearchMenu
-        open={showSearchMenu}
+        open={contextMenu.showSearchMenu}
         onClose={() => {
-          setShowSearchMenu(false);
+          contextMenu.setShowSearchMenu(false);
         }}
-        anchorPosition={contextMenuPosiont}
+        anchorPosition={contextMenu.contextMenuPosiont}
         nodeConfigs={nodeConfigRegistry.getAllNodeConfigs()}
         addNode={sceneState.addNode}
+        extraCommands={contextMenu.extraCommands}
       />
       <NodeMenu
-        open={showNodeMenu}
+        open={contextMenu.showNodeMenu}
         onClose={() => {
-          setShowNodeMenu(false);
+          contextMenu.setShowNodeMenu(false);
         }}
-        anchorPosition={contextMenuPosiont}
+        anchorPosition={contextMenu.contextMenuPosiont}
         onDelete={sceneState.deleteSelectedElements}
         onCut={sceneState.cutSelectedNodesToClipboard}
         onCopy={sceneState.copySelectedNodeToClipboard}
@@ -81,25 +69,28 @@ const Scene = ({
         onBreakNodeLinks={sceneState.deleteAllEdgesOfSelectedNodes}
       />
       <EdgeMenu
-        open={showEdgeMenu}
+        open={contextMenu.showEdgeMenu}
         onClose={() => {
-          setShowEdgeMenu(false);
+          contextMenu.setShowEdgeMenu(false);
         }}
-        anchorPosition={contextMenuPosiont}
+        anchorPosition={contextMenu.contextMenuPosiont}
         onDelete={sceneState.deleteSelectedElements}
       />
       <HandleMenu
-        open={showHandleMenu}
+        open={contextMenu.showHandleMenu}
         onClose={() => {
-          setShowHandleMenu(false);
+          contextMenu.setShowHandleMenu(false);
         }}
-        connection={clickedHandle.current?.connection}
-        anchorPosition={contextMenuPosiont}
+        connection={contextMenu.clickedHandle.current?.connection}
+        anchorPosition={contextMenu.contextMenuPosiont}
         onBreakLinks={() => {
-          if (clickedHandle.current && clickedNodeId.current)
+          if (
+            contextMenu.clickedHandle.current &&
+            contextMenu.clickedNodeId.current
+          )
             sceneState.deleteAllEdgesOfHandle(
-              clickedNodeId.current,
-              clickedHandle.current.id
+              contextMenu.clickedNodeId.current,
+              contextMenu.clickedHandle.current.id
             );
         }}
       />
@@ -112,13 +103,19 @@ const Scene = ({
           e.preventDefault();
           e.stopPropagation();
           sceneState.selectAll(false);
-          setContextMenuPosition({ left: e.clientX, top: e.clientY });
-          setShowSearchMenu(true);
+          contextMenu.setContextMenuPosition({
+            left: e.clientX,
+            top: e.clientY,
+          });
+          contextMenu.setShowSearchMenu(true);
         }}
         onNodeContextMenu={(e, node) => {
           e.preventDefault();
           if (!node.selected) sceneState.selectNode(node.id);
-          setContextMenuPosition({ left: e.clientX, top: e.clientY });
+          contextMenu.setContextMenuPosition({
+            left: e.clientX,
+            top: e.clientY,
+          });
           const handle = e.target as HTMLElement;
           if (handle?.classList.contains('react-flow__handle')) {
             const id = handle.dataset.handleid;
@@ -129,16 +126,19 @@ const Scene = ({
               id
             );
             if (connection === null) return;
-            clickedHandle.current = { id, connection };
-            clickedNodeId.current = node.id;
-            setShowHandleMenu(true);
-          } else setShowNodeMenu(true);
+            contextMenu.clickedHandle.current = { id, connection };
+            contextMenu.clickedNodeId.current = node.id;
+            contextMenu.setShowHandleMenu(true);
+          } else contextMenu.setShowNodeMenu(true);
         }}
         onEdgeContextMenu={(e, edge) => {
           e.preventDefault();
           sceneState.selectEdge(edge.id);
-          setContextMenuPosition({ left: e.clientX, top: e.clientY });
-          setShowEdgeMenu(true);
+          contextMenu.setContextMenuPosition({
+            left: e.clientX,
+            top: e.clientY,
+          });
+          contextMenu.setShowEdgeMenu(true);
         }}
         ref={domRef}
         nodes={nodes}

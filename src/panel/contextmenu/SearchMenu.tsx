@@ -7,6 +7,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { type NodeConfig } from '../types';
+import { type Command } from '../hooks';
 
 let itemId = 0;
 
@@ -82,10 +83,14 @@ function ControlledTreeView({
   treeData,
   toExpand,
   onItemClick,
+  onClose,
+  extraCommands,
 }: {
   treeData: TreeItemData[];
   toExpand: boolean;
   onItemClick: (configType: string | undefined) => void;
+  onClose: () => void;
+  extraCommands?: Command[];
 }): JSX.Element {
   const [expanded, setExpanded] = useState<string[]>([]);
   const handleToggle = (e: React.SyntheticEvent, nodeIds: string[]): void => {
@@ -133,6 +138,17 @@ function ControlledTreeView({
       sx={{ height: 110, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
     >
       {treeData.map((root) => renderTreeItem(root))}
+      {extraCommands?.map((command) => (
+        <TreeItem
+          key={command.name}
+          nodeId={command.name}
+          label={command.name}
+          onClick={() => {
+            command.onClick();
+            onClose();
+          }}
+        />
+      ))}
     </TreeView>
   );
 }
@@ -143,12 +159,14 @@ const SearchMenu = memo(function SearchMenu({
   anchorPosition,
   nodeConfigs,
   addNode,
+  extraCommands,
 }: {
   open: boolean;
   onClose: () => void;
   anchorPosition: { top: number; left: number };
   nodeConfigs: Record<string, any>;
   addNode: (configType: string) => void;
+  extraCommands?: Command[];
 }): JSX.Element {
   const [treeData] = useState<TreeItemData[]>(
     nodeConfigsToTreeData(nodeConfigs)
@@ -211,6 +229,8 @@ const SearchMenu = memo(function SearchMenu({
         treeData={filteredTreeData}
         toExpand={toExapand}
         onItemClick={onItemClick}
+        onClose={onClose}
+        extraCommands={extraCommands}
       />
     </Menu>
   );

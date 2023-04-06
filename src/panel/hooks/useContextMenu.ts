@@ -1,4 +1,9 @@
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
+
+export interface Command {
+  name: string;
+  onClick: () => void;
+}
 
 export default function useContextMenu(): {
   showNodeMenu: boolean;
@@ -19,6 +24,9 @@ export default function useContextMenu(): {
     top: number;
     left: number;
   }) => void;
+  extraCommands: Command[];
+  addExtraCommands: (extraCommands: Command[]) => void;
+  removeExtraCommand: (name: string) => void;
 } {
   const [showNodeMenu, setShowNodeMenu] = useState(false);
   const [showEdgeMenu, setShowEdgeMenu] = useState(false);
@@ -30,6 +38,22 @@ export default function useContextMenu(): {
     top: number;
     left: number;
   }>({ top: 0, left: 0 });
+  const [extraCommands, setExtraCommands] = useState<Command[]>([
+    {
+      name: 'test',
+      onClick: () => {
+        console.log('test');
+      },
+    },
+  ]);
+  const addExtraCommands = useCallback((extraCommands: Command[]): void => {
+    setExtraCommands([...extraCommands, ...extraCommands]);
+  }, []);
+
+  const removeExtraCommand = useCallback((name: string): void => {
+    setExtraCommands(extraCommands.filter((command) => command.name !== name));
+  }, []);
+
   return {
     showNodeMenu,
     setShowNodeMenu,
@@ -43,5 +67,8 @@ export default function useContextMenu(): {
     setShowHandleMenu,
     contextMenuPosiont,
     setContextMenuPosition,
+    extraCommands,
+    addExtraCommands,
+    removeExtraCommand,
   };
 }
