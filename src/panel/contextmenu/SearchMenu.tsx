@@ -129,7 +129,7 @@ function ControlledTreeView({
         nodeId={item.id}
         label={item.name}
         onClick={() => {
-          if (Array.isArray(item.children)) onItemClick(item.configType);
+          if (!Array.isArray(item.children)) onItemClick(item.configType);
         }}
       >
         {Array.isArray(item.children)
