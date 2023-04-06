@@ -13,6 +13,7 @@ let itemId = 0;
 interface TreeItemData {
   id: string;
   name: string;
+  configType?: string;
   children?: readonly TreeItemData[];
 }
 
@@ -31,6 +32,7 @@ const nodeConfigToTreeItemData = (
   return {
     id: String(itemId++),
     name,
+    configType: nodeConfig.type,
     children: Object.entries(nodeConfig.isDir ? nodeConfig.nodes : {}).map(
       ([name, config]) => nodeConfigToTreeItemData(name, config)
     ),
@@ -79,9 +81,11 @@ function SearchInput({
 function ControlledTreeView({
   treeData,
   toExpand,
+  onItemClick,
 }: {
   treeData: TreeItemData[];
   toExpand: boolean;
+  onItemClick: (configType: string | undefined) => void;
 }): JSX.Element {
   const [expanded, setExpanded] = useState<string[]>([]);
   const handleToggle = (e: React.SyntheticEvent, nodeIds: string[]): void => {
@@ -103,7 +107,15 @@ function ControlledTreeView({
 
   const renderTreeItem = useCallback(
     (item: TreeItemData): JSX.Element => (
-      <TreeItem key={item.id} nodeId={item.id} label={item.name}>
+      <TreeItem
+        key={item.id}
+        nodeId={item.id}
+        label={item.name}
+        onClick={() => {
+          console.log(item.configType);
+          if (Array.isArray(item.children)) onItemClick(item.configType);
+        }}
+      >
         {Array.isArray(item.children)
           ? item.children.map((node) => renderTreeItem(node))
           : null}
@@ -111,6 +123,7 @@ function ControlledTreeView({
     ),
     []
   );
+
   return (
     <TreeView
       aria-label="nodes types"
@@ -129,14 +142,18 @@ const SearchMenu = memo(function SearchMenu({
   open,
   onClose,
   anchorPosition,
-  configs,
+  nodeConfigs,
+  addNode,
 }: {
   open: boolean;
   onClose: () => void;
   anchorPosition: { top: number; left: number };
-  configs: Record<string, any>;
+  nodeConfigs: Record<string, any>;
+  addNode: (configType: string) => void;
 }): JSX.Element {
-  const [treeData] = useState<TreeItemData[]>(nodeConfigsToTreeData(configs));
+  const [treeData] = useState<TreeItemData[]>(
+    nodeConfigsToTreeData(nodeConfigs)
+  );
   const [filteredTreeData, setFilteredTreeData] =
     useState<TreeItemData[]>(treeData);
   const [toExapand, setToExapand] = useState<boolean>(false);
@@ -173,6 +190,13 @@ const SearchMenu = memo(function SearchMenu({
     }
   }, []);
 
+  const onItemClick = useCallback((configType: string | undefined): void => {
+    if (configType) {
+      addNode(configType);
+      onClose();
+    }
+  }, []);
+
   return (
     <Menu
       onContextMenu={(e) => {
@@ -184,7 +208,11 @@ const SearchMenu = memo(function SearchMenu({
       anchorPosition={anchorPosition}
     >
       <SearchInput onChange={search} />
-      <ControlledTreeView treeData={filteredTreeData} toExpand={toExapand} />
+      <ControlledTreeView
+        treeData={filteredTreeData}
+        toExpand={toExapand}
+        onItemClick={onItemClick}
+      />
     </Menu>
   );
 });

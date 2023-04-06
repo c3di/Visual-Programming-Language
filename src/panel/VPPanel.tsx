@@ -64,7 +64,8 @@ const Scene = ({
           setShowSearchMenu(false);
         }}
         anchorPosition={contextMenuPosiont}
-        configs={nodeConfigRegistry.getAllNodeConfigs()}
+        nodeConfigs={nodeConfigRegistry.getAllNodeConfigs()}
+        addNode={sceneState.addNode}
       />
       <NodeMenu
         open={showNodeMenu}

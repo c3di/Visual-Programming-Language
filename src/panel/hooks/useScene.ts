@@ -1,11 +1,13 @@
-import { useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { type Node, type ClipboardInfo, isCommentNode } from '../types';
 import { type GraphState } from './useGraph';
+import { deserializer } from '../Deserializer';
 
 export interface SceneState {
   selectAll: (sure: boolean) => void;
   selectEdge: (edgeId: string) => void;
   selectNode: (nodeId: string) => void;
+  addNode: (configType: string) => void;
   clearEdgeSelection: () => void;
   getHandleConnectionCounts: (nodeId: string, handleId: string) => number;
   onNodeDragStart: (evt: any, node: Node) => void;
@@ -177,9 +179,26 @@ export default function useScene(
     graphState.deleteSelectedNodes();
   };
 
+  const addNode = useCallback((configType: string) => {
+    const id = getFreeUniqueNodeIds(1)[0];
+    const position = {
+      x: mousePos.current.mouseX,
+      y: mousePos.current.mouseY,
+    };
+
+    const config = deserializer.serializedToGraphNodeConfig({
+      id,
+      type: configType,
+      position,
+    });
+    const node = deserializer.configToNode(config);
+    graphState.addElements({ newNodes: [node] });
+  }, []);
+
   return {
     selectNode: graphState.selectNode,
     selectEdge: graphState.selectEdge,
+    addNode,
     selectAll: graphState.selectAll,
     clearEdgeSelection: graphState.clearEdgeSelection,
     getHandleConnectionCounts: graphState.getHandleConnectionCounts,
