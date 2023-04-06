@@ -20,6 +20,7 @@ export interface NodeConfig {
 export interface NodeDirConfig {
   isDir: true;
   nodes: Record<string, NodeConfig>;
+  notShowInMenu?: boolean;
 }
 
 export interface GraphNodeConfig extends NodeConfig {

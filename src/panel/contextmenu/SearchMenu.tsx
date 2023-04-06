@@ -21,22 +21,34 @@ interface TreeItemData {
 const nodeConfigsToTreeData = (
   nodeConfigs: Record<string, NodeConfig>
 ): TreeItemData[] => {
-  return Object.entries(nodeConfigs).map(([name, config]) =>
-    nodeConfigToTreeItemData(name, config)
-  );
+  const data: TreeItemData[] = [];
+  for (const name in nodeConfigs) {
+    const config = nodeConfigs[name];
+    if (config.notShowInMenu) continue;
+    const itemData = nodeConfigToTreeItemData(name, config);
+    if (itemData) data.push(itemData);
+  }
+  return data;
 };
 
 const nodeConfigToTreeItemData = (
   name: string,
   nodeConfig: any
-): TreeItemData => {
+): TreeItemData | undefined => {
+  if (nodeConfig.notShowInMenu) return;
+  const children = [];
+  for (const name in nodeConfig.isDir ? nodeConfig.nodes : {}) {
+    const config = nodeConfig.nodes[name];
+    if (config.notShowInMenu) continue;
+    const itemData = nodeConfigToTreeItemData(name, config);
+    if (itemData) children.push(itemData);
+  }
+
   return {
     id: String(itemId++),
     name,
     configType: nodeConfig.type,
-    children: Object.entries(nodeConfig.isDir ? nodeConfig.nodes : {}).map(
-      ([name, config]) => nodeConfigToTreeItemData(name, config)
-    ),
+    children: children.length > 0 ? children : undefined,
   };
 };
 

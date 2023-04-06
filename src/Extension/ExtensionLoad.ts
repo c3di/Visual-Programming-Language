@@ -9,6 +9,7 @@ interface configLibrary {
   name?: string;
   Nodes?: Record<string, any>;
   Types?: Record<string, any>;
+  notShowInMenu?: boolean;
 }
 
 export const extensionLoad = (): void => {
@@ -29,6 +30,7 @@ export const extensionLoad = (): void => {
         nodeConfigRegistry.registerNodeConfig(lib.name, {
           isDir: true,
           nodes,
+          notShowInMenu: lib.notShowInMenu,
         });
       else
         Object.entries(nodes).forEach(([name, node]) => {
