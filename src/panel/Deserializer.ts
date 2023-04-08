@@ -36,7 +36,7 @@ export class Deserializer {
       acc[title] = {
         ...handle,
         ...sNode.inputs?.[title],
-        connection: sNode.connection ?? 0,
+        connection: sNode.inputs?.[title].connection ?? 0,
       };
       return acc;
     }, {});
@@ -47,7 +47,7 @@ export class Deserializer {
       acc[title] = {
         ...handle,
         ...sNode.outputs?.[title],
-        connection: sNode.connection ?? 0,
+        connection: sNode.outputs?.[title].connection ?? 0,
       };
       return acc;
     }, {});
