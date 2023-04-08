@@ -132,6 +132,7 @@ export default function useScene(
               action: pasteFromClipboard,
               labelIcon: ContentPaste,
               labelInfo: 'Ctrl+V',
+              tooltip: 'Paste from the clipboard',
             },
           ];
         });

@@ -17,6 +17,7 @@ interface TreeItemData {
   name: string;
   configType?: string;
   children?: readonly TreeItemData[];
+  tooltip?: string;
 }
 
 const nodeConfigsToTreeData = (
@@ -50,6 +51,7 @@ const nodeConfigToTreeItemData = (
     name,
     configType: nodeConfig.type,
     children: children.length > 0 ? children : undefined,
+    tooltip: nodeConfig.tooltip,
   };
 };
 
@@ -132,6 +134,7 @@ function ControlledTreeView({
         onClick={() => {
           if (!Array.isArray(item.children)) onItemClick(item.configType);
         }}
+        title={item.tooltip}
       >
         {Array.isArray(item.children)
           ? item.children.map((node) => renderTreeItem(node))
@@ -164,6 +167,7 @@ function ControlledTreeView({
             command.action();
             onClose();
           }}
+          title={command.tooltip}
         />
       ))}
     </TreeView>
@@ -237,12 +241,14 @@ const SearchMenu = memo(function SearchMenu({
       action: () => {
         addNode('comment');
       },
+      tooltip: 'Add a comment node',
     },
     {
       name: 'Add Reroute...',
       action: () => {
         addNode('reroute');
       },
+      tooltip: 'Add a reroute node',
     },
     ...(moreCommands ?? []),
   ]);

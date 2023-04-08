@@ -6,6 +6,7 @@ export interface Command {
   action: () => void;
   labelIcon?: React.ElementType<SvgIconProps> | undefined;
   labelInfo?: string;
+  tooltip?: string;
 }
 
 export interface ContextMenu {
