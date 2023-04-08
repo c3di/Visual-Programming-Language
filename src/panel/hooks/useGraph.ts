@@ -14,7 +14,7 @@ import {
   type EdgeChange,
   useReactFlow,
 } from 'reactflow';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { serializer } from '../Serializer';
 import { deserializer } from '../Deserializer';
 
@@ -49,6 +49,7 @@ export interface GraphState {
     newEdges?: Edge[];
   }) => void;
   getHandleConnectionCounts: (nodeId: string, handleId: string) => number;
+  anyConnectableNodeSelected: boolean;
   toJSON: () => string;
   fromJSON: (graph: SerializedGraph) => void;
 }
@@ -270,6 +271,13 @@ export default function useGraph(
     []
   );
 
+  const isAnyConnectableNodeSelected = useCallback((): boolean => {
+    return (
+      getNodes().find((n) => n.selected && n.data.inputs && n.data.outputs) !==
+      undefined
+    );
+  }, []);
+
   const toJSON = useCallback((): string => {
     const graph = serializer.serialize({
       nodes: getNodes(),
@@ -287,6 +295,12 @@ export default function useGraph(
   useEffect(() => {
     if (graph) fromJSON(graph);
   }, []);
+
+  const [anyConnectableNodeSelected, setAnyConnectableNodeSelected] =
+    useState(false);
+  useEffect(() => {
+    setAnyConnectableNodeSelected(isAnyConnectableNodeSelected());
+  }, [nodes]);
 
   return {
     getFreeUniqueNodeIds,
@@ -311,6 +325,7 @@ export default function useGraph(
     deleteAllEdgesOfHandle,
     addElements,
     getHandleConnectionCounts,
+    anyConnectableNodeSelected,
     toJSON,
     fromJSON,
   };

@@ -18,6 +18,7 @@ const NodeMenu = memo(function NodeMenu({
   onCut,
   onCopy,
   onDuplicate,
+  anyConnectableNodeSelected,
   onBreakNodeLinks,
 }: {
   open: boolean;
@@ -27,7 +28,8 @@ const NodeMenu = memo(function NodeMenu({
   onCut: () => void;
   onCopy: () => void;
   onDuplicate: () => void;
-  onBreakNodeLinks: () => void;
+  anyConnectableNodeSelected: boolean;
+  onBreakNodeLinks?: () => void;
 }): JSX.Element {
   return (
     <Menu
@@ -93,14 +95,16 @@ const NodeMenu = memo(function NodeMenu({
             CTRL+D
           </Typography>
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            onBreakNodeLinks();
-            onClose();
-          }}
-        >
-          Break Node Link(s)
-        </MenuItem>
+        {anyConnectableNodeSelected && onBreakNodeLinks && (
+          <MenuItem
+            onClick={() => {
+              onBreakNodeLinks();
+              onClose();
+            }}
+          >
+            Break Node Link(s)
+          </MenuItem>
+        )}
       </MenuList>
     </Menu>
   );
