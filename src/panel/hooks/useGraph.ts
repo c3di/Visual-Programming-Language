@@ -14,6 +14,7 @@ import {
   type NodeChange,
   type EdgeChange,
   useReactFlow,
+  MarkerType,
 } from 'reactflow';
 import { useCallback, useEffect, useState } from 'react';
 import { serializer } from '../Serializer';
@@ -115,7 +116,17 @@ export default function useGraph(
 
   const addEdge = useCallback((params: Connection) => {
     deleteEdgesIfReachMaxConnection(params);
-    setEdges((eds) => rcAddEdge(params, eds));
+    setEdges((eds) =>
+      rcAddEdge(
+        {
+          ...params,
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+          },
+        },
+        eds
+      )
+    );
     updateHandleConnection(params.source, params.sourceHandle, true, true);
     updateHandleConnection(params.target, params.targetHandle, true, false);
   }, []);
