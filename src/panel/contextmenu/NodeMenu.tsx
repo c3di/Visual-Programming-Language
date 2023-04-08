@@ -33,7 +33,6 @@ const NodeMenu = memo(function NodeMenu({
   anyConnectionToSelectedNode: boolean;
   onBreakNodeLinks?: () => void;
 }): JSX.Element {
-  console.log(anyConnectionToSelectedNode);
   return (
     <Menu
       open={open}
