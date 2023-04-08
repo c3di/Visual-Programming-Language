@@ -18,7 +18,6 @@ const NodeMenu = memo(function NodeMenu({
   onCut,
   onCopy,
   onDuplicate,
-  onPaste,
   onBreakNodeLinks,
 }: {
   open: boolean;
@@ -28,7 +27,6 @@ const NodeMenu = memo(function NodeMenu({
   onCut: () => void;
   onCopy: () => void;
   onDuplicate: () => void;
-  onPaste: () => void;
   onBreakNodeLinks: () => void;
 }): JSX.Element {
   return (

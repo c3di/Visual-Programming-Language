@@ -65,7 +65,6 @@ const Scene = ({
         onCut={sceneState.cutSelectedNodesToClipboard}
         onCopy={sceneState.copySelectedNodeToClipboard}
         onDuplicate={sceneState.duplicateSelectedNodes}
-        onPaste={sceneState.pasteFromClipboard}
         onBreakNodeLinks={sceneState.deleteAllEdgesOfSelectedNodes}
       />
       <EdgeMenu
