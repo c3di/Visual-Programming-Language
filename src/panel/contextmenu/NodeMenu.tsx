@@ -19,6 +19,7 @@ const NodeMenu = memo(function NodeMenu({
   onCopy,
   onDuplicate,
   anyConnectableNodeSelected,
+  anyConnectionToSelectedNode,
   onBreakNodeLinks,
 }: {
   open: boolean;
@@ -29,8 +30,10 @@ const NodeMenu = memo(function NodeMenu({
   onCopy: () => void;
   onDuplicate: () => void;
   anyConnectableNodeSelected: boolean;
+  anyConnectionToSelectedNode: boolean;
   onBreakNodeLinks?: () => void;
 }): JSX.Element {
+  console.log(anyConnectionToSelectedNode);
   return (
     <Menu
       open={open}
@@ -97,6 +100,7 @@ const NodeMenu = memo(function NodeMenu({
         </MenuItem>
         {anyConnectableNodeSelected && onBreakNodeLinks && (
           <MenuItem
+            disabled={!anyConnectionToSelectedNode}
             onClick={() => {
               onBreakNodeLinks();
               onClose();

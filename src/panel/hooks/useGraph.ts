@@ -4,6 +4,7 @@ import {
   isDataTypeMatch,
   getMaxConnection,
   type SerializedGraph,
+  type HandleData,
 } from '../types';
 import {
   useNodesState,
@@ -50,6 +51,7 @@ export interface GraphState {
   }) => void;
   getHandleConnectionCounts: (nodeId: string, handleId: string) => number;
   anyConnectableNodeSelected: boolean;
+  anyConnectionToSelectedNode: boolean;
   toJSON: () => string;
   fromJSON: (graph: SerializedGraph) => void;
 }
@@ -302,6 +304,23 @@ export default function useGraph(
     setAnyConnectableNodeSelected(isAnyConnectableNodeSelected());
   }, [nodes]);
 
+  const [anyConnectionToSelectedNode, setAnyConnectionToSelectedNode] =
+    useState(false);
+  useEffect(() => {
+    for (const n of selectedNodes()) {
+      for (const handle of Object.values({
+        ...(n.data.inputs ?? {}),
+        ...(n.data.outputs ?? {}),
+      })) {
+        if ((handle as HandleData).connection > 0) {
+          setAnyConnectionToSelectedNode(true);
+          return;
+        }
+      }
+    }
+    setAnyConnectionToSelectedNode(false);
+  }, [nodes]);
+
   return {
     getFreeUniqueNodeIds,
     nodes,
@@ -326,6 +345,7 @@ export default function useGraph(
     addElements,
     getHandleConnectionCounts,
     anyConnectableNodeSelected,
+    anyConnectionToSelectedNode,
     toJSON,
     fromJSON,
   };
