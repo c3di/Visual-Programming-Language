@@ -1,7 +1,9 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { type Node, type ClipboardInfo, isCommentNode } from '../types';
 import { type GraphState } from './useGraph';
 import { deserializer } from '../Deserializer';
+import { type Command } from './useContextMenu';
+import ContentPaste from '@mui/icons-material/ContentPaste';
 
 export interface SceneState {
   selectAll: (sure: boolean) => void;
@@ -22,6 +24,7 @@ export interface SceneState {
   deleteAllEdgesOfHandle: (nodeId: string, handleId: string) => void;
   deleteAllEdgesOfSelectedNodes: () => void;
   isValidConnection: (params: any) => boolean;
+  extraCommands: Command[];
 }
 export default function useScene(
   graphState: GraphState,
@@ -32,6 +35,7 @@ export default function useScene(
 ): SceneState {
   const { nodes, selectedNodes, edges, getFreeUniqueNodeIds } = graphState;
   const nodesRefInCommentNode = useRef({});
+  const [extraCommands, setExtraCommands] = useState<Command[]>([]);
   const onNodeDragStart = (evt: any, node: Node): void => {
     nodes.forEach((node) => {
       saveNodesInSelectedCommentNode(node, node.id);
@@ -115,9 +119,24 @@ export default function useScene(
       return clipboard.nodes[edge.source] && clipboard.nodes[edge.target];
     });
     const clipboardStr = JSON.stringify(clipboard);
-    navigator.clipboard.writeText(clipboardStr).catch((err) => {
-      console.error('Failed to copy: ', err);
-    });
+    navigator.clipboard
+      .writeText(clipboardStr)
+      .then(() => {
+        setExtraCommands((commands) => {
+          return [
+            ...commands,
+            {
+              name: 'Paste',
+              action: pasteFromClipboard,
+              labelIcon: ContentPaste,
+              labelInfo: 'Ctrl+V',
+            },
+          ];
+        });
+      })
+      .catch((err) => {
+        console.error('Failed to copy: ', err);
+      });
   };
 
   const pasteFromClipboard = (): void => {
@@ -214,5 +233,6 @@ export default function useScene(
     deleteAllEdgesOfHandle: graphState.deleteAllEdgesOfHandle,
     deleteAllEdgesOfSelectedNodes: graphState.deleteAllEdgesOfSelectedNodes,
     isValidConnection: graphState.isValidConnection,
+    extraCommands,
   };
 }

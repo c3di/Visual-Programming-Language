@@ -8,6 +8,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { type NodeConfig } from '../types';
 import { type Command } from '../hooks';
+import StyledTreeItem from './StyledTreeItem';
 
 let itemId = 0;
 
@@ -151,10 +152,14 @@ function ControlledTreeView({
     >
       {treeData.map((root) => renderTreeItem(root))}
       {commands?.map((command) => (
-        <TreeItem
+        <StyledTreeItem
           key={command.name}
           nodeId={command.name}
-          label={command.name}
+          labelText={command.name}
+          labelIcon={command.labelIcon}
+          labelInfo={command.labelInfo}
+          color="#1a73e8"
+          bgColor="#e8f0fe"
           onClick={() => {
             command.action();
             onClose();
@@ -226,7 +231,7 @@ const SearchMenu = memo(function SearchMenu({
     }
   }, []);
 
-  const [commands] = useState<Command[]>([
+  const [commands, setCommand] = useState<Command[]>([
     {
       name: 'Add Comment...',
       action: () => {
@@ -239,7 +244,20 @@ const SearchMenu = memo(function SearchMenu({
         addNode('reroute');
       },
     },
+    ...(moreCommands ?? []),
   ]);
+
+  useEffect(() => {
+    if (!moreCommands || moreCommands.length === 0) return;
+    const commandNames = commands.map((command) => command.name);
+    const newCommands = [];
+    for (const command of moreCommands) {
+      if (command.name in commandNames) continue;
+      newCommands.push(command);
+    }
+
+    setCommand([...commands, ...newCommands]);
+  }, [moreCommands]);
 
   return (
     <Menu

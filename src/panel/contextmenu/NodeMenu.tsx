@@ -8,7 +8,6 @@ import Typography from '@mui/material/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ContentCut from '@mui/icons-material/ContentCut';
 import ContentCopy from '@mui/icons-material/ContentCopy';
-import ContentPaste from '@mui/icons-material/ContentPaste';
 import DifferenceIcon from '@mui/icons-material/Difference';
 
 const NodeMenu = memo(function NodeMenu({
@@ -94,20 +93,6 @@ const NodeMenu = memo(function NodeMenu({
           <ListItemText>Duplicate</ListItemText>
           <Typography variant="body2" color="text.secondary">
             CTRL+D
-          </Typography>
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            onPaste();
-            onClose();
-          }}
-        >
-          <ListItemIcon>
-            <ContentPaste fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>Paste</ListItemText>
-          <Typography variant="body2" color="text.secondary">
-            CTRL+V
           </Typography>
         </MenuItem>
         <MenuItem

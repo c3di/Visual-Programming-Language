@@ -1,8 +1,11 @@
+import { type SvgIconProps } from '@mui/material/SvgIcon';
 import { useRef, useState } from 'react';
 
 export interface Command {
   name: string;
   action: () => void;
+  labelIcon?: React.ElementType<SvgIconProps> | undefined;
+  labelInfo?: string;
 }
 
 export interface ContextMenu {
