@@ -1,5 +1,5 @@
 import { type SvgIconProps } from '@mui/material/SvgIcon';
-import { useRef, useState } from 'react';
+import { useRef, useState, useCallback } from 'react';
 
 export interface Command {
   name: string;
@@ -11,13 +11,11 @@ export interface Command {
 
 export interface ContextMenu {
   showNodeMenu: boolean;
-  setShowNodeMenu: (showNodeMenu: boolean) => void;
   showEdgeMenu: boolean;
-  setShowEdgeMenu: (showEdgeMenu: boolean) => void;
   showHandleMenu: boolean;
-  setShowHandleMenu: (showHandleMenu: boolean) => void;
   showSearchMenu: boolean;
-  setShowSearchMenu: (showSearchMenu: boolean) => void;
+  openMenu: (menu: string) => void;
+  closeMenu: () => void;
   clickedHandle: React.MutableRefObject<{
     connection: number;
     id: string;
@@ -42,18 +40,35 @@ export default function useContextMenu(): ContextMenu {
     left: number;
   }>({ top: 0, left: 0 });
 
+  const menuSetter = {
+    node: setShowNodeMenu,
+    edge: setShowEdgeMenu,
+    handle: setShowHandleMenu,
+    search: setShowSearchMenu,
+  };
+
+  const openMenu = useCallback((menu: string): void => {
+    Object.entries(menuSetter).forEach(([name, setter]) => {
+      setter(name === menu);
+    });
+  }, []);
+
+  const closeMenu = useCallback((): void => {
+    Object.values(menuSetter).forEach((setter) => {
+      setter(false);
+    });
+  }, []);
+
   return {
     showNodeMenu,
-    setShowNodeMenu,
     showEdgeMenu,
-    setShowEdgeMenu,
     showHandleMenu,
     showSearchMenu,
-    setShowSearchMenu,
     clickedHandle,
     clickedNodeId,
-    setShowHandleMenu,
     contextMenuPosiont,
     setContextMenuPosition,
+    openMenu,
+    closeMenu,
   };
 }

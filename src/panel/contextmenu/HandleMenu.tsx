@@ -18,6 +18,9 @@ const HandleMenu = memo(function HandleMenu({
 }): JSX.Element {
   return (
     <Menu
+      onContextMenu={(e) => {
+        e.preventDefault();
+      }}
       open={open}
       onClose={onClose}
       anchorReference="anchorPosition"

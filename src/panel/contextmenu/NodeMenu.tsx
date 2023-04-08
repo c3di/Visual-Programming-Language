@@ -35,6 +35,9 @@ const NodeMenu = memo(function NodeMenu({
 }): JSX.Element {
   return (
     <Menu
+      onContextMenu={(e) => {
+        e.preventDefault();
+      }}
       open={open}
       onClose={onClose}
       anchorReference="anchorPosition"

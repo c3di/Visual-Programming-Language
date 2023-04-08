@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import ReactFlow, {
   SelectionMode,
   ConnectionLineType,
@@ -43,13 +43,16 @@ const Scene = ({
     controlPanel: cpSetting,
     minimap: minimpSetting,
   } = Setting;
+
+  const closeMenu = useCallback((e: React.MouseEvent): void => {
+    if (e.button === 0) contextMenu.closeMenu();
+  }, []);
+
   return (
     <>
       <SearchMenu
         open={contextMenu.showSearchMenu}
-        onClose={() => {
-          contextMenu.setShowSearchMenu(false);
-        }}
+        onClose={contextMenu.closeMenu}
         anchorPosition={contextMenu.contextMenuPosiont}
         nodeConfigs={nodeConfigRegistry.getAllNodeConfigs()}
         addNode={sceneState.addNode}
@@ -57,9 +60,7 @@ const Scene = ({
       />
       <NodeMenu
         open={contextMenu.showNodeMenu}
-        onClose={() => {
-          contextMenu.setShowNodeMenu(false);
-        }}
+        onClose={contextMenu.closeMenu}
         anchorPosition={contextMenu.contextMenuPosiont}
         onDelete={sceneState.deleteSelectedElements}
         onCut={sceneState.cutSelectedNodesToClipboard}
@@ -71,17 +72,13 @@ const Scene = ({
       />
       <EdgeMenu
         open={contextMenu.showEdgeMenu}
-        onClose={() => {
-          contextMenu.setShowEdgeMenu(false);
-        }}
+        onClose={contextMenu.closeMenu}
         anchorPosition={contextMenu.contextMenuPosiont}
         onDelete={sceneState.deleteSelectedElements}
       />
       <HandleMenu
         open={contextMenu.showHandleMenu}
-        onClose={() => {
-          contextMenu.setShowHandleMenu(false);
-        }}
+        onClose={contextMenu.closeMenu}
         connection={contextMenu.clickedHandle.current?.connection}
         anchorPosition={contextMenu.contextMenuPosiont}
         onBreakLinks={() => {
@@ -99,6 +96,16 @@ const Scene = ({
         onMouseMove={(e) => {
           updateMousePos(e.clientX, e.clientY);
         }}
+        onPaneClick={(e) => {
+          closeMenu(e);
+        }}
+        onNodeClick={(e, node) => {
+          closeMenu(e);
+        }}
+        onEdgeClick={(e, edge) => {
+          if (e.ctrlKey && e.button === 0) deleteEdge(edge.id);
+          closeMenu(e);
+        }}
         onKeyDown={onKeyDown}
         onPaneContextMenu={(e) => {
           e.preventDefault();
@@ -108,7 +115,7 @@ const Scene = ({
             left: e.clientX,
             top: e.clientY,
           });
-          contextMenu.setShowSearchMenu(true);
+          contextMenu.openMenu('search');
         }}
         onNodeContextMenu={(e, node) => {
           e.preventDefault();
@@ -129,8 +136,8 @@ const Scene = ({
             if (connection === null) return;
             contextMenu.clickedHandle.current = { id, connection };
             contextMenu.clickedNodeId.current = node.id;
-            contextMenu.setShowHandleMenu(true);
-          } else contextMenu.setShowNodeMenu(true);
+            contextMenu.openMenu('handle');
+          } else contextMenu.openMenu('node');
         }}
         onEdgeContextMenu={(e, edge) => {
           e.preventDefault();
@@ -139,7 +146,7 @@ const Scene = ({
             left: e.clientX,
             top: e.clientY,
           });
-          contextMenu.setShowEdgeMenu(true);
+          contextMenu.openMenu('edge');
         }}
         ref={domRef}
         nodes={nodes}
@@ -148,9 +155,6 @@ const Scene = ({
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         isValidConnection={isValidConnection}
-        onEdgeClick={(e, edge) => {
-          if (e.ctrlKey) deleteEdge(edge.id);
-        }}
         fitView
         attributionPosition="top-right"
         nodeTypes={componentType.nodeTypes}
