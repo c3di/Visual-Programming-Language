@@ -44,9 +44,12 @@ const Scene = ({
     minimap: minimpSetting,
   } = Setting;
 
-  const closeMenu = useCallback((e: React.MouseEvent): void => {
-    if (e.button === 0) contextMenu.closeMenu();
-  }, []);
+  const closeMenu = useCallback(
+    (e: React.MouseEvent | undefined | null, force: boolean = false): void => {
+      if (!e?.button || force) contextMenu.closeMenu();
+    },
+    []
+  );
 
   return (
     <>
@@ -179,10 +182,20 @@ const Scene = ({
           (EdgeSetting.type as ConnectionLineType) || ConnectionLineType.Bezier
         }
         connectionRadius={EdgeSetting.portDetectionRadius}
-        onNodeDragStart={onNodeDragStart}
+        onNodeDragStart={(evt, node) => {
+          closeMenu(evt, true);
+          onNodeDragStart(evt, node);
+        }}
+        onConnectStart={(evt) => {
+          closeMenu(null, true);
+        }}
         onNodeDragStop={onNodeDragStop}
         onMove={(e) => {
           if (e instanceof MouseEvent) updateMousePos(e.clientX, e.clientY);
+          closeMenu(null, true);
+        }}
+        onSelectionStart={(e) => {
+          closeMenu(null, true);
         }}
         onNodeDrag={(e) => {
           updateMousePos(e.clientX, e.clientY);
