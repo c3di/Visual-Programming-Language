@@ -1,8 +1,13 @@
 import { useCallback, useRef, useState } from 'react';
-import { type Node, type ClipboardInfo, isCommentNode } from '../types';
+import {
+  type Node,
+  type ClipboardInfo,
+  isCommentNode,
+  type ConnectionStatus,
+} from '../types';
 import { type GraphState } from './useGraph';
 import { deserializer } from '../Deserializer';
-import { type Command } from './useContextMenu';
+import { type Command } from './useGui';
 import ContentPaste from '@mui/icons-material/ContentPaste';
 
 export interface SceneState {
@@ -23,7 +28,7 @@ export interface SceneState {
   deleteAllEdgesOfNode: (nodeId: string) => void;
   deleteAllEdgesOfHandle: (nodeId: string, handleId: string) => void;
   deleteAllEdgesOfSelectedNodes: () => void;
-  isValidConnection: (params: any) => boolean;
+  isValidConnection: (params: any) => ConnectionStatus;
   anyConnectableNodeSelected: boolean;
   anyConnectionToSelectedNode: boolean;
   extraCommands: Command[];

@@ -22,6 +22,7 @@ type StyledTreeItemProps = TreeItemProps & {
   labelIcon: React.ElementType<SvgIconProps> | undefined;
   labelInfo?: string;
   labelText: string;
+  iconColor?: 'success' | 'error' | 'warning' | undefined;
 };
 
 const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
@@ -64,12 +65,13 @@ export default function StyledTreeItem(
     labelIcon: LabelIcon,
     labelInfo,
     labelText,
+    iconColor,
     ...other
   } = props;
 
   return (
     <StyledTreeItemRoot
-      icon={LabelIcon && <LabelIcon color="inherit" />}
+      icon={LabelIcon && <LabelIcon color={iconColor ?? 'inherit'} />}
       label={
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Typography

@@ -18,3 +18,4 @@ export { type SerializedGraph, type Graph } from './Graph';
 export { type Comment, isCommentNode } from './Comment';
 export { type ClipboardInfo } from './ClipboardInfo';
 export { type MousePos } from './MousePos';
+export { ConnectionAction, type ConnectionStatus } from './ConnectionStatus';

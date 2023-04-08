@@ -4,6 +4,7 @@ import ReactFlow, {
   SelectionMode,
   ConnectionLineType,
   ReactFlowProvider,
+  ConnectionMode,
 } from 'reactflow';
 import { WidgetFactoryProvider } from './Context';
 import Setting from './VPPanelSetting';
@@ -12,13 +13,19 @@ import {
   useScene,
   useKeyDown,
   useTrackMousePos,
-  useContextMenu,
+  useGui,
 } from './hooks';
 import componentType, { Background, ControlPanel, MiniMap } from './components';
 import { type SerializedGraph } from './types';
 import 'reactflow/dist/style.css';
 import './VPPanel.css';
-import { NodeMenu, EdgeMenu, HandleMenu, SearchMenu } from './contextmenu';
+import {
+  NodeMenu,
+  EdgeMenu,
+  HandleMenu,
+  SearchMenu,
+  ConnectionTip,
+} from './gui';
 import { nodeConfigRegistry } from '../Extension';
 
 const Scene = ({
@@ -32,9 +39,9 @@ const Scene = ({
     graphState;
   const { mousePos, updateMousePos } = useTrackMousePos(domRef);
   const sceneState = useScene(graphState, mousePos);
-  const { onNodeDragStart, onNodeDragStop, isValidConnection } = sceneState;
+  const { onNodeDragStart, onNodeDragStop } = sceneState;
   const { onKeyDown } = useKeyDown(sceneState);
-  const contextMenu = useContextMenu();
+  const gui = useGui();
   const {
     view: viewSetting,
     select: selectSetting,
@@ -44,27 +51,32 @@ const Scene = ({
     minimap: minimpSetting,
   } = Setting;
 
-  const closeMenu = useCallback(
+  const closeWidget = useCallback(
     (e: React.MouseEvent | undefined | null, force: boolean = false): void => {
-      if (!e?.button || force) contextMenu.closeMenu();
+      if (!e?.button || force) gui.closeWidget();
     },
     []
   );
-
   return (
     <>
+      <ConnectionTip
+        open={gui.showConnectionTip}
+        onClose={gui.closeWidget}
+        anchorPosition={gui.PosiontOnGui}
+        connectionStatus={gui.connectionStatus}
+      />
       <SearchMenu
-        open={contextMenu.showSearchMenu}
-        onClose={contextMenu.closeMenu}
-        anchorPosition={contextMenu.contextMenuPosiont}
+        open={gui.showSearchMenu}
+        onClose={gui.closeWidget}
+        anchorPosition={gui.PosiontOnGui}
         nodeConfigs={nodeConfigRegistry.getAllNodeConfigs()}
         addNode={sceneState.addNode}
         moreCommands={sceneState.extraCommands}
       />
       <NodeMenu
-        open={contextMenu.showNodeMenu}
-        onClose={contextMenu.closeMenu}
-        anchorPosition={contextMenu.contextMenuPosiont}
+        open={gui.showNodeMenu}
+        onClose={gui.closeWidget}
+        anchorPosition={gui.PosiontOnGui}
         onDelete={sceneState.deleteSelectedElements}
         onCut={sceneState.cutSelectedNodesToClipboard}
         onCopy={sceneState.copySelectedNodeToClipboard}
@@ -74,24 +86,21 @@ const Scene = ({
         onBreakNodeLinks={sceneState.deleteAllEdgesOfSelectedNodes}
       />
       <EdgeMenu
-        open={contextMenu.showEdgeMenu}
-        onClose={contextMenu.closeMenu}
-        anchorPosition={contextMenu.contextMenuPosiont}
+        open={gui.showEdgeMenu}
+        onClose={gui.closeWidget}
+        anchorPosition={gui.PosiontOnGui}
         onDelete={sceneState.deleteSelectedElements}
       />
       <HandleMenu
-        open={contextMenu.showHandleMenu}
-        onClose={contextMenu.closeMenu}
-        connection={contextMenu.clickedHandle.current?.connection}
-        anchorPosition={contextMenu.contextMenuPosiont}
+        open={gui.showHandleMenu}
+        onClose={gui.closeWidget}
+        connection={gui.clickedHandle.current?.connection}
+        anchorPosition={gui.PosiontOnGui}
         onBreakLinks={() => {
-          if (
-            contextMenu.clickedHandle.current &&
-            contextMenu.clickedNodeId.current
-          )
+          if (gui.clickedHandle.current && gui.clickedNodeId.current)
             sceneState.deleteAllEdgesOfHandle(
-              contextMenu.clickedNodeId.current,
-              contextMenu.clickedHandle.current.id
+              gui.clickedNodeId.current,
+              gui.clickedHandle.current.id
             );
         }}
       />
@@ -100,30 +109,30 @@ const Scene = ({
           updateMousePos(e.clientX, e.clientY);
         }}
         onPaneClick={(e) => {
-          closeMenu(e);
+          closeWidget(e);
         }}
         onNodeClick={(e, node) => {
-          closeMenu(e);
+          closeWidget(e);
         }}
         onEdgeClick={(e, edge) => {
           if (e.ctrlKey && e.button === 0) deleteEdge(edge.id);
-          closeMenu(e);
+          closeWidget(e);
         }}
         onKeyDown={onKeyDown}
         onPaneContextMenu={(e) => {
           e.preventDefault();
           e.stopPropagation();
           sceneState.selectAll(false);
-          contextMenu.setContextMenuPosition({
+          gui.setPosiontOnGui({
             left: e.clientX,
             top: e.clientY,
           });
-          contextMenu.openMenu('search');
+          gui.openWidget('search');
         }}
         onNodeContextMenu={(e, node) => {
           e.preventDefault();
           if (!node.selected) sceneState.selectNode(node.id);
-          contextMenu.setContextMenuPosition({
+          gui.setPosiontOnGui({
             left: e.clientX,
             top: e.clientY,
           });
@@ -137,27 +146,64 @@ const Scene = ({
               id
             );
             if (connection === null) return;
-            contextMenu.clickedHandle.current = { id, connection };
-            contextMenu.clickedNodeId.current = node.id;
-            contextMenu.openMenu('handle');
-          } else contextMenu.openMenu('node');
+            gui.clickedHandle.current = { id, connection };
+            gui.clickedNodeId.current = node.id;
+            gui.openWidget('handle');
+          } else gui.openWidget('node');
         }}
         onEdgeContextMenu={(e, edge) => {
           e.preventDefault();
           sceneState.selectEdge(edge.id);
-          contextMenu.setContextMenuPosition({
+          gui.setPosiontOnGui({
             left: e.clientX,
             top: e.clientY,
           });
-          contextMenu.openMenu('edge');
+          gui.openWidget('edge');
         }}
         ref={domRef}
         nodes={nodes}
         edges={edges}
+        connectionMode={ConnectionMode.Loose}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        isValidConnection={isValidConnection}
+        isValidConnection={(connection) => {
+          const status = sceneState.isValidConnection(connection);
+          const isFromSource = (): boolean => {
+            return gui.connectionStartNodeId.current === connection.source;
+          };
+          const toNode = isFromSource() ? connection.target : connection.source;
+          const toHandle = isFromSource()
+            ? connection.targetHandle
+            : connection.sourceHandle;
+
+          const toDom =
+            document.querySelector(
+              `[data-id="${toNode ?? ''}-${toHandle ?? ''}-target"]`
+            ) ??
+            document.querySelector(
+              `[data-id="${toNode ?? ''}-${toHandle ?? ''}-source"]`
+            );
+
+          if (toDom) {
+            const bbox = toDom.getBoundingClientRect();
+            gui.setPosiontOnGui({
+              left: bbox.left + 10,
+              top: bbox.top + 10,
+            });
+          }
+          gui.openWidget('connectionTip');
+          gui.setconnectionStatus(status);
+          return status.action !== 'reject';
+        }}
+        onConnectStart={(evt, params) => {
+          gui.connectionStartNodeId.current = params.nodeId;
+          closeWidget(null, true);
+        }}
+        onConnectEnd={() => {
+          gui.connectionStartNodeId.current = null;
+          gui.closeWidget();
+        }}
         fitView
         attributionPosition="top-right"
         nodeTypes={componentType.nodeTypes}
@@ -183,19 +229,16 @@ const Scene = ({
         }
         connectionRadius={EdgeSetting.portDetectionRadius}
         onNodeDragStart={(evt, node) => {
-          closeMenu(evt, true);
+          closeWidget(evt, true);
           onNodeDragStart(evt, node);
-        }}
-        onConnectStart={(evt) => {
-          closeMenu(null, true);
         }}
         onNodeDragStop={onNodeDragStop}
         onMove={(e) => {
           if (e instanceof MouseEvent) updateMousePos(e.clientX, e.clientY);
-          closeMenu(null, true);
+          closeWidget(null, true);
         }}
         onSelectionStart={(e) => {
-          closeMenu(null, true);
+          closeWidget(null, true);
         }}
         onNodeDrag={(e) => {
           updateMousePos(e.clientX, e.clientY);

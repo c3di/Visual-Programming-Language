@@ -1,5 +1,13 @@
 import { type SvgIconProps } from '@mui/material/SvgIcon';
-import { useRef, useState, useCallback } from 'react';
+import {
+  useRef,
+  useState,
+  useCallback,
+  type SetStateAction,
+  type Dispatch,
+  type MutableRefObject,
+} from 'react';
+import { type ConnectionStatus } from '../types';
 
 export interface Command {
   name: string;
@@ -9,33 +17,39 @@ export interface Command {
   tooltip?: string;
 }
 
-export interface ContextMenu {
+export interface Gui {
   showNodeMenu: boolean;
   showEdgeMenu: boolean;
   showHandleMenu: boolean;
   showSearchMenu: boolean;
-  openMenu: (menu: string) => void;
-  closeMenu: () => void;
+  showConnectionTip: boolean;
+  connectionStatus: ConnectionStatus | undefined;
+  setconnectionStatus: Dispatch<SetStateAction<ConnectionStatus | undefined>>;
+  openWidget: (menu: string) => void;
+  closeWidget: () => void;
   clickedHandle: React.MutableRefObject<{
     connection: number;
     id: string;
   } | null>;
   clickedNodeId: React.MutableRefObject<string | null>;
-  contextMenuPosiont: { top: number; left: number };
-  setContextMenuPosition: (contextMenuPosiont: {
-    top: number;
-    left: number;
-  }) => void;
+  PosiontOnGui: { top: number; left: number };
+  setPosiontOnGui: (PosiontOnGui: { top: number; left: number }) => void;
+  connectionStartNodeId: MutableRefObject<string | null>;
 }
 
-export default function useContextMenu(): ContextMenu {
+export default function useGui(): Gui {
   const [showNodeMenu, setShowNodeMenu] = useState(false);
   const [showEdgeMenu, setShowEdgeMenu] = useState(false);
   const [showHandleMenu, setShowHandleMenu] = useState(false);
   const [showSearchMenu, setShowSearchMenu] = useState(false);
+  const [showConnectionTip, setShowConnectionTip] = useState(false);
+  const connectionStartNodeId = useRef<string | null>(null);
+  const [connectionStatus, setconnectionStatus] = useState<
+    ConnectionStatus | undefined
+  >(undefined);
   const clickedHandle = useRef(null);
   const clickedNodeId = useRef(null);
-  const [contextMenuPosiont, setContextMenuPosition] = useState<{
+  const [PosiontOnGui, setPosiontOnGui] = useState<{
     top: number;
     left: number;
   }>({ top: 0, left: 0 });
@@ -45,15 +59,16 @@ export default function useContextMenu(): ContextMenu {
     edge: setShowEdgeMenu,
     handle: setShowHandleMenu,
     search: setShowSearchMenu,
+    connectionTip: setShowConnectionTip,
   };
 
-  const openMenu = useCallback((menu: string): void => {
+  const openWidget = useCallback((menu: string): void => {
     Object.entries(menuSetter).forEach(([name, setter]) => {
       setter(name === menu);
     });
   }, []);
 
-  const closeMenu = useCallback((): void => {
+  const closeWidget = useCallback((): void => {
     Object.values(menuSetter).forEach((setter) => {
       setter(false);
     });
@@ -64,11 +79,15 @@ export default function useContextMenu(): ContextMenu {
     showEdgeMenu,
     showHandleMenu,
     showSearchMenu,
+    showConnectionTip,
+    connectionStatus,
+    setconnectionStatus,
     clickedHandle,
     clickedNodeId,
-    contextMenuPosiont,
-    setContextMenuPosition,
-    openMenu,
-    closeMenu,
+    PosiontOnGui,
+    setPosiontOnGui,
+    connectionStartNodeId,
+    openWidget,
+    closeWidget,
   };
 }

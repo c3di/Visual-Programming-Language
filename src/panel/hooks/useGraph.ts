@@ -5,6 +5,8 @@ import {
   getMaxConnection,
   type SerializedGraph,
   type HandleData,
+  type ConnectionStatus,
+  ConnectionAction,
 } from '../types';
 import {
   useNodesState,
@@ -31,7 +33,7 @@ export interface GraphState {
   setEdges: (edges: Edge[]) => void;
   onEdgesChange: OnChange<EdgeChange>;
   onConnect: (params: Connection) => void;
-  isValidConnection: (params: Connection) => boolean;
+  isValidConnection: (params: Connection) => ConnectionStatus;
   selectedNodes: () => Node[];
   selectAll: (sure: boolean) => void;
   selectNode: (nodeId: string) => void;
@@ -228,7 +230,6 @@ export default function useGraph(
 
   const deleteAllEdgesOfHandle = useCallback(
     (nodeId: string, handleId: string): void => {
-      console.log('deleteAllEdgesOfHandle', nodeId, handleId);
       deleteEdges(
         (e) =>
           (e.source === nodeId && e.sourceHandle === handleId) ||
@@ -238,33 +239,53 @@ export default function useGraph(
     []
   );
 
-  const isValidConnection = useCallback((params: Connection): boolean => {
-    if (!params.source || !params.target) {
-      console.log('no source or target in connection');
-      return false;
-    }
-    const sourceNode = getNode(params.source);
-    const targetNode = getNode(params.target);
-    if (!sourceNode || !targetNode) {
-      console.log('no source or target node found');
-      return false;
-    }
-    if (!params.sourceHandle || !params.targetHandle) {
-      console.log('no source or target handle in connection');
-      return false;
-    }
-    const sourceHandle = sourceNode.data.outputs?.[params.sourceHandle];
-    const targetHandle = targetNode.data.inputs?.[params.targetHandle];
-    if (!sourceHandle || !targetHandle) {
-      console.log('no source or target handle found');
-      return false;
-    }
-    if (!isDataTypeMatch(sourceHandle.dataType, targetHandle.dataType)) {
-      console.log('source and target handle type do not match');
-      return false;
-    }
-    return true;
-  }, []);
+  const isValidConnection = useCallback(
+    (params: Connection): ConnectionStatus => {
+      if (params.source === params.target)
+        return {
+          action: ConnectionAction.Reject,
+          message: 'Both are on the same node.',
+        };
+      if (!params.source || !params.target)
+        return {
+          action: ConnectionAction.Reject,
+          message: 'No source or target.',
+        };
+      const sourceNode = getNode(params.source);
+      const targetNode = getNode(params.target);
+      if (!params.sourceHandle || !params.targetHandle)
+        return {
+          action: ConnectionAction.Reject,
+          message: 'No input or output specified.',
+        };
+      const sourceHandle = sourceNode?.data.outputs?.[params.sourceHandle];
+      const targetHandle = targetNode?.data.inputs?.[params.targetHandle];
+      if (!sourceHandle || !targetHandle)
+        return {
+          action: ConnectionAction.Reject,
+          message: 'Directions are not compatible.',
+        };
+      if (!isDataTypeMatch(sourceHandle.dataType, targetHandle.dataType))
+        return {
+          action: ConnectionAction.Reject,
+          message: 'Types are not compatible.',
+        };
+      if (
+        sourceHandle.connection ===
+          getMaxConnection('source', sourceHandle.type) ||
+        targetHandle.connection ===
+          getMaxConnection('target', targetHandle.type)
+      )
+        return {
+          action: ConnectionAction.Replace,
+          message: 'Replace the existing connection.',
+        };
+      return {
+        action: ConnectionAction.Allowed,
+      };
+    },
+    []
+  );
 
   const getHandleConnectionCounts = useCallback(
     (nodeId: string, handleId: string) => {
