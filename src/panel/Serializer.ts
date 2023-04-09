@@ -71,11 +71,10 @@ export class Serializer {
         inputs[title] = isGeneraticHandle
           ? {
               title: data.title,
-              connection: data.connection,
               value: data.value,
               dataType: data.dataType,
             }
-          : { connection: data.connection, value: data.value };
+          : { value: data.value };
       });
     }
     const outputs: Record<string, SerializedHandle> = {};
@@ -85,11 +84,10 @@ export class Serializer {
         outputs[title] = isGeneraticHandle
           ? {
               title: data.title,
-              connection: data.connection,
               value: data.value,
               dataType: data.dataType,
             }
-          : { connection: data.connection, value: data.value };
+          : { value: data.value };
       });
     }
 

@@ -344,7 +344,7 @@ export default function useGraph(
         ...(n.data.inputs ?? {}),
         ...(n.data.outputs ?? {}),
       })) {
-        if ((handle as HandleData).connection > 0) {
+        if ((handle as HandleData).connection) {
           setAnyConnectionToSelectedNode(true);
           return;
         }
