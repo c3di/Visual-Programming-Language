@@ -38,3 +38,16 @@
   min-height: 20px;
   padding-left: 15px;
 }
+
+.css-10nakn3-MuiModal-root-MuiPopover-root-MuiMenu-root {
+  pointer-events: none;
+}
+
+.css-1ka5eyc-MuiPaper-root-MuiMenu-paper-MuiPopover-paper {
+  pointer-events: auto !important;
+}
+
+.css-6hp17o-MuiList-root-MuiMenu-list {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}

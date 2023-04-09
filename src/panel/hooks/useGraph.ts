@@ -4,6 +4,9 @@ import {
   isDataTypeMatch,
   getMaxConnection,
   type SerializedGraph,
+  type HandleData,
+  type ConnectionStatus,
+  ConnectionAction,
 } from '../types';
 import {
   useNodesState,
@@ -13,8 +16,9 @@ import {
   type NodeChange,
   type EdgeChange,
   useReactFlow,
+  MarkerType,
 } from 'reactflow';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { serializer } from '../Serializer';
 import { deserializer } from '../Deserializer';
 
@@ -29,15 +33,28 @@ export interface GraphState {
   setEdges: (edges: Edge[]) => void;
   onEdgesChange: OnChange<EdgeChange>;
   onConnect: (params: Connection) => void;
-  isValidConnection: (params: Connection) => boolean;
+  isValidConnection: (params: Connection) => ConnectionStatus;
   selectedNodes: () => Node[];
   selectAll: (sure: boolean) => void;
+  selectNode: (nodeId: string) => void;
+  selectEdge: (edgeId: string) => void;
+  clearEdgeSelection: () => void;
   deleteSelectedNodes: () => void;
   deleteSelectedElements: () => void;
   deleteEdge: (id: string) => void;
   deleteAllEdgesOfNode: (nodeId: string) => void;
+  deleteAllEdgesOfSelectedNodes: () => void;
   deleteAllEdgesOfHandle: (nodeId: string, handleId: string) => void;
-  addElements: (newNodes: Node[], newEdges: Edge[]) => void;
+  addElements: ({
+    newNodes,
+    newEdges,
+  }: {
+    newNodes?: Node[];
+    newEdges?: Edge[];
+  }) => void;
+  getHandleConnectionCounts: (nodeId: string, handleId: string) => number;
+  anyConnectableNodeSelected: boolean;
+  anyConnectionToSelectedNode: boolean;
   toJSON: () => string;
   fromJSON: (graph: SerializedGraph) => void;
 }
@@ -101,7 +118,17 @@ export default function useGraph(
 
   const addEdge = useCallback((params: Connection) => {
     deleteEdgesIfReachMaxConnection(params);
-    setEdges((eds) => rcAddEdge(params, eds));
+    setEdges((eds) =>
+      rcAddEdge(
+        {
+          ...params,
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+          },
+        },
+        eds
+      )
+    );
     updateHandleConnection(params.source, params.sourceHandle, true, true);
     updateHandleConnection(params.target, params.targetHandle, true, false);
   }, []);
@@ -142,18 +169,34 @@ export default function useGraph(
     [nodes]
   );
 
-  const addElements = useCallback((newNodes: Node[], newEdges: Edge[]) => {
-    setNodes((nds) => [...nds, ...newNodes]);
-    setEdges((eds) => [...eds, ...newEdges]);
-  }, []);
+  const addElements = useCallback(
+    ({ newNodes, newEdges }: { newNodes?: Node[]; newEdges?: Edge[] }) => {
+      if (newNodes?.length) setNodes((nds) => [...nds, ...newNodes]);
+      if (newEdges?.length) setEdges((eds) => [...eds, ...newEdges]);
+    },
+    []
+  );
 
   const selectedNodes = useCallback(() => {
     return getNodes().filter((n) => n.selected);
   }, []);
 
+  const selectEdge = useCallback((edgeId: string): void => {
+    setNodes((nds) => nds.map((n) => ({ ...n, selected: false })));
+    setEdges((eds) => eds.map((e) => ({ ...e, selected: e.id === edgeId })));
+  }, []);
+
+  const clearEdgeSelection = useCallback((): void => {
+    setEdges((eds) => eds.map((e) => ({ ...e, selected: false })));
+  }, []);
+
   const selectAll = useCallback((sure: boolean): void => {
     setNodes((nds) => nds.map((n) => ({ ...n, selected: sure })));
     setEdges((eds) => eds.map((e) => ({ ...e, selected: sure })));
+  }, []);
+
+  const selectNode = useCallback((nodeId: string): void => {
+    setNodes((nds) => nds.map((n) => ({ ...n, selected: n.id === nodeId })));
   }, []);
 
   const deleteSelectedNodes = useCallback((): void => {
@@ -178,6 +221,13 @@ export default function useGraph(
     deleteEdges((e) => e.source === nodeId || e.target === nodeId);
   }, []);
 
+  const deleteAllEdgesOfSelectedNodes = useCallback((): void => {
+    const selectedNodesIds = selectedNodes().map((n) => n.id);
+    selectedNodesIds.forEach((id) => {
+      deleteAllEdgesOfNode(id);
+    });
+  }, []);
+
   const deleteAllEdgesOfHandle = useCallback(
     (nodeId: string, handleId: string): void => {
       deleteEdges(
@@ -189,32 +239,77 @@ export default function useGraph(
     []
   );
 
-  const isValidConnection = useCallback((params: Connection): boolean => {
-    if (!params.source || !params.target) {
-      console.log('no source or target in connection');
-      return false;
-    }
-    const sourceNode = getNode(params.source);
-    const targetNode = getNode(params.target);
-    if (!sourceNode || !targetNode) {
-      console.log('no source or target node found');
-      return false;
-    }
-    if (!params.sourceHandle || !params.targetHandle) {
-      console.log('no source or target handle in connection');
-      return false;
-    }
-    const sourceHandle = sourceNode.data.outputs?.[params.sourceHandle];
-    const targetHandle = targetNode.data.inputs?.[params.targetHandle];
-    if (!sourceHandle || !targetHandle) {
-      console.log('no source or target handle found');
-      return false;
-    }
-    if (!isDataTypeMatch(sourceHandle.dataType, targetHandle.dataType)) {
-      console.log('source and target handle type do not match');
-      return false;
-    }
-    return true;
+  const isValidConnection = useCallback(
+    (params: Connection): ConnectionStatus => {
+      if (params.source === params.target)
+        return {
+          action: ConnectionAction.Reject,
+          message: 'Both are on the same node.',
+        };
+      if (!params.source || !params.target)
+        return {
+          action: ConnectionAction.Reject,
+          message: 'No source or target.',
+        };
+      const sourceNode = getNode(params.source);
+      const targetNode = getNode(params.target);
+      if (!params.sourceHandle || !params.targetHandle)
+        return {
+          action: ConnectionAction.Reject,
+          message: 'No input or output specified.',
+        };
+      const sourceHandle = sourceNode?.data.outputs?.[params.sourceHandle];
+      const targetHandle = targetNode?.data.inputs?.[params.targetHandle];
+      if (!sourceHandle || !targetHandle)
+        return {
+          action: ConnectionAction.Reject,
+          message: 'Directions are not compatible.',
+        };
+      if (!isDataTypeMatch(sourceHandle.dataType, targetHandle.dataType))
+        return {
+          action: ConnectionAction.Reject,
+          message: 'Types are not compatible.',
+        };
+      if (
+        sourceHandle.connection ===
+          getMaxConnection('source', sourceHandle.type) ||
+        targetHandle.connection ===
+          getMaxConnection('target', targetHandle.type)
+      )
+        return {
+          action: ConnectionAction.Replace,
+          message: 'Replace the existing connection.',
+        };
+      return {
+        action: ConnectionAction.Allowed,
+      };
+    },
+    []
+  );
+
+  const getHandleConnectionCounts = useCallback(
+    (nodeId: string, handleId: string) => {
+      const node = getNode(nodeId);
+      if (!node) {
+        console.log('no node found');
+        return null;
+      }
+      const handle =
+        node.data.inputs?.[handleId] ?? node.data.outputs?.[handleId];
+      if (!handle) {
+        console.log('no handle found');
+        return null;
+      }
+      return handle.connection;
+    },
+    []
+  );
+
+  const isAnyConnectableNodeSelected = useCallback((): boolean => {
+    return (
+      getNodes().find((n) => n.selected && n.data.inputs && n.data.outputs) !==
+      undefined
+    );
   }, []);
 
   const toJSON = useCallback((): string => {
@@ -235,6 +330,29 @@ export default function useGraph(
     if (graph) fromJSON(graph);
   }, []);
 
+  const [anyConnectableNodeSelected, setAnyConnectableNodeSelected] =
+    useState(false);
+  useEffect(() => {
+    setAnyConnectableNodeSelected(isAnyConnectableNodeSelected());
+  }, [nodes]);
+
+  const [anyConnectionToSelectedNode, setAnyConnectionToSelectedNode] =
+    useState(false);
+  useEffect(() => {
+    for (const n of selectedNodes()) {
+      for (const handle of Object.values({
+        ...(n.data.inputs ?? {}),
+        ...(n.data.outputs ?? {}),
+      })) {
+        if ((handle as HandleData).connection > 0) {
+          setAnyConnectionToSelectedNode(true);
+          return;
+        }
+      }
+    }
+    setAnyConnectionToSelectedNode(false);
+  }, [nodes]);
+
   return {
     getFreeUniqueNodeIds,
     nodes,
@@ -247,12 +365,19 @@ export default function useGraph(
     isValidConnection,
     selectedNodes,
     selectAll,
+    selectNode,
+    selectEdge,
+    clearEdgeSelection,
     deleteSelectedNodes,
     deleteSelectedElements,
+    deleteAllEdgesOfSelectedNodes,
     deleteEdge,
     deleteAllEdgesOfNode,
     deleteAllEdgesOfHandle,
     addElements,
+    getHandleConnectionCounts,
+    anyConnectableNodeSelected,
+    anyConnectionToSelectedNode,
     toJSON,
     fromJSON,
   };

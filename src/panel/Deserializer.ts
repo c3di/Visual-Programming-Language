@@ -26,40 +26,56 @@ export class Deserializer {
     return Deserializer.instance;
   }
 
+  public readonly serializedToGraphNodeConfig = (
+    sNode: SerializedGraphNode
+  ): GraphNodeConfig => {
+    const nodeConfig = nodeConfigRegistry.getNodeConfig(sNode.type);
+    const inputs = Object.entries(nodeConfig.inputs ?? {}).reduce<
+      Record<string, HandleData>
+    >((acc, [title, handle]) => {
+      acc[title] = {
+        ...handle,
+        ...sNode.inputs?.[title],
+        connection: sNode.inputs?.[title].connection ?? 0,
+      };
+      return acc;
+    }, {});
+    const outputs = Object.entries(nodeConfig.outputs ?? {}).reduce<
+      Record<string, HandleData>
+    >((acc, [title, handle]) => {
+      if (!nodeConfig.outputs?.[title]) return acc;
+      acc[title] = {
+        ...handle,
+        ...sNode.outputs?.[title],
+        connection: sNode.outputs?.[title].connection ?? 0,
+      };
+      return acc;
+    }, {});
+    return {
+      ...sNode,
+      ...nodeConfig,
+      inputs,
+      outputs,
+    };
+  };
+
   private readonly serializedToGraphNodeConfigs = (
     serializedNodes: SerializedGraphNode[]
   ): GraphNodeConfig[] => {
     return serializedNodes.map((sNode) => {
-      const nodeConfig = nodeConfigRegistry.getNodeConfig(sNode.type);
-      const inputs = Object.entries(sNode.inputs ?? {}).reduce<
-        Record<string, HandleData>
-      >((acc, [title, sHandle]) => {
-        if (!nodeConfig.inputs?.[title]) return acc;
-        acc[title] = {
-          ...nodeConfig.inputs?.[title],
-          ...sHandle,
-          connection: sHandle.connection ?? 0,
-        };
-        return acc;
-      }, {});
-      const outputs = Object.entries(sNode.outputs ?? {}).reduce<
-        Record<string, HandleData>
-      >((acc, [title, sHandle]) => {
-        if (!nodeConfig.outputs?.[title]) return acc;
-        acc[title] = {
-          ...nodeConfig.outputs?.[title],
-          ...sHandle,
-          connection: sHandle.connection ?? 0,
-        };
-        return acc;
-      }, {});
-      return {
-        ...sNode,
-        ...nodeConfig,
-        inputs,
-        outputs,
-      };
+      return this.serializedToGraphNodeConfig(sNode);
     });
+  };
+
+  private readonly copyInputsToOutputs = (
+    inputs: Record<string, HandleData> | undefined
+  ): Record<string, HandleData> | undefined => {
+    if (!inputs) return undefined;
+    const outputs: Record<string, HandleData> = {};
+    for (const key in inputs) {
+      outputs[`${key}-out`] = inputs[key];
+    }
+    return outputs;
   };
 
   private readonly overrideConfigToNode: Record<
@@ -67,11 +83,11 @@ export class Deserializer {
     (config: GraphNodeConfig) => Node
   > = {
     setter: (config: GraphNodeConfig): Node => {
-      config.outputs = config.inputs;
+      config.outputs = this.copyInputsToOutputs(config.inputs);
       return this.defaultConfigToNode(config);
     },
     literal: (config: GraphNodeConfig): Node => {
-      config.outputs = config.inputs;
+      config.outputs = this.copyInputsToOutputs(config.inputs);
       return this.defaultConfigToNode(config);
     },
     comment: (config: GraphNodeConfig): Node => {
@@ -138,7 +154,7 @@ export class Deserializer {
     };
   }
 
-  private configToNode(config: GraphNodeConfig): Node {
+  public configToNode(config: GraphNodeConfig): Node {
     const mapper =
       this.overrideConfigToNode[config.category] ?? this.defaultConfigToNode;
     return mapper(config);

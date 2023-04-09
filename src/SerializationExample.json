@@ -2,7 +2,7 @@
   "nodes": [
     {
       "id": "1",
-      "type": "function1",
+      "type": "example.function1",
       "position": {
         "x": 0,
         "y": 0
@@ -34,7 +34,7 @@
     },
     {
       "id": "2",
-      "type": "getter",
+      "type": "example.getter",
       "position": {
         "x": 300,
         "y": 0
@@ -49,7 +49,7 @@
     },
     {
       "id": "3",
-      "type": "setter",
+      "type": "example.setter",
       "position": {
         "x": 600,
         "y": 0
@@ -64,7 +64,7 @@
     },
     {
       "id": "4",
-      "type": "PlusMath",
+      "type": "example.PlusMath",
       "position": {
         "x": 300,
         "y": 300
@@ -91,7 +91,7 @@
     },
     {
       "id": "5",
-      "type": "literal",
+      "type": "example.literal",
       "position": {
         "x": 0,
         "y": 300

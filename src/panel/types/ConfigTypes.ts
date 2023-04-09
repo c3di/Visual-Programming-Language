@@ -17,6 +17,12 @@ export interface NodeConfig {
   dataType?: string; // the data type for all the handles
 }
 
+export interface NodeDirConfig {
+  isDir: true;
+  nodes: Record<string, NodeConfig>;
+  notShowInMenu?: boolean;
+}
+
 export interface GraphNodeConfig extends NodeConfig {
   id: string;
   type: string;

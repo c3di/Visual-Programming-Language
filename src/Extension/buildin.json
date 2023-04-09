@@ -1,0 +1,32 @@
+{
+  "Nodes": {
+    "comment": {
+      "type": "comment",
+      "category": "comment",
+      "dragHandle": ".node__header",
+      "zIndex": -1001,
+      "tooltip": "this is a comment",
+      "notShowInMenu": true
+    },
+    "reroute": {
+      "type": "reroute",
+      "category": "reroute",
+      "tooltip": "this is a reroute",
+      "notShowInMenu": true,
+      "inputs": {
+        "input": {
+          "title": "input",
+          "tooltip": "input",
+          "dataType": "any"
+        }
+      },
+      "outputs": {
+        "output": {
+          "title": "output",
+          "tooltip": "output",
+          "dataType": "any"
+        }
+      }
+    }
+  }
+}
