@@ -29,6 +29,7 @@ module.exports = {
     ],
     '@typescript-eslint/triple-slash-reference': 0,
     '@typescript-eslint/strict-boolean-expressions': 0,
+    '@typescript-eslint/no-non-null-assertion': 0,
   },
   settings: {
     react: {

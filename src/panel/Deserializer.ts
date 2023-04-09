@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /**
  * SerializedGraph(nodes: SerializedGraphNode[] + edges: SerializedGraphEdge[])
  * ---> GraphConfig (GraphNodeConfig + GraphEdgeConfig)
