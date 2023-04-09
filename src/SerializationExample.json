@@ -9,27 +9,17 @@
       },
       "inputs": {
         "input1": {
-          "connection": 0,
           "value": 10
         },
-        "input2": {
-          "connection": 0
-        },
+        "input2": {},
         "input3": {
-          "connection": 0,
           "value": "world"
         },
-        "input4": {
-          "connection": 0
-        }
+        "input4": {}
       },
       "outputs": {
-        "output1": {
-          "connection": 1
-        },
-        "output2": {
-          "connection": 0
-        }
+        "output1": {},
+        "output2": {}
       }
     },
     {
@@ -42,7 +32,6 @@
       "outputs": {
         "getter": {
           "title": "variable",
-          "connection": 1,
           "dataType": "float"
         }
       }
@@ -57,40 +46,12 @@
       "inputs": {
         "setter": {
           "title": "account",
-          "connection": 1,
           "dataType": "float"
         }
       }
     },
     {
       "id": "4",
-      "type": "example.PlusMath",
-      "position": {
-        "x": 300,
-        "y": 300
-      },
-      "inputs": {
-        "input1": {
-          "title": "input1",
-          "connection": 1,
-          "dataType": "float"
-        },
-        "input2": {
-          "title": "input2",
-          "connection": 0,
-          "dataType": "integer"
-        }
-      },
-      "outputs": {
-        "output": {
-          "title": "output",
-          "connection": 0,
-          "dataType": "boolean"
-        }
-      }
-    },
-    {
-      "id": "5",
       "type": "example.literal",
       "position": {
         "x": 0,
@@ -99,11 +60,35 @@
       "inputs": {
         "input": {
           "title": "Value",
-          "connection": 0,
+
           "dataType": "float"
         }
       },
       "dataType": "float"
+    },
+    {
+      "id": "5",
+      "type": "example.PlusMath",
+      "position": {
+        "x": 300,
+        "y": 300
+      },
+      "inputs": {
+        "input1": {
+          "title": "input1",
+          "dataType": "float"
+        },
+        "input2": {
+          "title": "input2",
+          "dataType": "integer"
+        }
+      },
+      "outputs": {
+        "output": {
+          "title": "output",
+          "dataType": "boolean"
+        }
+      }
     },
     {
       "id": "6",
@@ -124,14 +109,10 @@
         "y": 600
       },
       "inputs": {
-        "input": {
-          "connection": 0
-        }
+        "input": {}
       },
       "outputs": {
-        "output": {
-          "connection": 0
-        }
+        "output": {}
       }
     }
   ],
@@ -145,9 +126,9 @@
     },
     {
       "id": "e4-5",
-      "output": "5",
-      "input": "4",
-      "outputHandle": "output",
+      "output": "4",
+      "input": "5",
+      "outputHandle": "input-out",
       "inputHandle": "input1",
       "dataType": "float"
     }

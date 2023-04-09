@@ -12,6 +12,7 @@ import type {
   Node,
   Graph,
   HandleData,
+  SerializedGraphEdge,
 } from './types';
 import { MarkerType } from 'reactflow';
 import { nodeConfigRegistry } from '../Extension';
@@ -36,7 +37,6 @@ export class Deserializer {
       acc[title] = {
         ...handle,
         ...sNode.inputs?.[title],
-        connection: sNode.inputs?.[title].connection ?? 0,
       };
       return acc;
     }, {});
@@ -47,7 +47,6 @@ export class Deserializer {
       acc[title] = {
         ...handle,
         ...sNode.outputs?.[title],
-        connection: sNode.outputs?.[title].connection ?? 0,
       };
       return acc;
     }, {});
@@ -73,7 +72,7 @@ export class Deserializer {
     if (!inputs) return undefined;
     const outputs: Record<string, HandleData> = {};
     for (const key in inputs) {
-      outputs[`${key}-out`] = inputs[key];
+      outputs[`${key}-out`] = { ...inputs[key] };
     }
     return outputs;
   };
@@ -145,11 +144,27 @@ export class Deserializer {
     };
   };
 
+  private readonly updateConnectionProps = (
+    nodes: Node[],
+    edges: SerializedGraphEdge[]
+  ): void => {
+    edges.forEach((edge) => {
+      const sourceNode = nodes.find((node) => node.id === edge.output)!;
+      sourceNode.data.outputs![edge.outputHandle].connection =
+        Number(sourceNode.data.outputs![edge.outputHandle].connection ?? 0) + 1;
+      const targetNode = nodes.find((node) => node.id === edge.input)!;
+      targetNode.data.inputs![edge.inputHandle].connection =
+        Number(targetNode.data.inputs![edge.inputHandle].connection ?? 0) + 1;
+    });
+  };
+
   public deserialize(sGraph: SerializedGraph | undefined): Graph {
     if (!sGraph) return { nodes: [], edges: [] };
     const graphNodeConfigs = this.serializedToGraphNodeConfigs(sGraph.nodes);
+    const nodes = graphNodeConfigs.map((config) => this.configToNode(config));
+    this.updateConnectionProps(nodes, sGraph.edges);
     return {
-      nodes: graphNodeConfigs.map((config) => this.configToNode(config)),
+      nodes,
       edges: sGraph.edges.map((config) => this.configToEdge(config)),
     };
   }

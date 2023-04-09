@@ -52,7 +52,7 @@ export default function Handle({
   }, []);
 
   useEffect(() => {
-    const isConnected = handleData.connection > 0;
+    const isConnected = Boolean(handleData.connection);
     if (isConnected && showWidget) {
       changeValue(handleData.defaultValue);
     }

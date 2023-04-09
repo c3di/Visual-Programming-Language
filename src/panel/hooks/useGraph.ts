@@ -246,20 +246,10 @@ export default function useGraph(
           action: ConnectionAction.Reject,
           message: 'Both are on the same node.',
         };
-      if (!params.source || !params.target)
-        return {
-          action: ConnectionAction.Reject,
-          message: 'No source or target.',
-        };
-      const sourceNode = getNode(params.source);
-      const targetNode = getNode(params.target);
-      if (!params.sourceHandle || !params.targetHandle)
-        return {
-          action: ConnectionAction.Reject,
-          message: 'No input or output specified.',
-        };
-      const sourceHandle = sourceNode?.data.outputs?.[params.sourceHandle];
-      const targetHandle = targetNode?.data.inputs?.[params.targetHandle];
+      const sourceNode = getNode(params.source!);
+      const targetNode = getNode(params.target!);
+      const sourceHandle = sourceNode?.data.outputs?.[params.sourceHandle!];
+      const targetHandle = targetNode?.data.inputs?.[params.targetHandle!];
       if (!sourceHandle || !targetHandle)
         return {
           action: ConnectionAction.Reject,
@@ -344,7 +334,7 @@ export default function useGraph(
         ...(n.data.inputs ?? {}),
         ...(n.data.outputs ?? {}),
       })) {
-        if ((handle as HandleData).connection > 0) {
+        if ((handle as HandleData).connection) {
           setAnyConnectionToSelectedNode(true);
           return;
         }
