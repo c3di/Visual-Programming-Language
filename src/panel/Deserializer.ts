@@ -67,16 +67,27 @@ export class Deserializer {
     });
   };
 
+  private readonly copyInputsToOutputs = (
+    inputs: Record<string, HandleData> | undefined
+  ): Record<string, HandleData> | undefined => {
+    if (!inputs) return undefined;
+    const outputs: Record<string, HandleData> = {};
+    for (const key in inputs) {
+      outputs[`${key}-out`] = inputs[key];
+    }
+    return outputs;
+  };
+
   private readonly overrideConfigToNode: Record<
     string,
     (config: GraphNodeConfig) => Node
   > = {
     setter: (config: GraphNodeConfig): Node => {
-      config.outputs = config.inputs;
+      config.outputs = this.copyInputsToOutputs(config.inputs);
       return this.defaultConfigToNode(config);
     },
     literal: (config: GraphNodeConfig): Node => {
-      config.outputs = config.inputs;
+      config.outputs = this.copyInputsToOutputs(config.inputs);
       return this.defaultConfigToNode(config);
     },
     comment: (config: GraphNodeConfig): Node => {
