@@ -5,4 +5,5 @@ export interface ConnectableData extends BasciNodeData {
   title: string;
   inputs?: Record<string, Handle>;
   outputs?: Record<string, Handle>;
+  dataType?: string;
 }
