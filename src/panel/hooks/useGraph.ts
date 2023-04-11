@@ -17,6 +17,7 @@ import {
   type EdgeChange,
   useReactFlow,
   MarkerType,
+  getConnectedEdges,
 } from 'reactflow';
 import { useCallback, useEffect, useState } from 'react';
 import { serializer } from '../Serializer';
@@ -116,7 +117,68 @@ export default function useGraph(
     []
   );
 
-  const getEdgeDatatype = useCallback((params: Connection): string => {
+  const updateNodeWithAnyDataType = useCallback(
+    (node: Node, newType: string): void => {
+      let doesUpdate = false;
+      if (node.data.dataType === newType) return;
+      const { inputs, outputs } = node.data;
+      if (inputs) {
+        Object.keys(inputs).forEach((key) => {
+          const handle = inputs[key];
+          if (handle.dataType === 'any') {
+            handle.dataType = newType;
+            doesUpdate = true;
+          }
+        });
+      }
+      if (outputs) {
+        Object.keys(outputs).forEach((key) => {
+          const handle = outputs[key];
+          if (handle.dataType === 'any') {
+            handle.dataType = newType;
+            doesUpdate = true;
+          }
+        });
+      }
+      if (!doesUpdate) return;
+      setNodes((nds) => {
+        const newNodes = nds.map((n) => {
+          if (n.id === node.id) {
+            n.data = {
+              ...n.data,
+              dataType: newType,
+              inputs,
+              outputs,
+            };
+          }
+          return n;
+        });
+        return newNodes;
+      });
+      const connectedEdges = getConnectedEdges([node], getEdges());
+      setEdges((eds) => {
+        const newEdges = eds.map((e) => {
+          if (connectedEdges.some((ce) => ce.id === e.id)) {
+            if (e.data.dataType === 'any') {
+              e.data = {
+                ...e.data,
+                dataType: newType,
+              };
+            }
+          }
+          return e;
+        });
+        return newEdges;
+      });
+      connectedEdges.forEach((ce) => {
+        const { source, target } = ce;
+        updateNodeWithAnyDataType(getNode(source)!, newType);
+        updateNodeWithAnyDataType(getNode(target)!, newType);
+      });
+    },
+    []
+  );
+  const updateEdgeDatatype = useCallback((params: Connection): string => {
     const sourceHandle = getNode(params.source!)?.data.outputs?.[
       params.sourceHandle!
     ] as HandleData;
@@ -129,17 +191,20 @@ export default function useGraph(
         dataType = targetHandle.dataType;
       else {
         dataType = sourceHandle.dataType;
+        updateNodeWithAnyDataType(getNode(params.target!)!, dataType);
       }
     else {
-      if (targetHandle.dataType && targetHandle.dataType !== 'any')
+      if (targetHandle.dataType && targetHandle.dataType !== 'any') {
         dataType = targetHandle.dataType;
+        updateNodeWithAnyDataType(getNode(params.source!)!, dataType);
+      }
     }
     return dataType;
   }, []);
 
   const addEdge = useCallback((params: Connection) => {
     deleteEdgesIfReachMaxConnection(params);
-    const dataType = getEdgeDatatype(params);
+    const dataType = updateEdgeDatatype(params);
     setEdges((eds) =>
       rcAddEdge(
         {
