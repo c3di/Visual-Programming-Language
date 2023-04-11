@@ -175,7 +175,7 @@ export class Deserializer {
     return mapper(config);
   }
 
-  private configToEdge(config: GraphEdgeConfig): Edge {
+  public configToEdge(config: GraphEdgeConfig): Edge {
     return this.defaultConfigToEdge(config);
   }
 }

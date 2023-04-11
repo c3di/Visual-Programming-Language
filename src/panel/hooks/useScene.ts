@@ -4,18 +4,26 @@ import {
   type ClipboardInfo,
   isCommentNode,
   type ConnectionStatus,
+  type Edge,
 } from '../types';
 import { type GraphState } from './useGraph';
 import { deserializer } from '../Deserializer';
 import { type Command } from './useGui';
 import ContentPaste from '@mui/icons-material/ContentPaste';
-import { useReactFlow, getRectOfNodes } from 'reactflow';
+import { useReactFlow, getRectOfNodes, type XYPosition } from 'reactflow';
 
 export interface SceneState {
   selectAll: (sure: boolean) => void;
   selectEdge: (edgeId: string) => void;
   selectNode: (nodeId: string) => void;
-  addNode: (configType: string) => void;
+  addNode: (configType: string, thisPosition?: XYPosition) => Node;
+  addEdge: (
+    source: string,
+    sourceHandle: string,
+    target: string,
+    targetHandle: string,
+    dataType?: string
+  ) => void;
   clearEdgeSelection: () => void;
   getHandleConnectionCounts: (nodeId: string, handleId: string) => number;
   onNodeDragStart: (evt: any, node: Node) => void;
@@ -182,7 +190,7 @@ export default function useScene(
           const targetId = newNodes[edge.target].id;
           return {
             ...edge,
-            id: `e${sourceId}-${targetId}`,
+            id: `e${sourceId}-${edge.sourceHandle!}-${targetId}-${edge.targetHandle!}`,
             selected: true,
             source: sourceId,
             target: targetId,
@@ -209,21 +217,48 @@ export default function useScene(
     graphState.deleteSelectedNodes();
   };
 
-  const addNode = useCallback((configType: string) => {
-    const id = getFreeUniqueNodeIds(1)[0];
-    const position = {
-      x: mousePos.current.mouseX,
-      y: mousePos.current.mouseY,
-    };
+  const addNode = useCallback(
+    (configType: string, thisPosition?: XYPosition): Node => {
+      const id = getFreeUniqueNodeIds(1)[0];
+      const position = thisPosition ?? {
+        x: mousePos.current.mouseX,
+        y: mousePos.current.mouseY,
+      };
 
-    const config = deserializer.serializedToGraphNodeConfig({
-      id,
-      type: configType,
-      position,
-    });
-    const node = deserializer.configToNode(config);
-    graphState.addElements({ newNodes: [node] });
-  }, []);
+      const config = deserializer.serializedToGraphNodeConfig({
+        id,
+        type: configType,
+        position,
+      });
+      const node = deserializer.configToNode(config);
+      graphState.addElements({ newNodes: [node] });
+      return node;
+    },
+    []
+  );
+
+  const addEdge = useCallback(
+    (
+      inputId: string,
+      inputHandle: string,
+      outputId: string,
+      outputHandle: string,
+      dataType?: string
+    ): Edge => {
+      const id = `e${inputId}-${inputHandle}-${outputId}-${outputHandle}`;
+      const edge = deserializer.configToEdge({
+        id,
+        input: inputId,
+        inputHandle,
+        output: outputId,
+        outputHandle,
+        dataType,
+      });
+      graphState.addElements({ newEdges: [edge] });
+      return edge;
+    },
+    []
+  );
 
   const centerSelectedNodes = (): void => {
     const nodes = selectedNodes();
@@ -239,6 +274,7 @@ export default function useScene(
     selectNode: graphState.selectNode,
     selectEdge: graphState.selectEdge,
     addNode,
+    addEdge,
     selectAll: graphState.selectAll,
     clearEdgeSelection: graphState.clearEdgeSelection,
     getHandleConnectionCounts: graphState.getHandleConnectionCounts,

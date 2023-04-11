@@ -13,3 +13,11 @@
   float: right;
   height: 10px;
 }
+
+.react-flow__node-reroute .react-flow__handle-left {
+  left: 0 !important;
+}
+
+.react-flow__node-reroute .react-flow__handle-right {
+  right: 0 !important;
+}

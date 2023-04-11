@@ -57,6 +57,8 @@ const Scene = ({
     },
     []
   );
+  // guide from https://reactflow.dev/docs/guides/remove-attribution/
+  const proOptions = { hideAttribution: true };
   return (
     <>
       <ConnectionTip
@@ -117,6 +119,27 @@ const Scene = ({
         onEdgeClick={(e, edge) => {
           if (e.ctrlKey && e.button === 0) deleteEdge(edge.id);
           closeWidget(e);
+        }}
+        onEdgeDoubleClick={(e, edge) => {
+          closeWidget(e);
+          sceneState.clearEdgeSelection();
+          const position = {
+            // hardcode the width(10) and height(5) of the reroute node
+            x: mousePos.current.mouseX - 10,
+            y: mousePos.current.mouseY - 5,
+          };
+          const node = sceneState.addNode('reroute', position);
+          sceneState.deleteEdge(edge.id);
+          sceneState.addEdge(node.id, 'input', edge.source, edge.sourceHandle!);
+          sceneState.addEdge(
+            edge.target,
+            edge.targetHandle!,
+            node.id,
+            'output'
+          );
+        }}
+        onDoubleClick={(e) => {
+          e.preventDefault();
         }}
         onKeyDown={onKeyDown}
         onPaneContextMenu={(e) => {
@@ -243,6 +266,7 @@ const Scene = ({
         onNodeDrag={(e) => {
           updateMousePos(e.clientX, e.clientY);
         }}
+        proOptions={proOptions}
       >
         <MiniMap
           width={minimpSetting.width}
