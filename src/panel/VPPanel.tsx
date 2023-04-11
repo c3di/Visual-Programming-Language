@@ -128,7 +128,15 @@ const Scene = ({
             x: mousePos.current.mouseX - 10,
             y: mousePos.current.mouseY - 5,
           };
-          sceneState.addNode('reroute', position);
+          const node = sceneState.addNode('reroute', position);
+          sceneState.deleteEdge(edge.id);
+          sceneState.addEdge(node.id, 'input', edge.source, edge.sourceHandle!);
+          sceneState.addEdge(
+            edge.target,
+            edge.targetHandle!,
+            node.id,
+            'output'
+          );
         }}
         onDoubleClick={(e) => {
           e.preventDefault();
