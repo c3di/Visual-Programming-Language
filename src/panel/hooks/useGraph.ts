@@ -116,14 +116,39 @@ export default function useGraph(
     []
   );
 
+  const getEdgeDatatype = useCallback((params: Connection): string => {
+    const sourceHandle = getNode(params.source!)?.data.outputs?.[
+      params.sourceHandle!
+    ] as HandleData;
+    const targetHandle = getNode(params.target!)?.data.inputs?.[
+      params.targetHandle!
+    ] as HandleData;
+    let dataType = 'any';
+    if (sourceHandle.dataType && sourceHandle.dataType !== 'any')
+      if (targetHandle.dataType && targetHandle.dataType !== 'any')
+        dataType = targetHandle.dataType;
+      else {
+        dataType = sourceHandle.dataType;
+      }
+    else {
+      if (targetHandle.dataType && targetHandle.dataType !== 'any')
+        dataType = targetHandle.dataType;
+    }
+    return dataType;
+  }, []);
+
   const addEdge = useCallback((params: Connection) => {
     deleteEdgesIfReachMaxConnection(params);
+    const dataType = getEdgeDatatype(params);
     setEdges((eds) =>
       rcAddEdge(
         {
           ...params,
           markerEnd: {
             type: MarkerType.ArrowClosed,
+          },
+          data: {
+            dataType,
           },
         },
         eds
