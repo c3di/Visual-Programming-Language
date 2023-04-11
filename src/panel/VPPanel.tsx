@@ -120,6 +120,19 @@ const Scene = ({
           if (e.ctrlKey && e.button === 0) deleteEdge(edge.id);
           closeWidget(e);
         }}
+        onEdgeDoubleClick={(e, edge) => {
+          closeWidget(e);
+          sceneState.clearEdgeSelection();
+          const position = {
+            // hardcode the width(10) and height(5) of the reroute node
+            x: mousePos.current.mouseX - 10,
+            y: mousePos.current.mouseY - 5,
+          };
+          sceneState.addNode('reroute', position);
+        }}
+        onDoubleClick={(e) => {
+          e.preventDefault();
+        }}
         onKeyDown={onKeyDown}
         onPaneContextMenu={(e) => {
           e.preventDefault();
