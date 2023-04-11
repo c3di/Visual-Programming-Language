@@ -352,9 +352,9 @@ export default function useGraph(
         };
       if (
         sourceHandle.connection ===
-          getMaxConnection('source', sourceHandle.type) ||
+          getMaxConnection('source', sourceHandle.dataType) ||
         targetHandle.connection ===
-          getMaxConnection('target', targetHandle.type)
+          getMaxConnection('target', targetHandle.dataType)
       )
         return {
           action: ConnectionAction.Replace,
