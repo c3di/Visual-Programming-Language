@@ -9,6 +9,7 @@ import { type GraphState } from './useGraph';
 import { deserializer } from '../Deserializer';
 import { type Command } from './useGui';
 import ContentPaste from '@mui/icons-material/ContentPaste';
+import { useReactFlow, getRectOfNodes } from 'reactflow';
 
 export interface SceneState {
   selectAll: (sure: boolean) => void;
@@ -32,6 +33,7 @@ export interface SceneState {
   anyConnectableNodeSelected: boolean;
   anyConnectionToSelectedNode: boolean;
   extraCommands: Command[];
+  centerSelectedNodes: () => void;
 }
 export default function useScene(
   graphState: GraphState,
@@ -43,6 +45,7 @@ export default function useScene(
   const { nodes, selectedNodes, edges, getFreeUniqueNodeIds } = graphState;
   const nodesRefInCommentNode = useRef({});
   const [extraCommands, setExtraCommands] = useState<Command[]>([]);
+  const { setCenter, getZoom } = useReactFlow();
   const onNodeDragStart = (evt: any, node: Node): void => {
     nodes.forEach((node) => {
       saveNodesInSelectedCommentNode(node, node.id);
@@ -222,6 +225,16 @@ export default function useScene(
     graphState.addElements({ newNodes: [node] });
   }, []);
 
+  const centerSelectedNodes = (): void => {
+    const nodes = selectedNodes();
+    if (nodes.length === 0) return;
+    const { x, y, width, height } = getRectOfNodes(nodes);
+    setCenter(x + width / 2.0, y + height / 2.0, {
+      duration: 200,
+      zoom: getZoom(),
+    });
+  };
+
   return {
     selectNode: graphState.selectNode,
     selectEdge: graphState.selectEdge,
@@ -244,5 +257,6 @@ export default function useScene(
     anyConnectableNodeSelected: graphState.anyConnectableNodeSelected,
     anyConnectionToSelectedNode: graphState.anyConnectionToSelectedNode,
     extraCommands,
+    centerSelectedNodes,
   };
 }

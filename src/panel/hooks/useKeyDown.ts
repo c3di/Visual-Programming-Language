@@ -52,6 +52,13 @@ export default function useKeyDown(sceneState: SceneState): {
     }
   }, [deleteKeyPressed]);
 
+  const centerNodeKeyPressed = useKeyPress('f');
+  useEffect(() => {
+    if (centerNodeKeyPressed) {
+      sceneState.centerSelectedNodes();
+    }
+  }, [centerNodeKeyPressed]);
+
   const onKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
     if (target.classList.contains('handle-widget')) {
@@ -68,5 +75,6 @@ export default function useKeyDown(sceneState: SceneState): {
     },
     []
   );
+
   return { onKeyDown };
 }
