@@ -57,6 +57,8 @@ const Scene = ({
     },
     []
   );
+  // guide from https://reactflow.dev/docs/guides/remove-attribution/
+  const proOptions = { hideAttribution: true };
   return (
     <>
       <ConnectionTip
@@ -243,6 +245,7 @@ const Scene = ({
         onNodeDrag={(e) => {
           updateMousePos(e.clientX, e.clientY);
         }}
+        proOptions={proOptions}
       >
         <MiniMap
           width={minimpSetting.width}
