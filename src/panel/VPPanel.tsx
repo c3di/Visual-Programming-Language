@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { useCallback, useRef } from 'react';
 import ReactFlow, {
   SelectionMode,
