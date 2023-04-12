@@ -120,36 +120,30 @@ export default function useGraph(
     []
   );
 
-  const updateNodeWithAnyDataType = useCallback(
-    (node: Node, newType: string): void => {
-      let doesUpdate = false;
-      if (node.data.dataType === newType) return;
-      const { inputs, outputs } = node.data;
-      if (inputs) {
-        Object.keys(inputs).forEach((key) => {
-          const handle = inputs[key];
-          if (handle.dataType === 'any') {
-            handle.dataType = newType;
-            doesUpdate = true;
-          }
-        });
-      }
-      if (outputs) {
-        Object.keys(outputs).forEach((key) => {
-          const handle = outputs[key];
-          if (handle.dataType === 'any') {
-            handle.dataType = newType;
-            doesUpdate = true;
-          }
-        });
-      }
-      if (!doesUpdate) return;
+  const setDataTypeOfGraph = useCallback(
+    (nodeIds: string[], dataType: string) => {
+      const edgeIds: string[] = [];
       setNodes((nds) => {
         const newNodes = nds.map((n) => {
-          if (n.id === node.id) {
+          if (nodeIds.includes(n.id)) {
+            const edges = getConnectedEdges([n], getEdges());
+            edges.forEach((e) => {
+              if (!edgeIds.includes(e.id)) edgeIds.push(e.id);
+            });
+            const { inputs, outputs } = n.data;
+            if (inputs) {
+              Object.values(inputs).forEach((input) => {
+                (input as HandleData).dataType = dataType;
+              });
+            }
+            if (outputs) {
+              Object.values(outputs).forEach((output) => {
+                (output as HandleData).dataType = dataType;
+              });
+            }
             n.data = {
               ...n.data,
-              dataType: newType,
+              dataType,
               inputs,
               outputs,
             };
@@ -158,30 +152,57 @@ export default function useGraph(
         });
         return newNodes;
       });
-      const connectedEdges = getConnectedEdges([node], getEdges());
       setEdges((eds) => {
         const newEdges = eds.map((e) => {
-          if (connectedEdges.some((ce) => ce.id === e.id)) {
-            if (e.data.dataType === 'any') {
-              e.data = {
-                ...e.data,
-                dataType: newType,
-              };
-            }
+          if (edgeIds.includes(e.id)) {
+            e.data = {
+              ...e.data,
+              dataType,
+            };
           }
           return e;
         });
         return newEdges;
       });
-      connectedEdges.forEach((ce) => {
-        const { source, target } = ce;
-        updateNodeWithAnyDataType(getNode(source)!, newType);
-        updateNodeWithAnyDataType(getNode(target)!, newType);
+    },
+    []
+  );
+
+  const graphIncludeNodeWithType = useCallback(
+    (
+      node: Node,
+      type: string,
+      dataType: string,
+      visitedNodeIds: string[]
+    ): void => {
+      if (
+        visitedNodeIds.includes(node.id) ||
+        node.type !== type ||
+        node.data.dataType !== dataType
+      )
+        return;
+      visitedNodeIds.push(node.id);
+      getIncomers(node, getNodes(), getEdges()).forEach((n) => {
+        graphIncludeNodeWithType(n, type, dataType, visitedNodeIds);
+      });
+      getOutgoers(node, getNodes(), getEdges()).forEach((n) => {
+        graphIncludeNodeWithType(n, type, dataType, visitedNodeIds);
       });
     },
     []
   );
-  const updateEdgeDatatype = useCallback((params: Connection): string => {
+
+  const setDataTypeInGraphWithRerouteNode = useCallback(
+    (node: Node, dataType: string): void => {
+      const visitedNode: string[] = [];
+      graphIncludeNodeWithType(node, 'reroute', 'any', visitedNode);
+      if (visitedNode.length === 0) return;
+      setDataTypeOfGraph(visitedNode, dataType);
+    },
+    []
+  );
+
+  const updateDatatypeInGraph = useCallback((params: Connection): string => {
     const sourceHandle = getNode(params.source!)?.data.outputs?.[
       params.sourceHandle!
     ] as HandleData;
@@ -194,12 +215,12 @@ export default function useGraph(
         dataType = targetHandle.dataType;
       else {
         dataType = sourceHandle.dataType;
-        updateNodeWithAnyDataType(getNode(params.target!)!, dataType);
+        setDataTypeInGraphWithRerouteNode(getNode(params.target!)!, dataType);
       }
     else {
       if (targetHandle.dataType && targetHandle.dataType !== 'any') {
         dataType = targetHandle.dataType;
-        updateNodeWithAnyDataType(getNode(params.source!)!, dataType);
+        setDataTypeInGraphWithRerouteNode(getNode(params.source!)!, dataType);
       }
     }
     return dataType;
@@ -242,55 +263,14 @@ export default function useGraph(
         allVisitedNodeIds.push(...visitedNodeIds);
       }
     }
-    const toBeResetEdgeIds: string[] = [];
     subGraphs.forEach((nodeIds) => {
-      setNodes((nds) => {
-        const newNodes = nds.map((n) => {
-          if (nodeIds.includes(n.id)) {
-            const edges = getConnectedEdges([n], getEdges());
-            edges.forEach((e) => {
-              if (!toBeResetEdgeIds.includes(e.id)) toBeResetEdgeIds.push(e.id);
-            });
-            const { inputs, outputs } = n.data;
-            if (inputs) {
-              Object.values(inputs).forEach((input) => {
-                (input as HandleData).dataType = 'any';
-              });
-            }
-            if (outputs) {
-              Object.values(outputs).forEach((output) => {
-                (output as HandleData).dataType = 'any';
-              });
-            }
-            n.data = {
-              ...n.data,
-              dataType: 'any',
-              inputs,
-              outputs,
-            };
-          }
-          return n;
-        });
-        return newNodes;
-      });
-    });
-    setEdges((eds) => {
-      const newEdges = eds.map((e) => {
-        if (toBeResetEdgeIds.includes(e.id)) {
-          e.data = {
-            ...e.data,
-            dataType: 'any',
-          };
-        }
-        return e;
-      });
-      return newEdges;
+      setDataTypeOfGraph(nodeIds, 'any');
     });
   }, []);
 
   const addEdge = useCallback((params: Connection) => {
     deleteEdgesIfReachMaxConnection(params);
-    const dataType = updateEdgeDatatype(params);
+    const dataType = updateDatatypeInGraph(params);
     setEdges((eds) =>
       rcAddEdge(
         {
