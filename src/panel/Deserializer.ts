@@ -51,8 +51,8 @@ export class Deserializer {
       return acc;
     }, {});
     return {
-      ...sNode,
       ...nodeConfig,
+      ...sNode,
       inputs,
       outputs,
     };

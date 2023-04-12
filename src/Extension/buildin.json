@@ -13,6 +13,7 @@
       "category": "reroute",
       "tooltip": "this is a reroute",
       "notShowInMenu": true,
+      "dataType": "any",
       "inputs": {
         "input": {
           "title": "input",

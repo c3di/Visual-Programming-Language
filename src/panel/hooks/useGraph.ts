@@ -17,8 +17,11 @@ import {
   type EdgeChange,
   useReactFlow,
   MarkerType,
+  getConnectedEdges,
+  getOutgoers,
+  getIncomers,
 } from 'reactflow';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { serializer } from '../Serializer';
 import { deserializer } from '../Deserializer';
 
@@ -63,6 +66,7 @@ export default function useGraph(
 ): GraphState {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const shouldUpdateDataTypeOfRerouteNode = useRef(false);
   // the nodes will added more properties by reactflow, so we need to get the nodes from reactflow
   const { getNodes, getNode, getEdges } = useReactFlow();
   const updateHandleConnection = useCallback(
@@ -116,14 +120,166 @@ export default function useGraph(
     []
   );
 
+  const setDataTypeOfGraph = useCallback(
+    (nodeIds: string[], dataType: string) => {
+      const edgeIds: string[] = [];
+      setNodes((nds) => {
+        const newNodes = nds.map((n) => {
+          if (nodeIds.includes(n.id)) {
+            const edges = getConnectedEdges([n], getEdges());
+            edges.forEach((e) => {
+              if (!edgeIds.includes(e.id)) edgeIds.push(e.id);
+            });
+            const { inputs, outputs } = n.data;
+            if (inputs) {
+              Object.values(inputs).forEach((input) => {
+                (input as HandleData).dataType = dataType;
+              });
+            }
+            if (outputs) {
+              Object.values(outputs).forEach((output) => {
+                (output as HandleData).dataType = dataType;
+              });
+            }
+            n.data = {
+              ...n.data,
+              dataType,
+              inputs,
+              outputs,
+            };
+          }
+          return n;
+        });
+        return newNodes;
+      });
+      setEdges((eds) => {
+        const newEdges = eds.map((e) => {
+          if (edgeIds.includes(e.id)) {
+            e.data = {
+              ...e.data,
+              dataType,
+            };
+          }
+          return e;
+        });
+        return newEdges;
+      });
+    },
+    []
+  );
+
+  const graphIncludeNodeWithType = useCallback(
+    (
+      node: Node,
+      type: string,
+      dataType: string,
+      visitedNodeIds: string[]
+    ): void => {
+      if (
+        visitedNodeIds.includes(node.id) ||
+        node.type !== type ||
+        node.data.dataType !== dataType
+      )
+        return;
+      visitedNodeIds.push(node.id);
+      getIncomers(node, getNodes(), getEdges()).forEach((n) => {
+        graphIncludeNodeWithType(n, type, dataType, visitedNodeIds);
+      });
+      getOutgoers(node, getNodes(), getEdges()).forEach((n) => {
+        graphIncludeNodeWithType(n, type, dataType, visitedNodeIds);
+      });
+    },
+    []
+  );
+
+  const setDataTypeInGraphWithRerouteNode = useCallback(
+    (node: Node, dataType: string): void => {
+      const visitedNode: string[] = [];
+      graphIncludeNodeWithType(node, 'reroute', 'any', visitedNode);
+      if (visitedNode.length === 0) return;
+      setDataTypeOfGraph(visitedNode, dataType);
+    },
+    []
+  );
+
+  const updateDatatypeInGraph = useCallback((params: Connection): string => {
+    const sourceHandle = getNode(params.source!)?.data.outputs?.[
+      params.sourceHandle!
+    ] as HandleData;
+    const targetHandle = getNode(params.target!)?.data.inputs?.[
+      params.targetHandle!
+    ] as HandleData;
+    let dataType = 'any';
+    if (sourceHandle.dataType && sourceHandle.dataType !== 'any')
+      if (targetHandle.dataType && targetHandle.dataType !== 'any')
+        dataType = targetHandle.dataType;
+      else {
+        dataType = sourceHandle.dataType;
+        setDataTypeInGraphWithRerouteNode(getNode(params.target!)!, dataType);
+      }
+    else {
+      if (targetHandle.dataType && targetHandle.dataType !== 'any') {
+        dataType = targetHandle.dataType;
+        setDataTypeInGraphWithRerouteNode(getNode(params.source!)!, dataType);
+      }
+    }
+    return dataType;
+  }, []);
+
+  const isConnectToNonRerouteNodes = useCallback(
+    (node: Node, visited: string[] = []): boolean => {
+      // traverse the graph including this node to check if the node is connected to non-reroute nodes
+      if (visited.includes(node.id)) return false;
+      let isConnected = node.type !== 'reroute';
+      visited.push(node.id);
+      if (isConnected) return isConnected;
+      getIncomers(node, getNodes(), getEdges()).forEach((n) => {
+        if (visited.includes(n.id)) return;
+        isConnected = isConnectToNonRerouteNodes(n, visited) || isConnected;
+      });
+      getOutgoers(node, getNodes(), getEdges()).forEach((n) => {
+        if (visited.includes(n.id)) return;
+        isConnected = isConnectToNonRerouteNodes(n, visited) || isConnected;
+      });
+      return isConnected;
+    },
+    []
+  );
+
+  const resetRerouteNodeDataType = useCallback(() => {
+    const StartRerouteNodeToReset: Node[] = [];
+    const rerouteNodes = getNodes().filter(
+      (n) => n.data.configType === 'reroute'
+    );
+    const allVisitedNodeIds: string[] = [];
+    const subGraphs: string[][] = [];
+    for (const n of rerouteNodes) {
+      if (!allVisitedNodeIds.includes(n.id)) {
+        const visitedNodeIds: string[] = [];
+        if (!isConnectToNonRerouteNodes(n, visitedNodeIds)) {
+          StartRerouteNodeToReset.push(n);
+          subGraphs.push(visitedNodeIds);
+        }
+        allVisitedNodeIds.push(...visitedNodeIds);
+      }
+    }
+    subGraphs.forEach((nodeIds) => {
+      setDataTypeOfGraph(nodeIds, 'any');
+    });
+  }, []);
+
   const addEdge = useCallback((params: Connection) => {
     deleteEdgesIfReachMaxConnection(params);
+    const dataType = updateDatatypeInGraph(params);
     setEdges((eds) =>
       rcAddEdge(
         {
           ...params,
           markerEnd: {
             type: MarkerType.ArrowClosed,
+          },
+          data: {
+            dataType,
           },
         },
         eds
@@ -144,6 +300,7 @@ export default function useGraph(
         updateHandleConnection(e.target, e.targetHandle, false, false);
       });
       setEdges((eds) => eds.filter((e) => !delEdgeSelctor(e)));
+      shouldUpdateDataTypeOfRerouteNode.current = true;
     },
     []
   );
@@ -209,6 +366,7 @@ export default function useGraph(
       );
     });
     setNodes((nds) => nds.filter((n) => !n.selected));
+    shouldUpdateDataTypeOfRerouteNode.current = true;
   }, []);
 
   const deleteSelectedElements = useCallback((): void => {
@@ -262,9 +420,9 @@ export default function useGraph(
         };
       if (
         sourceHandle.connection ===
-          getMaxConnection('source', sourceHandle.type) ||
+          getMaxConnection('source', sourceHandle.dataType) ||
         targetHandle.connection ===
-          getMaxConnection('target', targetHandle.type)
+          getMaxConnection('target', targetHandle.dataType)
       )
         return {
           action: ConnectionAction.Replace,
@@ -342,6 +500,13 @@ export default function useGraph(
     }
     setAnyConnectionToSelectedNode(false);
   }, [nodes]);
+
+  useEffect(() => {
+    if (shouldUpdateDataTypeOfRerouteNode.current) {
+      resetRerouteNodeDataType();
+      shouldUpdateDataTypeOfRerouteNode.current = false;
+    }
+  }, [nodes, edges]);
 
   return {
     getFreeUniqueNodeIds,
