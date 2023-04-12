@@ -18,8 +18,10 @@ import {
   useReactFlow,
   MarkerType,
   getConnectedEdges,
+  getOutgoers,
+  getIncomers,
 } from 'reactflow';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { serializer } from '../Serializer';
 import { deserializer } from '../Deserializer';
 
@@ -64,6 +66,7 @@ export default function useGraph(
 ): GraphState {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const shouldUpdateDataTypeOfRerouteNode = useRef(false);
   // the nodes will added more properties by reactflow, so we need to get the nodes from reactflow
   const { getNodes, getNode, getEdges } = useReactFlow();
   const updateHandleConnection = useCallback(
@@ -202,6 +205,89 @@ export default function useGraph(
     return dataType;
   }, []);
 
+  const isConnectToNonRerouteNodes = useCallback(
+    (node: Node, visited: string[] = []): boolean => {
+      // traverse the graph including this node to check if the node is connected to non-reroute nodes
+      if (visited.includes(node.id)) return false;
+      let isConnected = node.type !== 'reroute';
+      visited.push(node.id);
+      if (isConnected) return isConnected;
+      getIncomers(node, getNodes(), getEdges()).forEach((n) => {
+        if (visited.includes(n.id)) return;
+        isConnected = isConnectToNonRerouteNodes(n, visited) || isConnected;
+      });
+      getOutgoers(node, getNodes(), getEdges()).forEach((n) => {
+        if (visited.includes(n.id)) return;
+        isConnected = isConnectToNonRerouteNodes(n, visited) || isConnected;
+      });
+      return isConnected;
+    },
+    []
+  );
+
+  const resetRerouteNodeDataType = useCallback(() => {
+    const StartRerouteNodeToReset: Node[] = [];
+    const rerouteNodes = getNodes().filter(
+      (n) => n.data.configType === 'reroute'
+    );
+    const allVisitedNodeIds: string[] = [];
+    const subGraphs: string[][] = [];
+    for (const n of rerouteNodes) {
+      if (!allVisitedNodeIds.includes(n.id)) {
+        const visitedNodeIds: string[] = [];
+        if (!isConnectToNonRerouteNodes(n, visitedNodeIds)) {
+          StartRerouteNodeToReset.push(n);
+          subGraphs.push(visitedNodeIds);
+        }
+        allVisitedNodeIds.push(...visitedNodeIds);
+      }
+    }
+    const toBeResetEdgeIds: string[] = [];
+    subGraphs.forEach((nodeIds) => {
+      setNodes((nds) => {
+        const newNodes = nds.map((n) => {
+          if (nodeIds.includes(n.id)) {
+            const edges = getConnectedEdges([n], getEdges());
+            edges.forEach((e) => {
+              if (!toBeResetEdgeIds.includes(e.id)) toBeResetEdgeIds.push(e.id);
+            });
+            const { inputs, outputs } = n.data;
+            if (inputs) {
+              Object.values(inputs).forEach((input) => {
+                (input as HandleData).dataType = 'any';
+              });
+            }
+            if (outputs) {
+              Object.values(outputs).forEach((output) => {
+                (output as HandleData).dataType = 'any';
+              });
+            }
+            n.data = {
+              ...n.data,
+              dataType: 'any',
+              inputs,
+              outputs,
+            };
+          }
+          return n;
+        });
+        return newNodes;
+      });
+    });
+    setEdges((eds) => {
+      const newEdges = eds.map((e) => {
+        if (toBeResetEdgeIds.includes(e.id)) {
+          e.data = {
+            ...e.data,
+            dataType: 'any',
+          };
+        }
+        return e;
+      });
+      return newEdges;
+    });
+  }, []);
+
   const addEdge = useCallback((params: Connection) => {
     deleteEdgesIfReachMaxConnection(params);
     const dataType = updateEdgeDatatype(params);
@@ -234,6 +320,7 @@ export default function useGraph(
         updateHandleConnection(e.target, e.targetHandle, false, false);
       });
       setEdges((eds) => eds.filter((e) => !delEdgeSelctor(e)));
+      shouldUpdateDataTypeOfRerouteNode.current = true;
     },
     []
   );
@@ -299,6 +386,7 @@ export default function useGraph(
       );
     });
     setNodes((nds) => nds.filter((n) => !n.selected));
+    shouldUpdateDataTypeOfRerouteNode.current = true;
   }, []);
 
   const deleteSelectedElements = useCallback((): void => {
@@ -432,6 +520,13 @@ export default function useGraph(
     }
     setAnyConnectionToSelectedNode(false);
   }, [nodes]);
+
+  useEffect(() => {
+    if (shouldUpdateDataTypeOfRerouteNode.current) {
+      resetRerouteNodeDataType();
+      shouldUpdateDataTypeOfRerouteNode.current = false;
+    }
+  }, [nodes, edges]);
 
   return {
     getFreeUniqueNodeIds,
