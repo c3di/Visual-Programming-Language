@@ -1,9 +1,6 @@
 import buildin from './buildin.json';
-import example from './VPLibraryExample.json';
 import { nodeConfigRegistry } from './NodeConfigRegistry';
 import { addNewType, type NodeConfig } from '../types';
-
-const libraries = [buildin, example];
 
 export interface libraryConfig {
   name?: string;
@@ -43,6 +40,7 @@ export const LoadLibrary = (lib: libraryConfig): void => {
     );
 };
 
+const libraries = [buildin];
 export const LoadDefaultLibrary = (): void => {
   libraries.forEach((lib) => {
     LoadLibrary(lib);
