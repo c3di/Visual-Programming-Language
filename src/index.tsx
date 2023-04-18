@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import graphExample from './VisualProgrammingFileExample.json';
+import graphExample from './VPFileExample.json';
 import { VPPanel } from './panel';
 import { type SerializedGraph } from './panel';
 import './index.css';
