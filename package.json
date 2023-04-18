@@ -8,9 +8,10 @@
     "url": "git@github.com:Max-ChenFei/VisualProgrammingEditor.git"
   },
   "keywords": [
-    "react",
+    "react-widget",
     "visual programming",
-    "drag-and-drop programming",
+    "graphical-programming",
+    "node-based-programming",
     "node-based ui"
   ],
   "author": "Fei Chen",
