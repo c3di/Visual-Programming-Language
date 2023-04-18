@@ -1,4 +1,4 @@
-import { type NodeDirConfig, type NodeConfig } from '../panel/types';
+import { type NodeDirConfig, type NodeConfig } from '../types';
 
 export class NodeConfigRegistry {
   private static instance: NodeConfigRegistry;

@@ -1,7 +1,7 @@
 import buildin from './buildin.json';
 import example from './example.json';
 import { nodeConfigRegistry } from './NodeConfigRegistry';
-import { addNewType, type NodeConfig } from '../panel/types';
+import { addNewType, type NodeConfig } from '../types';
 
 const libraries = [buildin, example];
 

@@ -25,7 +25,7 @@ import {
   SearchMenu,
   ConnectionTip,
 } from './gui';
-import { nodeConfigRegistry } from '../Extension';
+import { nodeConfigRegistry } from './extension';
 
 const Scene = ({
   graph,

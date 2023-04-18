@@ -15,7 +15,7 @@ import type {
   SerializedGraphEdge,
 } from './types';
 import { MarkerType } from 'reactflow';
-import { nodeConfigRegistry } from '../Extension';
+import { nodeConfigRegistry } from './extension';
 
 export class Deserializer {
   private static instance: Deserializer;
