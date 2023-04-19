@@ -2,7 +2,7 @@
   "name": "visual-programming-editor",
   "version": "0.1.0",
   "description": "General Node-based Visual Programing editor",
-  "private": true,
+  "private": false,
   "repository": {
     "type": "git",
     "url": "git@github.com:Max-ChenFei/VisualProgrammingEditor.git"
