@@ -291,15 +291,13 @@ const Scene = ({
   );
 };
 
-export default function VPEditor({
-  graph,
-}: {
-  graph: SerializedGraph;
+export default function VPEditor(prop?: {
+  graph?: SerializedGraph;
 }): JSX.Element {
   return (
     <WidgetFactoryProvider>
       <ReactFlowProvider>
-        <Scene graph={graph} />
+        <Scene graph={prop?.graph} />
       </ReactFlowProvider>
     </WidgetFactoryProvider>
   );
