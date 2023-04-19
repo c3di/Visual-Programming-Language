@@ -17,7 +17,7 @@ import {
 import componentType, { Background, ControlPanel, MiniMap } from './components';
 import { type SerializedGraph } from './types';
 import 'reactflow/dist/style.css';
-import './VPPanel.css';
+import './VPEditor.css';
 import {
   NodeMenu,
   EdgeMenu,
@@ -25,7 +25,7 @@ import {
   SearchMenu,
   ConnectionTip,
 } from './gui';
-import { nodeConfigRegistry } from '../Extension';
+import { nodeConfigRegistry } from './extension';
 
 const Scene = ({
   graph,
@@ -291,7 +291,7 @@ const Scene = ({
   );
 };
 
-export default function VPPanel({
+export default function VPEditor({
   graph,
 }: {
   graph: SerializedGraph;

@@ -1,14 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import graphExample from './VPFileExample.json';
+import libraryExample from './VPLibraryExample.json';
+import { VPEditor, LoadLibrary, type SerializedGraph } from './editor';
 import './index.css';
-import { VPPanel } from './panel';
-import mockData from './SerializationExample.json';
-import { extensionLoad } from './Extension';
-import { type SerializedGraph } from './panel/types';
 
-extensionLoad();
+LoadLibrary(libraryExample);
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
-root.render(<VPPanel graph={mockData as SerializedGraph} />);
+root.render(<VPEditor graph={graphExample as SerializedGraph} />);
