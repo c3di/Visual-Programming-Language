@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import graphExample from './VPFileExample.json';
 import libraryExample from './VPLibraryExample.json';
-import { VPEditor, LoadLibrary, type SerializedGraph } from './Editor';
+import { VPEditor, LoadLibrary, type SerializedGraph } from './editor';
 import './index.css';
 
 LoadLibrary(libraryExample);
