@@ -476,7 +476,7 @@ export default function useGraph(
 
   useEffect(() => {
     if (graph) fromJSON(graph);
-  }, []);
+  }, [graph]);
 
   const [anyConnectableNodeSelected, setAnyConnectableNodeSelected] =
     useState(false);
