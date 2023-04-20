@@ -20,7 +20,12 @@ function MainArea(): JSX.Element {
       >
         load example
       </button>
-      <VPEditor graph={content} />
+      <VPEditor
+        content={content}
+        onContentChange={(content) => {
+          console.log(content);
+        }}
+      />
     </>
   );
 }
