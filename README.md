@@ -1,4 +1,5 @@
 # Visual Programming Editors
+[![build](https://github.com/Max-ChenFei/VisualProgrammingEditor/actions/workflows/build.yml/badge.svg)](https://github.com/Max-ChenFei/VisualProgrammingEditor/actions/workflows/build.yml)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
