@@ -62,7 +62,8 @@ export interface GraphState {
   fromJSON: (graph: SerializedGraph) => void;
 }
 export default function useGraph(
-  graph: SerializedGraph | undefined
+  graph?: SerializedGraph,
+  onGraphChange?: (graph: string) => void
 ): GraphState {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -506,6 +507,10 @@ export default function useGraph(
       resetRerouteNodeDataType();
       shouldUpdateDataTypeOfRerouteNode.current = false;
     }
+  }, [nodes, edges]);
+
+  useEffect(() => {
+    onGraphChange?.(toJSON());
   }, [nodes, edges]);
 
   return {

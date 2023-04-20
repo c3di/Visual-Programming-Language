@@ -29,11 +29,13 @@ import { nodeConfigRegistry } from './extension';
 
 const Scene = ({
   graph,
+  onGraphChange,
 }: {
-  graph: SerializedGraph | undefined;
+  graph?: SerializedGraph;
+  onGraphChange?: (graph: string) => void;
 }): JSX.Element => {
   const domRef = useRef<HTMLDivElement>(null);
-  const graphState = useGraph(graph);
+  const graphState = useGraph(graph, onGraphChange);
   const { nodes, onNodesChange, edges, onEdgesChange, onConnect, deleteEdge } =
     graphState;
   const { mousePos, updateMousePos } = useTrackMousePos(domRef);
@@ -291,13 +293,17 @@ const Scene = ({
   );
 };
 
-export default function VPEditor(prop?: {
-  graph?: SerializedGraph;
+export default function VPEditor({
+  content,
+  onContentChange,
+}: {
+  content?: SerializedGraph;
+  onContentChange?: (content: string) => void;
 }): JSX.Element {
   return (
     <WidgetFactoryProvider>
       <ReactFlowProvider>
-        <Scene graph={prop?.graph} />
+        <Scene graph={content} onGraphChange={onContentChange} />
       </ReactFlowProvider>
     </WidgetFactoryProvider>
   );
