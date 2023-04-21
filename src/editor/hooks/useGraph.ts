@@ -24,6 +24,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { serializer } from '../Serializer';
 import { deserializer } from '../Deserializer';
+import { deepCopy } from '../util';
 
 type OnChange<ChangesType> = (changes: ChangesType[]) => void;
 
@@ -58,7 +59,7 @@ export interface GraphState {
   getHandleConnectionCounts: (nodeId: string, handleId: string) => number;
   anyConnectableNodeSelected: boolean;
   anyConnectionToSelectedNode: boolean;
-  toJSON: () => string;
+  toString: () => string;
   fromJSON: (graph: SerializedGraph) => void;
 }
 export default function useGraph(
@@ -461,10 +462,10 @@ export default function useGraph(
     );
   }, []);
 
-  const toJSON = useCallback((): string => {
+  const toString = useCallback((): string => {
     const graph = serializer.serialize({
-      nodes: getNodes(),
-      edges: getEdges(),
+      nodes: deepCopy(getNodes()),
+      edges: deepCopy(getEdges()),
     });
     return JSON.stringify(graph);
   }, []);
@@ -510,8 +511,8 @@ export default function useGraph(
   }, [nodes, edges]);
 
   useEffect(() => {
-    onGraphChange?.(toJSON());
-  }, [nodes, edges]);
+    onGraphChange?.(toString());
+  }, [nodes]);
 
   return {
     getFreeUniqueNodeIds,
@@ -538,7 +539,7 @@ export default function useGraph(
     getHandleConnectionCounts,
     anyConnectableNodeSelected,
     anyConnectionToSelectedNode,
-    toJSON,
+    toString,
     fromJSON,
   };
 }
