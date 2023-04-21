@@ -228,7 +228,6 @@ const Scene = ({
           gui.connectionStartNodeId.current = null;
           gui.closeWidget();
         }}
-        fitView
         attributionPosition="top-right"
         nodeTypes={componentType.nodeTypes}
         edgesFocusable={false}
