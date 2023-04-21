@@ -30,11 +30,11 @@ import { nodeConfigRegistry } from './extension';
 const Scene = ({
   graph,
   onGraphChange,
-  disposed,
+  activated,
 }: {
   graph?: SerializedGraph;
   onGraphChange?: (graph: string) => void;
-  disposed?: boolean;
+  activated?: boolean;
 }): JSX.Element => {
   const domRef = useRef<HTMLDivElement>(null);
   const graphState = useGraph(graph, onGraphChange);
@@ -61,10 +61,10 @@ const Scene = ({
     []
   );
   useEffect(() => {
-    if (disposed) {
+    if (activated) {
       closeWidget(null, true);
     }
-  }, [disposed]);
+  }, [activated]);
   // guide from https://reactflow.dev/docs/guides/remove-attribution/
   const proOptions = { hideAttribution: true };
   return (
@@ -302,11 +302,11 @@ const Scene = ({
 export default function VPEditor({
   content,
   onContentChange,
-  disposed,
+  activated,
 }: {
   content?: SerializedGraph;
   onContentChange?: (content: string) => void;
-  disposed?: boolean;
+  activated?: boolean;
 }): JSX.Element {
   return (
     <WidgetFactoryProvider>
@@ -314,7 +314,7 @@ export default function VPEditor({
         <Scene
           graph={content}
           onGraphChange={onContentChange}
-          disposed={disposed}
+          activated={activated}
         />
       </ReactFlowProvider>
     </WidgetFactoryProvider>
