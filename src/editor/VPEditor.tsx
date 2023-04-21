@@ -61,7 +61,13 @@ const Scene = ({
   // guide from https://reactflow.dev/docs/guides/remove-attribution/
   const proOptions = { hideAttribution: true };
   return (
-    <>
+    <div
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      style={{ Width: '100%', height: '100%' } as React.CSSProperties}
+      onBlur={() => {
+        closeWidget(undefined, true);
+      }}
+    >
       <ConnectionTip
         open={gui.showConnectionTip}
         onClose={gui.closeWidget}
@@ -288,7 +294,7 @@ const Scene = ({
           className={bgSetting.className}
         />
       </ReactFlow>
-    </>
+    </div>
   );
 };
 
