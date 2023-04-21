@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import ReactFlow, {
   SelectionMode,
   ConnectionLineType,
@@ -30,9 +30,11 @@ import { nodeConfigRegistry } from './extension';
 const Scene = ({
   graph,
   onGraphChange,
+  activated,
 }: {
   graph?: SerializedGraph;
   onGraphChange?: (graph: string) => void;
+  activated?: boolean;
 }): JSX.Element => {
   const domRef = useRef<HTMLDivElement>(null);
   const graphState = useGraph(graph, onGraphChange);
@@ -58,16 +60,15 @@ const Scene = ({
     },
     []
   );
+  useEffect(() => {
+    if (!activated) {
+      closeWidget(null, true);
+    }
+  }, [activated]);
   // guide from https://reactflow.dev/docs/guides/remove-attribution/
   const proOptions = { hideAttribution: true };
   return (
-    <div
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      style={{ Width: '100%', height: '100%' } as React.CSSProperties}
-      onBlur={() => {
-        closeWidget(undefined, true);
-      }}
-    >
+    <>
       <ConnectionTip
         open={gui.showConnectionTip}
         onClose={gui.closeWidget}
@@ -294,21 +295,27 @@ const Scene = ({
           className={bgSetting.className}
         />
       </ReactFlow>
-    </div>
+    </>
   );
 };
 
 export default function VPEditor({
   content,
   onContentChange,
+  activated,
 }: {
   content?: SerializedGraph;
   onContentChange?: (content: string) => void;
+  activated?: boolean;
 }): JSX.Element {
   return (
     <WidgetFactoryProvider>
       <ReactFlowProvider>
-        <Scene graph={content} onGraphChange={onContentChange} />
+        <Scene
+          graph={content}
+          onGraphChange={onContentChange}
+          activated={activated}
+        />
       </ReactFlowProvider>
     </WidgetFactoryProvider>
   );

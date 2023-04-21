@@ -11,10 +11,12 @@ function MainArea(): JSX.Element {
   const [content, setContent] = useState<SerializedGraph | undefined>(
     undefined
   );
+  const [activated, setActivated] = useState<boolean>(false);
   return (
     <>
       <button
         onClick={() => {
+          setActivated(true);
           setContent(example as SerializedGraph);
         }}
       >
@@ -25,6 +27,7 @@ function MainArea(): JSX.Element {
         onContentChange={(content) => {
           console.log(content);
         }}
+        activated={activated}
       />
     </>
   );
