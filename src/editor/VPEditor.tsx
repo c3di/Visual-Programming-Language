@@ -61,7 +61,7 @@ const Scene = ({
     []
   );
   useEffect(() => {
-    if (activated) {
+    if (!activated) {
       closeWidget(null, true);
     }
   }, [activated]);
