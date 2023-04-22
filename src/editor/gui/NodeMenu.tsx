@@ -35,6 +35,7 @@ const NodeMenu = memo(function NodeMenu({
 }): JSX.Element {
   return (
     <Menu
+      transitionDuration={0}
       onContextMenu={(e) => {
         e.preventDefault();
       }}

@@ -18,6 +18,7 @@ const ConnectionTip = memo(function ConnectionTip({
 }): JSX.Element {
   return (
     <Menu
+      transitionDuration={0}
       sx={{ padding: 0, pointerEvents: 'none' }}
       onContextMenu={(e) => {
         e.preventDefault();
