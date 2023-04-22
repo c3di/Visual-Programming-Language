@@ -20,6 +20,7 @@ const EdgeMenu = memo(function EdgeMenu({
 }): JSX.Element {
   return (
     <Menu
+      transitionDuration={0}
       onContextMenu={(e) => {
         e.preventDefault();
       }}

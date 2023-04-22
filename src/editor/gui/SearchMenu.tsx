@@ -267,6 +267,7 @@ const SearchMenu = memo(function SearchMenu({
 
   return (
     <Menu
+      transitionDuration={0}
       onContextMenu={(e) => {
         e.preventDefault();
       }}
