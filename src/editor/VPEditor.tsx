@@ -152,7 +152,6 @@ const Scene = ({
         onKeyDown={onKeyDown}
         onPaneContextMenu={(e) => {
           e.preventDefault();
-          e.stopPropagation();
           sceneState.selectAll(false);
           gui.setPosiontOnGui({
             left: e.clientX,
