@@ -463,6 +463,7 @@ export default function useGraph(
   }, []);
 
   const toString = useCallback((): string => {
+    if (getNodes().length === 0) return '';
     const graph = serializer.serialize({
       nodes: deepCopy(getNodes()),
       edges: deepCopy(getEdges()),

@@ -40,6 +40,7 @@ const Scene = ({
 }): JSX.Element => {
   const [initialed, setInitialed] = useState<boolean>(false);
   const sceneInstance = useRef<ReactFlowInstance>(useReactFlow());
+  const currentContent = useRef<string>('');
   const domRef = useRef<HTMLDivElement>(null);
   const graphState = useGraph(sceneInstance, graph);
   const {
@@ -82,8 +83,17 @@ const Scene = ({
     if (initialed) fromJSON(graph ?? { nodes: [], edges: [] });
   }, [graph, initialed]);
 
+  const triggerContentChange = useCallback(() => {
+    if (!onContentChange) return;
+    const content = toString();
+    if (content !== currentContent.current) {
+      currentContent.current = content;
+      onContentChange(content);
+    }
+  }, []);
+
   useEffect(() => {
-    onContentChange?.(toString());
+    triggerContentChange();
   }, [nodes, edges]);
 
   // guide from https://reactflow.dev/docs/guides/remove-attribution/
@@ -290,7 +300,7 @@ const Scene = ({
         onMove={(e) => {
           if (e instanceof MouseEvent) updateMousePos(e.clientX, e.clientY);
           closeWidget(null, true);
-          onContentChange?.(toString());
+          triggerContentChange();
         }}
         onSelectionStart={(e) => {
           closeWidget(null, true);
