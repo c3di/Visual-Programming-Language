@@ -132,5 +132,10 @@
       "inputHandle": "input1",
       "dataType": "float"
     }
-  ]
+  ],
+  "viewport": {
+    "x": 300,
+    "y": 50,
+    "zoom": 1.2
+  }
 }

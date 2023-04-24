@@ -1,9 +1,11 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactFlow, {
   SelectionMode,
   ConnectionLineType,
   ReactFlowProvider,
   ConnectionMode,
+  useReactFlow,
+  type ReactFlowInstance,
 } from 'reactflow';
 import { WidgetFactoryProvider } from './Context';
 import Setting from './VPPanelSetting';
@@ -29,17 +31,27 @@ import { nodeConfigRegistry } from './extension';
 
 const Scene = ({
   graph,
-  onGraphChange,
+  onContentChange,
   activated,
 }: {
   graph?: SerializedGraph;
-  onGraphChange?: (graph: string) => void;
+  onContentChange?: (graph: string) => void;
   activated?: boolean;
 }): JSX.Element => {
+  const [initialed, setInitialed] = useState<boolean>(false);
+  const sceneInstance = useRef<ReactFlowInstance>(useReactFlow());
   const domRef = useRef<HTMLDivElement>(null);
-  const graphState = useGraph(graph, onGraphChange);
-  const { nodes, onNodesChange, edges, onEdgesChange, onConnect, deleteEdge } =
-    graphState;
+  const graphState = useGraph(sceneInstance, graph);
+  const {
+    nodes,
+    onNodesChange,
+    edges,
+    onEdgesChange,
+    onConnect,
+    deleteEdge,
+    fromJSON,
+    toString,
+  } = graphState;
   const { mousePos, updateMousePos } = useTrackMousePos(domRef);
   const sceneState = useScene(graphState, mousePos);
   const { onNodeDragStart, onNodeDragStop } = sceneState;
@@ -65,6 +77,15 @@ const Scene = ({
       closeWidget(null, true);
     }
   }, [activated]);
+
+  useEffect(() => {
+    if (initialed) fromJSON(graph ?? { nodes: [], edges: [] });
+  }, [graph, initialed]);
+
+  useEffect(() => {
+    onContentChange?.(toString());
+  }, [nodes, edges]);
+
   // guide from https://reactflow.dev/docs/guides/remove-attribution/
   const proOptions = { hideAttribution: true };
   return (
@@ -115,6 +136,10 @@ const Scene = ({
         }}
       />
       <ReactFlow
+        onInit={(instance) => {
+          sceneInstance.current = instance;
+          setInitialed(true);
+        }}
         onMouseMove={(e) => {
           updateMousePos(e.clientX, e.clientY);
         }}
@@ -265,6 +290,7 @@ const Scene = ({
         onMove={(e) => {
           if (e instanceof MouseEvent) updateMousePos(e.clientX, e.clientY);
           closeWidget(null, true);
+          onContentChange?.(toString());
         }}
         onSelectionStart={(e) => {
           closeWidget(null, true);
@@ -312,7 +338,7 @@ export default function VPEditor({
       <ReactFlowProvider>
         <Scene
           graph={content}
-          onGraphChange={onContentChange}
+          onContentChange={onContentChange}
           activated={activated}
         />
       </ReactFlowProvider>

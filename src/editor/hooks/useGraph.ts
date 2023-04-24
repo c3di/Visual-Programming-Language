@@ -15,11 +15,11 @@ import {
   addEdge as rcAddEdge,
   type NodeChange,
   type EdgeChange,
-  useReactFlow,
   MarkerType,
   getConnectedEdges,
   getOutgoers,
   getIncomers,
+  type ReactFlowInstance,
 } from 'reactflow';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { serializer } from '../Serializer';
@@ -63,14 +63,14 @@ export interface GraphState {
   fromJSON: (graph: SerializedGraph) => void;
 }
 export default function useGraph(
-  graph?: SerializedGraph,
-  onGraphChange?: (graph: string) => void
+  sceneInstance: React.MutableRefObject<ReactFlowInstance>,
+  graph?: SerializedGraph
 ): GraphState {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const shouldUpdateDataTypeOfRerouteNode = useRef(false);
   // the nodes will added more properties by reactflow, so we need to get the nodes from reactflow
-  const { getNodes, getNode, getEdges } = useReactFlow();
+  const { getNodes, getNode, getEdges } = sceneInstance.current;
   const updateHandleConnection = useCallback(
     (
       nodeId: string | null,
@@ -467,6 +467,7 @@ export default function useGraph(
       nodes: deepCopy(getNodes()),
       edges: deepCopy(getEdges()),
     });
+    graph.viewport = sceneInstance.current.getViewport();
     return JSON.stringify(graph);
   }, []);
 
@@ -474,15 +475,10 @@ export default function useGraph(
     const { nodes, edges } = deserializer.deserialize(graph);
     setNodes(nodes);
     setEdges(edges);
-  }, []);
-
-  useEffect(() => {
-    if (graph) fromJSON(graph);
-    else {
-      setNodes([]);
-      setEdges([]);
+    if (graph?.viewport) {
+      sceneInstance.current.setViewport(graph.viewport);
     }
-  }, [graph]);
+  }, []);
 
   const [anyConnectableNodeSelected, setAnyConnectableNodeSelected] =
     useState(false);
@@ -513,10 +509,6 @@ export default function useGraph(
       shouldUpdateDataTypeOfRerouteNode.current = false;
     }
   }, [nodes, edges]);
-
-  useEffect(() => {
-    onGraphChange?.(toString());
-  }, [nodes]);
 
   return {
     getFreeUniqueNodeIds,
