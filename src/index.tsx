@@ -11,6 +11,8 @@ function MainArea(): JSX.Element {
   const [content, setContent] = useState<SerializedGraph | undefined>(
     undefined
   );
+  const [cachedContent, setCachedContent] = useState<string>('');
+  const [savedContent, setSavedContent] = useState<string>('');
   const [activated, setActivated] = useState<boolean>(false);
   return (
     <>
@@ -20,20 +22,37 @@ function MainArea(): JSX.Element {
           setContent(example as SerializedGraph);
         }}
       >
-        load example
+        load default
       </button>
       <button
         onClick={() => {
-          setActivated(true);
+          setActivated(false);
           setContent(undefined);
         }}
       >
-        clear example
+        clear
+      </button>
+      <button
+        onClick={() => {
+          setActivated(false);
+          setSavedContent(cachedContent);
+        }}
+      >
+        save
+      </button>
+      <button
+        onClick={() => {
+          setActivated(false);
+          if (savedContent === '') setContent(example as SerializedGraph);
+          else setContent(JSON.parse(savedContent));
+        }}
+      >
+        load saved
       </button>
       <VPEditor
         content={content}
         onContentChange={(content) => {
-          console.log(content);
+          setCachedContent(content);
         }}
         activated={activated}
       />
