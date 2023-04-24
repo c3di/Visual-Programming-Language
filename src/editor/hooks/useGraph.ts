@@ -478,6 +478,10 @@ export default function useGraph(
 
   useEffect(() => {
     if (graph) fromJSON(graph);
+    else {
+      setNodes([]);
+      setEdges([]);
+    }
   }, [graph]);
 
   const [anyConnectableNodeSelected, setAnyConnectableNodeSelected] =

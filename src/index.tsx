@@ -22,6 +22,14 @@ function MainArea(): JSX.Element {
       >
         load example
       </button>
+      <button
+        onClick={() => {
+          setActivated(true);
+          setContent(undefined);
+        }}
+      >
+        clear example
+      </button>
       <VPEditor
         content={content}
         onContentChange={(content) => {
