@@ -97,6 +97,8 @@ export class Deserializer {
         type: category,
         dragHandle: '.node__header',
         zIndex: -1001,
+        width,
+        height,
         data: {
           comment,
           tooltip,

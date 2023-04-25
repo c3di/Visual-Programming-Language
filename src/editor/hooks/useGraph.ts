@@ -19,7 +19,7 @@ import {
   getConnectedEdges,
   getOutgoers,
   getIncomers,
-  type ReactFlowInstance,
+  useReactFlow,
 } from 'reactflow';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { serializer } from '../Serializer';
@@ -60,17 +60,18 @@ export interface GraphState {
   anyConnectableNodeSelected: boolean;
   anyConnectionToSelectedNode: boolean;
   toString: () => string;
-  fromJSON: (graph: SerializedGraph) => void;
+  fromJSON: (graph: SerializedGraph | undefined) => {
+    nodes: Node[];
+    edges: Edge[];
+  };
 }
-export default function useGraph(
-  sceneInstance: React.MutableRefObject<ReactFlowInstance>,
-  graph?: SerializedGraph
-): GraphState {
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+export default function useGraph(graph?: SerializedGraph): GraphState {
+  const initGraph = deserializer.deserialize(graph);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initGraph.nodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initGraph.edges);
   const shouldUpdateDataTypeOfRerouteNode = useRef(false);
   // the nodes will added more properties by reactflow, so we need to get the nodes from reactflow
-  const { getNodes, getNode, getEdges } = sceneInstance.current;
+  const { getNodes, getNode, getEdges } = useReactFlow();
   const updateHandleConnection = useCallback(
     (
       nodeId: string | null,
@@ -463,22 +464,23 @@ export default function useGraph(
   }, []);
 
   const toString = useCallback((): string => {
+    if (getNodes().length === 0) return '';
     const graph = serializer.serialize({
       nodes: deepCopy(getNodes()),
       edges: deepCopy(getEdges()),
     });
-    graph.viewport = sceneInstance.current.getViewport();
     return JSON.stringify(graph);
   }, []);
 
-  const fromJSON = useCallback((graph: SerializedGraph | undefined): void => {
-    const { nodes, edges } = deserializer.deserialize(graph);
-    setNodes(nodes);
-    setEdges(edges);
-    if (graph?.viewport) {
-      sceneInstance.current.setViewport(graph.viewport);
-    }
-  }, []);
+  const fromJSON = useCallback(
+    (graph: SerializedGraph | undefined): { nodes: Node[]; edges: Edge[] } => {
+      const { nodes, edges } = deserializer.deserialize(graph);
+      setNodes(nodes);
+      setEdges(edges);
+      return { nodes, edges };
+    },
+    []
+  );
 
   const [anyConnectableNodeSelected, setAnyConnectableNodeSelected] =
     useState(false);

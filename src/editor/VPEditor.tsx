@@ -4,7 +4,7 @@ import ReactFlow, {
   ConnectionLineType,
   ReactFlowProvider,
   ConnectionMode,
-  useReactFlow,
+  getRectOfNodes,
   type ReactFlowInstance,
 } from 'reactflow';
 import { WidgetFactoryProvider } from './Context';
@@ -39,9 +39,11 @@ const Scene = ({
   activated?: boolean;
 }): JSX.Element => {
   const [initialed, setInitialed] = useState<boolean>(false);
-  const sceneInstance = useRef<ReactFlowInstance>(useReactFlow());
+  const currentContent = useRef<string>('');
+  const sceneInstance = useRef<ReactFlowInstance | undefined>(undefined);
+
   const domRef = useRef<HTMLDivElement>(null);
-  const graphState = useGraph(sceneInstance, graph);
+  const graphState = useGraph(graph);
   const {
     nodes,
     onNodesChange,
@@ -79,11 +81,28 @@ const Scene = ({
   }, [activated]);
 
   useEffect(() => {
-    if (initialed) fromJSON(graph ?? { nodes: [], edges: [] });
+    // the graph may be changed before the scene is initialized
+    if (!initialed) return;
+    if (toString() !== (graph ? JSON.stringify(graph) : '')) {
+      const { nodes } = fromJSON(graph);
+      const rect = getRectOfNodes(nodes);
+      sceneInstance.current?.fitBounds(rect);
+    }
   }, [graph, initialed]);
 
+  const triggerContentChange = useCallback(() => {
+    if (!onContentChange) return;
+    const content = toString();
+    if (content !== currentContent.current) {
+      currentContent.current = content;
+      onContentChange(content);
+    }
+  }, []);
+
   useEffect(() => {
-    onContentChange?.(toString());
+    // block the initial change
+    if (!initialed) return;
+    triggerContentChange();
   }, [nodes, edges]);
 
   // guide from https://reactflow.dev/docs/guides/remove-attribution/
@@ -140,6 +159,7 @@ const Scene = ({
           sceneInstance.current = instance;
           setInitialed(true);
         }}
+        fitView={!initialed}
         onMouseMove={(e) => {
           updateMousePos(e.clientX, e.clientY);
         }}
@@ -290,7 +310,6 @@ const Scene = ({
         onMove={(e) => {
           if (e instanceof MouseEvent) updateMousePos(e.clientX, e.clientY);
           closeWidget(null, true);
-          onContentChange?.(toString());
         }}
         onSelectionStart={(e) => {
           closeWidget(null, true);

@@ -4,6 +4,7 @@ import example from './VPFileExample.json';
 import libraryExample from './VPLibraryExample.json';
 import { VPEditor, LoadLibrary, type SerializedGraph } from './editor';
 import './index.css';
+import { deepCopy } from './editor/util';
 
 LoadLibrary(libraryExample);
 
@@ -11,15 +12,14 @@ function MainArea(): JSX.Element {
   const [content, setContent] = useState<SerializedGraph | undefined>(
     undefined
   );
-  const [cachedContent, setCachedContent] = useState<string>('');
-  const [savedContent, setSavedContent] = useState<string>('');
+  const [changedCount, setChangedCount] = useState<number>(0);
   const [activated, setActivated] = useState<boolean>(false);
   return (
     <>
       <button
         onClick={() => {
           setActivated(true);
-          setContent(example as SerializedGraph);
+          setContent(deepCopy(example) as SerializedGraph);
         }}
       >
         load default
@@ -32,27 +32,11 @@ function MainArea(): JSX.Element {
       >
         clear
       </button>
-      <button
-        onClick={() => {
-          setActivated(false);
-          setSavedContent(cachedContent);
-        }}
-      >
-        save
-      </button>
-      <button
-        onClick={() => {
-          setActivated(false);
-          if (savedContent === '') setContent(example as SerializedGraph);
-          else setContent(JSON.parse(savedContent));
-        }}
-      >
-        load saved
-      </button>
+      <textarea value={JSON.stringify(changedCount)} />
       <VPEditor
         content={content}
         onContentChange={(content) => {
-          setCachedContent(content);
+          setChangedCount((count) => count + 1);
         }}
         activated={activated}
       />
