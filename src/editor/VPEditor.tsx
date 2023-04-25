@@ -39,6 +39,7 @@ const Scene = ({
   activated?: boolean;
 }): JSX.Element => {
   const [initialed, setInitialed] = useState<boolean>(false);
+  const currentContent = useRef<string>('');
   const sceneInstance = useRef<ReactFlowInstance | undefined>(undefined);
 
   const domRef = useRef<HTMLDivElement>(null);
@@ -88,6 +89,21 @@ const Scene = ({
       sceneInstance.current?.fitBounds(rect);
     }
   }, [graph, initialed]);
+
+  const triggerContentChange = useCallback(() => {
+    if (!onContentChange) return;
+    const content = toString();
+    if (content !== currentContent.current) {
+      currentContent.current = content;
+      onContentChange(content);
+    }
+  }, []);
+
+  useEffect(() => {
+    // block the initial change
+    if (!initialed) return;
+    triggerContentChange();
+  }, [nodes, edges]);
 
   // guide from https://reactflow.dev/docs/guides/remove-attribution/
   const proOptions = { hideAttribution: true };

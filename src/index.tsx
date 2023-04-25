@@ -12,6 +12,7 @@ function MainArea(): JSX.Element {
   const [content, setContent] = useState<SerializedGraph | undefined>(
     undefined
   );
+  const [changedCount, setChangedCount] = useState<number>(0);
   const [activated, setActivated] = useState<boolean>(false);
   return (
     <>
@@ -31,10 +32,11 @@ function MainArea(): JSX.Element {
       >
         clear
       </button>
+      <textarea value={JSON.stringify(changedCount)} />
       <VPEditor
         content={content}
         onContentChange={(content) => {
-          console.log(content);
+          setChangedCount((count) => count + 1);
         }}
         activated={activated}
       />
