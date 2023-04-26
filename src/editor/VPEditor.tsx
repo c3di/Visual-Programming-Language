@@ -30,10 +30,12 @@ import {
 import { nodeConfigRegistry } from './extension';
 
 const Scene = ({
+  id,
   graph,
   onContentChange,
   activated,
 }: {
+  id: string;
   graph?: SerializedGraph;
   onContentChange?: (graph: string) => void;
   activated?: boolean;
@@ -155,6 +157,7 @@ const Scene = ({
         }}
       />
       <ReactFlow
+        id={id}
         onInit={(instance) => {
           sceneInstance.current = instance;
           setInitialed(true);
@@ -344,10 +347,12 @@ const Scene = ({
 };
 
 export default function VPEditor({
+  id,
   content,
   onContentChange,
   activated,
 }: {
+  id: string;
   content?: SerializedGraph;
   onContentChange?: (content: string) => void;
   activated?: boolean;
@@ -356,6 +361,7 @@ export default function VPEditor({
     <WidgetFactoryProvider>
       <ReactFlowProvider>
         <Scene
+          id={id}
           graph={content}
           onContentChange={onContentChange}
           activated={activated}
