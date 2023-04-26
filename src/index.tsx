@@ -8,7 +8,7 @@ import { deepCopy } from './editor/util';
 
 LoadLibrary(libraryExample);
 
-function MainArea(): JSX.Element {
+function MainArea({ id }: { id: string }): JSX.Element {
   const [content, setContent] = useState<SerializedGraph | undefined>(
     undefined
   );
@@ -34,6 +34,7 @@ function MainArea(): JSX.Element {
       </button>
       <textarea value={JSON.stringify(changedCount)} />
       <VPEditor
+        id={id}
         content={content}
         onContentChange={(content) => {
           setChangedCount((count) => count + 1);
@@ -44,8 +45,16 @@ function MainArea(): JSX.Element {
   );
 }
 
+function App(): JSX.Element {
+  return (
+    <>
+      <MainArea id={'b1'} />
+      <MainArea id={'b2'} />
+    </>
+  );
+}
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
-root.render(<MainArea />);
+root.render(<App />);
