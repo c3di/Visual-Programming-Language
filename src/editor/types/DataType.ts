@@ -1,13 +1,14 @@
 import { type HandleType } from 'reactflow';
 
 export const DataTypes: Record<string, any> = {
-  float: { defaultValue: 0.0 },
-  integer: { defaultValue: 0 },
-  boolean: { defaultValue: false },
-  string: { defaultValue: '' },
+  float: { defaultValue: 0.0, widget: 'NumberInput' },
+  integer: { defaultValue: 0, widget: 'IntegerInput' },
+  boolean: { defaultValue: false, widget: 'BooleanInput' },
+  string: { defaultValue: '', widget: 'TextInput' },
   exec: {},
   any: {},
 };
+
 export default DataTypes;
 
 export function addNewType(type: string, options: any): void {

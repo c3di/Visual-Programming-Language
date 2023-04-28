@@ -13,12 +13,16 @@
   },
   "types": {
     "EDataType": {
-      "float": "float",
-      "integer": "integer",
-      "boolean": "boolean",
-      "string": "string",
-      "exec": "exec",
-      "any": "any"
+      "options": {
+        "float": "float",
+        "integer": "integer",
+        "boolean": "boolean",
+        "string": "string",
+        "exec": "exec",
+        "any": "any"
+      },
+      "default": "float",
+      "widget": "EnumSelect"
     }
   }
 }

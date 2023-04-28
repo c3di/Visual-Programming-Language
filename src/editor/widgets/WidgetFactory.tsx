@@ -18,14 +18,6 @@ export class WidgetFactory {
     },
   };
 
-  private readonly dataTypeToWidgetType: Record<string, string> = {
-    integer: 'IntegerInput',
-    float: 'NumberInput',
-    string: 'TextInput',
-    boolean: 'BooleanInput',
-    EDataType: 'EnumSelect',
-  };
-
   private readonly _availableWidgets: Record<string, JSX.Element> = {
     IntegerInput: <IntegerInput {...this.defaultWidgetProps} />,
     NumberInput: <NumberInput {...this.defaultWidgetProps} />,
@@ -58,8 +50,8 @@ export class WidgetFactory {
   }
 
   public createWidget(type: string, widgetOptions: any): JSX.Element {
-    const widgetTypeToUse = this.dataTypeToWidgetType[type] || type;
-    const options = DataTypes[type];
+    const widgetTypeToUse = DataTypes[type].widget || type;
+    const options = DataTypes[type].options || {};
     const widget = this._availableWidgets[widgetTypeToUse];
     if (widget) {
       return React.cloneElement(widget, { ...widgetOptions, options });
