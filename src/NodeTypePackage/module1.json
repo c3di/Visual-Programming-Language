@@ -1,0 +1,13 @@
+{
+  "nodes": {
+    "setter": {
+      "type": "setter",
+      "category": "setter",
+      "inputs": {
+        "setter": {
+          "tooltip": "setter handle"
+        }
+      }
+    }
+  }
+}

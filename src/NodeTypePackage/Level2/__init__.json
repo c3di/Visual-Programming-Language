@@ -1,0 +1,13 @@
+{
+  "nodes": {
+    "literal": {
+      "type": "literal",
+      "category": "literal",
+      "inputs": {
+        "input": {
+          "tooltip": "literal handle"
+        }
+      }
+    }
+  }
+}

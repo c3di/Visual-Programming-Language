@@ -7,7 +7,7 @@ export type {
   SerializedHandle,
   SerializedGraphNode,
   SerializedGraphEdge,
-  NodeDirConfig,
+  NodePackage,
 } from './ConfigTypes';
 export { addNewType } from './DataType';
 export { type Handle as HandleData } from './Handle';

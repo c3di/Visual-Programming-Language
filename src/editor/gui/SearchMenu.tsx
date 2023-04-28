@@ -39,7 +39,7 @@ const nodeConfigToTreeItemData = (
 ): TreeItemData | undefined => {
   if (nodeConfig.notShowInMenu) return;
   const children = [];
-  for (const name in nodeConfig.isDir ? nodeConfig.nodes : {}) {
+  for (const name in nodeConfig.__isPackage__ ? nodeConfig.nodes : {}) {
     const config = nodeConfig.nodes[name];
     if (config.notShowInMenu) continue;
     const itemData = nodeConfigToTreeItemData(name, config);

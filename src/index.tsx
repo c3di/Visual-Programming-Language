@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import example from './VPFileExample.json';
-import libraryExample from './VPLibraryExample.json';
-import { VPEditor, LoadLibrary, type SerializedGraph } from './editor';
+import { packageExample } from './NodeTypePackage';
+import {
+  VPEditor,
+  type SerializedGraph,
+  LoadPackageToRegistry,
+} from './editor';
 import './index.css';
 import { deepCopy } from './editor/util';
 
-LoadLibrary(libraryExample);
+LoadPackageToRegistry('package1', packageExample);
 
 function MainArea({ id }: { id: string }): JSX.Element {
   const [content, setContent] = useState<SerializedGraph | undefined>(

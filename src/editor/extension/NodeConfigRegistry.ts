@@ -1,8 +1,10 @@
-import { type NodeDirConfig, type NodeConfig } from '../types';
+import { type NodePackage, type NodeConfig } from '../types';
+
+export type config = NodeConfig | NodePackage;
 
 export class NodeConfigRegistry {
   private static instance: NodeConfigRegistry;
-  private readonly registry: Record<string, NodeConfig | NodeDirConfig> = {};
+  private readonly registry: Record<string, config> = {};
 
   private constructor() {}
 
@@ -13,14 +15,11 @@ export class NodeConfigRegistry {
     return NodeConfigRegistry.instance;
   }
 
-  public registerNodeConfig(
-    name: string,
-    node: NodeConfig | NodeDirConfig
-  ): void {
+  public registerNodeConfig(name: string, node: config): void {
     this.registry[name] = node;
   }
 
-  public getAllNodeConfigs(): Record<string, NodeConfig | NodeDirConfig> {
+  public getAllNodeConfigs(): Record<string, config> {
     return this.registry;
   }
 

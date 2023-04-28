@@ -17,9 +17,9 @@ export interface NodeConfig {
   dataType?: string; // the data type for all the handles
 }
 
-export interface NodeDirConfig {
-  isDir: true;
-  nodes: Record<string, NodeConfig>;
+export interface NodePackage {
+  __isPackage__: true;
+  nodes: Record<string, NodeConfig | NodePackage>;
   notShowInMenu?: boolean;
 }
 
