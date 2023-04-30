@@ -1,9 +1,9 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { IconButton, Input, InputAdornment } from '@mui/material';
-import { TreeView, TreeItem } from '@mui/lab';
+import { TreeView } from '@mui/lab';
 import { Search, Clear, ExpandMore, ChevronRight } from '@mui/icons-material';
 import { type NodeConfig } from '../types';
-
+import StyledTreeItem from './StyledTreeItem';
 let itemId = 0;
 
 export interface TreeItemData {
@@ -118,10 +118,10 @@ function ControlledTreeView({
 
   const renderTreeItem = useCallback(
     (item: TreeItemData): JSX.Element => (
-      <TreeItem
+      <StyledTreeItem
         key={item.id}
         nodeId={item.id}
-        label={item.name}
+        labelText={item.name}
         onClick={() => {
           if (item.onClick) item.onClick(item);
           else onItemClick?.(item);
@@ -131,7 +131,7 @@ function ControlledTreeView({
         {Array.isArray(item.children)
           ? item.children.map((node) => renderTreeItem(node))
           : null}
-      </TreeItem>
+      </StyledTreeItem>
     ),
     []
   );

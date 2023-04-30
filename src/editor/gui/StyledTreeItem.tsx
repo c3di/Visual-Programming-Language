@@ -19,7 +19,7 @@ declare module 'react' {
 type StyledTreeItemProps = TreeItemProps & {
   bgColor?: string;
   color?: string;
-  labelIcon: React.ElementType<SvgIconProps> | undefined;
+  labelIcon?: React.ElementType<SvgIconProps> | undefined;
   labelInfo?: string;
   labelText: string;
   iconColor?: 'success' | 'error' | 'warning' | undefined;
@@ -49,7 +49,6 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
     },
   },
   [`& .${treeItemClasses.group}`]: {
-    marginLeft: 0,
     [`& .${treeItemClasses.content}`]: {
       paddingLeft: theme.spacing(2),
     },
@@ -80,9 +79,11 @@ export default function StyledTreeItem(
           >
             {labelText}
           </Typography>
-          <Typography variant="caption" color="inherit">
-            {labelInfo}
-          </Typography>
+          {labelInfo && (
+            <Typography variant="caption" color="inherit">
+              {labelInfo}
+            </Typography>
+          )}
         </Box>
       }
       style={{
