@@ -1,11 +1,7 @@
-import { IconButton, Input, InputAdornment, Menu } from '@mui/material';
-import { TreeView } from '@mui/lab';
-import TreeItem from '@mui/lab/TreeItem';
-import SearchIcon from '@mui/icons-material/Search';
-import ClearIcon from '@mui/icons-material/Clear';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import React, { memo, useCallback, useEffect, useState } from 'react';
+import { IconButton, Input, InputAdornment, Menu } from '@mui/material';
+import { TreeView, TreeItem } from '@mui/lab';
+import { Search, Clear, ExpandMore, ChevronRight } from '@mui/icons-material';
 import { type NodeConfig } from '../types';
 import { type Command } from '../hooks';
 import StyledTreeItem from './StyledTreeItem';
@@ -79,10 +75,10 @@ function SearchInput({
                 onChange('');
               }}
             >
-              <ClearIcon />
+              <Clear />
             </IconButton>
           ) : (
-            <SearchIcon />
+            <Search />
           )}
         </InputAdornment>
       }
@@ -147,8 +143,8 @@ function ControlledTreeView({
   return (
     <TreeView
       aria-label="nodes types"
-      defaultCollapseIcon={<ExpandMoreIcon />}
-      defaultExpandIcon={<ChevronRightIcon />}
+      defaultCollapseIcon={<ExpandMore />}
+      defaultExpandIcon={<ChevronRight />}
       expanded={expanded}
       onNodeToggle={handleToggle}
       sx={{ height: 110, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
