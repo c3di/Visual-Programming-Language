@@ -1,11 +1,6 @@
 import buildin from './buildin.json';
 import { nodeConfigRegistry } from './NodeConfigRegistry';
-import {
-  addNewType,
-  type NodePackage,
-  type NodeConfig,
-  DataTypes,
-} from '../types';
+import { addNewType, type NodePackage, type NodeConfig } from '../types';
 /*
  * A module is a json file that contains nodes and types.
  * A package is a folder that contains libraries and other packages.
@@ -103,5 +98,4 @@ export const LoadPackageToRegistry = (name: string, pkg: object): void => {
 
 export const LoadDefaultModule = (): void => {
   LoadPackageToRegistry('', buildin);
-  console.log(DataTypes);
 };
