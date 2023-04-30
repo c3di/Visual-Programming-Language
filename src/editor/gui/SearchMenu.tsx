@@ -4,7 +4,6 @@ import { TreeView, TreeItem } from '@mui/lab';
 import { Search, Clear, ExpandMore, ChevronRight } from '@mui/icons-material';
 import { type NodeConfig } from '../types';
 import { type Command } from '../hooks';
-import StyledTreeItem from './StyledTreeItem';
 
 let itemId = 0;
 
@@ -147,18 +146,20 @@ function ControlledTreeView({
       defaultExpandIcon={<ChevronRight />}
       expanded={expanded}
       onNodeToggle={handleToggle}
-      sx={{ height: 110, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
+      sx={{
+        height: 250,
+        flexGrow: 1,
+        width: 230,
+        overflowY: 'auto',
+        overflowX: 'hidden',
+      }}
     >
       {treeData.map((root) => renderTreeItem(root))}
       {commands?.map((command) => (
-        <StyledTreeItem
+        <TreeItem
           key={command.name}
           nodeId={command.name}
-          labelText={command.name}
-          labelIcon={command.labelIcon}
-          labelInfo={command.labelInfo}
-          color="#1a73e8"
-          bgColor="#e8f0fe"
+          label={command.name}
           onClick={() => {
             command.action();
             onClose();
