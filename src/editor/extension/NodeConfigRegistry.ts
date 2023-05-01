@@ -33,6 +33,23 @@ export class NodeConfigRegistry {
     }
     return node;
   }
+
+  public removeNodeConfig(name: string): void {
+    const path = name.split('.');
+    let config = this.registry[path[0]];
+    if (!config) return;
+    if (path.length === 1) {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      delete this.registry[name];
+      return;
+    }
+    for (const p of path.slice(1, -1)) {
+      config = config.nodes[p];
+    }
+    const key = path[path.length - 1];
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+    delete config.nodes[key];
+  }
 }
 
 export const nodeConfigRegistry = NodeConfigRegistry.getInstance();

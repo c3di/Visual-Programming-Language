@@ -56,7 +56,9 @@ const loadModule = (
   const m = ParseModule(obj, relativePath);
   if (name === '__init__' || name === '') return { ...m.nodes };
   else if (m.nodes) {
-    return { [`${name}`]: { __isPackage__: true, nodes: m.nodes } };
+    return {
+      [`${name}`]: { __isPackage__: true, nodes: m.nodes, type: relativePath },
+    };
   }
 };
 
@@ -72,7 +74,11 @@ export const ParsePackage = (
   if (!('__isPackage__' in pkg)) {
     return loadModule(pkg, name, relativePath) ?? {};
   }
-  const returnPkg: NodePackage = { __isPackage__: true, nodes: {} };
+  const returnPkg: NodePackage = {
+    __isPackage__: true,
+    nodes: {},
+    type: relativePath,
+  };
   Object.entries(pkg).forEach(([name, lib]: [name: string, lib: any]) => {
     if (name !== '__isPackage__') {
       const n = ParsePackage(

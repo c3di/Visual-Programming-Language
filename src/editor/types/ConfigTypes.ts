@@ -22,6 +22,7 @@ export interface NodePackage {
   nodes: Record<string, NodeConfig | NodePackage>;
   notShowInMenu?: boolean;
   tooltip?: string;
+  [key: string]: any;
 }
 
 export interface GraphNodeConfig extends NodeConfig {

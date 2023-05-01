@@ -173,10 +173,11 @@ export const SearchedTreeView = memo(function SearchedTreeView({
   treeData: TreeItemData[];
   onItemClick?: (item: TreeItemData) => void;
   deletable?: boolean;
-  onItemDelete?: (path: string) => void;
+  onItemDelete?: (type: string) => void;
 }): JSX.Element {
   const [filteredTreeData, setFilteredTreeData] =
     useState<TreeItemData[]>(treeData);
+
   const [toExapand, setToExapand] = useState<boolean>(false);
 
   const filteredTreeItemData = (
@@ -211,6 +212,33 @@ export const SearchedTreeView = memo(function SearchedTreeView({
     }
   }, []);
 
+  const deleteItemInItemData = useCallback(
+    (item: TreeItemData, type: string): null | TreeItemData => {
+      if (item.configType === type) return null;
+      if (item.children) {
+        const children: TreeItemData[] = [];
+        for (const child of item.children) {
+          const fItem = deleteItemInItemData(child, type);
+          if (fItem) children.push(fItem);
+        }
+        if (item.children) return { ...item, children };
+      }
+      return { ...item };
+    },
+    []
+  );
+
+  const deleteItemInTreeData = useCallback((type: string) => {
+    setFilteredTreeData((treeData) => {
+      const newTreeData: TreeItemData[] = [];
+      for (const item of treeData) {
+        const newItem = deleteItemInItemData(item, type);
+        if (newItem) newTreeData.push(newItem);
+      }
+      return newTreeData;
+    });
+  }, []);
+
   return (
     <>
       <SearchInput onChange={search} />
@@ -219,7 +247,10 @@ export const SearchedTreeView = memo(function SearchedTreeView({
         treeData={filteredTreeData}
         onItemClick={onItemClick}
         deletable={deletable}
-        onItemDelete={onItemDelete}
+        onItemDelete={(type) => {
+          deleteItemInTreeData(type);
+          onItemDelete?.(type);
+        }}
       />
     </>
   );
