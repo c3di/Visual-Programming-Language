@@ -6,18 +6,17 @@ import {
   nodeConfigsToTreeData,
   type TreeItemData,
 } from './SearchedTreeView';
+import { nodeConfigRegistry } from '../extension';
 const SearchMenu = memo(function SearchMenu({
   open,
   onClose,
   anchorPosition,
-  nodeConfigs,
   addNode,
   moreCommands,
 }: {
   open: boolean;
   onClose: () => void;
   anchorPosition: { top: number; left: number };
-  nodeConfigs: Record<string, any>;
   addNode: (configType: string) => void;
   moreCommands?: Command[];
 }): JSX.Element {
@@ -52,8 +51,18 @@ const SearchMenu = memo(function SearchMenu({
   }, [moreCommands]);
 
   const [treeData, setTreeData] = useState<TreeItemData[]>(
-    nodeConfigsToTreeData(nodeConfigs)
+    nodeConfigsToTreeData(nodeConfigRegistry.getAllNodeConfigs())
   );
+
+  useEffect(() => {
+    if (open) {
+      console.log('open', nodeConfigRegistry.getAllNodeConfigs());
+      setTreeData([
+        ...nodeConfigsToTreeData(nodeConfigRegistry.getAllNodeConfigs()),
+        ...commandsToTreeData(commands),
+      ]);
+    }
+  }, [open]);
 
   const onItemClick = useCallback((item: TreeItemData): void => {
     if (!item) return;
