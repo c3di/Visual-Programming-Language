@@ -21,6 +21,7 @@ export interface NodePackage {
   __isPackage__: true;
   nodes: Record<string, NodeConfig | NodePackage>;
   notShowInMenu?: boolean;
+  tooltip?: string;
 }
 
 export interface GraphNodeConfig extends NodeConfig {

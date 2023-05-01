@@ -9,6 +9,7 @@ import {
 } from './editor';
 import './index.css';
 import { deepCopy } from './editor/util';
+import { NodeLibrariesPanel } from './editor/gui';
 
 LoadPackageToRegistry('package1', packageExample);
 
@@ -36,7 +37,8 @@ function MainArea({ id }: { id: string }): JSX.Element {
       >
         clear
       </button>
-      <textarea value={JSON.stringify(changedCount)} />
+      <NodeLibrariesPanel />
+      <textarea value={JSON.stringify(changedCount)} onChange={() => {}} />
       <VPEditor
         id={id}
         content={content}

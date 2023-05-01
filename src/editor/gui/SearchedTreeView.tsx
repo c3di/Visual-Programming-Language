@@ -2,7 +2,7 @@ import React, { memo, useCallback, useEffect, useState } from 'react';
 import { IconButton, Input, InputAdornment } from '@mui/material';
 import { TreeView } from '@mui/lab';
 import { Search, Clear, ExpandMore, ChevronRight } from '@mui/icons-material';
-import { type NodeConfig } from '../types';
+import { type NodeConfig, type NodePackage } from '../types';
 import StyledTreeItem from './StyledTreeItem';
 let itemId = 0;
 
@@ -16,7 +16,7 @@ export interface TreeItemData {
 }
 
 export const nodeConfigsToTreeData = (
-  nodeConfigs: Record<string, NodeConfig>
+  nodeConfigs: Record<string, NodePackage | NodeConfig>
 ): TreeItemData[] => {
   const data: TreeItemData[] = [];
   for (const name in nodeConfigs) {
@@ -30,7 +30,7 @@ export const nodeConfigsToTreeData = (
 
 const nodeConfigToTreeItemData = (
   name: string,
-  nodeConfig: any
+  nodeConfig: NodePackage | NodeConfig
 ): TreeItemData | undefined => {
   if (nodeConfig.notShowInMenu) return;
   const children = [];
@@ -44,7 +44,7 @@ const nodeConfigToTreeItemData = (
   return {
     id: String(itemId++),
     name,
-    configType: nodeConfig.type,
+    configType: 'type' in nodeConfig ? nodeConfig.type : undefined,
     children: children.length > 0 ? children : undefined,
     tooltip: nodeConfig.tooltip,
   };
@@ -93,10 +93,14 @@ function ControlledTreeView({
   toExpand,
   treeData,
   onItemClick,
+  deletable,
+  onItemDelete,
 }: {
   toExpand: boolean;
   treeData: TreeItemData[];
   onItemClick?: (item: TreeItemData) => void;
+  deletable?: boolean;
+  onItemDelete?: (path: string) => void;
 }): JSX.Element {
   const [expanded, setExpanded] = useState<string[]>([]);
   const handleToggle = (e: React.SyntheticEvent, nodeIds: string[]): void => {
@@ -127,6 +131,10 @@ function ControlledTreeView({
           else onItemClick?.(item);
         }}
         title={item.tooltip}
+        deletable={deletable}
+        onItemDelete={() => {
+          onItemDelete?.(item.configType ?? item.name);
+        }}
       >
         {Array.isArray(item.children)
           ? item.children.map((node) => renderTreeItem(node))
@@ -159,9 +167,13 @@ function ControlledTreeView({
 export const SearchedTreeView = memo(function SearchedTreeView({
   treeData,
   onItemClick,
+  deletable,
+  onItemDelete,
 }: {
   treeData: TreeItemData[];
-  onItemClick: (item: TreeItemData) => void;
+  onItemClick?: (item: TreeItemData) => void;
+  deletable?: boolean;
+  onItemDelete?: (path: string) => void;
 }): JSX.Element {
   const [filteredTreeData, setFilteredTreeData] =
     useState<TreeItemData[]>(treeData);
@@ -206,6 +218,8 @@ export const SearchedTreeView = memo(function SearchedTreeView({
         toExpand={toExapand}
         treeData={filteredTreeData}
         onItemClick={onItemClick}
+        deletable={deletable}
+        onItemDelete={onItemDelete}
       />
     </>
   );
