@@ -60,6 +60,7 @@ function SearchInput({
 
   return (
     <Input
+      sx={{ padding: 0.5 }}
       inputRef={inputRef}
       placeholder="Search"
       id="input-with-icon-adornment"
@@ -152,9 +153,9 @@ function ControlledTreeView({
       expanded={expanded}
       onNodeToggle={handleToggle}
       sx={{
+        width: '100%',
         height: 250,
         flexGrow: 1,
-        width: 230,
         overflowY: 'auto',
         overflowX: 'hidden',
       }}
