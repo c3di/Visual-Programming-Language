@@ -81,7 +81,7 @@ export default function NodeLibraryList({
     setItemList(nodeConfigsToItemList(nodeExtensions));
   }, [nodeExtensions]);
 
-  const [expanded, setExpanded] = useState<boolean>(false);
+  const [expanded, setExpanded] = useState<boolean>(true);
   return (
     <Accordion
       expanded={expanded}
