@@ -50,6 +50,18 @@ export class NodeConfigRegistry {
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete config.nodes[key];
   }
+
+  public enableNodeConfig(name: string): void {
+    if (!this.registry[name]) return;
+    this.registry[name].enable = true;
+    console.log(this.registry);
+  }
+
+  public disableNodeConfig(name: string): void {
+    if (!this.registry[name]) return;
+    this.registry[name].enable = false;
+    console.log(this.registry);
+  }
 }
 
 export const nodeConfigRegistry = NodeConfigRegistry.getInstance();

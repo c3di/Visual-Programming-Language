@@ -10,6 +10,7 @@ import {
 import './index.css';
 import { deepCopy } from './editor/util';
 import { NodeLibraryList } from './editor/gui';
+import { nodeConfigRegistry } from './editor/extension';
 
 Object.entries(extensions).forEach(([name, extension]) => {
   LoadPackageToRegistry(name, extension);
@@ -21,14 +22,27 @@ function MainArea({ id }: { id: string }): JSX.Element {
   );
   const [changedCount, setChangedCount] = useState<number>(0);
   const [activated, setActivated] = useState<boolean>(false);
+  const [, setRerender] = useState<boolean>(false);
   return (
     <>
       <NodeLibraryList
         title="INSTALLED"
-        itemList={[
-          { title: '1', href: 'http://www.google.com', description: 'test' },
-          { title: '2', href: 'http://www.google.com', description: 'test2' },
-        ]}
+        nodeExtensions={nodeConfigRegistry.getAllNodeConfigs()}
+        onUninstall={() => {
+          console.log('uninstall');
+          nodeConfigRegistry.removeNodeConfig('package1');
+          setRerender(true);
+        }}
+        onDisable={() => {
+          console.log('disable');
+          nodeConfigRegistry.disableNodeConfig('package1');
+          setRerender(true);
+        }}
+        onEnable={() => {
+          console.log('enable');
+          nodeConfigRegistry.enableNodeConfig('package1');
+          setRerender(true);
+        }}
       />
 
       <button
