@@ -18,11 +18,13 @@ export interface NodeConfig {
 }
 
 export interface NodePackage {
-  __isPackage__: true;
+  isPackage: true;
   nodes: Record<string, NodeConfig | NodePackage>;
   notShowInMenu?: boolean;
   tooltip?: string;
-  [key: string]: any;
+  href?: string;
+  description?: string;
+  type: string;
 }
 
 export interface GraphNodeConfig extends NodeConfig {

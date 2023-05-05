@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import example from './VPFileExample.json';
-import { packageExample } from './NodeTypePackage';
+import { extensions } from './NodeTypePackage';
 import {
   VPEditor,
   type SerializedGraph,
@@ -9,9 +9,11 @@ import {
 } from './editor';
 import './index.css';
 import { deepCopy } from './editor/util';
-import { NodeLibrariesPanel } from './editor/gui';
+import { NodeLibrariesPanel, NodeLibraryList } from './editor/gui';
 
-LoadPackageToRegistry('package1', packageExample);
+Object.entries(extensions).forEach(([name, extension]) => {
+  LoadPackageToRegistry(name, extension);
+});
 
 function MainArea({ id }: { id: string }): JSX.Element {
   const [content, setContent] = useState<SerializedGraph | undefined>(
@@ -21,6 +23,16 @@ function MainArea({ id }: { id: string }): JSX.Element {
   const [activated, setActivated] = useState<boolean>(false);
   return (
     <>
+      <NodeLibraryList
+        title="INSTALLED"
+        itemList={[
+          { title: '1', href: 'http://www.google.com', description: 'test' },
+          { title: '2', href: 'http://www.google.com', description: 'test2' },
+        ]}
+      />
+      <div style={{ paddingLeft: 100 }}>
+        <NodeLibrariesPanel />
+      </div>
       <button
         onClick={() => {
           setActivated(true);
@@ -37,7 +49,7 @@ function MainArea({ id }: { id: string }): JSX.Element {
       >
         clear
       </button>
-      <NodeLibrariesPanel />
+
       <textarea value={JSON.stringify(changedCount)} onChange={() => {}} />
       <VPEditor
         id={id}
@@ -55,7 +67,7 @@ function App(): JSX.Element {
   return (
     <>
       <MainArea id={'b1'} />
-      <MainArea id={'b2'} />
+      {/* <MainArea id={'b2'} /> */}
     </>
   );
 }

@@ -1,4 +1,7 @@
 {
+  "href": "http://www.google.com",
+  "description": "this is a module",
+  "enable": true,
   "nodes": {
     "function1": {
       "type": "function1",
