@@ -9,7 +9,7 @@ import {
 } from './editor';
 import './index.css';
 import { deepCopy } from './editor/util';
-import { NodeLibrariesPanel, NodeLibraryList } from './editor/gui';
+import { NodeLibraryList } from './editor/gui';
 
 Object.entries(extensions).forEach(([name, extension]) => {
   LoadPackageToRegistry(name, extension);
@@ -30,9 +30,7 @@ function MainArea({ id }: { id: string }): JSX.Element {
           { title: '2', href: 'http://www.google.com', description: 'test2' },
         ]}
       />
-      <div style={{ paddingLeft: 100 }}>
-        <NodeLibrariesPanel />
-      </div>
+
       <button
         onClick={() => {
           setActivated(true);
