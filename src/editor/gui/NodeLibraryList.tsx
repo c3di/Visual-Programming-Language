@@ -17,6 +17,7 @@ function nodeConfigsToItemList(
   for (const name in nodeConfigs) {
     const config = nodeConfigs[name];
     if (config.notShowInMenu) continue;
+    console.log(name);
     data.push({
       title: name,
       href: config.href,
@@ -74,9 +75,7 @@ export default function NodeLibraryList({
   onEnable?: (pkg: string) => void;
   onDisable?: (pkg: string) => void;
 }): JSX.Element {
-  const [itemList, setItemList] = useState<INodeLibraryItem[]>(
-    nodeConfigsToItemList(nodeExtensions)
-  );
+  const [itemList, setItemList] = useState<INodeLibraryItem[]>([]);
   useEffect(() => {
     setItemList(nodeConfigsToItemList(nodeExtensions));
   }, [nodeExtensions]);

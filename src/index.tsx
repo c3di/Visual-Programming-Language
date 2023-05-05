@@ -22,26 +22,29 @@ function MainArea({ id }: { id: string }): JSX.Element {
   );
   const [changedCount, setChangedCount] = useState<number>(0);
   const [activated, setActivated] = useState<boolean>(false);
-  const [, setRerender] = useState<boolean>(false);
+  const [nodeExtensions, setNodeExtensions] = useState(
+    nodeConfigRegistry.getAllNodeConfigs()
+  );
   return (
     <>
       <NodeLibraryList
         title="INSTALLED"
-        nodeExtensions={nodeConfigRegistry.getAllNodeConfigs()}
-        onUninstall={() => {
+        nodeExtensions={nodeExtensions}
+        onUninstall={(name: string) => {
           console.log('uninstall');
-          nodeConfigRegistry.removeNodeConfig('package1');
-          setRerender(true);
+          nodeConfigRegistry.removeNodeConfig(name);
+          console.log(nodeConfigRegistry.getAllNodeConfigs());
+          setNodeExtensions({ ...nodeConfigRegistry.getAllNodeConfigs() });
         }}
-        onDisable={() => {
+        onDisable={(name: string) => {
           console.log('disable');
-          nodeConfigRegistry.disableNodeConfig('package1');
-          setRerender(true);
+          nodeConfigRegistry.disableNodeConfig(name);
+          setNodeExtensions(nodeConfigRegistry.getAllNodeConfigs());
         }}
-        onEnable={() => {
+        onEnable={(name: string) => {
           console.log('enable');
-          nodeConfigRegistry.enableNodeConfig('package1');
-          setRerender(true);
+          nodeConfigRegistry.enableNodeConfig(name);
+          setNodeExtensions(nodeConfigRegistry.getAllNodeConfigs());
         }}
       />
 
