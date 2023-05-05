@@ -17,7 +17,6 @@ function nodeConfigsToItemList(
   for (const name in nodeConfigs) {
     const config = nodeConfigs[name];
     if (config.notShowInMenu) continue;
-    console.log(name);
     data.push({
       title: name,
       href: config.href,
