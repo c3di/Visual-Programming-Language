@@ -5,7 +5,7 @@ import module2 from './NodeTypeExtension/extension1/Level2/module2.json';
 import module3 from './NodeTypeExtension/extension1/Level2/Level3/module3.json';
 import module from './NodeTypeExtension/extension2.json';
 
-export const packageExample = {
+export const extension1 = {
   isPackage: true,
   subpackages: {
     __init__: level1,
@@ -26,9 +26,9 @@ export const packageExample = {
   },
 };
 
-export const packageExample2 = module;
+export const extension2 = module;
 
 export const extensions = {
-  package1: packageExample,
-  package2: packageExample2,
+  extension1,
+  extension2,
 };

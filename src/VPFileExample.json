@@ -2,7 +2,7 @@
   "nodes": [
     {
       "id": "1",
-      "type": "package1.function1",
+      "type": "extension1.function1",
       "position": {
         "x": 0,
         "y": 0
@@ -24,7 +24,7 @@
     },
     {
       "id": "2",
-      "type": "package1.Level2.module2.getter",
+      "type": "extension1.Level2.module2.getter",
       "position": {
         "x": 300,
         "y": 0
@@ -38,7 +38,7 @@
     },
     {
       "id": "3",
-      "type": "package1.module1.setter",
+      "type": "extension1.module1.setter",
       "position": {
         "x": 600,
         "y": 0
@@ -52,7 +52,7 @@
     },
     {
       "id": "4",
-      "type": "package1.Level2.literal",
+      "type": "extension1.Level2.literal",
       "position": {
         "x": 0,
         "y": 300
@@ -68,7 +68,7 @@
     },
     {
       "id": "5",
-      "type": "package1.Level2.Level3.module3.PlusMath",
+      "type": "extension1.Level2.Level3.module3.PlusMath",
       "position": {
         "x": 300,
         "y": 300

@@ -30,7 +30,7 @@
         "input4": {
           "title": "input4",
           "tooltip": "input 4",
-          "dataType": "package1.Level2.module2.EDataType",
+          "dataType": "extension1.Level2.module2.EDataType",
           "defaultValue": "string"
         }
       },
