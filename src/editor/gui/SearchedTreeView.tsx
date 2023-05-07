@@ -1,9 +1,10 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
-import { IconButton, Input, InputAdornment } from '@mui/material';
 import { TreeView } from '@mui/lab';
-import { Search, Clear, ExpandMore, ChevronRight } from '@mui/icons-material';
+import { ExpandMore, ChevronRight } from '@mui/icons-material';
 import { type NodeConfig, type NodePackage } from '../types';
 import StyledTreeItem from './StyledTreeItem';
+import SearchInput from './SearchInput';
+
 let itemId = 0;
 
 export interface TreeItemData {
@@ -49,46 +50,6 @@ const nodeConfigToTreeItemData = (
     tooltip: nodeConfig.tooltip,
   };
 };
-
-function SearchInput({
-  onChange,
-}: {
-  onChange: (value: string) => void;
-}): JSX.Element {
-  const [hasInput, setHasInput] = useState(false);
-  const inputRef = React.useRef<HTMLInputElement>(null);
-
-  return (
-    <Input
-      sx={{ padding: 0.5 }}
-      inputRef={inputRef}
-      placeholder="Search"
-      id="input-with-icon-adornment"
-      startAdornment={
-        <InputAdornment position="start">
-          {hasInput ? (
-            <IconButton
-              sx={{ padding: 0 }}
-              onClick={() => {
-                if (inputRef.current) inputRef.current.value = '';
-                setHasInput(false);
-                onChange('');
-              }}
-            >
-              <Clear />
-            </IconButton>
-          ) : (
-            <Search />
-          )}
-        </InputAdornment>
-      }
-      onChange={(e) => {
-        setHasInput(e.target.value.length > 0);
-        onChange(e.target.value);
-      }}
-    />
-  );
-}
 
 function ControlledTreeView({
   toExpand,

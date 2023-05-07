@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import { styled } from '@mui/material/styles';
 import MuiAccordion, { type AccordionProps } from '@mui/material/Accordion';
@@ -9,14 +9,17 @@ import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import NodeLibraryItem, { type INodeLibraryItem } from './NodeLibraryItem';
 import { type NodeConfig, type NodePackage } from '../types';
+import SearchInput from './SearchInput';
 
 function nodeConfigsToItemList(
-  nodeConfigs: Record<string, NodePackage | NodeConfig>
+  nodeConfigs: Record<string, NodePackage | NodeConfig>,
+  keyward?: string
 ): INodeLibraryItem[] {
   const data: INodeLibraryItem[] = [];
   for (const name in nodeConfigs) {
     const config = nodeConfigs[name];
     if (config.notShowInMenu) continue;
+    if (keyward && keyward !== '' && !name.includes(keyward)) continue;
     data.push({
       title: name,
       href: config.href,
@@ -75,42 +78,55 @@ export default function NodeLibraryList({
   onDisable?: (pkg: string) => void;
 }): JSX.Element {
   const [itemList, setItemList] = useState<INodeLibraryItem[]>([]);
+  const keyword = useRef<string>('');
   useEffect(() => {
-    setItemList(nodeConfigsToItemList(nodeExtensions));
+    setItemList(nodeConfigsToItemList(nodeExtensions, keyword.current));
   }, [nodeExtensions]);
 
   const [expanded, setExpanded] = useState<boolean>(true);
+
+  const search = useCallback(
+    (searchKeyword: string) => {
+      keyword.current = searchKeyword;
+      setItemList(nodeConfigsToItemList(nodeExtensions, keyword.current));
+    },
+    [nodeExtensions]
+  );
+
   return (
-    <Accordion
-      expanded={expanded}
-      onChange={() => {
-        setExpanded((expanded) => {
-          return !expanded;
-        });
-      }}
-    >
-      <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-        <Typography>{title}</Typography>
-      </AccordionSummary>
-      <AccordionDetails>
-        {itemList.map((item) => (
-          <NodeLibraryItem
-            key={item.title + (item.href ?? '')}
-            title={item.title}
-            href={item.href}
-            description={item.description}
-            onUninstall={() => {
-              onUninstall?.(item.title);
-            }}
-            onEnable={() => {
-              onEnable?.(item.title);
-            }}
-            onDisable={() => {
-              onDisable?.(item.title);
-            }}
-          />
-        ))}
-      </AccordionDetails>
-    </Accordion>
+    <>
+      <SearchInput onChange={search} />
+      <Accordion
+        expanded={expanded}
+        onChange={() => {
+          setExpanded((expanded) => {
+            return !expanded;
+          });
+        }}
+      >
+        <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+          <Typography>{title}</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          {itemList.map((item) => (
+            <NodeLibraryItem
+              key={item.title + (item.href ?? '')}
+              title={item.title}
+              href={item.href}
+              description={item.description}
+              onUninstall={() => {
+                onUninstall?.(item.title);
+              }}
+              onEnable={() => {
+                onEnable?.(item.title);
+              }}
+              onDisable={() => {
+                onDisable?.(item.title);
+              }}
+            />
+          ))}
+        </AccordionDetails>
+      </Accordion>
+    </>
   );
 }
