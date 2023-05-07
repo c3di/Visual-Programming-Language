@@ -9,7 +9,7 @@ import {
 } from './editor';
 import './index.css';
 import { deepCopy } from './editor/util';
-import { NodeLibraryList } from './editor/gui';
+import { NodeLibraryList, Progress } from './editor/gui';
 import { nodeConfigRegistry } from './editor/extension';
 
 Object.entries(extensions).forEach(([name, extension]) => {
@@ -27,9 +27,10 @@ function MainArea({ id }: { id: string }): JSX.Element {
   );
   return (
     <>
+      <Progress enable={false} />
       <NodeLibraryList
         title="INSTALLED"
-        nodeExtensions={nodeExtensions}
+        nodeExtensions={{ ...nodeExtensions }}
         onUninstall={(name: string) => {
           console.log('uninstall');
           nodeConfigRegistry.removeNodeConfig(name);
@@ -38,12 +39,12 @@ function MainArea({ id }: { id: string }): JSX.Element {
         }}
         onDisable={(name: string) => {
           console.log('disable');
-          nodeConfigRegistry.disableNodeConfig(name);
+          nodeConfigRegistry.enableNodeConfig(name, false);
           setNodeExtensions(nodeConfigRegistry.getAllNodeConfigs());
         }}
         onEnable={(name: string) => {
           console.log('enable');
-          nodeConfigRegistry.enableNodeConfig(name);
+          nodeConfigRegistry.enableNodeConfig(name, true);
           setNodeExtensions(nodeConfigRegistry.getAllNodeConfigs());
         }}
       />

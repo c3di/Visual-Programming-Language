@@ -51,16 +51,9 @@ export class NodeConfigRegistry {
     delete config.nodes[key];
   }
 
-  public enableNodeConfig(name: string): void {
+  public enableNodeConfig(name: string, enable: boolean): void {
     if (!this.registry[name]) return;
-    this.registry[name].enable = true;
-    console.log(this.registry);
-  }
-
-  public disableNodeConfig(name: string): void {
-    if (!this.registry[name]) return;
-    this.registry[name].enable = false;
-    console.log(this.registry);
+    this.registry[name].enable = enable;
   }
 }
 
