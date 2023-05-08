@@ -22,7 +22,7 @@ export const nodeConfigsToTreeData = (
   const data: TreeItemData[] = [];
   for (const name in nodeConfigs) {
     const config = nodeConfigs[name];
-    if (config.notShowInMenu) continue;
+    if (config.notShowInMenu || !config.enable) continue;
     const itemData = nodeConfigToTreeItemData(name, config);
     if (itemData) data.push(itemData);
   }
