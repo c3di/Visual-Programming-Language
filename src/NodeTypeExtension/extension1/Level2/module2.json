@@ -1,0 +1,28 @@
+{
+  "nodes": {
+    "getter": {
+      "type": "getter",
+      "category": "getter",
+      "tooltip": "Return the value",
+      "outputs": {
+        "getter": {
+          "tooltip": "getter handle"
+        }
+      }
+    }
+  },
+  "types": {
+    "EDataType": {
+      "options": {
+        "float": "float",
+        "integer": "integer",
+        "boolean": "boolean",
+        "string": "string",
+        "exec": "exec",
+        "any": "any"
+      },
+      "default": "float",
+      "widget": "EnumSelect"
+    }
+  }
+}

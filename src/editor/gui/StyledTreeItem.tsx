@@ -1,12 +1,13 @@
 import React from 'react';
 import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
+import { IconButton, Box } from '@mui/material';
 import TreeItem, {
   type TreeItemProps,
   treeItemClasses,
 } from '@mui/lab/TreeItem';
 import Typography from '@mui/material/Typography';
 import { type SvgIconProps } from '@mui/material/SvgIcon';
+import { DeleteOutlined } from '@mui/icons-material';
 
 // from https://mui.com/material-ui/react-tree-view/#GmailTreeView.tsx
 declare module 'react' {
@@ -19,10 +20,12 @@ declare module 'react' {
 type StyledTreeItemProps = TreeItemProps & {
   bgColor?: string;
   color?: string;
-  labelIcon: React.ElementType<SvgIconProps> | undefined;
+  labelIcon?: React.ElementType<SvgIconProps> | undefined;
   labelInfo?: string;
   labelText: string;
   iconColor?: 'success' | 'error' | 'warning' | undefined;
+  deletable?: boolean;
+  onItemDelete?: (id: string) => void;
 };
 
 const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
@@ -49,7 +52,6 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
     },
   },
   [`& .${treeItemClasses.group}`]: {
-    marginLeft: 0,
     [`& .${treeItemClasses.content}`]: {
       paddingLeft: theme.spacing(2),
     },
@@ -66,6 +68,8 @@ export default function StyledTreeItem(
     labelInfo,
     labelText,
     iconColor,
+    deletable,
+    onItemDelete,
     ...other
   } = props;
 
@@ -80,9 +84,22 @@ export default function StyledTreeItem(
           >
             {labelText}
           </Typography>
-          <Typography variant="caption" color="inherit">
-            {labelInfo}
-          </Typography>
+          {labelInfo && (
+            <Typography variant="caption" color="inherit">
+              {labelInfo}
+            </Typography>
+          )}
+          {deletable && (
+            <IconButton
+              aria-label="delete"
+              onClick={(e) => {
+                onItemDelete?.(props.nodeId);
+                e.stopPropagation();
+              }}
+            >
+              <DeleteOutlined />
+            </IconButton>
+          )}
         </Box>
       }
       style={{

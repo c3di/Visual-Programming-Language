@@ -15,12 +15,18 @@ export interface NodeConfig {
   tooltip?: string;
   [key: string]: any;
   dataType?: string; // the data type for all the handles
+  enable?: boolean;
 }
 
-export interface NodeDirConfig {
-  isDir: true;
-  nodes: Record<string, NodeConfig>;
+export interface NodePackage {
+  isPackage: true;
+  nodes: Record<string, NodeConfig | NodePackage>;
   notShowInMenu?: boolean;
+  tooltip?: string;
+  href?: string;
+  description?: string;
+  type: string;
+  enable?: boolean;
 }
 
 export interface GraphNodeConfig extends NodeConfig {

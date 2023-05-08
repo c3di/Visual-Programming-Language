@@ -1,8 +1,10 @@
-import { type NodeDirConfig, type NodeConfig } from '../types';
+import { type NodePackage, type NodeConfig } from '../types';
+
+export type config = NodeConfig | NodePackage;
 
 export class NodeConfigRegistry {
   private static instance: NodeConfigRegistry;
-  private readonly registry: Record<string, NodeConfig | NodeDirConfig> = {};
+  private readonly registry: Record<string, config> = {};
 
   private constructor() {}
 
@@ -13,14 +15,11 @@ export class NodeConfigRegistry {
     return NodeConfigRegistry.instance;
   }
 
-  public registerNodeConfig(
-    name: string,
-    node: NodeConfig | NodeDirConfig
-  ): void {
+  public registerNodeConfig(name: string, node: config): void {
     this.registry[name] = node;
   }
 
-  public getAllNodeConfigs(): Record<string, NodeConfig | NodeDirConfig> {
+  public getAllNodeConfigs(): Record<string, config> {
     return this.registry;
   }
 
@@ -33,6 +32,28 @@ export class NodeConfigRegistry {
       if (i !== path.length - 1) node = node?.nodes;
     }
     return node;
+  }
+
+  public removeNodeConfig(name: string): void {
+    const path = name.split('.');
+    let config = this.registry[path[0]];
+    if (!config) return;
+    if (path.length === 1) {
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      delete this.registry[name];
+      return;
+    }
+    for (const p of path.slice(1, -1)) {
+      config = config.nodes[p];
+    }
+    const key = path[path.length - 1];
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+    delete config.nodes[key];
+  }
+
+  public enableNodeConfig(name: string, enable: boolean): void {
+    if (!this.registry[name]) return;
+    this.registry[name].enable = enable;
   }
 }
 

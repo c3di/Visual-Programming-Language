@@ -27,7 +27,6 @@ import {
   SearchMenu,
   ConnectionTip,
 } from './gui';
-import { nodeConfigRegistry } from './extension';
 
 const Scene = ({
   id,
@@ -121,7 +120,6 @@ const Scene = ({
         open={gui.showSearchMenu}
         onClose={gui.closeWidget}
         anchorPosition={gui.PosiontOnGui}
-        nodeConfigs={nodeConfigRegistry.getAllNodeConfigs()}
         addNode={sceneState.addNode}
         moreCommands={sceneState.extraCommands}
       />

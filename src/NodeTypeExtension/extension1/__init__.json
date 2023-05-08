@@ -1,0 +1,51 @@
+{
+  "href": "http://www.google.com",
+  "description": "this is a package including nested modules",
+  "enable": true,
+  "nodes": {
+    "function1": {
+      "type": "function1",
+      "category": "function",
+      "title": "function Node",
+      "tooltip": "this is a function node",
+      "inputs": {
+        "input1": {
+          "title": "input1",
+          "tooltip": "input 1",
+          "dataType": "float",
+          "defaultValue": 100
+        },
+        "input2": {
+          "title": "input2",
+          "tooltip": "input 2",
+          "dataType": "boolean",
+          "defaultValue": true
+        },
+        "input3": {
+          "title": "input3",
+          "tooltip": "input 3",
+          "dataType": "string",
+          "defaultValue": "hello"
+        },
+        "input4": {
+          "title": "input4",
+          "tooltip": "input 4",
+          "dataType": "extension1.Level2.module2.EDataType",
+          "defaultValue": "string"
+        }
+      },
+      "outputs": {
+        "output1": {
+          "title": "output1",
+          "tooltip": "output 1",
+          "dataType": "float"
+        },
+        "output2": {
+          "title": "output2",
+          "tooltip": "output 2",
+          "dataType": "float"
+        }
+      }
+    }
+  }
+}
