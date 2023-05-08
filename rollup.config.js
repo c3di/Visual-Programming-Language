@@ -26,8 +26,8 @@ export default [
     ],
     plugins: [
       peerDepsExternal(),
-      resolve(),
       commonjs(),
+      resolve({ preferBuiltins: true }),
       typescript({ useTsconfigDeclarationDir: true }),
       postcss({
         extract: 'style.css',

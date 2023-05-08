@@ -10,6 +10,16 @@ import Typography from '@mui/material/Typography';
 import NodeLibraryItem, { type INodeLibraryItem } from './NodeLibraryItem';
 import { type NodeConfig, type NodePackage } from '../types';
 import SearchInput from './SearchInput';
+import { FilePond, registerPlugin } from 'react-filepond';
+import {
+  type ActualFileObject,
+  type FilePondErrorDescription,
+  type FilePondFile,
+} from 'filepond';
+import FilepondZipper from 'filepond-plugin-zipper';
+import 'filepond/dist/filepond.min.css';
+
+registerPlugin(FilepondZipper());
 
 function nodeConfigsToItemList(
   nodeConfigs: Record<string, NodePackage | NodeConfig>,
@@ -64,18 +74,28 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   borderTop: '1px solid rgba(0, 0, 0, .125)',
 }));
 
+export interface ITokens {
+  authenticated: boolean;
+  Authorization: null | string;
+  'X-XSRFToken': null | string;
+}
+
 export default function NodeLibraryList({
   title,
   nodeExtensions,
   onUninstall,
   onEnable,
   onDisable,
+  url,
+  tokens,
 }: {
   title: string;
   nodeExtensions: Record<string, NodePackage | NodeConfig>;
   onUninstall?: (pkg: string) => void;
   onEnable?: (pkg: string) => void;
   onDisable?: (pkg: string) => void;
+  url?: string;
+  tokens?: ITokens;
 }): JSX.Element {
   const [itemList, setItemList] = useState<INodeLibraryItem[]>([]);
   const keyword = useRef<string>('');
@@ -92,9 +112,48 @@ export default function NodeLibraryList({
     },
     [nodeExtensions]
   );
+  const [files, setFiles] = useState<ActualFileObject[]>([]);
 
   return (
     <>
+      <FilePond
+        credits={false}
+        files={files}
+        onupdatefiles={(fileItems) => {
+          console.log(fileItems);
+          setFiles(fileItems.map((fileItem) => fileItem.file));
+        }}
+        allowMultiple={true}
+        allowRevert={false}
+        server={{
+          process: {
+            url: url ?? '',
+            method: 'POST',
+            withCredentials: false,
+            headers: {
+              Authorization: tokens?.Authorization ?? '',
+              'X-XSRFToken': tokens?.['X-XSRFToken'] ?? '',
+            },
+            timeout: 7000,
+            onload: (response) => {
+              console.log(response);
+              return response;
+            },
+          },
+          fetch: null,
+          revert: null,
+          restore: null,
+        }}
+        name="files" /* sets the file input name, it's filepond by default */
+        labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+        onerror={(
+          error: FilePondErrorDescription,
+          _file?: FilePondFile,
+          status?: any
+        ) => {
+          console.log(error);
+        }}
+      />
       <SearchInput onChange={search} />
       <Accordion
         expanded={expanded}

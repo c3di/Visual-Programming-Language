@@ -26,6 +26,9 @@
     "@mui/icons-material": "^5.11.11",
     "@mui/lab": "^5.0.0-alpha.125",
     "@mui/material": "^5.11.15",
+    "filepond": "^4.30.4",
+    "filepond-plugin-zipper": "^2.0.0",
+    "react-filepond": "^7.1.2",
     "reactflow": "^11.7.0"
   },
   "peerDependencies": {
@@ -88,13 +91,13 @@
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-react": "^7.32.2",
     "prettier": "^2.8.4",
+    "react-scripts": "5.0.1",
     "rollup": "^3.20.6",
     "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-dts": "^5.3.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-typescript2": "^0.34.1",
-    "typescript": "^4.9.5",
-    "react-scripts": "5.0.1"
+    "typescript": "^4.9.5"
   }
 }
