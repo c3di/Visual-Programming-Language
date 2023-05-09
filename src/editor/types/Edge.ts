@@ -1,7 +1,7 @@
 import { type Edge as RfEdge } from 'reactflow';
-import { type BasciNodeData } from './BasicNode';
+import { type BasicNodeData } from './BasicNode';
 
-export interface EdgeData extends BasciNodeData {
+export interface EdgeData extends BasicNodeData {
   dataType?: string;
 }
 
