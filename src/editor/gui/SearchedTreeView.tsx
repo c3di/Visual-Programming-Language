@@ -144,7 +144,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
     setFilteredTreeData(treeData);
   }, [treeData]);
 
-  const [toExapand, setToExapand] = useState<boolean>(false);
+  const [toExpand, setToExpand] = useState<boolean>(false);
 
   const filteredTreeItemData = (
     item: TreeItemData,
@@ -166,7 +166,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
   const search = useCallback((searchKeyword: string) => {
     if (searchKeyword === '') {
       setFilteredTreeData(treeData);
-      setToExapand(false);
+      setToExpand(false);
     } else {
       const filteredTreeData: TreeItemData[] = [];
       for (const item of treeData) {
@@ -174,7 +174,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
         if (fItem) filteredTreeData.push(fItem);
       }
       setFilteredTreeData(filteredTreeData);
-      setToExapand(true);
+      setToExpand(true);
     }
   }, []);
 
@@ -209,7 +209,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
     <>
       <SearchInput onChange={search} />
       <ControlledTreeView
-        toExpand={toExapand}
+        toExpand={toExpand}
         treeData={filteredTreeData}
         onItemClick={onItemClick}
         deletable={deletable}
