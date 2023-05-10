@@ -111,8 +111,8 @@ function ControlledTreeView({
   return (
     <TreeView
       aria-label="nodes types"
-      defaultCollapseIcon={<ExpandMore />}
-      defaultExpandIcon={<ChevronRight />}
+      defaultCollapseIcon={<ExpandMore sx={{ color: 'rgba(0, 0, 0, 0.54)' }} />}
+      defaultExpandIcon={<ChevronRight sx={{ color: 'rgba(0, 0, 0, 0.54)' }} />}
       expanded={expanded}
       onNodeToggle={handleToggle}
       sx={{
@@ -120,8 +120,10 @@ function ControlledTreeView({
         height: 'auto',
         flexGrow: 1,
         overflowY: 'auto',
-        overflowX: 'hidden',
+        overflowX: 'auto',
         maxHeight: '230px',
+        paddingLeft: '4px',
+        // minWidth: '300px',
       }}
     >
       {treeData.map((root) => renderTreeItem(root))}
