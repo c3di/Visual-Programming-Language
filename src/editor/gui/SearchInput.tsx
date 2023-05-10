@@ -12,7 +12,7 @@ export default function SearchInput({
 
   return (
     <Input
-      sx={{ padding: 0.5 }}
+      sx={{ padding: '4px 0px 0px 4px!important', fontSize: '16px' }}
       inputRef={inputRef}
       placeholder="Search"
       id="input-with-icon-adornment"
@@ -27,10 +27,18 @@ export default function SearchInput({
                 onChange('');
               }}
             >
-              <Clear />
+              <Clear
+                sx={{
+                  width: '20px',
+                  marginRight: '-4px',
+                  paddingBottom: '2px',
+                }}
+              />
             </IconButton>
           ) : (
-            <Search />
+            <Search
+              sx={{ width: '20px', marginRight: '-4px', paddingBottom: '2px' }}
+            />
           )}
         </InputAdornment>
       }

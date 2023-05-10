@@ -4,6 +4,7 @@ import { ExpandMore, ChevronRight } from '@mui/icons-material';
 import { type NodeConfig, type NodePackage } from '../types';
 import StyledTreeItem from './StyledTreeItem';
 import SearchInput from './SearchInput';
+import { type SvgIconProps } from '@mui/material';
 
 let itemId = 0;
 
@@ -13,6 +14,7 @@ export interface TreeItemData {
   configType?: string;
   children?: readonly TreeItemData[];
   tooltip?: string;
+  labelIcon?: React.ElementType<SvgIconProps> | undefined;
   onClick?: (item: any) => void;
 }
 
@@ -82,12 +84,13 @@ function ControlledTreeView({
     else setExpanded([]);
   }, [toExpand]);
 
-  const renderTreeItem = useCallback(
-    (item: TreeItemData): JSX.Element => (
+  const renderTreeItem = useCallback((item: TreeItemData): JSX.Element => {
+    return (
       <StyledTreeItem
         key={item.id}
         nodeId={item.id}
         labelText={item.name}
+        labelIcon={item.labelIcon}
         onClick={() => {
           if (item.onClick) item.onClick(item);
           else onItemClick?.(item);
@@ -102,9 +105,8 @@ function ControlledTreeView({
           ? item.children.map((node) => renderTreeItem(node))
           : null}
       </StyledTreeItem>
-    ),
-    []
-  );
+    );
+  }, []);
 
   return (
     <TreeView
@@ -115,10 +117,11 @@ function ControlledTreeView({
       onNodeToggle={handleToggle}
       sx={{
         width: '100%',
-        height: 250,
+        height: 'auto',
         flexGrow: 1,
         overflowY: 'auto',
         overflowX: 'hidden',
+        maxHeight: '230px',
       }}
     >
       {treeData.map((root) => renderTreeItem(root))}

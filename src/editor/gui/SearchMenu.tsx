@@ -1,5 +1,7 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { Menu } from '@mui/material';
+import CommentIcon from '@mui/icons-material/Comment';
+import RouteIcon from '@mui/icons-material/Route';
 import { type Command } from '../hooks';
 import {
   SearchedTreeView,
@@ -27,6 +29,7 @@ const SearchMenu = memo(function SearchMenu({
         addNode('comment');
       },
       tooltip: 'Add a comment node',
+      labelIcon: CommentIcon,
     },
     {
       name: 'Add Reroute...',
@@ -34,6 +37,7 @@ const SearchMenu = memo(function SearchMenu({
         addNode('reroute');
       },
       tooltip: 'Add a reroute node',
+      labelIcon: RouteIcon,
     },
     ...(moreCommands ?? []),
   ]);
@@ -79,6 +83,7 @@ const SearchMenu = memo(function SearchMenu({
         id: command.name,
         name: command.name,
         tooltip: command.tooltip,
+        labelIcon: command.labelIcon,
         onClick: () => {
           command.action();
           onClose();
