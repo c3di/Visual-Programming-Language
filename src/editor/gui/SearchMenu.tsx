@@ -66,7 +66,7 @@ const SearchMenu = memo(function SearchMenu({
         ...commandsToTreeData(commands),
       ]);
     }
-  }, [open]);
+  }, [open, commands]);
 
   const onItemClick = useCallback((item: TreeItemData): void => {
     if (!item) return;
@@ -92,10 +92,6 @@ const SearchMenu = memo(function SearchMenu({
     },
     []
   );
-
-  useEffect(() => {
-    setTreeData((treeData) => [...treeData, ...commandsToTreeData(commands)]);
-  }, [commands]);
 
   return (
     <Menu
