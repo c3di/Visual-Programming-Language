@@ -123,7 +123,6 @@ function ControlledTreeView({
         overflowX: 'auto',
         maxHeight: '230px',
         paddingLeft: '4px',
-        // minWidth: '300px',
       }}
     >
       {treeData.map((root) => renderTreeItem(root))}

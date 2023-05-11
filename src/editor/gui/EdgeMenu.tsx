@@ -29,7 +29,7 @@ const EdgeMenu = memo(function EdgeMenu({
       anchorReference="anchorPosition"
       anchorPosition={anchorPosition}
     >
-      <MenuList>
+      <MenuList sx={{ paddingTop: '4px', paddingBottom: '4px' }}>
         <MenuItem
           sx={{
             paddingRight: '8px',
