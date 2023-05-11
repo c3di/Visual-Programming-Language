@@ -23,13 +23,13 @@ registerPlugin(FilepondZipper());
 
 function nodeConfigsToItemList(
   nodeConfigs: Record<string, NodePackage | NodeConfig>,
-  keyward?: string
+  keyword?: string
 ): INodeLibraryItem[] {
   const data: INodeLibraryItem[] = [];
   for (const name in nodeConfigs) {
     const config = nodeConfigs[name];
     if (config.notShowInMenu) continue;
-    if (keyward && keyward !== '' && !name.includes(keyward)) continue;
+    if (keyword && keyword !== '' && !name.includes(keyword)) continue;
     data.push({
       title: name,
       href: config.href,
