@@ -47,7 +47,7 @@ const SearchMenu = memo(function SearchMenu({
     const commandNames = commands.map((command) => command.name);
     const newCommands = [];
     for (const command of moreCommands) {
-      if (command.name in commandNames) continue;
+      if (commandNames.includes(command.name)) continue;
       newCommands.push(command);
     }
 
