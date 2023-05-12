@@ -23,8 +23,10 @@ export default function NodeLibraryItem({
       className="vp-nodelibrary-entry"
       style={{
         display: 'flex',
-        borderBottom: '1px solid black',
-        paddingTop: 5,
+        borderBottom: '1px solid',
+        borderColor: 'rgba(0, 0, 0, .125)',
+        paddingTop: '5px',
+        paddingLeft: '5px',
       }}
     >
       <div
@@ -34,7 +36,13 @@ export default function NodeLibraryItem({
         <div className="vp-nodelibrary-entry-title">
           <a
             href={href}
-            style={{ textDecoration: 'none', color: 'blue' }}
+            style={{
+              textDecoration: 'none',
+              color: '#1976D2',
+              lineHeight: '1.28',
+              fontSize: '15.5px',
+              fontWeight: 405,
+            }}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -42,7 +50,10 @@ export default function NodeLibraryItem({
           </a>
         </div>
         <div className="vp-nodelibrary-entry-content">
-          <div className="vp-nodelibrary-entry-description">
+          <div
+            className="vp-nodelibrary-entry-description"
+            style={{ color: '#0000008A', fontSize: '15px' }}
+          >
             {description ?? ''}
           </div>
           <div
@@ -53,6 +64,12 @@ export default function NodeLibraryItem({
               style={{
                 float: 'left',
                 marginRight: 5,
+                marginTop: '10px',
+                border: '0px',
+                color: '#0000008A',
+                backgroundColor: 'transparent',
+                paddingBottom: '8px',
+                fontSize: '15px',
               }}
               onClick={onUninstall}
               type="button"
@@ -62,6 +79,16 @@ export default function NodeLibraryItem({
             </button>
 
             <button
+              style={{
+                float: 'left',
+                marginRight: 5,
+                marginTop: '10px',
+                border: '0px',
+                color: '#0000008A',
+                backgroundColor: 'transparent',
+                paddingBottom: '8px',
+                fontSize: '15px',
+              }}
               type="button"
               className="bp3-button bp3-minimal bp3-small minimal jp-Button"
               onClick={() => {

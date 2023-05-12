@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
+// import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import { styled } from '@mui/material/styles';
 import MuiAccordion, { type AccordionProps } from '@mui/material/Accordion';
 import MuiAccordionSummary, {
@@ -18,6 +18,7 @@ import {
 } from 'filepond';
 import FilepondZipper from 'filepond-plugin-zipper';
 import 'filepond/dist/filepond.min.css';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 
 registerPlugin(FilepondZipper());
 
@@ -43,7 +44,9 @@ const Accordion = styled((props: AccordionProps) => (
 ))(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
   '&:not(:last-child)': {
-    borderBottom: 0,
+    borderBottom: '1px solid #e0e0e0  ',
+    borderRight: '0px  ',
+    borderLeft: '0px  ',
   },
   '&:before': {
     display: 'none',
@@ -52,20 +55,30 @@ const Accordion = styled((props: AccordionProps) => (
 
 const AccordionSummary = styled((props: AccordionSummaryProps) => (
   <MuiAccordionSummary
-    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem' }} />}
+    sx={{
+      minHeight: '10px !important',
+      height: '33px !important',
+      padding: '4px 0px 4px 0px !important',
+    }}
+    expandIcon={
+      <PlayArrowIcon
+        sx={{ width: '12px', height: '12px', padding: '6px 8px 8px 8px' }}
+      />
+    }
     {...props}
   />
 ))(({ theme }) => ({
-  backgroundColor:
-    theme.palette.mode === 'dark'
-      ? 'rgba(255, 255, 255, .05)'
-      : 'rgba(0, 0, 0, .03)',
+  padding: '0px',
   flexDirection: 'row-reverse',
   '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
     transform: 'rotate(90deg)',
   },
+  '&:hover': {
+    backgroundColor: theme.palette.action.hover,
+  },
+
   '& .MuiAccordionSummary-content': {
-    marginLeft: theme.spacing(1),
+    marginLeft: '0px',
   },
 }));
 
@@ -156,6 +169,7 @@ export default function NodeLibraryList({
       />
       <SearchInput onChange={search} />
       <Accordion
+        sx={{ borderTop: '0px' }}
         expanded={expanded}
         onChange={() => {
           setExpanded((expanded) => {
@@ -164,7 +178,15 @@ export default function NodeLibraryList({
         }}
       >
         <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-          <Typography>{title}</Typography>
+          <Typography
+            sx={{
+              fontSize: '12.5px',
+              letterSpacing: '1px',
+              fontWeight: '405',
+            }}
+          >
+            {title}
+          </Typography>
         </AccordionSummary>
         <AccordionDetails>
           {itemList.map((item) => (

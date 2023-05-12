@@ -12,9 +12,20 @@ export default function SearchInput({
 
   return (
     <Input
-      sx={{ padding: '4px 0px 0px 4px!important', fontSize: '16px' }}
+      sx={{
+        padding: '4px 10px 0px 4px!important',
+        fontSize: '16px',
+        border: '1px solid',
+        borderBottomWidth: '0px',
+        borderColor: '#919191',
+        width: '99%',
+        marginLeft: '4px',
+        marginRight: '2px',
+        marginBottom: '8px',
+        height: '30px',
+      }}
       inputRef={inputRef}
-      placeholder="Search"
+      placeholder="SEARCH"
       id="input-with-icon-adornment"
       startAdornment={
         <InputAdornment position="start">
