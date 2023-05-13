@@ -210,7 +210,14 @@ export const SearchedTreeView = memo(function SearchedTreeView({
   }, []);
 
   return (
-    <>
+    <div
+      style={{
+        margin: '4px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
       <SearchInput onChange={search} />
       <ControlledTreeView
         toExpand={toExpand}
@@ -222,6 +229,6 @@ export const SearchedTreeView = memo(function SearchedTreeView({
           onItemDelete?.(type);
         }}
       />
-    </>
+    </div>
   );
 });
