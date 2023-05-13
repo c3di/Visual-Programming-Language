@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-// import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import { styled } from '@mui/material/styles';
 import MuiAccordion, { type AccordionProps } from '@mui/material/Accordion';
 import MuiAccordionSummary, {
@@ -19,6 +18,7 @@ import {
 import FilepondZipper from 'filepond-plugin-zipper';
 import 'filepond/dist/filepond.min.css';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import './NodeLibraryList.css';
 
 registerPlugin(FilepondZipper());
 
@@ -133,7 +133,6 @@ export default function NodeLibraryList({
         credits={false}
         files={files}
         onupdatefiles={(fileItems) => {
-          console.log(fileItems);
           setFiles(fileItems.map((fileItem) => fileItem.file));
         }}
         allowMultiple={true}
@@ -158,7 +157,7 @@ export default function NodeLibraryList({
           restore: null,
         }}
         name="files" /* sets the file input name, it's filepond by default */
-        labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
+        labelIdle='Drop your package file/folder or <span class="filepond--label-action">Browse</span>'
         onerror={(
           error: FilePondErrorDescription,
           _file?: FilePondFile,
