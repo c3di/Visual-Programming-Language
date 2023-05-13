@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IconButton, Input, InputAdornment } from '@mui/material';
+import { IconButton, InputAdornment, OutlinedInput } from '@mui/material';
 import { Search, Clear } from '@mui/icons-material';
 
 export default function SearchInput({
@@ -11,18 +11,19 @@ export default function SearchInput({
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   return (
-    <Input
+    <OutlinedInput
       sx={{
-        padding: '4px 10px 0px 4px!important',
+        padding: '0px 0px 0px 8px',
         fontSize: '16px',
         border: '1px solid',
         borderBottomWidth: '0px',
         borderColor: '#919191',
         width: '99%',
         marginLeft: '4px',
-        marginRight: '2px',
-        marginBottom: '8px',
+        marginRight: '4px',
+        marginBottom: '6px',
         height: '30px',
+        paddingLeft: '0px',
       }}
       inputRef={inputRef}
       placeholder="SEARCH"
@@ -48,7 +49,11 @@ export default function SearchInput({
             </IconButton>
           ) : (
             <Search
-              sx={{ width: '20px', marginRight: '-4px', paddingBottom: '2px' }}
+              sx={{
+                width: '20px',
+                marginRight: '-4px',
+                paddingBottom: '2px',
+              }}
             />
           )}
         </InputAdornment>
