@@ -122,7 +122,6 @@ function ControlledTreeView({
         overflowY: 'auto',
         overflowX: 'auto',
         maxHeight: '230px',
-        paddingLeft: '4px',
       }}
     >
       {treeData.map((root) => renderTreeItem(root))}
@@ -212,7 +211,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
   return (
     <div
       style={{
-        margin: '7px 4px 4px 4px',
+        margin: '8px 6px 6px 6px',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

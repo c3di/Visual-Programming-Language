@@ -166,7 +166,11 @@ export default function NodeLibraryList({
           console.log(error);
         }}
       />
-      <SearchInput onChange={search} />
+      <div
+        style={{ marginLeft: '4px', marginRight: '4px', marginBottom: '4px' }}
+      >
+        <SearchInput onChange={search} />
+      </div>
       <Accordion
         sx={{ borderTop: '0px' }}
         expanded={expanded}
