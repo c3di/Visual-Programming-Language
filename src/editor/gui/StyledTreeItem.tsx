@@ -32,8 +32,6 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
   color: theme.palette.text.secondary,
   [`& .${treeItemClasses.content}`]: {
     color: theme.palette.text.primary,
-    borderTopRightRadius: theme.spacing(1),
-    borderBottomRightRadius: theme.spacing(1),
     paddingRight: theme.spacing(0),
     paddingLeft: theme.spacing(0),
     fontWeight: theme.typography.fontWeightMedium,
