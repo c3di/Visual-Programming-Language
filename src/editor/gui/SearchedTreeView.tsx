@@ -212,7 +212,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
   return (
     <div
       style={{
-        margin: '4px',
+        margin: '7px 4px 4px 4px',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
