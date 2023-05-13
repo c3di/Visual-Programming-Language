@@ -27,7 +27,7 @@ export default function SearchInput({
       inputRef={inputRef}
       placeholder="SEARCH"
       id="input-with-icon-adornment"
-      startAdornment={
+      endAdornment={
         <InputAdornment position="start">
           {hasInput ? (
             <IconButton
