@@ -29,14 +29,9 @@ const EdgeMenu = memo(function EdgeMenu({
       anchorReference="anchorPosition"
       anchorPosition={anchorPosition}
     >
-      <MenuList sx={{ paddingTop: '4px', paddingBottom: '4px' }}>
+      <MenuList className="VP_MenuList">
         <MenuItem
-          sx={{
-            paddingRight: '8px',
-            paddingLeft: 0,
-            paddingBottom: '2px',
-            paddingTop: '2px',
-          }}
+          className="VP_MenuItem"
           onClick={() => {
             onDelete();
             onClose();
@@ -50,6 +45,7 @@ const EdgeMenu = memo(function EdgeMenu({
           </ListItemIcon>
           <ListItemText sx={{ paddingRight: 10 }}>Delete</ListItemText>
           <Typography
+            className="VP_MenuItem_Shortcut"
             variant="body2"
             color="text.secondary"
             sx={{ fontSize: '15px' }}

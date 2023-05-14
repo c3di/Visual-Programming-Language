@@ -210,8 +210,8 @@ export const SearchedTreeView = memo(function SearchedTreeView({
 
   return (
     <div
+      className="VP_MenuList"
       style={{
-        margin: '8px 6px 6px 6px',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',

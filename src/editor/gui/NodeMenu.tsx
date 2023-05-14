@@ -45,16 +45,9 @@ const NodeMenu = memo(function NodeMenu({
       anchorReference="anchorPosition"
       anchorPosition={anchorPosition}
     >
-      <MenuList
-        sx={{ width: '230px', paddingTop: '4px', paddingBottom: '4px' }}
-      >
+      <MenuList className="VP_MenuList" sx={{ width: '230px' }}>
         <MenuItem
-          sx={{
-            paddingRight: '8px',
-            paddingLeft: 0,
-            paddingBottom: '2px',
-            paddingTop: '2px',
-          }}
+          className="VP_MenuItem"
           onClick={() => {
             onDelete();
             onClose();
@@ -70,6 +63,7 @@ const NodeMenu = memo(function NodeMenu({
             Delete
           </ListItemText>
           <Typography
+            className="VP_MenuItem_Shortcut"
             variant="body2"
             color="text.secondary"
             sx={{ fontSize: '15px !important' }}
@@ -78,12 +72,7 @@ const NodeMenu = memo(function NodeMenu({
           </Typography>
         </MenuItem>
         <MenuItem
-          sx={{
-            paddingRight: '8px',
-            paddingLeft: 0,
-            paddingBottom: '2px',
-            paddingTop: '2px',
-          }}
+          className="VP_MenuItem"
           onClick={() => {
             onCut();
             onClose();
@@ -97,6 +86,7 @@ const NodeMenu = memo(function NodeMenu({
           </ListItemIcon>
           <ListItemText sx={{ fontSize: '15px!important' }}>Cut</ListItemText>
           <Typography
+            className="VP_MenuItem_Shortcut"
             variant="body2"
             color="text.secondary"
             sx={{ fontSize: '15px!important' }}
@@ -105,12 +95,7 @@ const NodeMenu = memo(function NodeMenu({
           </Typography>
         </MenuItem>
         <MenuItem
-          sx={{
-            paddingRight: '8px',
-            paddingLeft: 0,
-            paddingBottom: '2px',
-            paddingTop: '2px',
-          }}
+          className="VP_MenuItem"
           onClick={() => {
             onCopy();
             onClose();
@@ -124,6 +109,7 @@ const NodeMenu = memo(function NodeMenu({
           </ListItemIcon>
           <ListItemText sx={{ fontSize: '15px!important' }}>Copy</ListItemText>
           <Typography
+            className="VP_MenuItem_Shortcut"
             variant="body2"
             color="text.secondary"
             sx={{ fontSize: '15px!important' }}
@@ -132,12 +118,7 @@ const NodeMenu = memo(function NodeMenu({
           </Typography>
         </MenuItem>
         <MenuItem
-          sx={{
-            paddingRight: '8px',
-            paddingLeft: 0,
-            paddingBottom: '2px',
-            paddingTop: '2px',
-          }}
+          className="VP_MenuItem"
           onClick={() => {
             onDuplicate();
             onClose();
@@ -153,6 +134,7 @@ const NodeMenu = memo(function NodeMenu({
             Duplicate
           </ListItemText>
           <Typography
+            className="VP_MenuItem_Shortcut"
             variant="body2"
             color="text.secondary"
             sx={{ fontSize: '15px!important' }}
@@ -170,12 +152,7 @@ const NodeMenu = memo(function NodeMenu({
               }}
             />
             <MenuItem
-              sx={{
-                paddingRight: 0,
-                paddingLeft: '6px',
-                paddingBottom: '2px',
-                paddingTop: '2px',
-              }}
+              className="VP_MenuItem"
               disabled={!anyConnectionToSelectedNode}
               onClick={() => {
                 onBreakNodeLinks();
@@ -184,7 +161,7 @@ const NodeMenu = memo(function NodeMenu({
             >
               <Typography
                 variant="body2"
-                // color="text.secondary"
+                color="text.secondary"
                 sx={{ fontSize: '15px!important' }}
               >
                 Break Node Link(s)

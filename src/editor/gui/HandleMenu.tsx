@@ -28,14 +28,9 @@ const HandleMenu = memo(function HandleMenu({
       anchorReference="anchorPosition"
       anchorPosition={anchorPosition}
     >
-      <MenuList sx={{ paddingTop: '4px', paddingBottom: '4px' }}>
+      <MenuList className="VP_MenuList">
         <MenuItem
-          sx={{
-            paddingRight: '6px',
-            paddingLeft: '6px',
-            paddingBottom: '2px',
-            paddingTop: '2px',
-          }}
+          className="VP_MenuItem"
           disabled={connection === 0 || connection === undefined}
           onClick={() => {
             onBreakLinks();
@@ -44,7 +39,7 @@ const HandleMenu = memo(function HandleMenu({
         >
           <Typography
             variant="body2"
-            // color="text.secondary"
+            color="text.secondary"
             sx={{ fontSize: '15px' }}
           >
             Break Node Link(s)

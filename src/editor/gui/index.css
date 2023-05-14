@@ -1,0 +1,13 @@
+.VP_MenuList {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+  margin: 6px !important;
+}
+
+.VP_MenuItem {
+  padding: 0px !important;
+}
+
+.VP_MenuItem_Shortcut {
+  padding-right: 8px;
+}
