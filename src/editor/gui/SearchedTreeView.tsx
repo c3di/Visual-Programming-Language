@@ -4,6 +4,7 @@ import { ExpandMore, ChevronRight } from '@mui/icons-material';
 import { type NodeConfig, type NodePackage } from '../types';
 import StyledTreeItem from './StyledTreeItem';
 import SearchInput from './SearchInput';
+import { type SvgIconProps } from '@mui/material';
 
 let itemId = 0;
 
@@ -13,6 +14,7 @@ export interface TreeItemData {
   configType?: string;
   children?: readonly TreeItemData[];
   tooltip?: string;
+  labelIcon?: React.ElementType<SvgIconProps> | undefined;
   onClick?: (item: any) => void;
 }
 
@@ -82,12 +84,13 @@ function ControlledTreeView({
     else setExpanded([]);
   }, [toExpand]);
 
-  const renderTreeItem = useCallback(
-    (item: TreeItemData): JSX.Element => (
+  const renderTreeItem = useCallback((item: TreeItemData): JSX.Element => {
+    return (
       <StyledTreeItem
         key={item.id}
         nodeId={item.id}
         labelText={item.name}
+        labelIcon={item.labelIcon}
         onClick={() => {
           if (item.onClick) item.onClick(item);
           else onItemClick?.(item);
@@ -102,23 +105,23 @@ function ControlledTreeView({
           ? item.children.map((node) => renderTreeItem(node))
           : null}
       </StyledTreeItem>
-    ),
-    []
-  );
+    );
+  }, []);
 
   return (
     <TreeView
       aria-label="nodes types"
-      defaultCollapseIcon={<ExpandMore />}
-      defaultExpandIcon={<ChevronRight />}
+      defaultCollapseIcon={<ExpandMore sx={{ color: 'rgba(0, 0, 0, 0.54)' }} />}
+      defaultExpandIcon={<ChevronRight sx={{ color: 'rgba(0, 0, 0, 0.54)' }} />}
       expanded={expanded}
       onNodeToggle={handleToggle}
       sx={{
         width: '100%',
-        height: 250,
+        height: 'auto',
         flexGrow: 1,
         overflowY: 'auto',
-        overflowX: 'hidden',
+        overflowX: 'auto',
+        maxHeight: '230px',
       }}
     >
       {treeData.map((root) => renderTreeItem(root))}
@@ -144,7 +147,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
     setFilteredTreeData(treeData);
   }, [treeData]);
 
-  const [toExapand, setToExapand] = useState<boolean>(false);
+  const [toExpand, setToExpand] = useState<boolean>(false);
 
   const filteredTreeItemData = (
     item: TreeItemData,
@@ -166,7 +169,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
   const search = useCallback((searchKeyword: string) => {
     if (searchKeyword === '') {
       setFilteredTreeData(treeData);
-      setToExapand(false);
+      setToExpand(false);
     } else {
       const filteredTreeData: TreeItemData[] = [];
       for (const item of treeData) {
@@ -174,7 +177,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
         if (fItem) filteredTreeData.push(fItem);
       }
       setFilteredTreeData(filteredTreeData);
-      setToExapand(true);
+      setToExpand(true);
     }
   }, []);
 
@@ -206,10 +209,17 @@ export const SearchedTreeView = memo(function SearchedTreeView({
   }, []);
 
   return (
-    <>
+    <div
+      className="VP_MenuList"
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
       <SearchInput onChange={search} />
       <ControlledTreeView
-        toExpand={toExapand}
+        toExpand={toExpand}
         treeData={filteredTreeData}
         onItemClick={onItemClick}
         deletable={deletable}
@@ -218,6 +228,6 @@ export const SearchedTreeView = memo(function SearchedTreeView({
           onItemDelete?.(type);
         }}
       />
-    </>
+    </div>
   );
 });

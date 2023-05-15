@@ -1,5 +1,5 @@
 import { type Node as RcNode } from 'reactflow';
-export interface BasciNodeData {
+export interface BasicNodeData {
   tooltip?: string;
   configType?: string;
 }

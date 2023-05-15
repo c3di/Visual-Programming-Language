@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import Menu from '@mui/material/Menu';
 import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
+import { Typography } from '@mui/material';
 
 const HandleMenu = memo(function HandleMenu({
   open,
@@ -27,15 +28,22 @@ const HandleMenu = memo(function HandleMenu({
       anchorReference="anchorPosition"
       anchorPosition={anchorPosition}
     >
-      <MenuList>
+      <MenuList className="VP_MenuList">
         <MenuItem
+          className="VP_MenuItem"
           disabled={connection === 0 || connection === undefined}
           onClick={() => {
             onBreakLinks();
             onClose();
           }}
         >
-          Break Link(s)
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ fontSize: '15px' }}
+          >
+            Break Node Link(s)
+          </Typography>
         </MenuItem>
       </MenuList>
     </Menu>

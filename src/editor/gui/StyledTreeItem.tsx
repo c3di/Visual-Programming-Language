@@ -32,9 +32,8 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
   color: theme.palette.text.secondary,
   [`& .${treeItemClasses.content}`]: {
     color: theme.palette.text.primary,
-    borderTopRightRadius: theme.spacing(2),
-    borderBottomRightRadius: theme.spacing(2),
-    paddingRight: theme.spacing(1),
+    paddingRight: theme.spacing(0),
+    paddingLeft: theme.spacing(0),
     fontWeight: theme.typography.fontWeightMedium,
     '&.Mui-expanded': {
       fontWeight: theme.typography.fontWeightRegular,
@@ -47,13 +46,15 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
       color: 'var(--tree-view-color)',
     },
     [`& .${treeItemClasses.label}`]: {
-      fontWeight: 'inherit',
-      color: 'inherit',
+      // fontWeight: 'inherit',
+      paddingTop: theme.spacing(0.1),
+      fontSize: '16px',
+      color: '#000000DE',
     },
   },
   [`& .${treeItemClasses.group}`]: {
     [`& .${treeItemClasses.content}`]: {
-      paddingLeft: theme.spacing(2),
+      paddingLeft: theme.spacing(0),
     },
   },
 }));
@@ -75,9 +76,14 @@ export default function StyledTreeItem(
 
   return (
     <StyledTreeItemRoot
-      icon={LabelIcon && <LabelIcon color={iconColor ?? 'inherit'} />}
+      icon={LabelIcon && <LabelIcon sx={{ color: 'rgba(0, 0, 0, 0.54)' }} />}
       label={
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
           <Typography
             variant="body1"
             sx={{ fontWeight: 'inherit', flexGrow: 0.8 }}
