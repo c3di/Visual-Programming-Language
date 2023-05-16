@@ -95,7 +95,7 @@ export class Deserializer {
       return {
         id,
         type: category,
-        dragHandle: '.node__header',
+        dragHandle: '.node__header--enabled',
         zIndex: -1001,
         width,
         height,

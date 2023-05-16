@@ -5,7 +5,6 @@
       "category": "comment",
       "dragHandle": ".node__header",
       "zIndex": -1001,
-      "tooltip": "this is a comment",
       "notShowInMenu": true
     },
     "reroute": {
