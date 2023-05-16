@@ -11,6 +11,7 @@ import './index.css';
 import { deepCopy } from './editor/util';
 import { NodeLibraryList, Progress } from './editor/gui';
 import { nodeConfigRegistry } from './editor/extension';
+import { InPlaceTextArea } from './editor';
 
 Object.entries(extensions).forEach(([name, extension]) => {
   LoadPackageToRegistry(name, extension);
@@ -48,7 +49,7 @@ function MainArea({ id }: { id: string }): JSX.Element {
           setNodeExtensions(nodeConfigRegistry.getAllNodeConfigs());
         }}
       />
-
+      <InPlaceTextArea text="hello world" />
       <button
         onClick={() => {
           setActivated(true);
