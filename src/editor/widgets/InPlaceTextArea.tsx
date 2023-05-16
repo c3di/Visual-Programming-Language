@@ -44,7 +44,7 @@ export default function InPlaceTextArea({
             width: '100%',
             wordWrap: 'break-word',
             userSelect: 'none',
-            padding: '0px',
+            padding: '1px',
           }}
         >
           {currentText}
