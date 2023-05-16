@@ -15,19 +15,19 @@ function CommentNode({ data }: { data: Comment }): JSX.Element {
     data.height ?? 150
   );
   const [enableDrag, setEnableDrag] = useState<boolean>(false);
-
-  const onStartEdit = useCallback((text: string) => {
+  const [comment, setComment] = useState<string>(data.comment);
+  const onStartEdit = useCallback(() => {
     setEnableDrag(false);
   }, []);
   const onStopEdit = useCallback(() => {
     setEnableDrag(true);
   }, []);
-
+  const onEditChange = useCallback((text: string) => {
+    setComment(text);
+    data.comment = text;
+  }, []);
   return (
-    <div
-      title={data.tooltip}
-      style={{ width: commentWidth, height: commentHeight }}
-    >
+    <div title={comment} style={{ width: commentWidth, height: commentHeight }}>
       <NodeResizer
         color="#ffffff00"
         handleStyle={{ border: 'none' }}
@@ -52,6 +52,7 @@ function CommentNode({ data }: { data: Comment }): JSX.Element {
           text={data.comment}
           onStartEdit={onStartEdit}
           onStopEdit={onStopEdit}
+          onEditChange={onEditChange}
         />{' '}
       </div>
       <div className="node__body"></div>

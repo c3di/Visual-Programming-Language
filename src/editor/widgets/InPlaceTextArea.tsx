@@ -3,13 +3,15 @@ import React, { useEffect, useRef, useState } from 'react';
 export default function InPlaceTextArea({
   text,
   placeholder = 'Please double click to edit the comment.',
-  onStartEdit = (text: string) => {},
+  onStartEdit,
   onStopEdit,
+  onEditChange,
 }: {
   text?: string;
   placeholder?: string;
-  onStartEdit?: (text: string) => void;
+  onStartEdit?: () => void;
   onStopEdit?: () => void;
+  onEditChange?: (text: string) => void;
 }): JSX.Element {
   const [currentText, setCurrentText] = useState(text ?? placeholder);
   const [editable, setEditable] = useState(false);
@@ -18,7 +20,7 @@ export default function InPlaceTextArea({
   useEffect(() => {
     if (editable) {
       inputAreaRef.current?.focus();
-      onStartEdit?.(currentText);
+      onStartEdit?.();
     } else {
       inputAreaRef.current?.blur();
       onStopEdit?.();
@@ -66,6 +68,7 @@ export default function InPlaceTextArea({
           value={currentText}
           onChange={(e) => {
             setCurrentText(e.target.value);
+            onEditChange?.(e.target.value);
           }}
           onFocus={(e) => {
             document.execCommand('selectAll', false, undefined);
