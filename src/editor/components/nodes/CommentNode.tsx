@@ -27,7 +27,10 @@ function CommentNode({ data }: { data: Comment }): JSX.Element {
     data.comment = text;
   }, []);
   return (
-    <div title={comment} style={{ width: commentWidth, height: commentHeight }}>
+    <div
+      title={comment}
+      style={{ width: commentWidth, height: commentHeight, overflow: 'auto' }}
+    >
       <NodeResizer
         color="#ffffff00"
         handleStyle={{ border: 'none' }}
