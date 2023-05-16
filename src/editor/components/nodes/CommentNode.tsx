@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import './CommentNode.css';
 import { type Comment } from '../../types';
 import {
@@ -14,6 +14,15 @@ function CommentNode({ data }: { data: Comment }): JSX.Element {
   const [commentHeight, setCommentHeight] = useState<number>(
     data.height ?? 150
   );
+  const [enableDrag, setEnableDrag] = useState<boolean>(false);
+
+  const onStartEdit = useCallback((text: string) => {
+    setEnableDrag(false);
+  }, []);
+  const onStopEdit = useCallback(() => {
+    setEnableDrag(true);
+  }, []);
+
   return (
     <div
       title={data.tooltip}
@@ -32,8 +41,18 @@ function CommentNode({ data }: { data: Comment }): JSX.Element {
           setCommentHeight(params.height);
         }}
       />
-      <div className="node__header" style={{ paddingBottom: '0px' }}>
-        <InPlaceTextArea text={data.comment} />
+      <div
+        className={
+          enableDrag
+            ? 'node__header node__header--enabled'
+            : 'node__header node__header--disabled'
+        }
+      >
+        <InPlaceTextArea
+          text={data.comment}
+          onStartEdit={onStartEdit}
+          onStopEdit={onStopEdit}
+        />{' '}
       </div>
       <div className="node__body"></div>
       <div></div>
