@@ -9,45 +9,77 @@ export default function InPlaceTextArea({
 }): JSX.Element {
   const [currentText, setCurrentText] = useState(text ?? placeholder);
   const [editable, setEditable] = useState(false);
-  const inputRef = useRef<HTMLDivElement>(null);
+  const inputAreaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     if (editable) {
-      inputRef.current?.focus();
+      inputAreaRef.current?.focus();
     } else {
-      inputRef.current?.blur();
+      inputAreaRef.current?.blur();
     }
   }, [editable]);
 
   return (
     <div
-      ref={inputRef}
       style={{
         width: '100%',
-        wordWrap: 'break-word',
-        userSelect: 'none',
+        fontFamily: 'inherit',
+        fontSize: 'inherit',
       }}
-      contentEditable={editable}
       onDoubleClick={(e) => {
         setEditable(true);
       }}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === 'Escape') {
-          setEditable(false);
-        }
-      }}
-      onBlur={(e) => {
-        setCurrentText(e.target.innerText);
-        setEditable(false);
-      }}
-      onFocus={(e) => {
-        document.execCommand('selectAll', false, undefined);
-      }}
-      onInput={(e) => {
-        setCurrentText((e.target as HTMLElement).innerText);
-      }}
     >
-      {currentText}
+      {!editable && (
+        <div
+          style={{
+            width: '100%',
+            wordWrap: 'break-word',
+            userSelect: 'none',
+            padding: '0px',
+          }}
+        >
+          {currentText}
+        </div>
+      )}
+      {
+        <textarea
+          style={{
+            width: '100%',
+            fontFamily: 'inherit',
+            fontSize: 'inherit',
+            padding: '0px',
+            border: '1px solid',
+            overflow: 'hidden',
+            height: 'auto',
+            resize: 'none',
+            display: editable ? 'block' : 'none',
+          }}
+          rows={1}
+          ref={inputAreaRef}
+          value={currentText}
+          onChange={(e) => {
+            setCurrentText(e.target.value);
+          }}
+          onFocus={(e) => {
+            document.execCommand('selectAll', false, undefined);
+          }}
+          onBlur={(e) => {
+            setEditable(false);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape' || e.key === 'Enter') {
+              setEditable(false);
+            }
+          }}
+          onInput={(e) => {
+            (e.target as HTMLTextAreaElement).style.height = 'auto';
+            (e.target as HTMLTextAreaElement).style.height = `${
+              (e.target as HTMLTextAreaElement).scrollHeight
+            }px`;
+          }}
+        ></textarea>
+      }
     </div>
   );
 }

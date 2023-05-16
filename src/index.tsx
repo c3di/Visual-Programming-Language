@@ -49,7 +49,9 @@ function MainArea({ id }: { id: string }): JSX.Element {
           setNodeExtensions(nodeConfigRegistry.getAllNodeConfigs());
         }}
       />
-      <InPlaceTextArea text="hello world" />
+      <div style={{ margin: '20px', width: '200px' }}>
+        <InPlaceTextArea text="hello world" />
+      </div>
       <button
         onClick={() => {
           setActivated(true);
