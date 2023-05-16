@@ -3,6 +3,7 @@ import './CommentNode.css';
 import { type Comment } from '../../types';
 import { NodeResizer } from '@reactflow/node-resizer';
 import '@reactflow/node-resizer/dist/style.css';
+import { InPlaceTextArea } from '../../widgets';
 
 function CommentNode({ data }: { data: Comment }): JSX.Element {
   return (
@@ -17,9 +18,10 @@ function CommentNode({ data }: { data: Comment }): JSX.Element {
         minHeight={10}
       />
       <div className="node__header">
-        <strong>{data.comment}</strong>
+        <InPlaceTextArea text={data.comment} />
       </div>
       <div className="node__body"></div>
+      <div></div>
     </div>
   );
 }

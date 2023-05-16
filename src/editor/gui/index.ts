@@ -10,4 +10,3 @@ export {
   default as NodeLibraryItem,
   type INodeLibraryItem,
 } from './NodeLibraryItem';
-export { default as InPlaceTextArea } from './InPlaceTextArea';
