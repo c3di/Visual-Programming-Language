@@ -60,12 +60,12 @@ export interface GraphState {
   anyConnectableNodeSelected: boolean;
   anyConnectionToSelectedNode: boolean;
   toString: () => string;
-  fromJSON: (graph: SerializedGraph | undefined) => {
+  fromJSON: (graph: SerializedGraph | undefined | null) => {
     nodes: Node[];
     edges: Edge[];
   };
 }
-export default function useGraph(graph?: SerializedGraph): GraphState {
+export default function useGraph(graph?: SerializedGraph | null): GraphState {
   const initGraph = deserializer.deserialize(graph);
   const [nodes, setNodes, onNodesChange] = useNodesState(initGraph.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initGraph.edges);
@@ -473,7 +473,9 @@ export default function useGraph(graph?: SerializedGraph): GraphState {
   }, []);
 
   const fromJSON = useCallback(
-    (graph: SerializedGraph | undefined): { nodes: Node[]; edges: Edge[] } => {
+    (
+      graph: SerializedGraph | undefined | null
+    ): { nodes: Node[]; edges: Edge[] } => {
       const { nodes, edges } = deserializer.deserialize(graph);
       setNodes(nodes);
       setEdges(edges);
