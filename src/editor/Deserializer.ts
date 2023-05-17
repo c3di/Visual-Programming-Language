@@ -109,6 +109,25 @@ export class Deserializer {
         position,
       };
     },
+    stickyNote: (config: GraphNodeConfig): Node => {
+      const { id, category, stickyNote, tooltip, position, width, height } =
+        config;
+      return {
+        id,
+        type: category,
+        dragHandle: '.node__header--enabled',
+        zIndex: -1001,
+        width,
+        height,
+        data: {
+          stickyNote,
+          tooltip,
+          width,
+          height,
+        },
+        position,
+      };
+    },
   };
 
   private readonly defaultConfigToNode = (config: GraphNodeConfig): Node => {

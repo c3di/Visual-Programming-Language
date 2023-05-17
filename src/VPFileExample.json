@@ -102,6 +102,17 @@
       "height": 150
     },
     {
+      "id": "7",
+      "type": "stickyNote",
+      "stickyNote": "This is a sticky note",
+      "position": {
+        "x": 450,
+        "y": 100
+      },
+      "width": 150,
+      "height": 150
+    },
+    {
       "id": "8",
       "type": "reroute",
       "position": {
