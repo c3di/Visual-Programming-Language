@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import './InPlaceTextArea.css';
 
 export default function InPlaceTextArea({
   text,
@@ -33,6 +34,7 @@ export default function InPlaceTextArea({
         width: '100%',
         fontFamily: 'inherit',
         fontSize: 'inherit',
+        border: '0px',
       }}
       onDoubleClick={(e) => {
         setEditable(true);
@@ -44,7 +46,8 @@ export default function InPlaceTextArea({
             width: '100%',
             wordWrap: 'break-word',
             userSelect: 'none',
-            padding: '1px',
+            padding: '0px',
+            border: '0px',
           }}
         >
           {currentText}
@@ -57,12 +60,13 @@ export default function InPlaceTextArea({
             fontFamily: 'inherit',
             fontSize: 'inherit',
             padding: '0px',
-            border: '1px solid',
+            border: '0px',
             overflow: 'hidden',
             height: 'auto',
             resize: 'none',
             display: editable ? 'block' : 'none',
           }}
+          className="text-area"
           rows={1}
           ref={inputAreaRef}
           value={currentText}

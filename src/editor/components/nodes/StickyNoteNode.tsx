@@ -30,7 +30,12 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
   return (
     <div
       title={comment}
-      style={{ width: commentWidth, height: commentHeight, overflow: 'auto' }}
+      style={{
+        width: commentWidth,
+        height: commentHeight,
+        overflow: 'auto',
+        padding: '5px',
+      }}
     >
       <NodeResizer
         color="#ffffff00"
@@ -45,11 +50,12 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
           setCommentHeight(params.height);
         }}
       />
+
       <div
         className={
           enableDrag
-            ? 'node__header node__header--enabled'
-            : 'node__header node__header--disabled'
+            ? 'node__body node__body--enabled'
+            : 'node__body node__body--disabled'
         }
       >
         <InPlaceTextArea
@@ -57,10 +63,8 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
           onStartEdit={onStartEdit}
           onStopEdit={onStopEdit}
           onEditChange={onEditChange}
-        />{' '}
+        />
       </div>
-      <div className="node__body"></div>
-      <div></div>
     </div>
   );
 }
