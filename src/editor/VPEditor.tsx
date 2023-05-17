@@ -30,12 +30,12 @@ import {
 
 const Scene = ({
   id,
-  graph,
+  graph = null,
   onContentChange,
   activated,
 }: {
   id: string;
-  graph?: SerializedGraph;
+  graph?: SerializedGraph | null;
   onContentChange?: (graph: string) => void;
   activated?: boolean;
 }): JSX.Element => {
@@ -346,12 +346,12 @@ const Scene = ({
 
 export default function VPEditor({
   id,
-  content,
+  content = null,
   onContentChange,
   activated,
 }: {
   id: string;
-  content?: SerializedGraph;
+  content?: SerializedGraph | null;
   onContentChange?: (content: string) => void;
   activated?: boolean;
 }): JSX.Element {

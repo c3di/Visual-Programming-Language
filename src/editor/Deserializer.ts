@@ -160,7 +160,7 @@ export class Deserializer {
     });
   };
 
-  public deserialize(sGraph: SerializedGraph | undefined): Graph {
+  public deserialize(sGraph: SerializedGraph | undefined | null): Graph {
     if (!sGraph) return { nodes: [], edges: [] };
     const graphNodeConfigs = this.serializedToGraphNodeConfigs(sGraph.nodes);
     const nodes = graphNodeConfigs.map((config) => this.configToNode(config));
