@@ -4,12 +4,14 @@ import './InPlaceTextArea.css';
 export default function InPlaceTextArea({
   text,
   placeholder = 'Please double click to edit the comment.',
+  initialRow = 1,
   onStartEdit,
   onStopEdit,
   onEditChange,
 }: {
   text?: string;
   placeholder?: string;
+  initialRow?: number;
   onStartEdit?: () => void;
   onStopEdit?: () => void;
   onEditChange?: (text: string) => void;
@@ -50,9 +52,7 @@ export default function InPlaceTextArea({
             border: '0px',
           }}
         >
-          {currentText?.length === 0
-            ? 'Double click to edit text'
-            : currentText}
+          {currentText?.length === 0 ? 'Double click to edit' : currentText}
         </div>
       )}
       {
@@ -64,13 +64,14 @@ export default function InPlaceTextArea({
             padding: '0px',
             border: '0px',
             overflow: 'auto',
-            height: 'auto',
+            height: '100%',
             resize: 'none',
             display: editable ? 'block' : 'none',
           }}
           className="text-area"
-          placeholder="Double click to edit text"
-          rows={1}
+          placeholder="Double click to edit"
+          // rows={7}
+          rows={initialRow}
           ref={inputAreaRef}
           value={currentText}
           onChange={(e) => {
