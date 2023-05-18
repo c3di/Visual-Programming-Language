@@ -57,13 +57,11 @@ function ControlledTreeView({
   toExpand,
   treeData,
   onItemClick,
-  deletable,
   onItemDelete,
 }: {
   toExpand: boolean;
   treeData: TreeItemData[];
   onItemClick?: (item: TreeItemData) => void;
-  deletable?: boolean;
   onItemDelete?: (path: string) => void;
 }): JSX.Element {
   const [expanded, setExpanded] = useState<string[]>([]);
@@ -96,7 +94,6 @@ function ControlledTreeView({
           else onItemClick?.(item);
         }}
         title={item.tooltip}
-        deletable={deletable}
         onItemDelete={() => {
           onItemDelete?.(item.configType ?? item.name);
         }}
@@ -132,12 +129,10 @@ function ControlledTreeView({
 export const SearchedTreeView = memo(function SearchedTreeView({
   treeData,
   onItemClick,
-  deletable,
   onItemDelete,
 }: {
   treeData: TreeItemData[];
   onItemClick?: (item: TreeItemData) => void;
-  deletable?: boolean;
   onItemDelete?: (type: string) => void;
 }): JSX.Element {
   const [filteredTreeData, setFilteredTreeData] =
@@ -222,7 +217,6 @@ export const SearchedTreeView = memo(function SearchedTreeView({
         toExpand={toExpand}
         treeData={filteredTreeData}
         onItemClick={onItemClick}
-        deletable={deletable}
         onItemDelete={(type) => {
           deleteItemInTreeData(type);
           onItemDelete?.(type);
