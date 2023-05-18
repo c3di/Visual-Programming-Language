@@ -46,7 +46,7 @@ const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
     [`& .${treeItemClasses.label}`]: {
       // fontWeight: 'inherit',
       paddingTop: theme.spacing(0.1),
-      fontSize: '16px',
+      fontSize: '1rem',
       color: '#000000DE',
     },
   },
@@ -70,10 +70,16 @@ export default function StyledTreeItem(
     onItemDelete,
     ...other
   } = props;
-
   return (
     <StyledTreeItemRoot
-      icon={LabelIcon && <LabelIcon sx={{ color: 'rgba(0, 0, 0, 0.54)' }} />}
+      icon={
+        LabelIcon &&
+        (iconColor ? (
+          <LabelIcon color={iconColor} />
+        ) : (
+          <LabelIcon sx={{ color: 'rgba(0, 0, 0, 0.54)' }} />
+        ))
+      }
       label={
         <Box
           sx={{

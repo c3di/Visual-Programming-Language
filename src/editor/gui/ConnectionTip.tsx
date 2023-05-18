@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { Menu } from '@mui/material';
+import { Menu, MenuList } from '@mui/material';
 import { type ConnectionStatus, ConnectionAction } from '../types';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -28,21 +28,23 @@ const ConnectionTip = memo(function ConnectionTip({
       anchorReference="anchorPosition"
       anchorPosition={anchorPosition}
     >
-      <StyledTreeItem
-        sx={{ pointerEvents: 'none' }}
-        nodeId="1"
-        labelText={connectionStatus?.message ?? ''}
-        labelIcon={
-          connectionStatus?.action === ConnectionAction.Reject
-            ? ClearIcon
-            : CheckIcon
-        }
-        iconColor={
-          connectionStatus?.action === ConnectionAction.Reject
-            ? 'error'
-            : 'success'
-        }
-      ></StyledTreeItem>
+      <MenuList className="VP_MenuList">
+        <StyledTreeItem
+          sx={{ pointerEvents: 'none' }}
+          nodeId="1"
+          labelText={connectionStatus?.message ?? ''}
+          labelIcon={
+            connectionStatus?.action === ConnectionAction.Reject
+              ? ClearIcon
+              : CheckIcon
+          }
+          iconColor={
+            connectionStatus?.action === ConnectionAction.Reject
+              ? 'error'
+              : 'success'
+          }
+        ></StyledTreeItem>
+      </MenuList>
     </Menu>
   );
 });
