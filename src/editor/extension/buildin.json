@@ -31,7 +31,7 @@
     "stickyNote": {
       "type": "stickyNote",
       "category": "stickyNote",
-      "dragHandle": ".node__header",
+      "dragHandle": ".node__body",
       "zIndex": -1001,
       "notShowInMenu": true
     }
