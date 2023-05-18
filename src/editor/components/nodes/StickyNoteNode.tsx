@@ -29,6 +29,11 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
   }, []);
   return (
     <div
+      className={
+        enableDrag
+          ? 'node__body node__body--enabled'
+          : 'node__body node__body--disabled'
+      }
       title={comment}
       style={{
         width: commentWidth,
@@ -51,20 +56,12 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
         }}
       />
 
-      <div
-        className={
-          enableDrag
-            ? 'node__body node__body--enabled'
-            : 'node__body node__body--disabled'
-        }
-      >
-        <InPlaceTextArea
-          text={data.stickyNote}
-          onStartEdit={onStartEdit}
-          onStopEdit={onStopEdit}
-          onEditChange={onEditChange}
-        />
-      </div>
+      <InPlaceTextArea
+        text={data.stickyNote}
+        onStartEdit={onStartEdit}
+        onStopEdit={onStopEdit}
+        onEditChange={onEditChange}
+      />
     </div>
   );
 }
