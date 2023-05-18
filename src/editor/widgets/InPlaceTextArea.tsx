@@ -50,7 +50,9 @@ export default function InPlaceTextArea({
             border: '0px',
           }}
         >
-          {currentText}
+          {currentText?.length === 0
+            ? 'Double click to edit text'
+            : currentText}
         </div>
       )}
       {
@@ -61,12 +63,13 @@ export default function InPlaceTextArea({
             fontSize: 'inherit',
             padding: '0px',
             border: '0px',
-            overflow: 'hidden',
+            overflow: 'auto',
             height: 'auto',
             resize: 'none',
             display: editable ? 'block' : 'none',
           }}
           className="text-area"
+          placeholder="Double click to edit text"
           rows={1}
           ref={inputAreaRef}
           value={currentText}
