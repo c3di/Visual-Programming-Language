@@ -10,7 +10,7 @@
   font-family: 'Roboto', sans-serif;
   color: #333;
   background-color: transparent;
-  overflow: hidden;
+  overflow: auto;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-all;
