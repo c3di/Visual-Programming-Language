@@ -13,7 +13,7 @@ import { InPlaceTextArea } from '../../widgets';
 function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
   const [commentWidth, setCommentWidth] = useState<number>(data.width ?? 250);
   const [commentHeight, setCommentHeight] = useState<number>(
-    data.height ?? 150
+    data.height ?? 200
   );
   const [enableDrag, setEnableDrag] = useState<boolean>(false);
   const [comment, setComment] = useState<string>(data.stickyNote);
@@ -29,24 +29,18 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
   }, []);
   return (
     <div
-      className={
-        enableDrag
-          ? 'node__body node__body--enabled'
-          : 'node__body node__body--disabled'
-      }
       title={comment}
       style={{
         width: commentWidth,
         height: commentHeight,
         overflow: 'auto',
-        padding: '5px',
       }}
     >
       <NodeResizer
         color="#ffffff00"
         handleStyle={{ border: 'none' }}
-        minWidth={200}
-        minHeight={100}
+        minWidth={150}
+        minHeight={150}
         onResize={(
           event: ResizeDragEvent,
           params: ResizeParamsWithDirection
@@ -55,13 +49,21 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
           setCommentHeight(params.height);
         }}
       />
-
-      <InPlaceTextArea
-        text={data.stickyNote}
-        onStartEdit={onStartEdit}
-        onStopEdit={onStopEdit}
-        onEditChange={onEditChange}
-      />
+      <div
+        className={
+          enableDrag
+            ? ' node__body stickyNote__node__body--enabled'
+            : ' node__body stickyNote__node__body--disabled'
+        }
+      >
+        <InPlaceTextArea
+          initialRow={7}
+          text={data.stickyNote}
+          onStartEdit={onStartEdit}
+          onStopEdit={onStopEdit}
+          onEditChange={onEditChange}
+        />
+      </div>
     </div>
   );
 }
