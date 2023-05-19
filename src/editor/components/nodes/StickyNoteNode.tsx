@@ -1,7 +1,7 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useCallback, useState, useRef } from 'react';
 import './StickyNoteNode.css';
 import type StickyNote from '../../types/StickyNote';
-
+import LockIcon from '@mui/icons-material/Lock';
 import {
   NodeResizer,
   type ResizeDragEvent,
@@ -27,42 +27,91 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
     setComment(text);
     data.stickyNote = text;
   }, []);
+  const buttonRef = useRef(null);
+
+  const [nodeBg, setNodeBg] = useState('#eee');
+
   return (
-    <div
-      title={comment}
-      style={{
-        width: commentWidth,
-        height: commentHeight,
-        overflow: 'auto',
-      }}
-    >
-      <NodeResizer
-        color="#ffffff00"
-        handleStyle={{ border: 'none' }}
-        minWidth={150}
-        minHeight={150}
-        onResize={(
-          event: ResizeDragEvent,
-          params: ResizeParamsWithDirection
-        ) => {
-          setCommentWidth(params.width);
-          setCommentHeight(params.height);
-        }}
-      />
+    <div style={{ backgroundColor: nodeBg }}>
+      <div className="button-group">
+        <button
+          className="button-group__button pin-button"
+          style={{
+            float: 'right',
+            border: 'none',
+            backgroundColor: 'transparent',
+          }}
+          onClick={() => {
+            console.log('lock');
+            // Here I would like to set the className to node__body--disabled,
+            // but I don't know how to access the className of the parent div
+            // from here.
+          }}
+        >
+          <LockIcon />
+        </button>
+        <div>
+          <input
+            ref={buttonRef}
+            className="button-group__button color-picker-button"
+            type="color"
+            value={nodeBg}
+            onChange={(evt) => {
+              setNodeBg(evt.target.value);
+            }}
+            style={{
+              float: 'right',
+              width: '24px',
+              height: '24px',
+              margin: '2px',
+              // backgroundColor: '#456',
+            }}
+          ></input>
+        </div>
+      </div>
       <div
-        className={
-          enableDrag
-            ? ' node__body stickyNote__node__body--enabled'
-            : ' node__body stickyNote__node__body--disabled'
-        }
+        title={comment}
+        style={{
+          width: commentWidth,
+          height: commentHeight,
+          overflow: 'auto',
+        }}
       >
-        <InPlaceTextArea
-          initialRow={7}
-          text={data.stickyNote}
-          onStartEdit={onStartEdit}
-          onStopEdit={onStopEdit}
-          onEditChange={onEditChange}
+        <NodeResizer
+          color="#ffffff00"
+          handleStyle={{ border: 'none' }}
+          minWidth={150}
+          minHeight={150}
+          onResize={(
+            event: ResizeDragEvent,
+            params: ResizeParamsWithDirection
+          ) => {
+            setCommentWidth(params.width);
+            const buttonGroup = document.getElementsByClassName(
+              'button-group__button'
+            );
+            const buttonGroupHeight = buttonGroup[0].clientHeight;
+            const borderWidth = 2;
+            const modHeight = params.height - buttonGroupHeight - borderWidth;
+            setCommentHeight(modHeight);
+          }}
         />
+
+        <div
+          className={
+            enableDrag
+              ? ' node__body stickyNote__node__body--enabled'
+              : ' node__body stickyNote__node__body--disabled'
+          }
+        >
+          <InPlaceTextArea
+            initialRow={7}
+            text={data.stickyNote}
+            onStartEdit={onStartEdit}
+            onStopEdit={onStopEdit}
+            onEditChange={onEditChange}
+          />
+        </div>
       </div>
     </div>
   );
