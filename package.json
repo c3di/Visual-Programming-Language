@@ -29,6 +29,7 @@
     "filepond": "^4.30.4",
     "filepond-plugin-zipper": "^2.0.0",
     "react-filepond": "^7.1.2",
+    "react-icons": "^4.8.0",
     "reactflow": "^11.7.0"
   },
   "peerDependencies": {

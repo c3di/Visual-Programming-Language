@@ -1,7 +1,7 @@
 import React, { memo, useCallback, useState, useRef } from 'react';
 import './StickyNoteNode.css';
 import type StickyNote from '../../types/StickyNote';
-import LockIcon from '@mui/icons-material/Lock';
+import { BsPinAngleFill, BsPinAngle } from 'react-icons/bs';
 import {
   NodeResizer,
   type ResizeDragEvent,
@@ -30,26 +30,11 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
   const buttonRef = useRef(null);
 
   const [nodeBg, setNodeBg] = useState('#eee');
+  const [pinned, setPinned] = useState(false);
 
   return (
     <div style={{ backgroundColor: nodeBg }}>
       <div className="button-group">
-        <button
-          className="button-group__button pin-button"
-          style={{
-            float: 'right',
-            border: 'none',
-            backgroundColor: 'transparent',
-          }}
-          onClick={() => {
-            console.log('lock');
-            // Here I would like to set the className to node__body--disabled,
-            // but I don't know how to access the className of the parent div
-            // from here.
-          }}
-        >
-          <LockIcon />
-        </button>
         <div>
           <input
             ref={buttonRef}
@@ -61,13 +46,34 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
             }}
             style={{
               float: 'right',
-              width: '24px',
-              height: '24px',
-              margin: '2px',
-              // backgroundColor: '#456',
+              width: '18px',
+              height: '18px',
+              marginTop: '4px',
+              marginRight: '4px',
             }}
           ></input>
         </div>
+        <button
+          className="button-group__button pin-button"
+          style={{
+            float: 'right',
+            border: 'none',
+            backgroundColor: 'transparent',
+            width: '30px',
+            height: '30px',
+            marginRight: '-5px',
+            marginBottom: '-5px',
+          }}
+          onClick={() => {
+            console.log('lock');
+            setPinned(!pinned);
+            setEnableDrag(!enableDrag);
+            console.log('pinned: ', pinned);
+            console.log('enableDrag: ', enableDrag);
+          }}
+        >
+          {pinned ? <BsPinAngleFill /> : <BsPinAngle />}
+        </button>
       </div>
       <div
         title={comment}
@@ -91,7 +97,7 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
               'button-group__button'
             );
             const buttonGroupHeight = buttonGroup[0].clientHeight;
-            const borderWidth = 2;
+            const borderWidth = 8;
             const modHeight = params.height - buttonGroupHeight - borderWidth;
             setCommentHeight(modHeight);
           }}
