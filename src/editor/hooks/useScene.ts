@@ -33,6 +33,7 @@ export interface ISceneActions {
   deleteSelectedElements: () => void;
   duplicateSelectedNodes: () => void;
   cutSelectedNodesToClipboard: () => void;
+  clear: () => void;
   deleteEdge: (id: string) => void;
   deleteAllEdgesOfNode: (nodeId: string) => void;
   deleteAllEdgesOfHandle: (nodeId: string, handleId: string) => void;
@@ -294,6 +295,7 @@ export default function useScene(
       onNodeDragStop,
       copySelectedNodeToClipboard,
       pasteFromClipboard,
+      clear: graphState.clear,
       deleteSelectedElements: graphState.deleteSelectedElements,
       duplicateSelectedNodes,
       cutSelectedNodesToClipboard,

@@ -43,6 +43,7 @@ export interface GraphState {
   selectNode: (nodeId: string) => void;
   selectEdge: (edgeId: string) => void;
   clearEdgeSelection: () => void;
+  clear: () => void;
   deleteSelectedNodes: () => void;
   deleteSelectedElements: () => void;
   deleteEdge: (id: string) => void;
@@ -359,6 +360,11 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     setNodes((nds) => nds.map((n) => ({ ...n, selected: n.id === nodeId })));
   }, []);
 
+  const clear = useCallback((): void => {
+    setNodes([]);
+    setEdges([]);
+  }, []);
+
   const deleteSelectedNodes = useCallback((): void => {
     deleteEdges((e) => {
       const selectedNodesId = getNodes()
@@ -529,6 +535,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     selectNode,
     selectEdge,
     clearEdgeSelection,
+    clear,
     deleteSelectedNodes,
     deleteSelectedElements,
     deleteAllEdgesOfSelectedNodes,

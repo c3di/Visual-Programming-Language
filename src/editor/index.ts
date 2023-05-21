@@ -4,4 +4,5 @@ export * from './extension';
 export * from './types';
 export * from './widgets';
 export * from './gui';
+export * from './hooks';
 LoadDefaultModule();
