@@ -13,6 +13,7 @@ import ContentPaste from '@mui/icons-material/ContentPaste';
 import { useReactFlow, getRectOfNodes, type XYPosition } from 'reactflow';
 
 export interface ISceneActions {
+  getSelectedCount: () => number;
   selectAll: (sure: boolean) => void;
   selectEdge: (edgeId: string) => void;
   selectNode: (nodeId: string) => void;
@@ -66,6 +67,10 @@ export default function useScene(
     nodes.forEach((node) => {
       saveNodesInSelectedCommentNode(node, node.id);
     });
+  };
+
+  const getSelectedCount = (): number => {
+    return selectedNodes().length;
   };
 
   const saveNodesInSelectedCommentNode = (
@@ -284,6 +289,7 @@ export default function useScene(
     anyConnectionToSelectedNode: graphState.anyConnectionToSelectedNode,
     extraCommands,
     sceneActions: {
+      getSelectedCount,
       selectNode: graphState.selectNode,
       selectEdge: graphState.selectEdge,
       addNode,
