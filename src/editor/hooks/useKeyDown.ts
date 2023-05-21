@@ -1,61 +1,62 @@
 import { useCallback, useEffect } from 'react';
 import { useKeyPress } from 'reactflow';
-import { type SceneState } from './useScene';
+import { type ISceneState } from './useScene';
 
-export default function useKeyDown(sceneState: SceneState): {
+export default function useKeyDown(sceneState?: ISceneState): {
   onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void;
 } {
+  const sceneActions = sceneState?.sceneActions;
   const selectAllKeyPressed = useKeyPress('Control+a');
   useEffect(() => {
     if (selectAllKeyPressed) {
-      sceneState.selectAll(true);
+      sceneActions?.selectAll(true);
     }
   }, [selectAllKeyPressed]);
 
   const cancelAllKeyPressed = useKeyPress('Escape');
   useEffect(() => {
-    if (!cancelAllKeyPressed) sceneState.selectAll(false);
+    if (!cancelAllKeyPressed) sceneActions?.selectAll(false);
   }, [cancelAllKeyPressed]);
 
   const copyKeyPressed = useKeyPress('Control+c');
   useEffect(() => {
     if (copyKeyPressed) {
-      sceneState.copySelectedNodeToClipboard();
+      sceneActions?.copySelectedNodeToClipboard();
     }
   }, [copyKeyPressed]);
 
   const pasteKeyPressed = useKeyPress('Control+v');
   useEffect(() => {
     if (pasteKeyPressed) {
-      sceneState.pasteFromClipboard();
+      sceneActions?.pasteFromClipboard();
     }
   }, [pasteKeyPressed]);
 
   const duplicateKeyPressed = useKeyPress('Control+d');
   useEffect(() => {
     if (duplicateKeyPressed) {
-      sceneState.duplicateSelectedNodes();
+      sceneActions?.duplicateSelectedNodes();
     }
   }, [duplicateKeyPressed]);
 
   const cutKeyPressed = useKeyPress('Control+x');
   useEffect(() => {
     if (cutKeyPressed) {
-      sceneState.cutSelectedNodesToClipboard();
+      sceneActions?.cutSelectedNodesToClipboard();
     }
   }, [cutKeyPressed]);
 
   const deleteKeyPressed = useKeyPress('Delete');
   useEffect(() => {
     if (deleteKeyPressed) {
-      sceneState.deleteSelectedElements();
+      sceneActions?.deleteSelectedElements();
     }
   }, [deleteKeyPressed]);
 
   const centerNodeKeyPressed = useKeyPress('f');
   useEffect(() => {
     if (centerNodeKeyPressed) {
-      sceneState.centerSelectedNodes();
+      sceneActions?.centerSelectedNodes();
     }
   }, [centerNodeKeyPressed]);
 

@@ -12,7 +12,7 @@ import { type Command } from './useGui';
 import ContentPaste from '@mui/icons-material/ContentPaste';
 import { useReactFlow, getRectOfNodes, type XYPosition } from 'reactflow';
 
-export interface SceneState {
+export interface ISceneActions {
   selectAll: (sure: boolean) => void;
   selectEdge: (edgeId: string) => void;
   selectNode: (nodeId: string) => void;
@@ -38,19 +38,26 @@ export interface SceneState {
   deleteAllEdgesOfHandle: (nodeId: string, handleId: string) => void;
   deleteAllEdgesOfSelectedNodes: () => void;
   isValidConnection: (params: any) => ConnectionStatus;
+  centerSelectedNodes: () => void;
+}
+export interface ISceneState {
+  graphStateRef: React.MutableRefObject<GraphState>;
   anyConnectableNodeSelected: boolean;
   anyConnectionToSelectedNode: boolean;
   extraCommands: Command[];
-  centerSelectedNodes: () => void;
+  sceneActions: ISceneActions;
 }
+
 export default function useScene(
   graphState: GraphState,
   mousePos: React.MutableRefObject<{
     mouseX: number;
     mouseY: number;
   }>
-): SceneState {
-  const { nodes, selectedNodes, edges, getFreeUniqueNodeIds } = graphState;
+): ISceneState {
+  const graphStateRef = useRef(graphState);
+  const { nodes, selectedNodes, edges, getFreeUniqueNodeIds } =
+    graphStateRef.current;
   const nodesRefInCommentNode = useRef({});
   const [extraCommands, setExtraCommands] = useState<Command[]>([]);
   const { setCenter, getZoom } = useReactFlow();
@@ -271,28 +278,31 @@ export default function useScene(
   };
 
   return {
-    selectNode: graphState.selectNode,
-    selectEdge: graphState.selectEdge,
-    addNode,
-    addEdge,
-    selectAll: graphState.selectAll,
-    clearEdgeSelection: graphState.clearEdgeSelection,
-    getHandleConnectionCounts: graphState.getHandleConnectionCounts,
-    onNodeDragStart,
-    onNodeDragStop,
-    copySelectedNodeToClipboard,
-    pasteFromClipboard,
-    deleteSelectedElements: graphState.deleteSelectedElements,
-    duplicateSelectedNodes,
-    cutSelectedNodesToClipboard,
-    deleteEdge: graphState.deleteEdge,
-    deleteAllEdgesOfNode: graphState.deleteAllEdgesOfNode,
-    deleteAllEdgesOfHandle: graphState.deleteAllEdgesOfHandle,
-    deleteAllEdgesOfSelectedNodes: graphState.deleteAllEdgesOfSelectedNodes,
-    isValidConnection: graphState.isValidConnection,
+    graphStateRef,
     anyConnectableNodeSelected: graphState.anyConnectableNodeSelected,
     anyConnectionToSelectedNode: graphState.anyConnectionToSelectedNode,
     extraCommands,
-    centerSelectedNodes,
+    sceneActions: {
+      selectNode: graphState.selectNode,
+      selectEdge: graphState.selectEdge,
+      addNode,
+      addEdge,
+      selectAll: graphState.selectAll,
+      clearEdgeSelection: graphState.clearEdgeSelection,
+      getHandleConnectionCounts: graphState.getHandleConnectionCounts,
+      onNodeDragStart,
+      onNodeDragStop,
+      copySelectedNodeToClipboard,
+      pasteFromClipboard,
+      deleteSelectedElements: graphState.deleteSelectedElements,
+      duplicateSelectedNodes,
+      cutSelectedNodesToClipboard,
+      deleteEdge: graphState.deleteEdge,
+      deleteAllEdgesOfNode: graphState.deleteAllEdgesOfNode,
+      deleteAllEdgesOfHandle: graphState.deleteAllEdgesOfHandle,
+      deleteAllEdgesOfSelectedNodes: graphState.deleteAllEdgesOfSelectedNodes,
+      isValidConnection: graphState.isValidConnection,
+      centerSelectedNodes,
+    },
   };
 }

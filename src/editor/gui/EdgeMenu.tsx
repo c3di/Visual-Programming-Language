@@ -16,7 +16,7 @@ const EdgeMenu = memo(function EdgeMenu({
   open: boolean;
   onClose: () => void;
   anchorPosition: { top: number; left: number };
-  onDelete: () => void;
+  onDelete?: () => void;
 }): JSX.Element {
   return (
     <Menu
@@ -33,7 +33,7 @@ const EdgeMenu = memo(function EdgeMenu({
         <MenuItem
           className="VP_MenuItem"
           onClick={() => {
-            onDelete();
+            onDelete?.();
             onClose();
           }}
         >
