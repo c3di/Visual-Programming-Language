@@ -2,6 +2,7 @@ import React, { memo, useCallback, useEffect, useState } from 'react';
 import { Menu } from '@mui/material';
 import CommentIcon from '@mui/icons-material/Comment';
 import RouteIcon from '@mui/icons-material/Route';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { type Command } from '../hooks';
 import {
   SearchedTreeView,
@@ -14,12 +15,14 @@ const SearchMenu = memo(function SearchMenu({
   onClose,
   anchorPosition,
   addNode,
+  clear,
   moreCommands,
 }: {
   open: boolean;
   onClose: () => void;
   anchorPosition: { top: number; left: number };
   addNode?: (configType: string) => void;
+  clear?: () => void;
   moreCommands?: Command[];
 }): JSX.Element {
   const [commands, setCommand] = useState<Command[]>([
@@ -38,6 +41,13 @@ const SearchMenu = memo(function SearchMenu({
       },
       tooltip: 'Add a reroute node',
       labelIcon: RouteIcon,
+    },
+    {
+      name: 'clear',
+      action: () => {
+        clear?.();
+      },
+      labelIcon: DeleteIcon,
     },
     ...(moreCommands ?? []),
   ]);

@@ -126,6 +126,7 @@ const Scene = ({
         onClose={gui.closeWidget}
         anchorPosition={gui.PosiontOnGui}
         addNode={sceneActions?.addNode}
+        clear={sceneActions?.clear}
         moreCommands={sceneState?.extraCommands}
       />
       <NodeMenu
