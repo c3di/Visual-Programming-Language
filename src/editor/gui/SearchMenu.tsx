@@ -43,7 +43,7 @@ const SearchMenu = memo(function SearchMenu({
       labelIcon: RouteIcon,
     },
     {
-      name: 'clear',
+      name: 'Clear',
       action: () => {
         clear?.();
       },
