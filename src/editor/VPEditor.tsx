@@ -7,19 +7,14 @@ import ReactFlow, {
   getRectOfNodes,
   type ReactFlowInstance,
 } from 'reactflow';
-import { WidgetFactoryProvider } from './Context';
-import Setting from './VPPanelSetting';
 import {
   useGraph,
   useScene,
   useKeyDown,
   useTrackMousePos,
   useGui,
+  type ISceneActions,
 } from './hooks';
-import componentType, { Background, ControlPanel, MiniMap } from './components';
-import { type SerializedGraph } from './types';
-import 'reactflow/dist/style.css';
-import './VPEditor.css';
 import {
   NodeMenu,
   EdgeMenu,
@@ -27,17 +22,25 @@ import {
   SearchMenu,
   ConnectionTip,
 } from './gui';
+import Setting from './VPPanelSetting';
+import { type SerializedGraph } from './types';
+import { WidgetFactoryProvider } from './Context';
+import componentType, { Background, ControlPanel, MiniMap } from './components';
+import 'reactflow/dist/style.css';
+import './VPEditor.css';
 
 const Scene = ({
   id,
   graph,
   onContentChange,
   activated,
+  onSceneActionsInit,
 }: {
   id: string;
   graph?: SerializedGraph | null;
   onContentChange?: (graph: string) => void;
   activated?: boolean;
+  onSceneActionsInit?: (actions: ISceneActions) => void;
 }): JSX.Element => {
   const [initialed, setInitialed] = useState<boolean>(false);
   const currentContent = useRef<string>('');
@@ -48,6 +51,9 @@ const Scene = ({
   const mouseTracker = useTrackMousePos(reactflowDomRef);
   const sceneState = useScene(graphState, mouseTracker.mousePos);
   const sceneActions = sceneState?.sceneActions;
+  useEffect(() => {
+    onSceneActionsInit?.(sceneActions);
+  }, []);
   const {
     nodes,
     onNodesChange,
@@ -362,11 +368,13 @@ export default function VPEditor({
   content = null,
   onContentChange,
   activated,
+  onSceneActionsInit,
 }: {
   id: string;
   content?: SerializedGraph | null;
   onContentChange?: (content: string) => void;
   activated?: boolean;
+  onSceneActionsInit?: (actions: ISceneActions) => void;
 }): JSX.Element {
   return (
     <WidgetFactoryProvider>
@@ -376,6 +384,7 @@ export default function VPEditor({
           graph={content}
           onContentChange={onContentChange}
           activated={activated}
+          onSceneActionsInit={onSceneActionsInit}
         />
       </ReactFlowProvider>
     </WidgetFactoryProvider>
