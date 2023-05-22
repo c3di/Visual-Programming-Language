@@ -2,7 +2,7 @@ import React, { memo, useCallback, useEffect, useState } from 'react';
 import { Menu } from '@mui/material';
 import CommentIcon from '@mui/icons-material/Comment';
 import RouteIcon from '@mui/icons-material/Route';
-import DeleteIcon from '@mui/icons-material/Delete';
+import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import { type Command } from '../hooks';
 import {
   SearchedTreeView,
@@ -47,7 +47,7 @@ const SearchMenu = memo(function SearchMenu({
       action: () => {
         clear?.();
       },
-      labelIcon: DeleteIcon,
+      labelIcon: DoNotDisturbIcon,
     },
     ...(moreCommands ?? []),
   ]);
