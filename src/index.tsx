@@ -4,6 +4,8 @@ import example from './VPFileExample.json';
 import { extensions } from './NodeTypePackage';
 import {
   VPEditor,
+  InPlaceTextArea,
+  type ISceneActions,
   type SerializedGraph,
   LoadPackageToRegistry,
 } from './editor';
@@ -11,11 +13,12 @@ import './index.css';
 import { deepCopy } from './editor/util';
 import { NodeLibraryList, Progress } from './editor/gui';
 import { nodeConfigRegistry } from './editor/extension';
-import { InPlaceTextArea } from './editor';
 
 Object.entries(extensions).forEach(([name, extension]) => {
   LoadPackageToRegistry(name, extension);
 });
+
+let sceneActions: ISceneActions | undefined;
 
 function MainArea({ id }: { id: string }): JSX.Element {
   const [content, setContent] = useState<SerializedGraph | undefined>(
@@ -26,6 +29,7 @@ function MainArea({ id }: { id: string }): JSX.Element {
   const [nodeExtensions, setNodeExtensions] = useState(
     nodeConfigRegistry.getAllNodeConfigs()
   );
+
   return (
     <>
       <Progress enable={false} />
@@ -68,15 +72,28 @@ function MainArea({ id }: { id: string }): JSX.Element {
       >
         clear
       </button>
-
+      <button
+        onClick={() => {
+          sceneActions?.clear();
+        }}
+      >
+        clear
+      </button>
       <textarea value={JSON.stringify(changedCount)} onChange={() => {}} />
       <VPEditor
         id={id}
         content={content}
         onContentChange={(content) => {
+          console.log('content changed', content);
           setChangedCount((count) => count + 1);
         }}
         activated={activated}
+        onSceneActionsInit={(actions) => {
+          sceneActions = actions;
+        }}
+        onSelectionChange={(selection) => {
+          console.log('selection changed', selection);
+        }}
       />
     </>
   );

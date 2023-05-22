@@ -7,19 +7,14 @@ import ReactFlow, {
   getRectOfNodes,
   type ReactFlowInstance,
 } from 'reactflow';
-import { WidgetFactoryProvider } from './Context';
-import Setting from './VPPanelSetting';
 import {
   useGraph,
   useScene,
   useKeyDown,
   useTrackMousePos,
   useGui,
+  type ISceneActions,
 } from './hooks';
-import componentType, { Background, ControlPanel, MiniMap } from './components';
-import { type SerializedGraph } from './types';
-import 'reactflow/dist/style.css';
-import './VPEditor.css';
 import {
   NodeMenu,
   EdgeMenu,
@@ -27,38 +22,50 @@ import {
   SearchMenu,
   ConnectionTip,
 } from './gui';
+import Setting from './VPPanelSetting';
+import { WidgetFactoryProvider } from './Context';
+import type { SerializedGraph, selectedElementsCounts } from './types';
+import componentType, { Background, ControlPanel, MiniMap } from './components';
+import 'reactflow/dist/style.css';
+import './VPEditor.css';
 
 const Scene = ({
   id,
-  graph = null,
+  graph,
   onContentChange,
   activated,
+  onSceneActionsInit,
+  onSelectionChange,
 }: {
   id: string;
   graph?: SerializedGraph | null;
   onContentChange?: (graph: string) => void;
   activated?: boolean;
+  onSceneActionsInit?: (actions: ISceneActions) => void;
+  onSelectionChange?: (counts: selectedElementsCounts) => void;
 }): JSX.Element => {
   const [initialed, setInitialed] = useState<boolean>(false);
   const currentContent = useRef<string>('');
   const sceneInstance = useRef<ReactFlowInstance | undefined>(undefined);
 
-  const domRef = useRef<HTMLDivElement>(null);
   const graphState = useGraph(graph);
+  const reactflowDomRef = useRef<HTMLDivElement>(null);
+  const mouseTracker = useTrackMousePos(reactflowDomRef);
+  const sceneState = useScene(graphState, mouseTracker.mousePos);
+  const sceneActions = sceneState?.sceneActions;
+  useEffect(() => {
+    onSceneActionsInit?.(sceneActions);
+  }, []);
   const {
     nodes,
     onNodesChange,
     edges,
     onEdgesChange,
     onConnect,
-    deleteEdge,
     fromJSON,
     toString,
-  } = graphState;
-  const { mousePos, updateMousePos } = useTrackMousePos(domRef);
-  const sceneState = useScene(graphState, mousePos);
-  const { onNodeDragStart, onNodeDragStop } = sceneState;
-  const { onKeyDown } = useKeyDown(sceneState);
+  } = graphState ?? {};
+  const { onKeyDown } = useKeyDown(sceneState ?? undefined);
   const gui = useGui();
   const {
     view: viewSetting,
@@ -120,26 +127,31 @@ const Scene = ({
         open={gui.showSearchMenu}
         onClose={gui.closeWidget}
         anchorPosition={gui.PosiontOnGui}
-        addNode={sceneState.addNode}
-        moreCommands={sceneState.extraCommands}
+        addNode={sceneActions?.addNode}
+        clear={sceneActions?.clear}
+        moreCommands={sceneState?.extraCommands}
       />
       <NodeMenu
         open={gui.showNodeMenu}
         onClose={gui.closeWidget}
         anchorPosition={gui.PosiontOnGui}
-        onDelete={sceneState.deleteSelectedElements}
-        onCut={sceneState.cutSelectedNodesToClipboard}
-        onCopy={sceneState.copySelectedNodeToClipboard}
-        onDuplicate={sceneState.duplicateSelectedNodes}
-        anyConnectableNodeSelected={sceneState.anyConnectableNodeSelected}
-        anyConnectionToSelectedNode={sceneState.anyConnectionToSelectedNode}
-        onBreakNodeLinks={sceneState.deleteAllEdgesOfSelectedNodes}
+        onDelete={sceneActions?.deleteSelectedElements}
+        onCut={sceneActions?.cutSelectedNodesToClipboard}
+        onCopy={sceneActions?.copySelectedNodeToClipboard}
+        onDuplicate={sceneActions?.duplicateSelectedNodes}
+        anyConnectableNodeSelected={
+          sceneState?.anyConnectableNodeSelected ?? false
+        }
+        anyConnectionToSelectedNode={
+          sceneState?.anyConnectionToSelectedNode ?? false
+        }
+        onBreakNodeLinks={sceneActions?.deleteAllEdgesOfSelectedNodes}
       />
       <EdgeMenu
         open={gui.showEdgeMenu}
         onClose={gui.closeWidget}
         anchorPosition={gui.PosiontOnGui}
-        onDelete={sceneState.deleteSelectedElements}
+        onDelete={sceneActions?.deleteSelectedElements}
       />
       <HandleMenu
         open={gui.showHandleMenu}
@@ -148,7 +160,7 @@ const Scene = ({
         anchorPosition={gui.PosiontOnGui}
         onBreakLinks={() => {
           if (gui.clickedHandle.current && gui.clickedNodeId.current)
-            sceneState.deleteAllEdgesOfHandle(
+            sceneActions?.deleteAllEdgesOfHandle(
               gui.clickedNodeId.current,
               gui.clickedHandle.current.id
             );
@@ -162,7 +174,22 @@ const Scene = ({
         }}
         fitView={!initialed}
         onMouseMove={(e) => {
-          updateMousePos(e.clientX, e.clientY);
+          mouseTracker?.updateMousePos(e.clientX, e.clientY);
+        }}
+        onSelectionChange={(elements) => {
+          if (!sceneActions) return;
+          const selectedCounts = sceneActions.getSelectedCounts();
+          if (
+            selectedCounts.nodesCount !== elements.nodes.length ||
+            selectedCounts.edgesCount !== elements.edges.length
+          ) {
+            const newCounts = {
+              nodesCount: elements.nodes.length,
+              edgesCount: elements.edges.length,
+            };
+            sceneActions.setSelectedCounts(newCounts);
+            onSelectionChange?.(newCounts);
+          }
         }}
         onPaneClick={(e) => {
           closeWidget(e);
@@ -171,21 +198,29 @@ const Scene = ({
           closeWidget(e);
         }}
         onEdgeClick={(e, edge) => {
-          if (e.ctrlKey && e.button === 0) deleteEdge(edge.id);
+          if (e.ctrlKey && e.button === 0) sceneActions?.deleteEdge(edge.id);
           closeWidget(e);
         }}
         onEdgeDoubleClick={(e, edge) => {
           closeWidget(e);
-          sceneState.clearEdgeSelection();
+          sceneActions?.clearEdgeSelection();
+          const x = mouseTracker?.mousePos.current.mouseX;
+          const y = mouseTracker?.mousePos.current.mouseY;
           const position = {
             // hardcode the width(10) and height(5) of the reroute node
-            x: mousePos.current.mouseX - 10,
-            y: mousePos.current.mouseY - 5,
+            x: x === undefined ? 0 : x - 10,
+            y: y === undefined ? 0 : y - 5,
           };
-          const node = sceneState.addNode('reroute', position);
-          sceneState.deleteEdge(edge.id);
-          sceneState.addEdge(node.id, 'input', edge.source, edge.sourceHandle!);
-          sceneState.addEdge(
+          const node = sceneActions?.addNode('reroute', position);
+          sceneActions?.deleteEdge(edge.id);
+          if (!node) return;
+          sceneActions?.addEdge(
+            node.id,
+            'input',
+            edge.source,
+            edge.sourceHandle!
+          );
+          sceneActions?.addEdge(
             edge.target,
             edge.targetHandle!,
             node.id,
@@ -198,7 +233,7 @@ const Scene = ({
         onKeyDown={onKeyDown}
         onPaneContextMenu={(e) => {
           e.preventDefault();
-          sceneState.selectAll(false);
+          sceneActions?.selectAll(false);
           gui.setPosiontOnGui({
             left: e.clientX,
             top: e.clientY,
@@ -207,7 +242,7 @@ const Scene = ({
         }}
         onNodeContextMenu={(e, node) => {
           e.preventDefault();
-          if (!node.selected) sceneState.selectNode(node.id);
+          if (!node.selected) sceneActions?.selectNode(node.id);
           gui.setPosiontOnGui({
             left: e.clientX,
             top: e.clientY,
@@ -216,12 +251,12 @@ const Scene = ({
           if (handle?.classList.contains('react-flow__handle')) {
             const id = handle.dataset.handleid;
             if (!id) return;
-            sceneState.clearEdgeSelection();
-            const connection = sceneState.getHandleConnectionCounts(
+            sceneActions?.clearEdgeSelection();
+            const connection = sceneActions?.getHandleConnectionCounts(
               node.id,
               id
             );
-            if (connection === null) return;
+            if (connection === null || connection === undefined) return;
             gui.clickedHandle.current = { id, connection };
             gui.clickedNodeId.current = node.id;
             gui.openWidget('handle');
@@ -229,14 +264,14 @@ const Scene = ({
         }}
         onEdgeContextMenu={(e, edge) => {
           e.preventDefault();
-          sceneState.selectEdge(edge.id);
+          sceneActions?.selectEdge(edge.id);
           gui.setPosiontOnGui({
             left: e.clientX,
             top: e.clientY,
           });
           gui.openWidget('edge');
         }}
-        ref={domRef}
+        ref={reactflowDomRef}
         nodes={nodes}
         edges={edges}
         connectionMode={ConnectionMode.Loose}
@@ -244,7 +279,8 @@ const Scene = ({
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         isValidConnection={(connection) => {
-          const status = sceneState.isValidConnection(connection);
+          const status = sceneActions?.isValidConnection(connection);
+          if (!status) return false;
           const isFromSource = (): boolean => {
             return gui.connectionStartNodeId.current === connection.source;
           };
@@ -305,18 +341,19 @@ const Scene = ({
         connectionRadius={EdgeSetting.portDetectionRadius}
         onNodeDragStart={(evt, node) => {
           closeWidget(evt, true);
-          onNodeDragStart(evt, node);
+          sceneActions?.onNodeDragStart(evt, node);
         }}
-        onNodeDragStop={onNodeDragStop}
+        onNodeDragStop={sceneActions?.onNodeDragStop}
         onMove={(e) => {
-          if (e instanceof MouseEvent) updateMousePos(e.clientX, e.clientY);
+          if (e instanceof MouseEvent)
+            mouseTracker?.updateMousePos(e.clientX, e.clientY);
           closeWidget(null, true);
         }}
         onSelectionStart={(e) => {
           closeWidget(null, true);
         }}
         onNodeDrag={(e) => {
-          updateMousePos(e.clientX, e.clientY);
+          mouseTracker?.updateMousePos(e.clientX, e.clientY);
         }}
         proOptions={proOptions}
       >
@@ -349,11 +386,15 @@ export default function VPEditor({
   content = null,
   onContentChange,
   activated,
+  onSceneActionsInit,
+  onSelectionChange,
 }: {
   id: string;
   content?: SerializedGraph | null;
   onContentChange?: (content: string) => void;
   activated?: boolean;
+  onSceneActionsInit?: (actions: ISceneActions) => void;
+  onSelectionChange?: (counts: selectedElementsCounts) => void;
 }): JSX.Element {
   return (
     <WidgetFactoryProvider>
@@ -363,6 +404,8 @@ export default function VPEditor({
           graph={content}
           onContentChange={onContentChange}
           activated={activated}
+          onSceneActionsInit={onSceneActionsInit}
+          onSelectionChange={onSelectionChange}
         />
       </ReactFlowProvider>
     </WidgetFactoryProvider>

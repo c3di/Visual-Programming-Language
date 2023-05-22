@@ -26,10 +26,10 @@ const NodeMenu = memo(function NodeMenu({
   open: boolean;
   onClose: () => void;
   anchorPosition: { top: number; left: number };
-  onDelete: () => void;
-  onCut: () => void;
-  onCopy: () => void;
-  onDuplicate: () => void;
+  onDelete?: () => void;
+  onCut?: () => void;
+  onCopy?: () => void;
+  onDuplicate?: () => void;
   anyConnectableNodeSelected: boolean;
   anyConnectionToSelectedNode: boolean;
   onBreakNodeLinks?: () => void;
@@ -49,7 +49,7 @@ const NodeMenu = memo(function NodeMenu({
         <MenuItem
           className="VP_MenuItem"
           onClick={() => {
-            onDelete();
+            onDelete?.();
             onClose();
           }}
         >
@@ -74,7 +74,7 @@ const NodeMenu = memo(function NodeMenu({
         <MenuItem
           className="VP_MenuItem"
           onClick={() => {
-            onCut();
+            onCut?.();
             onClose();
           }}
         >
@@ -97,7 +97,7 @@ const NodeMenu = memo(function NodeMenu({
         <MenuItem
           className="VP_MenuItem"
           onClick={() => {
-            onCopy();
+            onCopy?.();
             onClose();
           }}
         >
@@ -120,7 +120,7 @@ const NodeMenu = memo(function NodeMenu({
         <MenuItem
           className="VP_MenuItem"
           onClick={() => {
-            onDuplicate();
+            onDuplicate?.();
             onClose();
           }}
         >

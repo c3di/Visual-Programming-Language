@@ -2,6 +2,7 @@ import React, { memo, useCallback, useEffect, useState } from 'react';
 import { Menu } from '@mui/material';
 import CommentIcon from '@mui/icons-material/Comment';
 import RouteIcon from '@mui/icons-material/Route';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { type Command } from '../hooks';
 import {
   SearchedTreeView,
@@ -14,19 +15,21 @@ const SearchMenu = memo(function SearchMenu({
   onClose,
   anchorPosition,
   addNode,
+  clear,
   moreCommands,
 }: {
   open: boolean;
   onClose: () => void;
   anchorPosition: { top: number; left: number };
-  addNode: (configType: string) => void;
+  addNode?: (configType: string) => void;
+  clear?: () => void;
   moreCommands?: Command[];
 }): JSX.Element {
   const [commands, setCommand] = useState<Command[]>([
     {
       name: 'Add Comment...',
       action: () => {
-        addNode('comment');
+        addNode?.('comment');
       },
       tooltip: 'Add a comment node',
       labelIcon: CommentIcon,
@@ -34,10 +37,17 @@ const SearchMenu = memo(function SearchMenu({
     {
       name: 'Add Reroute...',
       action: () => {
-        addNode('reroute');
+        addNode?.('reroute');
       },
       tooltip: 'Add a reroute node',
       labelIcon: RouteIcon,
+    },
+    {
+      name: 'Clear',
+      action: () => {
+        clear?.();
+      },
+      labelIcon: DeleteIcon,
     },
     ...(moreCommands ?? []),
   ]);
@@ -72,7 +82,7 @@ const SearchMenu = memo(function SearchMenu({
     if (!item) return;
     if (Array.isArray(item.children)) return;
     if (item.configType) {
-      addNode(item.configType);
+      addNode?.(item.configType);
       onClose();
     }
   }, []);

@@ -2,9 +2,10 @@ import { useCallback, useRef, useState } from 'react';
 import {
   type Node,
   type ClipboardInfo,
-  isCommentNode,
   type ConnectionStatus,
   type Edge,
+  type selectedElementsCounts,
+  isCommentNode,
 } from '../types';
 import { type GraphState } from './useGraph';
 import { deserializer } from '../Deserializer';
@@ -12,7 +13,9 @@ import { type Command } from './useGui';
 import ContentPaste from '@mui/icons-material/ContentPaste';
 import { useReactFlow, getRectOfNodes, type XYPosition } from 'reactflow';
 
-export interface SceneState {
+export interface ISceneActions {
+  getSelectedCounts: () => selectedElementsCounts;
+  setSelectedCounts: (newCounts: selectedElementsCounts) => void;
   selectAll: (sure: boolean) => void;
   selectEdge: (edgeId: string) => void;
   selectNode: (nodeId: string) => void;
@@ -33,24 +36,32 @@ export interface SceneState {
   deleteSelectedElements: () => void;
   duplicateSelectedNodes: () => void;
   cutSelectedNodesToClipboard: () => void;
+  clear: () => void;
   deleteEdge: (id: string) => void;
   deleteAllEdgesOfNode: (nodeId: string) => void;
   deleteAllEdgesOfHandle: (nodeId: string, handleId: string) => void;
   deleteAllEdgesOfSelectedNodes: () => void;
   isValidConnection: (params: any) => ConnectionStatus;
+  centerSelectedNodes: () => void;
+}
+export interface ISceneState {
+  graphStateRef: React.MutableRefObject<GraphState>;
   anyConnectableNodeSelected: boolean;
   anyConnectionToSelectedNode: boolean;
   extraCommands: Command[];
-  centerSelectedNodes: () => void;
+  sceneActions: ISceneActions;
 }
+
 export default function useScene(
   graphState: GraphState,
   mousePos: React.MutableRefObject<{
     mouseX: number;
     mouseY: number;
   }>
-): SceneState {
-  const { nodes, selectedNodes, edges, getFreeUniqueNodeIds } = graphState;
+): ISceneState {
+  const graphStateRef = useRef(graphState);
+  const { nodes, selectedNodes, edges, getFreeUniqueNodeIds } =
+    graphStateRef.current;
   const nodesRefInCommentNode = useRef({});
   const [extraCommands, setExtraCommands] = useState<Command[]>([]);
   const { setCenter, getZoom } = useReactFlow();
@@ -271,28 +282,34 @@ export default function useScene(
   };
 
   return {
-    selectNode: graphState.selectNode,
-    selectEdge: graphState.selectEdge,
-    addNode,
-    addEdge,
-    selectAll: graphState.selectAll,
-    clearEdgeSelection: graphState.clearEdgeSelection,
-    getHandleConnectionCounts: graphState.getHandleConnectionCounts,
-    onNodeDragStart,
-    onNodeDragStop,
-    copySelectedNodeToClipboard,
-    pasteFromClipboard,
-    deleteSelectedElements: graphState.deleteSelectedElements,
-    duplicateSelectedNodes,
-    cutSelectedNodesToClipboard,
-    deleteEdge: graphState.deleteEdge,
-    deleteAllEdgesOfNode: graphState.deleteAllEdgesOfNode,
-    deleteAllEdgesOfHandle: graphState.deleteAllEdgesOfHandle,
-    deleteAllEdgesOfSelectedNodes: graphState.deleteAllEdgesOfSelectedNodes,
-    isValidConnection: graphState.isValidConnection,
+    graphStateRef,
     anyConnectableNodeSelected: graphState.anyConnectableNodeSelected,
     anyConnectionToSelectedNode: graphState.anyConnectionToSelectedNode,
     extraCommands,
-    centerSelectedNodes,
+    sceneActions: {
+      getSelectedCounts: graphState.getSelectedCounts,
+      setSelectedCounts: graphState.setSelectedCounts,
+      selectNode: graphState.selectNode,
+      selectEdge: graphState.selectEdge,
+      addNode,
+      addEdge,
+      selectAll: graphState.selectAll,
+      clearEdgeSelection: graphState.clearEdgeSelection,
+      getHandleConnectionCounts: graphState.getHandleConnectionCounts,
+      onNodeDragStart,
+      onNodeDragStop,
+      copySelectedNodeToClipboard,
+      pasteFromClipboard,
+      clear: graphState.clear,
+      deleteSelectedElements: graphState.deleteSelectedElements,
+      duplicateSelectedNodes,
+      cutSelectedNodesToClipboard,
+      deleteEdge: graphState.deleteEdge,
+      deleteAllEdgesOfNode: graphState.deleteAllEdgesOfNode,
+      deleteAllEdgesOfHandle: graphState.deleteAllEdgesOfHandle,
+      deleteAllEdgesOfSelectedNodes: graphState.deleteAllEdgesOfSelectedNodes,
+      isValidConnection: graphState.isValidConnection,
+      centerSelectedNodes,
+    },
   };
 }
