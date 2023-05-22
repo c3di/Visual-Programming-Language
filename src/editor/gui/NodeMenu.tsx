@@ -49,31 +49,6 @@ const NodeMenu = memo(function NodeMenu({
         <MenuItem
           className="VP_MenuItem"
           onClick={() => {
-            onDelete?.();
-            onClose();
-          }}
-        >
-          <ListItemIcon sx={{ minWidth: '20px !important' }}>
-            <DeleteIcon
-              fontSize="small"
-              sx={{ width: '16px', padding: '0px 3px 0px 4px', mt: '-2px' }}
-            />
-          </ListItemIcon>
-          <ListItemText sx={{ paddingRight: 10, fontSize: '15px!important' }}>
-            Delete
-          </ListItemText>
-          <Typography
-            className="VP_MenuItem_Shortcut"
-            variant="body2"
-            color="text.secondary"
-            sx={{ fontSize: '15px !important' }}
-          >
-            Del
-          </Typography>
-        </MenuItem>
-        <MenuItem
-          className="VP_MenuItem"
-          onClick={() => {
             onCut?.();
             onClose();
           }}
@@ -142,7 +117,31 @@ const NodeMenu = memo(function NodeMenu({
             Ctrl+D
           </Typography>
         </MenuItem>
-
+        <MenuItem
+          className="VP_MenuItem"
+          onClick={() => {
+            onDelete?.();
+            onClose();
+          }}
+        >
+          <ListItemIcon sx={{ minWidth: '20px !important' }}>
+            <DeleteIcon
+              fontSize="small"
+              sx={{ width: '16px', padding: '0px 3px 0px 4px', mt: '-2px' }}
+            />
+          </ListItemIcon>
+          <ListItemText sx={{ paddingRight: 10, fontSize: '15px!important' }}>
+            Delete
+          </ListItemText>
+          <Typography
+            className="VP_MenuItem_Shortcut"
+            variant="body2"
+            color="text.secondary"
+            sx={{ fontSize: '15px !important' }}
+          >
+            Del
+          </Typography>
+        </MenuItem>
         {anyConnectableNodeSelected && onBreakNodeLinks && (
           <>
             <Divider
