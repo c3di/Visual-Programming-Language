@@ -1,11 +1,12 @@
 import {
   type Node,
   type Edge,
-  isDataTypeMatch,
-  getMaxConnection,
   type SerializedGraph,
   type HandleData,
   type ConnectionStatus,
+  type selectedElementsCounts,
+  isDataTypeMatch,
+  getMaxConnection,
   ConnectionAction,
 } from '../types';
 import {
@@ -39,6 +40,8 @@ export interface GraphState {
   onConnect: (params: Connection) => void;
   isValidConnection: (params: Connection) => ConnectionStatus;
   selectedNodes: () => Node[];
+  getSelectedCounts: () => selectedElementsCounts;
+  setSelectedCounts: (newCounts: selectedElementsCounts) => void;
   selectAll: (sure: boolean) => void;
   selectNode: (nodeId: string) => void;
   selectEdge: (edgeId: string) => void;
@@ -71,8 +74,21 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
   const [nodes, setNodes, onNodesChange] = useNodesState(initGraph.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initGraph.edges);
   const shouldUpdateDataTypeOfRerouteNode = useRef(false);
+  const selectedCounts = useRef<selectedElementsCounts>({
+    nodesCount: 0,
+    edgesCount: 0,
+  });
   // the nodes will added more properties by reactflow, so we need to get the nodes from reactflow
   const { getNodes, getNode, getEdges } = useReactFlow();
+
+  const getSelectedCounts = useCallback((): selectedElementsCounts => {
+    return selectedCounts.current;
+  }, []);
+
+  const setSelectedCounts = useCallback((newCounts: selectedElementsCounts) => {
+    selectedCounts.current = newCounts;
+  }, []);
+
   const updateHandleConnection = useCallback(
     (
       nodeId: string | null,
@@ -526,6 +542,8 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     setNodes,
     onNodesChange,
     edges,
+    getSelectedCounts,
+    setSelectedCounts,
     setEdges,
     onEdgesChange,
     onConnect,

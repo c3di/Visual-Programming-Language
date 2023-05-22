@@ -23,8 +23,8 @@ import {
   ConnectionTip,
 } from './gui';
 import Setting from './VPPanelSetting';
-import { type SerializedGraph } from './types';
 import { WidgetFactoryProvider } from './Context';
+import type { SerializedGraph, selectedElementsCounts } from './types';
 import componentType, { Background, ControlPanel, MiniMap } from './components';
 import 'reactflow/dist/style.css';
 import './VPEditor.css';
@@ -35,12 +35,14 @@ const Scene = ({
   onContentChange,
   activated,
   onSceneActionsInit,
+  onSelectionChange,
 }: {
   id: string;
   graph?: SerializedGraph | null;
   onContentChange?: (graph: string) => void;
   activated?: boolean;
   onSceneActionsInit?: (actions: ISceneActions) => void;
+  onSelectionChange?: (counts: selectedElementsCounts) => void;
 }): JSX.Element => {
   const [initialed, setInitialed] = useState<boolean>(false);
   const currentContent = useRef<string>('');
@@ -173,6 +175,21 @@ const Scene = ({
         fitView={!initialed}
         onMouseMove={(e) => {
           mouseTracker?.updateMousePos(e.clientX, e.clientY);
+        }}
+        onSelectionChange={(elements) => {
+          if (!sceneActions) return;
+          const selectedCounts = sceneActions.getSelectedCounts();
+          if (
+            selectedCounts.nodesCount !== elements.nodes.length ||
+            selectedCounts.edgesCount !== elements.edges.length
+          ) {
+            const newCounts = {
+              nodesCount: elements.nodes.length,
+              edgesCount: elements.edges.length,
+            };
+            sceneActions.setSelectedCounts(newCounts);
+            onSelectionChange?.(newCounts);
+          }
         }}
         onPaneClick={(e) => {
           closeWidget(e);
@@ -370,12 +387,14 @@ export default function VPEditor({
   onContentChange,
   activated,
   onSceneActionsInit,
+  onSelectionChange,
 }: {
   id: string;
   content?: SerializedGraph | null;
   onContentChange?: (content: string) => void;
   activated?: boolean;
   onSceneActionsInit?: (actions: ISceneActions) => void;
+  onSelectionChange?: (counts: selectedElementsCounts) => void;
 }): JSX.Element {
   return (
     <WidgetFactoryProvider>
@@ -386,6 +405,7 @@ export default function VPEditor({
           onContentChange={onContentChange}
           activated={activated}
           onSceneActionsInit={onSceneActionsInit}
+          onSelectionChange={onSelectionChange}
         />
       </ReactFlowProvider>
     </WidgetFactoryProvider>

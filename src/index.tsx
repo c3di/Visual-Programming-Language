@@ -84,11 +84,15 @@ function MainArea({ id }: { id: string }): JSX.Element {
         id={id}
         content={content}
         onContentChange={(content) => {
+          console.log('content changed', content);
           setChangedCount((count) => count + 1);
         }}
         activated={activated}
         onSceneActionsInit={(actions) => {
           sceneActions = actions;
+        }}
+        onSelectionChange={(selection) => {
+          console.log('selection changed', selection);
         }}
       />
     </>

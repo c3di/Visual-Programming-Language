@@ -2,9 +2,10 @@ import { useCallback, useRef, useState } from 'react';
 import {
   type Node,
   type ClipboardInfo,
-  isCommentNode,
   type ConnectionStatus,
   type Edge,
+  type selectedElementsCounts,
+  isCommentNode,
 } from '../types';
 import { type GraphState } from './useGraph';
 import { deserializer } from '../Deserializer';
@@ -13,7 +14,8 @@ import ContentPaste from '@mui/icons-material/ContentPaste';
 import { useReactFlow, getRectOfNodes, type XYPosition } from 'reactflow';
 
 export interface ISceneActions {
-  getSelectedCount: () => number;
+  getSelectedCounts: () => selectedElementsCounts;
+  setSelectedCounts: (newCounts: selectedElementsCounts) => void;
   selectAll: (sure: boolean) => void;
   selectEdge: (edgeId: string) => void;
   selectNode: (nodeId: string) => void;
@@ -67,10 +69,6 @@ export default function useScene(
     nodes.forEach((node) => {
       saveNodesInSelectedCommentNode(node, node.id);
     });
-  };
-
-  const getSelectedCount = (): number => {
-    return selectedNodes().length;
   };
 
   const saveNodesInSelectedCommentNode = (
@@ -289,7 +287,8 @@ export default function useScene(
     anyConnectionToSelectedNode: graphState.anyConnectionToSelectedNode,
     extraCommands,
     sceneActions: {
-      getSelectedCount,
+      getSelectedCounts: graphState.getSelectedCounts,
+      setSelectedCounts: graphState.setSelectedCounts,
       selectNode: graphState.selectNode,
       selectEdge: graphState.selectEdge,
       addNode,
