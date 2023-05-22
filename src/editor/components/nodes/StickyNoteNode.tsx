@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState, useRef } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import './StickyNoteNode.css';
 import type StickyNote from '../../types/StickyNote';
 import { BsPinAngleFill, BsPinAngle } from 'react-icons/bs';
@@ -17,60 +17,41 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
   );
   const [enableDrag, setEnableDrag] = useState<boolean>(false);
   const [comment, setComment] = useState<string>(data.stickyNote);
+  const [nodeBg, setNodeBg] = useState<string>('#eee');
+  const [pinned, setPinned] = useState<boolean>(false);
+
   const onStartEdit = useCallback(() => {
     setEnableDrag(false);
-  }, []);
+  }, [enableDrag]);
   const onStopEdit = useCallback(() => {
-    setEnableDrag(true);
-  }, []);
+    pinned ? setEnableDrag(false) : setEnableDrag(true);
+  }, [enableDrag]);
+
   const onEditChange = useCallback((text: string) => {
     setComment(text);
     data.stickyNote = text;
   }, []);
-  const buttonRef = useRef(null);
 
-  const [nodeBg, setNodeBg] = useState('#eee');
-  const [pinned, setPinned] = useState(false);
+  const handlePinClick = useCallback(() => {
+    setPinned(!pinned);
+    pinned ? setEnableDrag(true) : setEnableDrag(false);
+  }, [pinned]);
 
   return (
     <div style={{ backgroundColor: nodeBg }}>
       <div className="button-group">
-        <div>
-          <input
-            ref={buttonRef}
-            className="button-group__button color-picker-button"
-            type="color"
-            value={nodeBg}
-            onChange={(evt) => {
-              setNodeBg(evt.target.value);
-            }}
-            style={{
-              float: 'right',
-              width: '18px',
-              height: '18px',
-              marginTop: '4px',
-              marginRight: '4px',
-            }}
-          ></input>
-        </div>
+        <input
+          className="button-group__button color-picker-button"
+          type="color"
+          value={nodeBg}
+          onChange={(evt) => {
+            setNodeBg(evt.target.value);
+          }}
+        ></input>
+
         <button
           className="button-group__button pin-button"
-          style={{
-            float: 'right',
-            border: 'none',
-            backgroundColor: 'transparent',
-            width: '30px',
-            height: '30px',
-            marginRight: '-5px',
-            marginBottom: '-5px',
-          }}
-          onClick={() => {
-            console.log('lock');
-            setPinned(!pinned);
-            setEnableDrag(!enableDrag);
-            console.log('pinned: ', pinned);
-            console.log('enableDrag: ', enableDrag);
-          }}
+          onClick={handlePinClick}
         >
           {pinned ? <BsPinAngleFill /> : <BsPinAngle />}
         </button>
