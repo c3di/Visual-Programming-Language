@@ -14,3 +14,21 @@
   min-height: 120px;
   padding-right: 4px !important;
 }
+
+.color-picker-button {
+  float: right;
+  width: 18px;
+  height: 18px;
+  margin-top: 4px;
+  margin-right: 4px;
+}
+
+.pin-button {
+  float: right;
+  border: none;
+  background-color: transparent;
+  width: 30px;
+  height: 30px;
+  margin-right: -5px;
+  margin-bottom: -5px;
+}
