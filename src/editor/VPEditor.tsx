@@ -25,7 +25,12 @@ import {
 import Setting from './VPPanelSetting';
 import { WidgetFactoryProvider } from './Context';
 import type { SerializedGraph, selectedElementsCounts } from './types';
-import componentType, { Background, ControlPanel, MiniMap } from './components';
+import componentType, {
+  Background,
+  ControlPanel,
+  // MiniMap,
+  CustomizedMinimap,
+} from './components';
 import 'reactflow/dist/style.css';
 import './VPEditor.css';
 
@@ -357,7 +362,13 @@ const Scene = ({
         }}
         proOptions={proOptions}
       >
-        <MiniMap
+        {/* <MiniMap
+          width={minimpSetting.width}
+          height={minimpSetting.height}
+          zoomable={minimpSetting.zoomable}
+          pannable={minimpSetting.pannable}
+        /> */}
+        <CustomizedMinimap
           width={minimpSetting.width}
           height={minimpSetting.height}
           zoomable={minimpSetting.zoomable}
