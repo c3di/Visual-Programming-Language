@@ -158,13 +158,11 @@ const NodeMenu = memo(function NodeMenu({
                 onClose();
               }}
             >
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ fontSize: '15px!important' }}
+              <ListItemText
+                sx={{ paddingRight: 10, fontSize: '15px!important' }}
               >
                 Break Node Link(s)
-              </Typography>
+              </ListItemText>
             </MenuItem>
           </>
         )}
