@@ -1,15 +1,19 @@
 import React, { memo, useCallback } from 'react';
-import Menu from '@mui/material/Menu';
-import MenuList from '@mui/material/MenuList';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Typography from '@mui/material/Typography';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ContentCut from '@mui/icons-material/ContentCut';
-import ContentCopy from '@mui/icons-material/ContentCopy';
-import DifferenceIcon from '@mui/icons-material/Difference';
-import { Divider } from '@mui/material';
+import {
+  Menu,
+  MenuList,
+  MenuItem,
+  ListItemText,
+  Typography,
+  Divider,
+  ListItemIcon,
+} from '@mui/material';
+import {
+  Delete,
+  ContentCut,
+  ContentCopy,
+  Difference,
+} from '@mui/icons-material';
 
 interface IMenuItem {
   title: string;
@@ -59,13 +63,13 @@ const NodeMenu = memo(function NodeMenu({
     {
       title: 'Duplicate',
       action: onDuplicate,
-      icon: DifferenceIcon,
+      icon: Difference,
       subtitle: 'Ctrl+D',
     },
     {
       title: 'Delete',
       action: onDelete,
-      icon: DeleteIcon,
+      icon: Delete,
       subtitle: 'Del',
     },
   ];
