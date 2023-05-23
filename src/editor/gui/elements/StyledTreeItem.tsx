@@ -1,12 +1,7 @@
 import React from 'react';
-import { styled } from '@mui/material/styles';
-import { Box } from '@mui/material';
-import TreeItem, {
-  type TreeItemProps,
-  treeItemClasses,
-} from '@mui/lab/TreeItem';
-import Typography from '@mui/material/Typography';
-import { type SvgIconProps } from '@mui/material/SvgIcon';
+import { Box, styled } from '@mui/material';
+import { Typography, type SvgIconProps } from '@mui/material';
+import { TreeItem, type TreeItemProps, treeItemClasses } from '@mui/lab';
 
 // from https://mui.com/material-ui/react-tree-view/#GmailTreeView.tsx
 declare module 'react' {

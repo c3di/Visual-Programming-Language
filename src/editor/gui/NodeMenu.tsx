@@ -1,17 +1,14 @@
-import React, { memo } from 'react';
-import Menu from '@mui/material/Menu';
-import MenuList from '@mui/material/MenuList';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Typography from '@mui/material/Typography';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ContentCut from '@mui/icons-material/ContentCut';
-import ContentCopy from '@mui/icons-material/ContentCopy';
-import DifferenceIcon from '@mui/icons-material/Difference';
+import React from 'react';
 import { Divider } from '@mui/material';
+import {
+  Delete,
+  ContentCut,
+  ContentCopy,
+  Difference,
+} from '@mui/icons-material';
+import { type IMenuItem, CreateMenu, createMenuItemElement } from './elements';
 
-const NodeMenu = memo(function NodeMenu({
+export default function NodeMenu({
   open,
   onClose,
   anchorPosition,
@@ -34,144 +31,72 @@ const NodeMenu = memo(function NodeMenu({
   anyConnectionToSelectedNode: boolean;
   onBreakNodeLinks?: () => void;
 }): JSX.Element {
-  return (
-    <Menu
-      transitionDuration={0}
-      onContextMenu={(e) => {
-        e.preventDefault();
-      }}
-      open={open}
-      onClose={onClose}
-      anchorReference="anchorPosition"
-      anchorPosition={anchorPosition}
-    >
-      <MenuList className="VP_MenuList" sx={{ width: '230px' }}>
-        <MenuItem
-          className="VP_MenuItem"
-          onClick={() => {
-            onDelete?.();
-            onClose();
-          }}
-        >
-          <ListItemIcon sx={{ minWidth: '20px !important' }}>
-            <DeleteIcon
-              fontSize="small"
-              sx={{ width: '16px', padding: '0px 3px 0px 4px', mt: '-2px' }}
-            />
-          </ListItemIcon>
-          <ListItemText sx={{ paddingRight: 10, fontSize: '15px!important' }}>
-            Delete
-          </ListItemText>
-          <Typography
-            className="VP_MenuItem_Shortcut"
-            variant="body2"
-            color="text.secondary"
-            sx={{ fontSize: '15px !important' }}
-          >
-            Del
-          </Typography>
-        </MenuItem>
-        <MenuItem
-          className="VP_MenuItem"
-          onClick={() => {
-            onCut?.();
-            onClose();
-          }}
-        >
-          <ListItemIcon sx={{ minWidth: '20px !important' }}>
-            <ContentCut
-              fontSize="small"
-              sx={{ width: '16px', padding: '0px 3px 0px 4px', mt: '-2px' }}
-            />
-          </ListItemIcon>
-          <ListItemText sx={{ fontSize: '15px!important' }}>Cut</ListItemText>
-          <Typography
-            className="VP_MenuItem_Shortcut"
-            variant="body2"
-            color="text.secondary"
-            sx={{ fontSize: '15px!important' }}
-          >
-            Ctrl+X
-          </Typography>
-        </MenuItem>
-        <MenuItem
-          className="VP_MenuItem"
-          onClick={() => {
-            onCopy?.();
-            onClose();
-          }}
-        >
-          <ListItemIcon sx={{ minWidth: '20px !important' }}>
-            <ContentCopy
-              fontSize="small"
-              sx={{ width: '16px', padding: '0px 3px 0px 4px', mt: '-2px' }}
-            />
-          </ListItemIcon>
-          <ListItemText sx={{ fontSize: '15px!important' }}>Copy</ListItemText>
-          <Typography
-            className="VP_MenuItem_Shortcut"
-            variant="body2"
-            color="text.secondary"
-            sx={{ fontSize: '15px!important' }}
-          >
-            Ctrl+C
-          </Typography>
-        </MenuItem>
-        <MenuItem
-          className="VP_MenuItem"
-          onClick={() => {
-            onDuplicate?.();
-            onClose();
-          }}
-        >
-          <ListItemIcon sx={{ minWidth: '20px !important' }}>
-            <DifferenceIcon
-              fontSize="small"
-              sx={{ width: '16px', padding: '0px 3px 0px 4px', mt: '-2px' }}
-            />
-          </ListItemIcon>
-          <ListItemText sx={{ width: '180px', fontSize: '15px!important' }}>
-            Duplicate
-          </ListItemText>
-          <Typography
-            className="VP_MenuItem_Shortcut"
-            variant="body2"
-            color="text.secondary"
-            sx={{ fontSize: '15px!important' }}
-          >
-            Ctrl+D
-          </Typography>
-        </MenuItem>
-
-        {anyConnectableNodeSelected && onBreakNodeLinks && (
-          <>
-            <Divider
-              sx={{
-                marginTop: '4px !important',
-                marginBottom: '4px !important',
-              }}
-            />
-            <MenuItem
-              className="VP_MenuItem"
-              disabled={!anyConnectionToSelectedNode}
-              onClick={() => {
-                onBreakNodeLinks();
-                onClose();
-              }}
-            >
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ fontSize: '15px!important' }}
-              >
-                Break Node Link(s)
-              </Typography>
-            </MenuItem>
-          </>
-        )}
-      </MenuList>
-    </Menu>
+  const items: IMenuItem[] = [
+    {
+      title: 'Cut',
+      action: () => {
+        onCut?.();
+        onClose();
+      },
+      icon: ContentCut,
+      subtitle: 'Ctrl+X',
+    },
+    {
+      title: 'Copy',
+      action: () => {
+        onCopy?.();
+        onClose();
+      },
+      icon: ContentCopy,
+      subtitle: 'Ctrl+C',
+    },
+    {
+      title: 'Duplicate',
+      action: () => {
+        onDuplicate?.();
+        onClose();
+      },
+      icon: Difference,
+      subtitle: 'Ctrl+D',
+    },
+    {
+      title: 'Delete',
+      action: () => {
+        onDelete?.();
+        onClose();
+      },
+      icon: Delete,
+      subtitle: 'Del',
+    },
+  ];
+  const breakNodeLink = (): JSX.Element | undefined => {
+    if (anyConnectableNodeSelected && onBreakNodeLinks) {
+      return (
+        <div key="breakNodeLink">
+          <Divider
+            sx={{
+              marginTop: '4px !important',
+              marginBottom: '4px !important',
+            }}
+          />
+          {createMenuItemElement({
+            title: 'Break Node Link(s)',
+            action: onBreakNodeLinks,
+            disabled: !anyConnectionToSelectedNode,
+            titleStyle: { paddingLeft: '8px' },
+          })}
+        </div>
+      );
+    }
+    return undefined;
+  };
+  return CreateMenu(
+    open,
+    onClose,
+    anchorPosition,
+    items,
+    [breakNodeLink()],
+    undefined,
+    { width: '230px' }
   );
-});
-
-export default NodeMenu;
+}
