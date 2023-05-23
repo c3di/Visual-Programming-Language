@@ -1,10 +1,6 @@
-import React, { memo } from 'react';
-import Menu from '@mui/material/Menu';
-import MenuList from '@mui/material/MenuList';
-import MenuItem from '@mui/material/MenuItem';
-import { Typography } from '@mui/material';
+import { type IMenuItem, CreateMenu } from './CreateMenuItem';
 
-const HandleMenu = memo(function HandleMenu({
+export default function HandleMenu({
   open,
   onClose,
   anchorPosition,
@@ -17,37 +13,15 @@ const HandleMenu = memo(function HandleMenu({
   connection: number | undefined;
   onBreakLinks: () => void;
 }): JSX.Element {
-  return (
-    <Menu
-      transitionDuration={0}
-      onContextMenu={(e) => {
-        e.preventDefault();
-      }}
-      open={open}
-      onClose={onClose}
-      anchorReference="anchorPosition"
-      anchorPosition={anchorPosition}
-    >
-      <MenuList className="VP_MenuList">
-        <MenuItem
-          className="VP_MenuItem"
-          disabled={connection === 0 || connection === undefined}
-          onClick={() => {
-            onBreakLinks();
-            onClose();
-          }}
-        >
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ fontSize: '15px' }}
-          >
-            Break Node Link(s)
-          </Typography>
-        </MenuItem>
-      </MenuList>
-    </Menu>
-  );
-});
-
-export default HandleMenu;
+  const items: IMenuItem[] = [
+    {
+      title: 'Break Node Link(s)',
+      action: () => {
+        onBreakLinks();
+        onClose();
+      },
+      disabled: connection === 0 || connection === undefined,
+    },
+  ];
+  return CreateMenu(open, onClose, anchorPosition, items);
+}

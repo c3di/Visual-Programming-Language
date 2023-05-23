@@ -1,13 +1,7 @@
-import React, { memo } from 'react';
-import Menu from '@mui/material/Menu';
-import MenuList from '@mui/material/MenuList';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Typography from '@mui/material/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { type IMenuItem, CreateMenu } from './CreateMenuItem';
 
-const EdgeMenu = memo(function EdgeMenu({
+export default function EdgeMenu({
   open,
   onClose,
   anchorPosition,
@@ -18,44 +12,16 @@ const EdgeMenu = memo(function EdgeMenu({
   anchorPosition: { top: number; left: number };
   onDelete?: () => void;
 }): JSX.Element {
-  return (
-    <Menu
-      transitionDuration={0}
-      onContextMenu={(e) => {
-        e.preventDefault();
-      }}
-      open={open}
-      onClose={onClose}
-      anchorReference="anchorPosition"
-      anchorPosition={anchorPosition}
-    >
-      <MenuList className="VP_MenuList">
-        <MenuItem
-          className="VP_MenuItem"
-          onClick={() => {
-            onDelete?.();
-            onClose();
-          }}
-        >
-          <ListItemIcon sx={{ minWidth: '20px !important' }}>
-            <DeleteIcon
-              fontSize="small"
-              sx={{ width: '16px', padding: '0px 3px 0px 4px', mt: '-2px' }}
-            />
-          </ListItemIcon>
-          <ListItemText sx={{ paddingRight: 10 }}>Delete</ListItemText>
-          <Typography
-            className="VP_MenuItem_Shortcut"
-            variant="body2"
-            color="text.secondary"
-            sx={{ fontSize: '15px' }}
-          >
-            Del
-          </Typography>
-        </MenuItem>
-      </MenuList>
-    </Menu>
-  );
-});
-
-export default EdgeMenu;
+  const items: IMenuItem[] = [
+    {
+      title: 'Delete',
+      action: () => {
+        onDelete?.();
+        onClose();
+      },
+      icon: DeleteIcon,
+      subtitle: 'Del',
+    },
+  ];
+  return CreateMenu(open, onClose, anchorPosition, items);
+}
