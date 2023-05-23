@@ -59,7 +59,9 @@ export function CreateMenu(
   onClose: () => void,
   anchorPosition: { top: number; left: number },
   items: IMenuItem[],
-  moreItemElements?: Array<JSX.Element | undefined>
+  moreItemElements?: Array<JSX.Element | undefined>,
+  menuStyle?: Record<string, string>,
+  menuListStyle?: Record<string, string>
 ): JSX.Element {
   return (
     <Menu
@@ -71,8 +73,9 @@ export function CreateMenu(
       onClose={onClose}
       anchorReference="anchorPosition"
       anchorPosition={anchorPosition}
+      sx={menuStyle}
     >
-      <MenuList className="VP_MenuList" sx={{ width: '230px' }}>
+      <MenuList className="VP_MenuList" sx={menuListStyle}>
         {items.map((item) => createMenuItemElement(item))}
         {moreItemElements}
       </MenuList>

@@ -23,5 +23,15 @@ export default function EdgeMenu({
       subtitle: 'Del',
     },
   ];
-  return CreateMenu(open, onClose, anchorPosition, items);
+  return CreateMenu(
+    open,
+    onClose,
+    anchorPosition,
+    items,
+    undefined,
+    undefined,
+    {
+      width: '150px',
+    }
+  );
 }

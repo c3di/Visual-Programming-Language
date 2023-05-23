@@ -90,5 +90,13 @@ export default function NodeMenu({
     }
     return undefined;
   };
-  return CreateMenu(open, onClose, anchorPosition, items, [breakNodeLink()]);
+  return CreateMenu(
+    open,
+    onClose,
+    anchorPosition,
+    items,
+    [breakNodeLink()],
+    undefined,
+    { width: '230px' }
+  );
 }
