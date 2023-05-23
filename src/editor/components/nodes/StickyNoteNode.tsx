@@ -78,7 +78,7 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
               'button-group__button'
             );
             const buttonGroupHeight = buttonGroup[0].clientHeight;
-            const borderWidth = 8;
+            const borderWidth = 7;
             const modHeight = params.height - buttonGroupHeight - borderWidth;
             setCommentHeight(modHeight);
           }}
@@ -87,8 +87,8 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
         <div
           className={
             enableDrag
-              ? ' node__body stickyNote__node__body--enabled'
-              : ' node__body stickyNote__node__body--disabled'
+              ? 'stickyNote__node__body stickyNote__node__body--enabled'
+              : 'stickyNote__node__body stickyNote__node__body--disabled'
           }
         >
           <InPlaceTextArea

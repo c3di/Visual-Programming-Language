@@ -66,11 +66,11 @@ export default function InPlaceTextArea({
             overflow: 'auto',
             height: '100%',
             resize: 'none',
+            wordWrap: 'break-word',
             display: editable ? 'block' : 'none',
           }}
           className="text-area"
           placeholder="Double click to edit"
-          // rows={7}
           rows={initialRow}
           ref={inputAreaRef}
           value={currentText}

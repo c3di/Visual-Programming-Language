@@ -4,15 +4,13 @@
   border-width: 0px;
 }
 
-.react-flow__node-stickyNote .node__body {
-  padding-left: 8px !important;
-  padding-right: 8px !important;
+.react-flow__node-stickyNote .stickyNote__node__body {
+  padding: 4px;
 }
 
 .react-flow__node-stickyNote .stickyNote__node__body--enabled {
   min-width: 120px;
   min-height: 120px;
-  padding-right: 4px !important;
 }
 
 .color-picker-button {
