@@ -32,8 +32,6 @@ export const createMenuItemElement = (item: IMenuItem): JSX.Element => {
               fontSize="small"
               sx={{
                 width: '16px',
-                padding: '0px 3px 0px 4px',
-                mt: '-2px',
               }}
             />
           }
