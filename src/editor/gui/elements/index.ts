@@ -1,8 +1,4 @@
-export {
-  type IMenuItem,
-  createMenuItemElement,
-  CreateMenu,
-} from './CreateMenuItem';
+export { type IMenuItem, createMenuItemElement, CreateMenu } from './Menu';
 export {
   default as SearchedTreeView,
   nodeConfigsToTreeData,
