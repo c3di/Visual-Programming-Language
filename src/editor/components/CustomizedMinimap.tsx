@@ -1,5 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import { MiniMap as RfMinimap } from 'reactflow';
+import MapIcon from '@mui/icons-material/Map';
+import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
+import './CustomizedMinimap.css';
 
 interface MiniMapProps {
   height: number;
@@ -14,28 +17,24 @@ export default function CustomizedMiniMap({
   pannable = true,
 }: MiniMapProps): JSX.Element {
   const [isMinimapHidden, setIsMinimapHidden] = useState(false);
+  const [isButtonClicked, setIsButtonClicked] = useState(false);
 
   const handleMinimapToggle = useCallback(() => {
     setIsMinimapHidden((prevIsMinimapHidden) => !prevIsMinimapHidden);
-  }, []);
+    setIsButtonClicked(!isButtonClicked);
+  }, [isMinimapHidden, isButtonClicked]);
 
   return (
-    <div
-      className="minimap-container"
-      style={{
-        position: 'absolute',
-        bottom: '10px',
-        right: '10px',
-      }}
-    >
-      <div className="button-group">
+    <div className="minimap-container">
+      <div className="button-wrapper">
         <button
-          className="button"
+          className={`button ${isButtonClicked ? 'button-clicked' : ''}`}
           onClick={handleMinimapToggle}
-          style={{ position: 'relative', zIndex: 9999 }}
         >
-          {isMinimapHidden ? 'Show' : 'Hide'}
+          {isMinimapHidden ? <MapIcon /> : <MapOutlinedIcon />}
         </button>
+      </div>
+      <div className="minimap" style={{ position: 'relative' }}>
         <RfMinimap
           style={{ display: isMinimapHidden ? 'none' : 'block' }}
           zoomable={zoomable}
