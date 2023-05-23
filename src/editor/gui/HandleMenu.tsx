@@ -1,4 +1,4 @@
-import { type IMenuItem, CreateMenu } from './CreateMenuItem';
+import { type IMenuItem, CreateMenu } from './elements';
 
 export default function HandleMenu({
   open,

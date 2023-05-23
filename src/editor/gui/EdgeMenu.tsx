@@ -1,5 +1,5 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import { type IMenuItem, CreateMenu } from './CreateMenuItem';
+import { type IMenuItem, CreateMenu } from './elements';
 
 export default function EdgeMenu({
   open,

@@ -18,7 +18,7 @@ import {
 import 'filepond/dist/filepond.min.css';
 import FilepondZipper from 'filepond-plugin-zipper';
 import './NodeLibraryList.css';
-import SearchInput from './SearchInput';
+import { SearchInput } from './elements';
 import { type NodeConfig, type NodePackage } from '../types';
 import NodeLibraryItem, { type INodeLibraryItem } from './NodeLibraryItem';
 

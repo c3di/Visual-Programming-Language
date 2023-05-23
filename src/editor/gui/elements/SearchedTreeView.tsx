@@ -2,7 +2,7 @@ import React, { memo, useCallback, useEffect, useState } from 'react';
 import { TreeView } from '@mui/lab';
 import { type SvgIconProps } from '@mui/material';
 import { ExpandMore, ChevronRight } from '@mui/icons-material';
-import { type NodeConfig, type NodePackage } from '../types';
+import { type NodeConfig, type NodePackage } from '../../types';
 import StyledTreeItem from './StyledTreeItem';
 import SearchInput from './SearchInput';
 
@@ -225,3 +225,5 @@ export const SearchedTreeView = memo(function SearchedTreeView({
     </div>
   );
 });
+
+export default SearchedTreeView;

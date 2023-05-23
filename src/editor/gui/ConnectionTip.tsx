@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { Menu, MenuList } from '@mui/material';
 import { Check, Clear } from '@mui/icons-material';
-import StyledTreeItem from './StyledTreeItem';
+import { StyledTreeItem } from './elements';
 import { type ConnectionStatus, ConnectionAction } from '../types';
 
 const ConnectionTip = memo(function ConnectionTip({

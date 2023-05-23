@@ -5,7 +5,7 @@ import {
   SearchedTreeView,
   nodeConfigsToTreeData,
   type TreeItemData,
-} from './SearchedTreeView';
+} from './elements';
 import { type Command } from '../hooks';
 import { nodeConfigRegistry } from '../extension';
 

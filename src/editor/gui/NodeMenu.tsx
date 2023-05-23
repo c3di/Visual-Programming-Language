@@ -6,11 +6,7 @@ import {
   ContentCopy,
   Difference,
 } from '@mui/icons-material';
-import {
-  type IMenuItem,
-  CreateMenu,
-  createMenuItemElement,
-} from './CreateMenuItem';
+import { type IMenuItem, CreateMenu, createMenuItemElement } from './elements';
 
 export default function NodeMenu({
   open,
