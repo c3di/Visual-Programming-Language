@@ -31,7 +31,7 @@ export default function CustomizedMiniMap({
           className={`button ${isButtonClicked ? 'button-clicked' : ''}`}
           onClick={handleMinimapToggle}
         >
-          {isMinimapHidden ? <MapIcon /> : <MapOutlinedIcon />}
+          {isMinimapHidden ? <MapOutlinedIcon /> : <MapIcon />}
         </button>
       </div>
       <div className="minimap" style={{ position: 'relative' }}>
