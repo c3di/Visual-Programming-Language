@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { MiniMap as RfMinimap } from 'reactflow';
 
 interface MiniMapProps {
@@ -13,64 +13,31 @@ export default function CustomizedMiniMap({
   zoomable = true,
   pannable = true,
 }: MiniMapProps): JSX.Element {
+  const [isMinimapHidden, setIsMinimapHidden] = useState(false);
+
+  const handleMinimapToggle = useCallback(() => {
+    setIsMinimapHidden((prevIsMinimapHidden) => !prevIsMinimapHidden);
+  }, []);
+
   return (
-    <div className="minimap-container">
+    <div
+      className="minimap-container"
+      style={{
+        position: 'absolute',
+        bottom: '10px',
+        right: '10px',
+      }}
+    >
       <div className="button-group">
         <button
           className="button"
-          onClick={() => {
-            console.log('zoom in');
-          }}
+          onClick={handleMinimapToggle}
+          style={{ position: 'relative', zIndex: 9999 }}
         >
-          Zoom In
+          {isMinimapHidden ? 'Show' : 'Hide'}
         </button>
-        <button
-          className="button"
-          onClick={() => {
-            console.log('zoom out');
-          }}
-        >
-          Zoom Out
-        </button>
-        <button
-          className="button"
-          onClick={() => {
-            console.log('pan up');
-          }}
-        >
-          Pan Up
-        </button>
-        <button
-          className="button"
-          onClick={() => {
-            console.log('pan down');
-          }}
-        >
-          Pan Down
-        </button>
-        <button
-          className="button"
-          onClick={() => {
-            console.log('pan left');
-          }}
-        >
-          Pan Left
-        </button>
-        <button
-          className="button"
-          onClick={() => {
-            console.log('pan right');
-          }}
-        >
-          Pan Right
-        </button>
-      </div>
-      <div className="minimap">
         <RfMinimap
-          style={{
-            height,
-            width,
-          }}
+          style={{ display: isMinimapHidden ? 'none' : 'block' }}
           zoomable={zoomable}
           pannable={pannable}
           ariaLabel="Mini Map"
