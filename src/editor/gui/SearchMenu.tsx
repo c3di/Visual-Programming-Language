@@ -1,15 +1,14 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { Menu } from '@mui/material';
-import CommentIcon from '@mui/icons-material/Comment';
-import RouteIcon from '@mui/icons-material/Route';
-import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
-import { type Command } from '../hooks';
+import { Comment, Route, DoNotDisturb } from '@mui/icons-material';
 import {
   SearchedTreeView,
   nodeConfigsToTreeData,
   type TreeItemData,
 } from './SearchedTreeView';
+import { type Command } from '../hooks';
 import { nodeConfigRegistry } from '../extension';
+
 const SearchMenu = memo(function SearchMenu({
   open,
   onClose,
@@ -32,7 +31,7 @@ const SearchMenu = memo(function SearchMenu({
         addNode?.('comment');
       },
       tooltip: 'Add a comment node',
-      labelIcon: CommentIcon,
+      labelIcon: Comment,
     },
     {
       name: 'Add Reroute...',
@@ -40,14 +39,14 @@ const SearchMenu = memo(function SearchMenu({
         addNode?.('reroute');
       },
       tooltip: 'Add a reroute node',
-      labelIcon: RouteIcon,
+      labelIcon: Route,
     },
     {
       name: 'Clear',
       action: () => {
         clear?.();
       },
-      labelIcon: DoNotDisturbIcon,
+      labelIcon: DoNotDisturb,
     },
     ...(moreCommands ?? []),
   ]);

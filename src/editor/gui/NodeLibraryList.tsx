@@ -1,24 +1,26 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { styled } from '@mui/material/styles';
-import MuiAccordion, { type AccordionProps } from '@mui/material/Accordion';
-import MuiAccordionSummary, {
+import {
+  styled,
+  Accordion,
+  type AccordionProps,
+  AccordionSummary,
   type AccordionSummaryProps,
-} from '@mui/material/AccordionSummary';
-import MuiAccordionDetails from '@mui/material/AccordionDetails';
-import Typography from '@mui/material/Typography';
-import NodeLibraryItem, { type INodeLibraryItem } from './NodeLibraryItem';
-import { type NodeConfig, type NodePackage } from '../types';
-import SearchInput from './SearchInput';
+  AccordionDetails,
+  Typography,
+} from '@mui/material';
+import { PlayArrow } from '@mui/icons-material';
 import { FilePond, registerPlugin } from 'react-filepond';
 import {
   type ActualFileObject,
   type FilePondErrorDescription,
   type FilePondFile,
 } from 'filepond';
-import FilepondZipper from 'filepond-plugin-zipper';
 import 'filepond/dist/filepond.min.css';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import FilepondZipper from 'filepond-plugin-zipper';
 import './NodeLibraryList.css';
+import SearchInput from './SearchInput';
+import { type NodeConfig, type NodePackage } from '../types';
+import NodeLibraryItem, { type INodeLibraryItem } from './NodeLibraryItem';
 
 registerPlugin(FilepondZipper());
 
@@ -39,8 +41,8 @@ function nodeConfigsToItemList(
   }
   return data;
 }
-const Accordion = styled((props: AccordionProps) => (
-  <MuiAccordion disableGutters elevation={0} square {...props} />
+const StyledAccordion = styled((props: AccordionProps) => (
+  <Accordion disableGutters elevation={0} square {...props} />
 ))(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
   '&:not(:last-child)': {
@@ -53,15 +55,15 @@ const Accordion = styled((props: AccordionProps) => (
   },
 }));
 
-const AccordionSummary = styled((props: AccordionSummaryProps) => (
-  <MuiAccordionSummary
+const StyledAccordionSummary = styled((props: AccordionSummaryProps) => (
+  <AccordionSummary
     sx={{
       minHeight: '10px !important',
       height: '33px !important',
       padding: '4px 0px 4px 0px !important',
     }}
     expandIcon={
-      <PlayArrowIcon
+      <PlayArrow
         sx={{ width: '12px', height: '12px', padding: '6px 8px 8px 8px' }}
       />
     }
@@ -82,7 +84,7 @@ const AccordionSummary = styled((props: AccordionSummaryProps) => (
   },
 }));
 
-const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
+const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
   padding: '0px',
   borderTop: '1px solid rgba(0, 0, 0, .125)',
 }));
@@ -171,7 +173,7 @@ export default function NodeLibraryList({
       >
         <SearchInput onChange={search} />
       </div>
-      <Accordion
+      <StyledAccordion
         sx={{ borderTop: '0px' }}
         expanded={expanded}
         onChange={() => {
@@ -180,7 +182,10 @@ export default function NodeLibraryList({
           });
         }}
       >
-        <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+        <StyledAccordionSummary
+          aria-controls="panel1d-content"
+          id="panel1d-header"
+        >
           <Typography
             sx={{
               fontSize: '12.5px',
@@ -190,8 +195,8 @@ export default function NodeLibraryList({
           >
             {title}
           </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
+        </StyledAccordionSummary>
+        <StyledAccordionDetails>
           {itemList.map((item) => (
             <NodeLibraryItem
               key={item.title + (item.href ?? '')}
@@ -209,8 +214,8 @@ export default function NodeLibraryList({
               }}
             />
           ))}
-        </AccordionDetails>
-      </Accordion>
+        </StyledAccordionDetails>
+      </StyledAccordion>
     </>
   );
 }

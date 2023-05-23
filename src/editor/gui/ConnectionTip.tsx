@@ -1,9 +1,8 @@
 import React, { memo } from 'react';
 import { Menu, MenuList } from '@mui/material';
-import { type ConnectionStatus, ConnectionAction } from '../types';
-import CheckIcon from '@mui/icons-material/Check';
-import ClearIcon from '@mui/icons-material/Clear';
+import { Check, Clear } from '@mui/icons-material';
 import StyledTreeItem from './StyledTreeItem';
+import { type ConnectionStatus, ConnectionAction } from '../types';
 
 const ConnectionTip = memo(function ConnectionTip({
   open,
@@ -34,9 +33,7 @@ const ConnectionTip = memo(function ConnectionTip({
           nodeId="1"
           labelText={connectionStatus?.message ?? ''}
           labelIcon={
-            connectionStatus?.action === ConnectionAction.Reject
-              ? ClearIcon
-              : CheckIcon
+            connectionStatus?.action === ConnectionAction.Reject ? Clear : Check
           }
           iconColor={
             connectionStatus?.action === ConnectionAction.Reject
