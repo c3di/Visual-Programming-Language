@@ -11,9 +11,6 @@
   color: #333;
   background-color: transparent;
   overflow: auto;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  word-break: break-all;
   white-space: pre-wrap;
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
