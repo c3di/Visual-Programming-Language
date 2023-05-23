@@ -256,7 +256,6 @@ const Scene = ({
               node.id,
               id
             );
-            if (connection === null || connection === undefined) return;
             gui.clickedHandle.current = { id, connection };
             gui.clickedNodeId.current = node.id;
             gui.openWidget('handle');
