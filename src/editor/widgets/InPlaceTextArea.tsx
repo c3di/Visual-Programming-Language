@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import './InPlaceTextArea.css';
 
 export default function InPlaceTextArea({
@@ -28,7 +28,17 @@ export default function InPlaceTextArea({
       inputAreaRef.current?.blur();
       onStopEdit?.();
     }
+    updateTextAreaSize(inputAreaRef.current);
   }, [editable]);
+
+  const updateTextAreaSize = useCallback(
+    (target: HTMLTextAreaElement | null) => {
+      if (!target) return;
+      target.style.height = 'auto';
+      target.style.height = `${target.scrollHeight}px`;
+    },
+    []
+  );
 
   return (
     <div
@@ -92,10 +102,7 @@ export default function InPlaceTextArea({
             e.stopPropagation();
           }}
           onInput={(e) => {
-            (e.target as HTMLTextAreaElement).style.height = 'auto';
-            (e.target as HTMLTextAreaElement).style.height = `${
-              (e.target as HTMLTextAreaElement).scrollHeight
-            }px`;
+            updateTextAreaSize(e.target as HTMLTextAreaElement);
           }}
           onClick={(e) => {
             e.stopPropagation();
