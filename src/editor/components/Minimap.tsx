@@ -24,34 +24,51 @@ export default function MiniMap({
   }, []);
 
   return (
-    <div className="minimap-container">
-      <div className="button-wrapper">
-        <Button
-          onClick={handleMinimapToggle}
-          disableRipple={true}
-          sx={{
-            padding: 0,
-            minWidth: '10px',
-            width: '14px',
-            height: '14px',
-            color: 'black',
-          }}
-          className={`minimap-toggle-button minimap-${
-            hidden ? 'hidden' : 'show'
-          }`}
-        >
-          {hidden ? <MapOutlined /> : <Map />}
-        </Button>
-      </div>
+    <div
+      className="minimap-container"
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-end',
+        position: 'absolute',
+        bottom: '25px',
+        right: '5px',
+      }}
+    >
+      <Button
+        onClick={handleMinimapToggle}
+        disableRipple={true}
+        sx={{
+          padding: 0,
+          minWidth: '10px',
+          width: '23px',
+          height: '23px',
+          color: 'black',
+          marginRight: '15px',
+          zIndex: 9999,
+          border: 'none',
+          cursor: 'pointer',
+          opacity: 0.7,
+        }}
+        className={`minimap-toggle-button minimap-${
+          hidden ? 'hidden' : 'show'
+        }`}
+      >
+        {hidden ? (
+          <MapOutlined sx={{ width: '100%', height: '100%' }} />
+        ) : (
+          <Map sx={{ width: '100%', height: '100%' }} />
+        )}
+      </Button>
 
-      <div className="minimap" style={{ position: 'relative' }}>
-        <RfMinimap
-          style={{ display: hidden ? 'none' : 'block' }}
-          zoomable={zoomable}
-          pannable={pannable}
-          ariaLabel="Mini Map"
-        />
-      </div>
+      <RfMinimap
+        style={{
+          display: hidden ? 'none' : 'block',
+        }}
+        zoomable={zoomable}
+        pannable={pannable}
+        ariaLabel="Mini Map"
+      />
     </div>
   );
 }

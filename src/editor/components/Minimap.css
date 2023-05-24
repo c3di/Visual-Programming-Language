@@ -1,32 +1,5 @@
-.minimap-container {
-  position: absolute;
-  bottom: 10px;
-  right: 5px;
-}
-
-.button-wrapper {
-  position: absolute;
-  top: -200px;
-  right: 25px;
-}
-
-.minimap-toggle-button {
-  z-index: 9999;
-  border: none;
-  cursor: pointer;
-  width: 20px;
-  height: 20px;
-  padding: 5px;
-}
-
-.minimap-hidden {
-  position: fixed;
-  bottom: -150px;
-  right: 0px;
-}
-
-.minimap-show {
-  position: relative;
-  background-color: #fefefe;
-  color: #222;
+.react-flow__minimap {
+  position: relative !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
 }
