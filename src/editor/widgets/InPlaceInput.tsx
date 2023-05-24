@@ -1,42 +1,30 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import './InPlaceTextArea.css';
+import React, { useEffect, useRef, useState } from 'react';
+import './InPlaceInput.css';
 
-export default function InPlaceTextArea({
+export default function InPlaceInput({
   text,
-  initialRow = 1,
   onStartEdit,
   onStopEdit,
   onEditChange,
 }: {
   text?: string;
-  initialRow?: number;
   onStartEdit?: () => void;
   onStopEdit?: () => void;
   onEditChange?: (text: string) => void;
 }): JSX.Element {
   const [currentText, setCurrentText] = useState(text ?? '');
   const [editable, setEditable] = useState(false);
-  const inputAreaRef = useRef<HTMLTextAreaElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (editable) {
-      inputAreaRef.current?.focus();
+      inputRef.current?.focus();
       onStartEdit?.();
     } else {
-      inputAreaRef.current?.blur();
+      inputRef.current?.blur();
       onStopEdit?.();
     }
-    updateTextAreaSize(inputAreaRef.current);
   }, [editable]);
-
-  const updateTextAreaSize = useCallback(
-    (target: HTMLTextAreaElement | null) => {
-      if (!target) return;
-      target.style.height = 'auto';
-      target.style.height = `${target.scrollHeight}px`;
-    },
-    []
-  );
 
   return (
     <div
@@ -52,21 +40,29 @@ export default function InPlaceTextArea({
       }}
     >
       {!editable && (
-        <div
+        <input
+          type="text"
           style={{
             width: '100%',
-            wordWrap: 'break-word',
-            userSelect: 'none',
+            fontFamily: 'inherit',
+            fontSize: 'inherit',
             padding: '0px',
             border: '0px',
+            overflow: 'hidden',
+            height: '100%',
+            resize: 'none',
+            wordWrap: 'break-word',
+            textOverflow: 'ellipsis',
+            pointerEvents: 'none',
+            backgroundColor: 'transparent',
             opacity: currentText.length ? 1 : 0.5,
           }}
-        >
-          {currentText?.length ? currentText : 'Double click to edit'}
-        </div>
+          value={currentText.length ? currentText : 'Double click to edit'}
+        ></input>
       )}
       {
-        <textarea
+        <input
+          type="text"
           style={{
             width: '100%',
             fontFamily: 'inherit',
@@ -79,9 +75,7 @@ export default function InPlaceTextArea({
             wordWrap: 'break-word',
             display: editable ? 'block' : 'none',
           }}
-          className="text-area"
-          rows={initialRow}
-          ref={inputAreaRef}
+          ref={inputRef}
           value={currentText}
           onChange={(e) => {
             setCurrentText(e.target.value);
@@ -99,13 +93,10 @@ export default function InPlaceTextArea({
             }
             e.stopPropagation();
           }}
-          onInput={(e) => {
-            updateTextAreaSize(e.target as HTMLTextAreaElement);
-          }}
           onClick={(e) => {
             e.stopPropagation();
           }}
-        ></textarea>
+        ></input>
       }
     </div>
   );

@@ -1,2 +1,3 @@
 export { default as widgetFactory, WidgetFactory } from './WidgetFactory';
-export { default as InPlaceTextArea } from '../widgets/InPlaceTextArea';
+export { default as InPlaceTextArea } from './InPlaceTextArea';
+export { default as InplaceInput } from './InPlaceInput';
