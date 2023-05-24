@@ -29,6 +29,12 @@ import componentType, { Background, ControlPanel, MiniMap } from './components';
 import 'reactflow/dist/style.css';
 import './VPEditor.css';
 
+export interface IVPEditorOption {
+  controller?: {
+    hidden?: boolean;
+  };
+}
+
 const Scene = ({
   id,
   graph,
@@ -36,6 +42,7 @@ const Scene = ({
   activated,
   onSceneActionsInit,
   onSelectionChange,
+  option,
 }: {
   id: string;
   graph?: SerializedGraph | null;
@@ -43,6 +50,7 @@ const Scene = ({
   activated?: boolean;
   onSceneActionsInit?: (actions: ISceneActions) => void;
   onSelectionChange?: (counts: selectedElementsCounts) => void;
+  option?: IVPEditorOption;
 }): JSX.Element => {
   const [initialed, setInitialed] = useState<boolean>(false);
   const currentContent = useRef<string>('');
@@ -362,10 +370,12 @@ const Scene = ({
           zoomable={minimpSetting.zoomable}
           pannable={minimpSetting.pannable}
         />
-        <ControlPanel
-          className={cpSetting.className}
-          position={cpSetting.position}
-        />
+        {!option?.controller?.hidden && (
+          <ControlPanel
+            className={cpSetting.className}
+            position={cpSetting.position}
+          />
+        )}
         <Background
           type={bgSetting.type}
           gap={bgSetting.gap}
@@ -387,6 +397,7 @@ export default function VPEditor({
   activated,
   onSceneActionsInit,
   onSelectionChange,
+  option,
 }: {
   id: string;
   content?: SerializedGraph | null;
@@ -394,6 +405,7 @@ export default function VPEditor({
   activated?: boolean;
   onSceneActionsInit?: (actions: ISceneActions) => void;
   onSelectionChange?: (counts: selectedElementsCounts) => void;
+  option?: IVPEditorOption;
 }): JSX.Element {
   return (
     <WidgetFactoryProvider>
@@ -405,6 +417,7 @@ export default function VPEditor({
           activated={activated}
           onSceneActionsInit={onSceneActionsInit}
           onSelectionChange={onSelectionChange}
+          option={option}
         />
       </ReactFlowProvider>
     </WidgetFactoryProvider>
