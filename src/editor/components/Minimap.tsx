@@ -1,42 +1,52 @@
 import React, { useCallback, useState } from 'react';
 import { MiniMap as RfMinimap } from 'reactflow';
-import MapIcon from '@mui/icons-material/Map';
-import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
+import { Map, MapOutlined } from '@mui/icons-material';
+import { Button } from '@mui/material';
 import './Minimap.css';
 
-interface MiniMapProps {
+interface IMiniMapProps {
   height: number;
   width: number;
   zoomable: boolean;
   pannable: boolean;
 }
+
 export default function MiniMap({
   height = 120,
   width = 200,
   zoomable = true,
   pannable = true,
-}: MiniMapProps): JSX.Element {
-  const [isMinimapHidden, setIsMinimapHidden] = useState(false);
-  const [isButtonClicked, setIsButtonClicked] = useState(false);
+}: IMiniMapProps): JSX.Element {
+  const [hidden, setHidden] = useState<boolean>(false);
 
   const handleMinimapToggle = useCallback(() => {
-    setIsMinimapHidden((prevIsMinimapHidden) => !prevIsMinimapHidden);
-    setIsButtonClicked(!isButtonClicked);
-  }, [isMinimapHidden, isButtonClicked]);
+    setHidden((hidden) => !hidden);
+  }, []);
 
   return (
     <div className="minimap-container">
       <div className="button-wrapper">
-        <button
-          className={`button ${isButtonClicked ? 'button-clicked' : ''}`}
+        <Button
           onClick={handleMinimapToggle}
+          disableRipple={true}
+          sx={{
+            padding: 0,
+            minWidth: '10px',
+            width: '14px',
+            height: '14px',
+            color: 'black',
+          }}
+          className={`minimap-toggle-button minimap-${
+            hidden ? 'hidden' : 'show'
+          }`}
         >
-          {isMinimapHidden ? <MapOutlinedIcon /> : <MapIcon />}
-        </button>
+          {hidden ? <MapOutlined /> : <Map />}
+        </Button>
       </div>
+
       <div className="minimap" style={{ position: 'relative' }}>
         <RfMinimap
-          style={{ display: isMinimapHidden ? 'none' : 'block' }}
+          style={{ display: hidden ? 'none' : 'block' }}
           zoomable={zoomable}
           pannable={pannable}
           ariaLabel="Mini Map"
