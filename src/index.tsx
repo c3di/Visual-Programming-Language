@@ -94,6 +94,7 @@ function MainArea({ id }: { id: string }): JSX.Element {
         onSelectionChange={(selection) => {
           console.log('selection changed', selection);
         }}
+        option={{ controller: { hidden: true } }}
       />
     </>
   );
