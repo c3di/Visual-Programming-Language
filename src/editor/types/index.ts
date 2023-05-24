@@ -16,6 +16,7 @@ export { type VariableNodeData } from './Variable';
 export { type Edge } from './Edge';
 export { type SerializedGraph, type Graph } from './Graph';
 export { type Comment, isCommentNode } from './Comment';
+export { type StickyNote } from './StickyNote';
 export { type ClipboardInfo } from './ClipboardInfo';
 export { type MousePos } from './MousePos';
 export { ConnectionAction, type ConnectionStatus } from './ConnectionStatus';
