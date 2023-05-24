@@ -34,6 +34,7 @@ export default function InPlaceTextArea({
     <div
       style={{
         width: '100%',
+        height: '100%',
         fontFamily: 'inherit',
         fontSize: 'inherit',
         border: '0px',
@@ -63,7 +64,7 @@ export default function InPlaceTextArea({
             fontSize: 'inherit',
             padding: '0px',
             border: '0px',
-            overflow: 'auto',
+            overflow: 'hidden',
             height: '100%',
             resize: 'none',
             wordWrap: 'break-word',

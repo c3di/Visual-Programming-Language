@@ -9,95 +9,141 @@ import '@reactflow/node-resizer/dist/style.css';
 import { type StickyNote } from '../../types';
 import { InPlaceTextArea } from '../../widgets';
 import './StickyNoteNode.css';
+import { Button, Toolbar } from '@mui/material';
 
 function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
-  const [commentWidth, setCommentWidth] = useState<number>(data.width ?? 250);
-  const [commentHeight, setCommentHeight] = useState<number>(
-    data.height ?? 200
-  );
-  const [enableDrag, setEnableDrag] = useState<boolean>(false);
-  const [comment, setComment] = useState<string>(data.stickyNote);
-  const [nodeBg, setNodeBg] = useState<string>('#eee');
+  const [width, setWidth] = useState<number>(data.width ?? 250);
+  const [height, setHeight] = useState<number>(data.height ?? 200);
+  const [content, setContent] = useState<string>(data.stickyNote);
+  const [nodeBg, setNodeBg] = useState<string>('#e06767');
   const [pinned, setPinned] = useState<boolean>(false);
+  const [dragged, setDragged] = useState<boolean>(false);
 
   const onStartEdit = useCallback(() => {
-    setEnableDrag(false);
-  }, [enableDrag]);
+    setDragged(false);
+  }, []);
+
   const onStopEdit = useCallback(() => {
-    pinned ? setEnableDrag(false) : setEnableDrag(true);
-  }, [enableDrag]);
+    pinned ? setDragged(false) : setDragged(true);
+  }, [pinned]);
 
   const onEditChange = useCallback((text: string) => {
-    setComment(text);
+    setContent(text);
     data.stickyNote = text;
   }, []);
 
   const handlePinClick = useCallback(() => {
     setPinned(!pinned);
-    pinned ? setEnableDrag(true) : setEnableDrag(false);
+    setDragged(pinned);
   }, [pinned]);
 
   return (
-    <div style={{ backgroundColor: nodeBg }}>
-      <div className="button-group">
-        <input
-          className="button-group__button color-picker-button"
-          type="color"
-          value={nodeBg}
-          onChange={(evt) => {
-            setNodeBg(evt.target.value);
-          }}
-        ></input>
-
-        <button
-          className="button-group__button pin-button"
-          onClick={handlePinClick}
-        >
-          {pinned ? <BsPinAngleFill /> : <BsPinAngle />}
-        </button>
-      </div>
+    <div
+      className={
+        dragged
+          ? 'stickyNote__node__body stickyNote__node__body--enabled'
+          : 'stickyNote__node__body stickyNote__node__body--disabled'
+      }
+      style={{ width, height }}
+    >
+      <NodeResizer
+        color="#ffffff00"
+        handleStyle={{ border: 'none' }}
+        minWidth={150}
+        minHeight={150}
+        onResize={(
+          event: ResizeDragEvent,
+          params: ResizeParamsWithDirection
+        ) => {
+          setWidth(params.width);
+          setHeight(params.height);
+        }}
+      />
       <div
-        title={comment}
         style={{
-          width: commentWidth,
-          height: commentHeight,
-          overflow: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+          width: '100%',
+          height: '100%',
         }}
       >
-        <NodeResizer
-          color="#ffffff00"
-          handleStyle={{ border: 'none' }}
-          minWidth={150}
-          minHeight={150}
-          onResize={(
-            event: ResizeDragEvent,
-            params: ResizeParamsWithDirection
-          ) => {
-            setCommentWidth(params.width);
-            const buttonGroup = document.getElementsByClassName(
-              'button-group__button'
-            );
-            const buttonGroupHeight = buttonGroup[0].clientHeight;
-            const borderWidth = 7;
-            const modHeight = params.height - buttonGroupHeight - borderWidth;
-            setCommentHeight(modHeight);
+        <Toolbar
+          sx={{
+            minHeight: '10px!important',
+            paddingRight: '3px!important',
+            justifyContent: 'flex-end',
+            paddingTop: '2px',
+            paddingBottom: '2px',
+            borderBottom: '1px solid black',
           }}
-        />
+        >
+          <Button
+            onClick={handlePinClick}
+            disableRipple={true}
+            sx={{
+              padding: 0,
+              minWidth: '10px',
+              width: '14px',
+              height: '14px',
+              color: 'black',
+            }}
+          >
+            {pinned ? (
+              <BsPinAngleFill title="The node is pinned" />
+            ) : (
+              <BsPinAngle title="The node is not pinned" />
+            )}
+          </Button>{' '}
+          <Button
+            disableRipple={true}
+            sx={{
+              padding: 0,
+              minWidth: '10px',
+              width: '12px',
+              height: '12px',
+              borderRadius: '1.5px',
+              border: '1.5px solid black',
+              marginLeft: '5px',
+            }}
+            title="Color Picker"
+          >
+            <input
+              type="color"
+              style={{
+                border: 0,
+                padding: 0,
+                width: '100%',
+                height: '100%',
+              }}
+              value={nodeBg}
+              onChange={(evt) => {
+                setNodeBg(evt.target.value);
+              }}
+            ></input>
+          </Button>
+        </Toolbar>
 
         <div
-          className={
-            enableDrag
-              ? 'stickyNote__node__body stickyNote__node__body--enabled'
-              : 'stickyNote__node__body stickyNote__node__body--disabled'
-          }
+          title={content}
+          style={{
+            width: '100%',
+            flexGrow: 1,
+            overflow: 'auto',
+            backgroundColor: nodeBg,
+          }}
         >
-          <InPlaceTextArea
-            initialRow={7}
-            text={data.stickyNote}
-            onStartEdit={onStartEdit}
-            onStopEdit={onStopEdit}
-            onEditChange={onEditChange}
-          />
+          <div
+            style={{
+              height: '100%',
+            }}
+          >
+            <InPlaceTextArea
+              text={data.stickyNote}
+              onStartEdit={onStartEdit}
+              onStopEdit={onStopEdit}
+              onEditChange={onEditChange}
+            />
+          </div>
         </div>
       </div>
     </div>
