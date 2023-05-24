@@ -4,29 +4,14 @@
   border-width: 0px;
 }
 
-.react-flow__node-stickyNote .stickyNote__node__body {
-  padding: 4px;
-}
-
 .react-flow__node-stickyNote .stickyNote__node__body--enabled {
   min-width: 120px;
   min-height: 120px;
 }
 
-.color-picker-button {
-  float: right;
-  width: 18px;
-  height: 18px;
-  margin-top: 4px;
-  margin-right: 4px;
+::-webkit-color-swatch-wrapper {
+  padding: 0;
 }
-
-.pin-button {
-  float: right;
+::-webkit-color-swatch {
   border: none;
-  background-color: transparent;
-  width: 18px;
-  height: 18px;
-  margin-right: 6px;
-  margin-top: 5px;
 }
