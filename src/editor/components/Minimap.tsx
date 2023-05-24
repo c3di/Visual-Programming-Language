@@ -38,6 +38,7 @@ export default function MiniMap({
       <Button
         onClick={handleMinimapToggle}
         disableRipple={true}
+        title={'Toggle Mini Map'}
         sx={{
           padding: 0,
           minWidth: '10px',
@@ -49,6 +50,10 @@ export default function MiniMap({
           border: 'none',
           cursor: 'pointer',
           opacity: 0.7,
+          '&:hover': {
+            backgroundColor: '#EEEEEE',
+            opacity: 1,
+          },
         }}
         className={`minimap-toggle-button minimap-${
           hidden ? 'hidden' : 'show'
