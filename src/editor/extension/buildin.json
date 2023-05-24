@@ -27,6 +27,13 @@
           "dataType": "any"
         }
       }
+    },
+    "stickyNote": {
+      "type": "stickyNote",
+      "category": "stickyNote",
+      "dragHandle": ".stickyNote__node__body",
+      "zIndex": -1001,
+      "notShowInMenu": true
     }
   }
 }

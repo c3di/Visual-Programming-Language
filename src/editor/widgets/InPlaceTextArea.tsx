@@ -1,14 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import './InPlaceTextArea.css';
 
 export default function InPlaceTextArea({
   text,
   placeholder = 'Please double click to edit the comment.',
+  initialRow = 1,
   onStartEdit,
   onStopEdit,
   onEditChange,
 }: {
   text?: string;
   placeholder?: string;
+  initialRow?: number;
   onStartEdit?: () => void;
   onStopEdit?: () => void;
   onEditChange?: (text: string) => void;
@@ -25,14 +28,26 @@ export default function InPlaceTextArea({
       inputAreaRef.current?.blur();
       onStopEdit?.();
     }
+    updateTextAreaSize(inputAreaRef.current);
   }, [editable]);
+
+  const updateTextAreaSize = useCallback(
+    (target: HTMLTextAreaElement | null) => {
+      if (!target) return;
+      target.style.height = 'auto';
+      target.style.height = `${target.scrollHeight}px`;
+    },
+    []
+  );
 
   return (
     <div
       style={{
         width: '100%',
+        height: '100%',
         fontFamily: 'inherit',
         fontSize: 'inherit',
+        border: '0px',
       }}
       onDoubleClick={(e) => {
         setEditable(true);
@@ -44,10 +59,11 @@ export default function InPlaceTextArea({
             width: '100%',
             wordWrap: 'break-word',
             userSelect: 'none',
-            padding: '1px',
+            padding: '0px',
+            border: '0px',
           }}
         >
-          {currentText}
+          {currentText?.length === 0 ? 'Double click to edit' : currentText}
         </div>
       )}
       {
@@ -57,13 +73,16 @@ export default function InPlaceTextArea({
             fontFamily: 'inherit',
             fontSize: 'inherit',
             padding: '0px',
-            border: '1px solid',
+            border: '0px',
             overflow: 'hidden',
-            height: 'auto',
+            height: '100%',
             resize: 'none',
+            wordWrap: 'break-word',
             display: editable ? 'block' : 'none',
           }}
-          rows={1}
+          className="text-area"
+          placeholder="Double click to edit"
+          rows={initialRow}
           ref={inputAreaRef}
           value={currentText}
           onChange={(e) => {
@@ -83,10 +102,7 @@ export default function InPlaceTextArea({
             e.stopPropagation();
           }}
           onInput={(e) => {
-            (e.target as HTMLTextAreaElement).style.height = 'auto';
-            (e.target as HTMLTextAreaElement).style.height = `${
-              (e.target as HTMLTextAreaElement).scrollHeight
-            }px`;
+            updateTextAreaSize(e.target as HTMLTextAreaElement);
           }}
           onClick={(e) => {
             e.stopPropagation();

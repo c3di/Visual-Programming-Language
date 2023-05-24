@@ -54,6 +54,19 @@ export class Serializer {
         height,
       };
     },
+    stickyNote: (node: Node): SerializedGraphNode => {
+      const { id, position, type, data } = node;
+      const { configType, stickyNote, height, width } = data;
+      if (!type) throw new Error('Invalid node config');
+      return {
+        id,
+        type: configType,
+        stickyNote,
+        position,
+        width,
+        height,
+      };
+    },
   };
 
   private readonly defaultNodeSerialize = (
