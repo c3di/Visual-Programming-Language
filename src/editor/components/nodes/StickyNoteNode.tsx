@@ -1,6 +1,4 @@
 import React, { memo, useCallback, useState } from 'react';
-import './StickyNoteNode.css';
-import type StickyNote from '../../types/StickyNote';
 import { BsPinAngleFill, BsPinAngle } from 'react-icons/bs';
 import {
   NodeResizer,
@@ -8,7 +6,9 @@ import {
   type ResizeParamsWithDirection,
 } from '@reactflow/node-resizer';
 import '@reactflow/node-resizer/dist/style.css';
+import { type StickyNote } from '../../types';
 import { InPlaceTextArea } from '../../widgets';
+import './StickyNoteNode.css';
 
 function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
   const [commentWidth, setCommentWidth] = useState<number>(data.width ?? 250);
