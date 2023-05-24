@@ -7,7 +7,7 @@ import {
   type ResizeParamsWithDirection,
 } from '@reactflow/node-resizer';
 import '@reactflow/node-resizer/dist/style.css';
-import { InPlaceTextArea } from '../../widgets';
+import { InplaceInput } from '../../widgets';
 
 function CommentNode({ data }: { data: Comment }): JSX.Element {
   const [commentWidth, setCommentWidth] = useState<number>(data.width ?? 250);
@@ -45,13 +45,14 @@ function CommentNode({ data }: { data: Comment }): JSX.Element {
         }}
       />
       <div
+        style={{ padding: '4px' }}
         className={
           enableDrag
             ? 'node__header node__header--enabled'
             : 'node__header node__header--disabled'
         }
       >
-        <InPlaceTextArea
+        <InplaceInput
           text={data.comment}
           onStartEdit={onStartEdit}
           onStopEdit={onStopEdit}
