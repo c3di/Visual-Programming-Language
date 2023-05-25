@@ -6,6 +6,7 @@ import MakeLiteralNode from './MakeLiteralNode';
 import CommentNode from './CommentNode';
 import RerouteNode from './RerouteNode';
 import StickyNoteNode from './StickyNoteNode';
+import CreateVariable from './CreateVariable';
 
 const VisualNodeTypes = {
   function: FunctionNode,
@@ -16,6 +17,7 @@ const VisualNodeTypes = {
   comment: CommentNode,
   reroute: RerouteNode,
   stickyNote: StickyNoteNode,
+  createVariable: CreateVariable,
 };
 
 export default VisualNodeTypes;
