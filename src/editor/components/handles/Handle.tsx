@@ -18,6 +18,7 @@ export default function Handle({
   className,
   handleType,
   handlePosition,
+  onValueChange,
 }: {
   id: string;
   nodeId: string;
@@ -28,6 +29,7 @@ export default function Handle({
   className: string;
   handleType: HandleType;
   handlePosition: Position;
+  onValueChange?: (newVa: any) => void;
 }): JSX.Element {
   const [label, setLabel] = useState(<></>);
   const widget = useRef<null | JSX.Element>();
@@ -44,6 +46,7 @@ export default function Handle({
         if (n.id === nodeId) {
           if (isSourceHandle) n.data.outputs[id].value = newVa;
           else n.data.inputs[id].value = newVa;
+          onValueChange?.(newVa);
         }
         return n;
       })
@@ -59,7 +62,7 @@ export default function Handle({
       showWidget &&
       handleData.dataType !== undefined &&
       (!toHideWidgetWhenConnected ||
-        (toHideWidgetWhenConnected && !isConnected && !widget.current))
+        (toHideWidgetWhenConnected && !isConnected))
     )
       widget.current = widgetFactory.createWidget(handleData.dataType, {
         value:
@@ -77,7 +80,7 @@ export default function Handle({
         {(!toHideWidgetWhenConnected || !isConnected) && widget.current}
       </label>
     );
-  }, [handleData.connection]);
+  }, [handleData.connection, handleData.dataType]);
 
   return (
     <div className={className} title={handleData.tooltip}>

@@ -46,6 +46,32 @@
           "dataType": "float"
         }
       }
+    },
+    "CreateVariable": {
+      "type": "CreateVariable",
+      "category": "createVariable",
+      "title": "New Variable",
+      "tooltip": "Create a new variable",
+      "inputs": {
+        "name": {
+          "title": "name",
+          "tooltip": "name of the variable",
+          "dataType": "string",
+          "defaultValue": "NewVar"
+        },
+        "type": {
+          "title": "type",
+          "tooltip": "type of the variable",
+          "dataType": "extension1.Level2.module2.EDataType",
+          "defaultValue": "string"
+        },
+        "value": {
+          "title": "value",
+          "tooltip": "value of the variable",
+          "dataType": "string",
+          "defaultValue": "string"
+        }
+      }
     }
   }
 }

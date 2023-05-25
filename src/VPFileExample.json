@@ -125,6 +125,16 @@
       "outputs": {
         "output": {}
       }
+    },
+    {
+      "id": "9",
+      "type": "extension2.CreateVariable",
+      "position": {
+        "x": 600,
+        "y": 600
+      },
+      "inputs": {},
+      "outputs": {}
     }
   ],
   "edges": [
