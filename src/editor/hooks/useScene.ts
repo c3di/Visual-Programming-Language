@@ -32,9 +32,9 @@ export interface ISceneActions {
   onNodeDragStart: (evt: any, node: Node) => void;
   onNodeDragStop: (evt: any, node: Node) => void;
   copySelectedNodeToClipboard: () => void;
-  pasteFromClipboard: () => void;
+  pasteFromClipboard: (notUseMousePos?: boolean) => void;
   deleteSelectedElements: () => void;
-  duplicateSelectedNodes: () => void;
+  duplicateSelectedNodes: (notUseMousePos?: boolean) => void;
   cutSelectedNodesToClipboard: () => void;
   clear: () => void;
   deleteEdge: (id: string) => void;
@@ -169,7 +169,7 @@ export default function useScene(
       });
   };
 
-  const pasteFromClipboard = (): void => {
+  const pasteFromClipboard = (notUseMousePos?: boolean): void => {
     navigator.clipboard
       .readText()
       .then((text) => {
@@ -188,9 +188,15 @@ export default function useScene(
             selected: true,
             position: {
               x:
-                node.position.x - clipboard.minX + mousePos.current.mouseX + 10,
+                node.position.x -
+                Number(!notUseMousePos) *
+                  (clipboard.minX - mousePos.current.mouseX) +
+                10,
               y:
-                node.position.y - clipboard.minY + mousePos.current.mouseY + 10,
+                node.position.y -
+                Number(!notUseMousePos) *
+                  (clipboard.minY - mousePos.current.mouseY) +
+                10,
             },
           };
           newNodes[id] = newNode as Node;
@@ -218,9 +224,9 @@ export default function useScene(
       });
   };
 
-  const duplicateSelectedNodes = (): void => {
+  const duplicateSelectedNodes = (notUseMousePos?: boolean): void => {
     copySelectedNodeToClipboard();
-    pasteFromClipboard();
+    pasteFromClipboard(notUseMousePos);
   };
 
   const cutSelectedNodesToClipboard = (): void => {
