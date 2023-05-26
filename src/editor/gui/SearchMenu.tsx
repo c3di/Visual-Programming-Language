@@ -69,7 +69,6 @@ const SearchMenu = memo(function SearchMenu({
 
   useEffect(() => {
     if (open) {
-      console.log('open', nodeConfigRegistry.getAllNodeConfigs());
       setTreeData([
         ...nodeConfigsToTreeData(nodeConfigRegistry.getAllNodeConfigs()),
         ...commandsToTreeData(commands),
