@@ -1,13 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { type HandleData, DataTypes } from '../types';
 import './Handle.css';
-import {
-  Handle as RCHandle,
-  type HandleType,
-  type Position,
-  useReactFlow,
-} from 'reactflow';
-import { useWidgetFactory } from '../Context';
+import { Handle as RCHandle, type HandleType, type Position } from 'reactflow';
+import { useWidgetFactory, useSceneActions } from '../Context';
 
 export default function Handle({
   id,
@@ -36,13 +31,13 @@ export default function Handle({
   const widget = useRef<null | JSX.Element>();
   const title = useRef<null | JSX.Element>();
   const isSourceHandle = handleType === 'source';
-  const { setNodes } = useReactFlow();
+  const { setNodes } = useSceneActions() ?? {};
   const widgetFactory = useWidgetFactory();
   if (!handleData) {
     console.error('handleData is undefined');
   }
   const changeValue = useCallback((newVa: any): void => {
-    setNodes((nds) =>
+    setNodes?.((nds) =>
       nds.map((n) => {
         if (n.id === nodeId) {
           if (isSourceHandle) n.data.outputs[id].value = newVa;

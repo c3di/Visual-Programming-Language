@@ -1,4 +1,10 @@
-import { useCallback, useRef, useState } from 'react';
+import {
+  type Dispatch,
+  type SetStateAction,
+  useCallback,
+  useRef,
+  useState,
+} from 'react';
 import {
   type Node,
   type ClipboardInfo,
@@ -11,7 +17,12 @@ import { type GraphState } from './useGraph';
 import { deserializer } from '../Deserializer';
 import { type Command } from './useGui';
 import ContentPaste from '@mui/icons-material/ContentPaste';
-import { useReactFlow, getRectOfNodes, type XYPosition } from 'reactflow';
+import {
+  useReactFlow,
+  getRectOfNodes,
+  type XYPosition,
+  type Node as RcNode,
+} from 'reactflow';
 
 export interface ISceneActions {
   getSelectedCounts: () => selectedElementsCounts;
@@ -27,6 +38,7 @@ export interface ISceneActions {
     targetHandle: string,
     dataType?: string
   ) => void;
+  setNodes: Dispatch<SetStateAction<Array<RcNode<any, string | undefined>>>>;
   clearEdgeSelection: () => void;
   getHandleConnectionCounts: (nodeId: string, handleId: string) => number;
   onNodeDragStart: (evt: any, node: Node) => void;
@@ -249,10 +261,28 @@ export default function useScene(
       });
       const node = deserializer.configToNode(config);
       graphState.addElements({ newNodes: [node] });
+      onNodeAdd(configType, node);
       return node;
     },
     []
   );
+
+  const onNodeAdd = (configType: string, node: Node): void => {
+    if (node.type === 'createVariable') {
+      setExtraCommands((commands) => {
+        return [
+          ...commands,
+          {
+            name:
+              node.data.inputs.name.value ??
+              node.data.inputs.name.defaultValue ??
+              'Variable',
+            action: () => {},
+          },
+        ];
+      });
+    }
+  };
 
   const addEdge = useCallback(
     (
@@ -299,6 +329,7 @@ export default function useScene(
       selectEdge: graphState.selectEdge,
       addNode,
       addEdge,
+      setNodes: graphState.setNodes,
       selectAll: graphState.selectAll,
       clearEdgeSelection: graphState.clearEdgeSelection,
       getHandleConnectionCounts: graphState.getHandleConnectionCounts,

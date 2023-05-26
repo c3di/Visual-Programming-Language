@@ -23,7 +23,7 @@ import {
   ConnectionTip,
 } from './gui';
 import Setting from './VPPanelSetting';
-import { WidgetFactoryProvider } from './Context';
+import { WidgetFactoryProvider, SceneActionsContext } from './Context';
 import type { SerializedGraph, selectedElementsCounts } from './types';
 import componentType, { Background, ControlPanel, MiniMap } from './components';
 import 'reactflow/dist/style.css';
@@ -124,7 +124,7 @@ const Scene = ({
   // guide from https://reactflow.dev/docs/guides/remove-attribution/
   const proOptions = { hideAttribution: true };
   return (
-    <>
+    <SceneActionsContext.Provider value={sceneActions}>
       <ConnectionTip
         open={gui.showConnectionTip}
         onClose={gui.closeWidget}
@@ -386,7 +386,7 @@ const Scene = ({
           className={bgSetting.className}
         />
       </ReactFlow>
-    </>
+    </SceneActionsContext.Provider>
   );
 };
 
