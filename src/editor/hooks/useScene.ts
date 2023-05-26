@@ -12,6 +12,7 @@ import {
   type Edge,
   type selectedElementsCounts,
   isCommentNode,
+  type Graph,
 } from '../types';
 import { type GraphState } from './useGraph';
 import { deserializer } from '../Deserializer';
@@ -262,13 +263,13 @@ export default function useScene(
       });
       const node = deserializer.configToNode(config);
       graphState.addElements({ newNodes: [node] });
-      onNodeAdd(configType, node);
+      onNodeAdd(node);
       return node;
     },
     []
   );
 
-  const onNodeAdd = (configType: string, node: Node): void => {
+  const onNodeAdd = (node: Node): void => {
     if (node.type === 'createVariable') {
       setExtraCommands((commands) => {
         return [
@@ -284,6 +285,17 @@ export default function useScene(
       });
     }
   };
+
+  const initGraph = useRef<Graph | null>(null);
+  if (
+    graphState.initGraph &&
+    JSON.stringify(initGraph.current) !== JSON.stringify(graphState.initGraph)
+  ) {
+    initGraph.current = graphState.initGraph;
+    initGraph.current.nodes.forEach((node) => {
+      onNodeAdd(node);
+    });
+  }
 
   const addEdge = useCallback(
     (
