@@ -39,6 +39,7 @@ export interface ISceneActions {
     dataType?: string
   ) => void;
   setNodes: Dispatch<SetStateAction<Array<RcNode<any, string | undefined>>>>;
+  setExtraCommands: Dispatch<SetStateAction<Command[]>>;
   clearEdgeSelection: () => void;
   getHandleConnectionCounts: (nodeId: string, handleId: string) => number;
   onNodeDragStart: (evt: any, node: Node) => void;
@@ -330,6 +331,7 @@ export default function useScene(
       addNode,
       addEdge,
       setNodes: graphState.setNodes,
+      setExtraCommands,
       selectAll: graphState.selectAll,
       clearEdgeSelection: graphState.clearEdgeSelection,
       getHandleConnectionCounts: graphState.getHandleConnectionCounts,

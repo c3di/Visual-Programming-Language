@@ -25,7 +25,7 @@ export default function Handle({
   className: string;
   handleType: HandleType;
   handlePosition: Position;
-  onValueChange?: (newVa: any) => void;
+  onValueChange?: (newVa: any, oldVa?: any) => void;
 }): JSX.Element {
   const [label, setLabel] = useState(<></>);
   const widget = useRef<null | JSX.Element>();
@@ -40,9 +40,15 @@ export default function Handle({
     setNodes?.((nds) =>
       nds.map((n) => {
         if (n.id === nodeId) {
-          if (isSourceHandle) n.data.outputs[id].value = newVa;
-          else n.data.inputs[id].value = newVa;
-          onValueChange?.(newVa);
+          let oldVa;
+          if (isSourceHandle) {
+            oldVa = n.data.outputs[id].value ?? n.data.outputs[id].defaultValue;
+            n.data.outputs[id].value = newVa;
+          } else {
+            oldVa = n.data.inputs[id].value ?? n.data.inputs[id].defaultValue;
+            n.data.inputs[id].value = newVa;
+          }
+          onValueChange?.(newVa, oldVa);
         }
         return n;
       })
