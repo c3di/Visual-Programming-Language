@@ -16,7 +16,7 @@ export default function TargetHandle({
   handleData: HandleData;
   showWidget: boolean;
   showTitle: boolean;
-  onValueChange?: (newVa: any) => void;
+  onValueChange?: (newVa: any, oldVa?: any) => void;
 }): JSX.Element {
   return (
     <Handle

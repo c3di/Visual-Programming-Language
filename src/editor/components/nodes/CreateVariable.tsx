@@ -16,7 +16,19 @@ function CreateVariable({
   const forceUpdate = useCallback(() => {
     updateState({});
   }, []);
-  const { setNodes } = useSceneActions() ?? {};
+  const { setNodes, setExtraCommands } = useSceneActions() ?? {};
+
+  const updateCommandName = useCallback((newVa: string, oldVa: string) => {
+    setExtraCommands?.((cmds) =>
+      cmds.map((cmd) => {
+        if (cmd.name === oldVa) {
+          cmd.name = newVa;
+        }
+        return cmd;
+      })
+    );
+  }, []);
+
   const changeValue = useCallback((newVa: any): void => {
     setNodes?.((nds) =>
       nds.map((n) => {
@@ -34,6 +46,11 @@ function CreateVariable({
     forceUpdate();
   }, []);
 
+  const onValueChanges: Record<string, any> = {
+    type: changeValue,
+    name: updateCommandName,
+  };
+
   const inputhandles = [];
   for (const inputId in data.inputs) {
     if (inputId === 'value' && data.inputs.value.defaultValue === undefined)
@@ -46,7 +63,7 @@ function CreateVariable({
         showWidget={true}
         showTitle={true}
         handleData={data.inputs[inputId]}
-        onValueChange={inputId === 'type' ? changeValue : undefined}
+        onValueChange={onValueChanges[inputId]}
       />
     );
   }
