@@ -16,13 +16,21 @@ import {
   addEdge as rcAddEdge,
   type NodeChange,
   type EdgeChange,
+  type Node as RcNode,
   MarkerType,
   getConnectedEdges,
   getOutgoers,
   getIncomers,
   useReactFlow,
 } from 'reactflow';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  type Dispatch,
+  type SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { serializer } from '../Serializer';
 import { deserializer } from '../Deserializer';
 import { deepCopy } from '../util';
@@ -33,7 +41,7 @@ export interface GraphState {
   nodes: Node[];
   edges: Edge[];
   getFreeUniqueNodeIds: (count: number) => string[];
-  setNodes: (nodes: Node[]) => void;
+  setNodes: Dispatch<SetStateAction<Array<RcNode<any, string | undefined>>>>;
   onNodesChange: OnChange<NodeChange>;
   setEdges: (edges: Edge[]) => void;
   onEdgesChange: OnChange<EdgeChange>;

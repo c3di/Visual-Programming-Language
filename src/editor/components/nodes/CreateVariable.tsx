@@ -1,6 +1,8 @@
 import React, { memo, useCallback, useState } from 'react';
-import { useReactFlow } from 'reactflow';
+
 import { TargetHandle } from '../handles';
+import { useSceneActions } from '../../Context';
+
 import { type ConnectableData, DataTypes } from '../../types';
 
 function CreateVariable({
@@ -10,14 +12,13 @@ function CreateVariable({
   id: string;
   data: ConnectableData;
 }): JSX.Element {
-  const { setNodes } = useReactFlow();
   const [, updateState] = useState<any>();
   const forceUpdate = useCallback(() => {
     updateState({});
   }, []);
-
+  const { setNodes } = useSceneActions() ?? {};
   const changeValue = useCallback((newVa: any): void => {
-    setNodes((nds) =>
+    setNodes?.((nds) =>
       nds.map((n) => {
         if (n.id === id) {
           n.data.inputs.value = {
