@@ -1,6 +1,7 @@
 import {
   type Node,
   type Edge,
+  type Graph,
   type SerializedGraph,
   type HandleData,
   type ConnectionStatus,
@@ -38,6 +39,7 @@ import { deepCopy } from '../util';
 type OnChange<ChangesType> = (changes: ChangesType[]) => void;
 
 export interface GraphState {
+  initGraph: Graph;
   nodes: Node[];
   edges: Edge[];
   getFreeUniqueNodeIds: (count: number) => string[];
@@ -545,6 +547,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
   }, [nodes, edges]);
 
   return {
+    initGraph,
     getFreeUniqueNodeIds,
     nodes,
     setNodes,
