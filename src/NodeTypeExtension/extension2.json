@@ -56,8 +56,7 @@
         "name": {
           "title": "name",
           "tooltip": "name of the variable",
-          "dataType": "string",
-          "defaultValue": "NewVar"
+          "dataType": "string"
         },
         "type": {
           "title": "type",

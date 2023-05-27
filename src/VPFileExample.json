@@ -133,7 +133,11 @@
         "x": 600,
         "y": 600
       },
-      "inputs": {},
+      "inputs": {
+        "name": {
+          "value": "newVar_0"
+        }
+      },
       "outputs": {}
     }
   ],
