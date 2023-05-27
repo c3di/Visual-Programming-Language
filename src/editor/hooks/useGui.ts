@@ -15,6 +15,9 @@ export interface Command {
   labelIcon?: React.ElementType<SvgIconProps> | undefined;
   labelInfo?: string;
   tooltip?: string;
+  category?: string;
+  rank?: number;
+  categoryRank?: number;
 }
 
 export interface Gui {

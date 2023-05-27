@@ -69,10 +69,12 @@ const SearchMenu = memo(function SearchMenu({
 
   useEffect(() => {
     if (open) {
-      setTreeData([
-        ...nodeConfigsToTreeData(nodeConfigRegistry.getAllNodeConfigs()),
-        ...commandsToTreeData(commands),
-      ]);
+      setTreeData(
+        [
+          ...nodeConfigsToTreeData(nodeConfigRegistry.getAllNodeConfigs()),
+          ...commandsToTreeData(commands),
+        ].sort((a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity))
+      );
     }
   }, [open, commands]);
 
@@ -87,16 +89,40 @@ const SearchMenu = memo(function SearchMenu({
 
   const commandsToTreeData = useCallback(
     (commands: Command[]): TreeItemData[] => {
-      return commands.map((command) => ({
-        id: command.name,
-        name: command.name,
-        tooltip: command.tooltip,
-        labelIcon: command.labelIcon,
-        onClick: () => {
-          command.action();
-          onClose();
-        },
-      }));
+      const treeData: TreeItemData[] = [];
+      for (const command of commands) {
+        const item: TreeItemData = {
+          id: command.name,
+          name: command.name,
+          tooltip: command.tooltip,
+          labelIcon: command.labelIcon,
+          onClick: () => {
+            command.action();
+            onClose();
+          },
+          rank: command.rank,
+        };
+        if (!command.category) {
+          treeData.push(item);
+          continue;
+        }
+
+        const category = treeData.find(
+          (item) => item.name === command.category
+        );
+        if (!category) {
+          treeData.push({
+            id: command.category,
+            name: command.category,
+            children: [item],
+            rank: command.categoryRank,
+          });
+        } else {
+          if (!category.children) category.children = [];
+          category.children.push(item);
+        }
+      }
+      return treeData;
     },
     []
   );

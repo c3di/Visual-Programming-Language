@@ -280,6 +280,8 @@ export default function useScene(
               node.data.inputs.name.defaultValue ??
               'Variable',
             action: () => {},
+            category: 'Variables',
+            categoryRank: 0,
           },
         ];
       });
