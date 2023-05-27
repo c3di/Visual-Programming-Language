@@ -1,8 +1,6 @@
 import React, { memo } from 'react';
-import './RerouteNode.css';
 import { type ConnectableData } from '../../types';
-import SourceHandle from '../SourceHandle';
-import TargetHandle from '../TargetHandle';
+import { TargetHandle, SourceHandle } from '../handles';
 
 function RerouteNode({
   id,
@@ -38,9 +36,11 @@ function RerouteNode({
     );
   }
   return (
-    <div title={data.tooltip}>
-      {inputhandles}
-      {outputHandles}
+    <div title={data.tooltip} className="vp-node-containter">
+      <div className="node__body" style={{ padding: 0, gap: '0px' }}>
+        <div className="vp-node-handles-containter">{inputhandles}</div>
+        <div className="vp-node-handles-containter">{outputHandles}</div>
+      </div>
     </div>
   );
 }

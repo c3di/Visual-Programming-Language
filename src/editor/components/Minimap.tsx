@@ -2,7 +2,6 @@ import React, { useCallback, useState } from 'react';
 import { MiniMap as RfMinimap } from 'reactflow';
 import { Map, MapOutlined } from '@mui/icons-material';
 import { Button } from '@mui/material';
-import './Minimap.css';
 
 interface IMiniMapProps {
   height: number;
@@ -69,6 +68,9 @@ export default function MiniMap({
       <RfMinimap
         style={{
           display: hidden ? 'none' : 'block',
+          position: 'relative',
+          marginTop: '0',
+          marginBottom: '0',
         }}
         zoomable={zoomable}
         pannable={pannable}

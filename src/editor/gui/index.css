@@ -11,3 +11,20 @@
 .VP_MenuItem_Shortcut {
   padding-right: 8px;
 }
+
+.css-10nakn3-MuiModal-root-MuiPopover-root-MuiMenu-root {
+  pointer-events: none;
+}
+
+.css-1ka5eyc-MuiPaper-root-MuiMenu-paper-MuiPopover-paper {
+  pointer-events: auto !important;
+}
+
+.css-6hp17o-MuiList-root-MuiMenu-list {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.MuiPaper-root.MuiMenu-paper {
+  border-radius: 0px;
+}

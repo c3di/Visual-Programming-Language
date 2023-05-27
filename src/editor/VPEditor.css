@@ -2,56 +2,6 @@
   display: none;
 }
 
-.react-flow__node {
-  font-size: 13px;
-  background: #f5f5f6f0;
-  color: #222;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 15%), 0 2px 4px -1px rgb(0 0 0 / 8%);
-}
-
 .react-flow__node.selected {
   box-shadow: 0 0 0 1px #1a192b;
-}
-
-.node__header {
-  padding: 8px 10px;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.node__body {
-  padding: 10px 0;
-}
-
-.node__clear {
-  clear: both;
-}
-
-.node__input-handles {
-  min-width: 100px;
-  float: left;
-  min-height: 20px;
-}
-
-.node__output-handles {
-  min-width: 50px;
-  float: right;
-  min-height: 20px;
-  padding-left: 15px;
-}
-
-.css-10nakn3-MuiModal-root-MuiPopover-root-MuiMenu-root {
-  pointer-events: none;
-}
-
-.css-1ka5eyc-MuiPaper-root-MuiMenu-paper-MuiPopover-paper {
-  pointer-events: auto !important;
-}
-
-.css-6hp17o-MuiList-root-MuiMenu-list {
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-.MuiPaper-root.MuiMenu-paper {
-  border-radius: 0px;
 }

@@ -6,6 +6,7 @@ import MakeLiteralNode from './MakeLiteralNode';
 import CommentNode from './CommentNode';
 import RerouteNode from './RerouteNode';
 import StickyNoteNode from './StickyNoteNode';
+import './index.css';
 
 const VisualNodeTypes = {
   function: FunctionNode,

@@ -1,7 +1,5 @@
 import React, { memo } from 'react';
-// import { useReactFlow, useStoreApi, Position } from 'reactflow';
-import TargetHandle from '../TargetHandle';
-import SourceHandle from '../SourceHandle';
+import { TargetHandle, SourceHandle } from '../handles';
 import { type ConnectableData } from '../../types';
 
 function FunctionNode({
@@ -38,14 +36,13 @@ function FunctionNode({
     );
   }
   return (
-    <div title={data.tooltip}>
+    <div title={data.tooltip} className="vp-node-containter">
       <div className="node__header">
         <strong>{data.title}</strong>
       </div>
       <div className="node__body">
-        <div className="node__input-handles">{inputhandles}</div>
-        <div className="node__output-handles">{outputHandles}</div>
-        <div className="node__clear"></div>
+        <div className="vp-node-handles-containter">{inputhandles}</div>
+        <div className="vp-node-handles-containter">{outputHandles}</div>
       </div>
     </div>
   );

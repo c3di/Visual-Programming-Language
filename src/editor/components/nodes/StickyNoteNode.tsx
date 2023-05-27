@@ -38,111 +38,113 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
   }, [pinned]);
 
   return (
-    <div
-      className={
-        dragged
-          ? 'stickyNote__node__body stickyNote__node__body--enabled'
-          : 'stickyNote__node__body stickyNote__node__body--disabled'
-      }
-      style={{ width, height }}
-    >
-      <NodeResizer
-        color="#ffffff00"
-        handleStyle={{ border: 'none' }}
-        minWidth={150}
-        minHeight={150}
-        onResize={(
-          event: ResizeDragEvent,
-          params: ResizeParamsWithDirection
-        ) => {
-          setWidth(params.width);
-          setHeight(params.height);
-        }}
-      />
+    <div className="vp-node-containter">
       <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: '100%',
-          height: '100%',
-        }}
+        className={
+          dragged
+            ? 'stickyNote__node__body stickyNote__node__body--enabled'
+            : 'stickyNote__node__body stickyNote__node__body--disabled'
+        }
+        style={{ width, height }}
       >
-        <Toolbar
-          sx={{
-            minHeight: '10px!important',
-            paddingRight: '3px!important',
-            justifyContent: 'flex-end',
-            paddingTop: '2px',
-            paddingBottom: '2px',
-            borderBottom: '1px solid black',
+        <NodeResizer
+          color="#ffffff00"
+          handleStyle={{ border: 'none' }}
+          minWidth={150}
+          minHeight={150}
+          onResize={(
+            event: ResizeDragEvent,
+            params: ResizeParamsWithDirection
+          ) => {
+            setWidth(params.width);
+            setHeight(params.height);
+          }}
+        />
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            height: '100%',
           }}
         >
-          <Button
-            onClick={handlePinClick}
-            disableRipple={true}
+          <Toolbar
             sx={{
-              padding: 0,
-              minWidth: '10px',
-              width: '14px',
-              height: '14px',
-              color: 'black',
+              minHeight: '10px!important',
+              paddingRight: '3px!important',
+              justifyContent: 'flex-end',
+              paddingTop: '2px',
+              paddingBottom: '2px',
+              borderBottom: '1px solid black',
             }}
           >
-            {pinned ? (
-              <BsPinAngleFill title="The node is pinned" />
-            ) : (
-              <BsPinAngle title="The node is not pinned" />
-            )}
-          </Button>{' '}
-          <Button
-            disableRipple={true}
-            sx={{
-              padding: 0,
-              minWidth: '10px',
-              width: '12px',
-              height: '12px',
-              borderRadius: '1.5px',
-              border: '1.5px solid black',
-              marginLeft: '5px',
-            }}
-            title="Color Picker"
-          >
-            <input
-              type="color"
-              style={{
-                border: 0,
+            <Button
+              onClick={handlePinClick}
+              disableRipple={true}
+              sx={{
                 padding: 0,
-                width: '100%',
+                minWidth: '10px',
+                width: '14px',
+                height: '14px',
+                color: 'black',
+              }}
+            >
+              {pinned ? (
+                <BsPinAngleFill title="The node is pinned" />
+              ) : (
+                <BsPinAngle title="The node is not pinned" />
+              )}
+            </Button>{' '}
+            <Button
+              disableRipple={true}
+              sx={{
+                padding: 0,
+                minWidth: '10px',
+                width: '12px',
+                height: '12px',
+                borderRadius: '1.5px',
+                border: '1.5px solid black',
+                marginLeft: '5px',
+              }}
+              title="Color Picker"
+            >
+              <input
+                type="color"
+                style={{
+                  border: 0,
+                  padding: 0,
+                  width: '100%',
+                  height: '100%',
+                }}
+                value={nodeBg}
+                onChange={(evt) => {
+                  setNodeBg(evt.target.value);
+                }}
+              ></input>
+            </Button>
+          </Toolbar>
+
+          <div
+            title={content}
+            style={{
+              width: '100%',
+              flexGrow: 1,
+              overflow: 'auto',
+              backgroundColor: nodeBg,
+            }}
+          >
+            <div
+              style={{
                 height: '100%',
               }}
-              value={nodeBg}
-              onChange={(evt) => {
-                setNodeBg(evt.target.value);
-              }}
-            ></input>
-          </Button>
-        </Toolbar>
-
-        <div
-          title={content}
-          style={{
-            width: '100%',
-            flexGrow: 1,
-            overflow: 'auto',
-            backgroundColor: nodeBg,
-          }}
-        >
-          <div
-            style={{
-              height: '100%',
-            }}
-          >
-            <InPlaceTextArea
-              text={data.stickyNote}
-              onStartEdit={onStartEdit}
-              onStopEdit={onStopEdit}
-              onEditChange={onEditChange}
-            />
+            >
+              <InPlaceTextArea
+                text={data.stickyNote}
+                onStartEdit={onStartEdit}
+                onStopEdit={onStopEdit}
+                onEditChange={onEditChange}
+              />
+            </div>
           </div>
         </div>
       </div>

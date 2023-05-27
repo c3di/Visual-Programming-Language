@@ -29,6 +29,7 @@ function CommentNode({ data }: { data: Comment }): JSX.Element {
   return (
     <div
       title={comment}
+      className="vp-node-containter"
       style={{ width: commentWidth, height: commentHeight, overflow: 'auto' }}
     >
       <NodeResizer
@@ -59,8 +60,6 @@ function CommentNode({ data }: { data: Comment }): JSX.Element {
           onEditChange={onEditChange}
         />{' '}
       </div>
-      <div className="node__body"></div>
-      <div></div>
     </div>
   );
 }

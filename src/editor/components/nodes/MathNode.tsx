@@ -1,8 +1,6 @@
 import React, { memo } from 'react';
-import './MathNode.css';
 import { type ConnectableData } from '../../types';
-import SourceHandle from '../SourceHandle';
-import TargetHandle from '../TargetHandle';
+import { TargetHandle, SourceHandle } from '../handles';
 
 function MathNode({
   id,
@@ -38,12 +36,26 @@ function MathNode({
     );
   }
   return (
-    <div title={data.tooltip} className="math-node__body">
-      <div className="math-node__input-handles">{inputHandles}</div>
-      <div className="math-node__header">
-        <strong>{data.title}</strong>
+    <div title={data.tooltip} className="vp-node-containter">
+      <div className="node__body">
+        <div className="vp-node-handles-containter">{inputHandles}</div>
+        <div
+          className="vp-node-handles-containter"
+          style={{
+            textAlign: 'center',
+            justifyContent: 'center',
+            fontSize: '1.5em',
+          }}
+        >
+          <strong>{data.title}</strong>
+        </div>
+        <div
+          className="vp-node-handles-containter"
+          style={{ justifyContent: 'center' }}
+        >
+          {outputHandles}
+        </div>
       </div>
-      <div className="math-node__output-handles">{outputHandles}</div>
     </div>
   );
 }
