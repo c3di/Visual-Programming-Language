@@ -12,10 +12,11 @@ export interface TreeItemData {
   id: string;
   name: string;
   configType?: string;
-  children?: readonly TreeItemData[];
+  children?: TreeItemData[];
   tooltip?: string;
   labelIcon?: React.ElementType<SvgIconProps> | undefined;
   onClick?: (item: any) => void;
+  rank?: number;
 }
 
 export const nodeConfigsToTreeData = (
