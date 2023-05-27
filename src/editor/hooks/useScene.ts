@@ -57,6 +57,7 @@ export interface ISceneActions {
   deleteAllEdgesOfSelectedNodes: () => void;
   isValidConnection: (params: any) => ConnectionStatus;
   centerSelectedNodes: () => void;
+  getFreeUniqueVariableName: (namePrefix: string) => string;
 }
 export interface ISceneState {
   graphStateRef: React.MutableRefObject<GraphState>;
@@ -84,6 +85,8 @@ export default function useScene(
       saveNodesInSelectedCommentNode(node, node.id);
     });
   };
+
+  const varsNamePool = useRef<string[]>([]);
 
   const saveNodesInSelectedCommentNode = (
     node: Node,
@@ -262,8 +265,8 @@ export default function useScene(
         position,
       });
       const node = deserializer.configToNode(config);
-      graphState.addElements({ newNodes: [node] });
       onNodeAdd(node);
+      graphState.addElements({ newNodes: [node] });
       return node;
     },
     []
@@ -272,13 +275,21 @@ export default function useScene(
   const onNodeAdd = (node: Node): void => {
     if (node.type === 'createVariable') {
       setExtraCommands((commands) => {
+        if (
+          !node.data.inputs.name.value &&
+          !node.data.inputs.name.defaultValue
+        ) {
+          node.data.inputs.name.defaultValue =
+            getFreeUniqueVariableName('newVar');
+        }
+        varsNamePool.current.push(
+          node.data.inputs.name.value ?? node.data.inputs.name.defaultValue
+        );
         return [
           ...commands,
           {
             name:
-              node.data.inputs.name.value ??
-              node.data.inputs.name.defaultValue ??
-              'Variable',
+              node.data.inputs.name.value ?? node.data.inputs.name.defaultValue,
             action: () => {},
             category: 'Variables',
             categoryRank: 0,
@@ -286,6 +297,30 @@ export default function useScene(
         ];
       });
     }
+  };
+
+  const getFreeUniqueVariableName = (namePrefix: string): string => {
+    console.log('getFreeUniqueVariableName', varsNamePool.current);
+    const names = varsNamePool.current;
+    console.log('names', names);
+    let counter = 0;
+    let name = `${namePrefix}_${counter}`;
+    console.log(
+      'name',
+      names,
+      name,
+      names.includes(name),
+      names[0],
+      names[0] === name
+    );
+
+    while (names.includes(name)) {
+      counter++;
+      name = `${namePrefix}_${counter}`;
+      console.log('name', name);
+    }
+
+    return name;
   };
 
   const initGraph = useRef<Graph | null>(null);
@@ -363,6 +398,7 @@ export default function useScene(
       deleteAllEdgesOfSelectedNodes: graphState.deleteAllEdgesOfSelectedNodes,
       isValidConnection: graphState.isValidConnection,
       centerSelectedNodes,
+      getFreeUniqueVariableName,
     },
   };
 }
