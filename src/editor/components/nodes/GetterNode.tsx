@@ -1,7 +1,6 @@
 import React, { memo } from 'react';
-import './GetterNode.css';
 import { type VariableNodeData } from '../../types';
-import SourceHandle from '../SourceHandle';
+import { SourceHandle } from '../handles';
 
 function GetterNode({
   id,
@@ -23,7 +22,18 @@ function GetterNode({
       />
     );
   }
-  return <div title={data.tooltip}>{outputHandles}</div>;
+  return (
+    <div title={data.tooltip} className="vp-node-containter">
+      <div className="node__body" style={{ padding: 0 }}>
+        <div
+          className="vp-node-handles-containter"
+          style={{ marginLeft: '15px' }}
+        >
+          {outputHandles}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default memo(GetterNode);

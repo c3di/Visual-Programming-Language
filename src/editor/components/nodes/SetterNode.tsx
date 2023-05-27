@@ -1,8 +1,6 @@
 import React, { memo } from 'react';
-import './SetterNode.css';
 import { type VariableNodeData } from '../../types';
-import SourceHandle from '../SourceHandle';
-import TargetHandle from '../TargetHandle';
+import { TargetHandle, SourceHandle } from '../handles';
 
 function SetterNode({
   id,
@@ -38,14 +36,18 @@ function SetterNode({
     );
   }
   return (
-    <div title={'Set the value of variable'}>
-      <div className="setter-node__header">
+    <div title={data.tooltip} className="vp-node-containter">
+      <div className="node__header" style={{ textAlign: 'center' }}>
         <strong>SET</strong>
       </div>
       <div className="node__body">
-        {inputhandles}
-        {outputHandles}
-        <div className="node__clear"></div>
+        <div
+          className="vp-node-handles-containter"
+          style={{ minWidth: '120px' }}
+        >
+          {inputhandles}
+        </div>
+        <div className="vp-node-handles-containter">{outputHandles}</div>
       </div>
     </div>
   );

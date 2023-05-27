@@ -16,7 +16,7 @@
           "defaultValue": 100
         },
         "input2": {
-          "title": "input2",
+          "title": "input2 long name",
           "tooltip": "input 2",
           "dataType": "boolean",
           "defaultValue": true
@@ -28,7 +28,7 @@
           "defaultValue": "hello"
         },
         "input4": {
-          "title": "input4",
+          "title": "long name",
           "tooltip": "input 4",
           "dataType": "extension1.Level2.module2.EDataType",
           "defaultValue": "string"

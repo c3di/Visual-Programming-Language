@@ -1,5 +1,5 @@
 import React from 'react';
-import { type HandleData } from '../types';
+import { type HandleData } from '../../types';
 import { Position } from 'reactflow';
 import Handle from './Handle';
 

@@ -1,25 +1,16 @@
 .source-handle {
-  position: relative;
   display: flex;
+  justify-content: flex-end;
   align-items: center;
   height: 20px;
-  justify-content: flex-end;
-}
-
-.source-handle .handle-title {
-  padding-left: 4px;
-  padding-right: 10px;
 }
 
 .target-handle {
-  position: relative;
   display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
   align-items: center;
-}
-
-.target-handle .handle-title {
-  padding-left: 10px;
-  padding-right: 4px;
+  height: 20px;
 }
 
 .target-handle .react-flow__handle {
@@ -37,8 +28,7 @@
 }
 
 .handle-widget {
-  width: 100%;
-  max-width: 100px;
+  max-width: 80px;
 }
 
 input.float[type='number']::-webkit-outer-spin-button,

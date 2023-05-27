@@ -1,8 +1,6 @@
 import React, { memo } from 'react';
-import './MakeLiteralNode.css';
 import { type VariableNodeData } from '../../types';
-import SourceHandle from '../SourceHandle';
-import TargetHandle from '../TargetHandle';
+import { TargetHandle, SourceHandle } from '../handles';
 
 function MakeLiteralNode({
   id,
@@ -37,15 +35,15 @@ function MakeLiteralNode({
       />
     );
   }
+
   return (
-    <div title={data.tooltip}>
-      <div className="setter-node__header">
+    <div title={data.tooltip} className="vp-node-containter">
+      <div className="node__header" style={{ textAlign: 'center' }}>
         <strong>Make Literal&nbsp;{data.dataType}</strong>
       </div>
       <div className="node__body">
-        {inputhandles}
-        {outputHandles}
-        <div className="node__clear"></div>
+        <div className="vp-node-handles-containter">{inputhandles}</div>
+        <div className="vp-node-handles-containter">{outputHandles}</div>
       </div>
     </div>
   );
