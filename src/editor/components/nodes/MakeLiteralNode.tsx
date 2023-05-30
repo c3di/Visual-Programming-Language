@@ -37,13 +37,13 @@ function MakeLiteralNode({
   }
 
   return (
-    <div title={data.tooltip} className="vp-node-containter">
+    <div title={data.tooltip} className="vp-node-container">
       <div className="node__header" style={{ textAlign: 'center' }}>
         <strong>Make Literal&nbsp;{data.dataType}</strong>
       </div>
       <div className="node__body">
-        <div className="vp-node-handles-containter">{inputhandles}</div>
-        <div className="vp-node-handles-containter">{outputHandles}</div>
+        <div className="vp-node-handles-container">{inputhandles}</div>
+        <div className="vp-node-handles-container">{outputHandles}</div>
       </div>
     </div>
   );

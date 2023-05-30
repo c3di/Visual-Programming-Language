@@ -36,10 +36,10 @@ function RerouteNode({
     );
   }
   return (
-    <div title={data.tooltip} className="vp-node-containter">
+    <div title={data.tooltip} className="vp-node-container">
       <div className="node__body" style={{ padding: 0, gap: '0px' }}>
-        <div className="vp-node-handles-containter">{inputhandles}</div>
-        <div className="vp-node-handles-containter">{outputHandles}</div>
+        <div className="vp-node-handles-container">{inputhandles}</div>
+        <div className="vp-node-handles-container">{outputHandles}</div>
       </div>
     </div>
   );

@@ -1,8 +1,8 @@
 :root {
   --vp-handle-background-color: #778899;
-
   --vp-handle-border-radius: 2px;
   --vp-handle-panel-height: 20px;
+
   --vp-handle-point-width: 8px;
   --vp-handle-point-height: 10px;
 }

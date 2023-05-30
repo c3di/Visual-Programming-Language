@@ -38,7 +38,7 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
   }, [pinned]);
 
   return (
-    <div className="vp-node-containter">
+    <div className="vp-node-container">
       <div
         className={
           dragged

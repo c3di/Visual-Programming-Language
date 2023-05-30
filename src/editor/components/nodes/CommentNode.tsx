@@ -29,7 +29,7 @@ function CommentNode({ data }: { data: Comment }): JSX.Element {
   return (
     <div
       title={comment}
-      className="vp-node-containter"
+      className="vp-node-container"
       style={{ width: commentWidth, height: commentHeight, overflow: 'auto' }}
     >
       <NodeResizer
