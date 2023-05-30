@@ -1,29 +1,44 @@
-.vp-node-containter {
+:root {
+  --vp-node-box-shadow: 0 4px 6px -1px rgb(0 0 0 / 15%),
+    0 2px 4px -1px rgb(0 0 0 / 8%);
+  --vp-node-background-color: #f5f5f6f0;
+  --vp-node-font-color: #222;
+  --vp-node-font-size: 13px;
+  --vp-node-handles-container-gap: 5px;
+
+  --vp-node-header-padding: 8px 10px;
+  --vp-node-header-bottom-border: 1px solid #e2e8f0;
+
+  --vp-node-body-padding: 10px 0;
+  --vp-node-body-gap: 20px;
+}
+
+.vp-node-container {
   width: 100%;
 }
 
-.vp-node-handles-containter {
+.vp-node-handles-container {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: var(--vp-node-handles-container-gap);
 }
 
 .node__header {
-  padding: 8px 10px;
-  border-bottom: 1px solid #e2e8f0;
+  padding: var(--vp-node-header-padding);
+  border-bottom: var(--vp-node-header-bottom-border);
 }
 
 .node__body {
-  padding: 10px 0;
+  padding: var(--vp-node-body-padding);
   width: 100%;
   display: flex;
   justify-content: space-around;
-  gap: 20px;
+  gap: var(--vp-node-body-gap);
 }
 
 .react-flow__node {
-  font-size: 13px;
-  background: #f5f5f6f0;
-  color: #222;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 15%), 0 2px 4px -1px rgb(0 0 0 / 8%);
+  font-size: var(--vp-node-font-size);
+  background: var(--vp-node-background-color);
+  color: var(--vp-node-font-color);
+  box-shadow: var(--vp-node-box-shadow);
 }
