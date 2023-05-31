@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useState } from 'react';
 import TargetHandle from '../TargetHandle';
-import { useSceneActions } from '../../Context';
+import { useSceneState } from '../../Context';
 import { type ConnectableData, DataTypes } from '../../types';
 
 function CreateVariable({
@@ -14,7 +14,7 @@ function CreateVariable({
   const forceUpdate = useCallback(() => {
     updateState({});
   }, []);
-  const { setNodes, setExtraCommands } = useSceneActions() ?? {};
+  const { setNodes, setExtraCommands } = useSceneState()?.sceneActions ?? {};
 
   const updateCommandName = useCallback((newVa: string, oldVa: string) => {
     setExtraCommands?.((cmds) =>

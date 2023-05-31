@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { type HandleData, DataTypes } from '../types';
 import './Handle.css';
 import { Handle as RCHandle, type HandleType, type Position } from 'reactflow';
-import { useWidgetFactory, useSceneActions } from '../Context';
+import { useWidgetFactory, useSceneState } from '../Context';
 
 export default function Handle({
   id,
@@ -31,7 +31,7 @@ export default function Handle({
   const widget = useRef<null | JSX.Element>();
   const title = useRef<null | JSX.Element>();
   const isSourceHandle = handleType === 'source';
-  const { setNodes } = useSceneActions() ?? {};
+  const { setNodes } = useSceneState()?.sceneActions ?? {};
   const widgetFactory = useWidgetFactory();
   if (!handleData) {
     console.error('handleData is undefined');
