@@ -10,14 +10,12 @@ import { type Command } from '../hooks';
 import { nodeConfigRegistry } from '../extension';
 
 const SearchMenu = memo(function SearchMenu({
-  open,
   onClose,
   anchorPosition,
   addNode,
   clear,
   moreCommands,
 }: {
-  open: boolean;
   onClose: () => void;
   anchorPosition: { top: number; left: number };
   addNode?: (configType: string) => void;
@@ -68,15 +66,13 @@ const SearchMenu = memo(function SearchMenu({
   );
 
   useEffect(() => {
-    if (open) {
-      setTreeData(
-        [
-          ...nodeConfigsToTreeData(nodeConfigRegistry.getAllNodeConfigs()),
-          ...commandsToTreeData(commands),
-        ].sort((a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity))
-      );
-    }
-  }, [open, commands]);
+    setTreeData(
+      [
+        ...nodeConfigsToTreeData(nodeConfigRegistry.getAllNodeConfigs()),
+        ...commandsToTreeData(commands),
+      ].sort((a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity))
+    );
+  }, [commands]);
 
   const onItemClick = useCallback((item: TreeItemData): void => {
     if (!item) return;
@@ -133,7 +129,7 @@ const SearchMenu = memo(function SearchMenu({
       onContextMenu={(e) => {
         e.preventDefault();
       }}
-      open={open}
+      open={true}
       onClose={onClose}
       anchorReference="anchorPosition"
       anchorPosition={anchorPosition}
