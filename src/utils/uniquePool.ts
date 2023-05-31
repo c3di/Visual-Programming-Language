@@ -1,6 +1,6 @@
 export interface IUniqueNamePool {
   createNew: (prefix?: string) => string;
-  add: (item: string) => void;
+  add: (item: string) => boolean;
   addRef: (name: string, item: any) => void;
   remove: (item: string) => void;
   itemRef: (name: string) => any[];
@@ -24,12 +24,14 @@ export default class UnqiueNamePool implements IUniqueNamePool {
     return name;
   }
 
-  add(newName: string): void {
+  add(newName: string): boolean {
     if (!this._pool.includes(newName)) {
       this._pool.push(newName);
       this._itemRef[newName] = [];
       this.onAdd?.(newName);
+      return true;
     }
+    return false;
   }
 
   addRef(name: string, ref: any): void {
