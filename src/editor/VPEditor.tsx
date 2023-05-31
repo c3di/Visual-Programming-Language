@@ -15,13 +15,7 @@ import {
   useGui,
   type ISceneActions,
 } from './hooks';
-import {
-  NodeMenu,
-  EdgeMenu,
-  HandleMenu,
-  SearchMenu,
-  ConnectionTip,
-} from './gui';
+
 import Setting from './VPPanelSetting';
 import { WidgetFactoryProvider, SceneStateContext } from './Context';
 import type { SerializedGraph, selectedElementsCounts } from './types';
@@ -125,55 +119,7 @@ const Scene = ({
   const proOptions = { hideAttribution: true };
   return (
     <SceneStateContext.Provider value={sceneState}>
-      <ConnectionTip
-        open={gui.showConnectionTip}
-        onClose={gui.closeWidget}
-        anchorPosition={gui.PosiontOnGui}
-        connectionStatus={gui.connectionStatus}
-      />
-      <SearchMenu
-        open={gui.showSearchMenu}
-        onClose={gui.closeWidget}
-        anchorPosition={gui.PosiontOnGui}
-        addNode={sceneActions?.addNode}
-        clear={sceneActions?.clear}
-        moreCommands={sceneState?.extraCommands}
-      />
-      <NodeMenu
-        open={gui.showNodeMenu}
-        onClose={gui.closeWidget}
-        anchorPosition={gui.PosiontOnGui}
-        onDelete={sceneActions?.deleteSelectedElements}
-        onCut={sceneActions?.cutSelectedNodesToClipboard}
-        onCopy={sceneActions?.copySelectedNodeToClipboard}
-        onDuplicate={sceneActions?.duplicateSelectedNodes}
-        anyConnectableNodeSelected={
-          sceneState?.anyConnectableNodeSelected ?? false
-        }
-        anyConnectionToSelectedNode={
-          sceneState?.anyConnectionToSelectedNode ?? false
-        }
-        onBreakNodeLinks={sceneActions?.deleteAllEdgesOfSelectedNodes}
-      />
-      <EdgeMenu
-        open={gui.showEdgeMenu}
-        onClose={gui.closeWidget}
-        anchorPosition={gui.PosiontOnGui}
-        onDelete={sceneActions?.deleteSelectedElements}
-      />
-      <HandleMenu
-        open={gui.showHandleMenu}
-        onClose={gui.closeWidget}
-        connection={gui.clickedHandle.current?.connection}
-        anchorPosition={gui.PosiontOnGui}
-        onBreakLinks={() => {
-          if (gui.clickedHandle.current && gui.clickedNodeId.current)
-            sceneActions?.deleteAllEdgesOfHandle(
-              gui.clickedNodeId.current,
-              gui.clickedHandle.current.id
-            );
-        }}
-      />
+      {gui.widget}
       <ReactFlow
         id={id}
         onInit={(instance) => {
@@ -242,19 +188,22 @@ const Scene = ({
         onPaneContextMenu={(e) => {
           e.preventDefault();
           sceneActions?.selectAll(false);
-          gui.setPosiontOnGui({
-            left: e.clientX,
-            top: e.clientY,
-          });
-          gui.openWidget('search');
+          gui.openWidget(
+            'search',
+            {
+              left: e.clientX,
+              top: e.clientY,
+            },
+            {
+              addNode: sceneActions?.addNode,
+              clear: sceneActions?.clear,
+              moreCommands: sceneState?.extraCommands,
+            }
+          );
         }}
         onNodeContextMenu={(e, node) => {
           e.preventDefault();
           if (!node.selected) sceneActions?.selectNode(node.id);
-          gui.setPosiontOnGui({
-            left: e.clientX,
-            top: e.clientY,
-          });
           const handle = e.target as HTMLElement;
           if (handle?.classList.contains('react-flow__handle')) {
             const id = handle.dataset.handleid;
@@ -266,17 +215,54 @@ const Scene = ({
             );
             gui.clickedHandle.current = { id, connection };
             gui.clickedNodeId.current = node.id;
-            gui.openWidget('handle');
-          } else gui.openWidget('node');
+            gui.openWidget(
+              'handleMenu',
+              {
+                left: e.clientX,
+                top: e.clientY,
+              },
+              {
+                connection: gui.clickedHandle.current?.connection,
+                onBreakLinks: () => {
+                  if (gui.clickedHandle.current && gui.clickedNodeId.current)
+                    sceneActions?.deleteAllEdgesOfHandle(
+                      gui.clickedNodeId.current,
+                      gui.clickedHandle.current.id
+                    );
+                },
+              }
+            );
+          } else
+            gui.openWidget(
+              'nodeMenu',
+              {
+                left: e.clientX,
+                top: e.clientY,
+              },
+              {
+                onDelete: sceneActions?.deleteSelectedElements,
+                onCut: sceneActions?.cutSelectedNodesToClipboard,
+                onCopy: sceneActions?.copySelectedNodeToClipboard,
+                onDuplicate: sceneActions?.duplicateSelectedNodes,
+                anyConnectableNodeSelected:
+                  sceneState?.anyConnectableNodeSelected ?? false,
+                anyConnectionToSelectedNode:
+                  sceneState?.anyConnectionToSelectedNode ?? false,
+                onBreakNodeLinks: sceneActions?.deleteAllEdgesOfSelectedNodes,
+              }
+            );
         }}
         onEdgeContextMenu={(e, edge) => {
           e.preventDefault();
           sceneActions?.selectEdge(edge.id);
-          gui.setPosiontOnGui({
-            left: e.clientX,
-            top: e.clientY,
-          });
-          gui.openWidget('edge');
+          gui.openWidget(
+            'edgeMenu',
+            {
+              left: e.clientX,
+              top: e.clientY,
+            },
+            { onDelete: sceneActions?.deleteSelectedElements }
+          );
         }}
         ref={reactflowDomRef}
         nodes={nodes}
@@ -304,15 +290,18 @@ const Scene = ({
               `[data-id="${toNode ?? ''}-${toHandle ?? ''}-source"]`
             );
 
+          let bbox: DOMRect | undefined;
           if (toDom) {
-            const bbox = toDom.getBoundingClientRect();
-            gui.setPosiontOnGui({
-              left: bbox.left + 10,
-              top: bbox.top + 10,
-            });
+            bbox = toDom.getBoundingClientRect();
           }
-          gui.openWidget('connectionTip');
-          gui.setconnectionStatus(status);
+          gui.openWidget(
+            'connectionTip',
+            {
+              left: bbox?.left ?? 0 + 10,
+              top: bbox?.top ?? 0 + 10,
+            },
+            { connectionStatus: status }
+          );
           return status.action !== 'reject';
         }}
         onConnectStart={(evt, params) => {

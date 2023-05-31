@@ -9,7 +9,6 @@ import {
 import { type IMenuItem, CreateMenu, createMenuItemElement } from './elements';
 
 export default function NodeMenu({
-  open,
   onClose,
   anchorPosition,
   onDelete,
@@ -20,15 +19,14 @@ export default function NodeMenu({
   anyConnectionToSelectedNode,
   onBreakNodeLinks,
 }: {
-  open: boolean;
   onClose: () => void;
   anchorPosition: { top: number; left: number };
   onDelete?: () => void;
   onCut?: () => void;
   onCopy?: () => void;
   onDuplicate?: () => void;
-  anyConnectableNodeSelected: boolean;
-  anyConnectionToSelectedNode: boolean;
+  anyConnectableNodeSelected?: boolean;
+  anyConnectionToSelectedNode?: boolean;
   onBreakNodeLinks?: () => void;
 }): JSX.Element {
   const items: IMenuItem[] = [
@@ -91,7 +89,7 @@ export default function NodeMenu({
     return undefined;
   };
   return CreateMenu(
-    open,
+    true,
     onClose,
     anchorPosition,
     items,

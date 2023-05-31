@@ -2,12 +2,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { type IMenuItem, CreateMenu } from './elements';
 
 export default function EdgeMenu({
-  open,
   onClose,
   anchorPosition,
   onDelete,
 }: {
-  open: boolean;
   onClose: () => void;
   anchorPosition: { top: number; left: number };
   onDelete?: () => void;
@@ -24,7 +22,7 @@ export default function EdgeMenu({
     },
   ];
   return CreateMenu(
-    open,
+    true,
     onClose,
     anchorPosition,
     items,
