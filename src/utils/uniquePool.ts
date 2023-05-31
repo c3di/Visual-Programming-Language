@@ -44,6 +44,7 @@ export default class UnqiueNamePool implements IUniqueNamePool {
       this._pool.splice(index, 1);
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete this._itemRef[item];
+      this.onRemove?.(item);
     }
   }
 
