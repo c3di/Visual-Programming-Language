@@ -1,22 +1,22 @@
 :root {
   --vp-menu-panel-radius: 0px;
 
-  --vp-menulist-top-padding: 0px !important;
-  --vp-menulist-bottom-padding: 0px !important;
-  --vp-menulist-margin: 6px !important;
+  --vp-menulist-top-padding: 0px;
+  --vp-menulist-bottom-padding: 0px;
+  --vp-menulist-margin: 6px;
 
-  --vp-menuitem-padding: 0px !important;
+  --vp-menuitem-padding: 0px;
   --vp-menuitem-shortcut-right-padding: 8px;
 }
 
 .VP_MenuList {
-  padding-top: var(--vp-menulist-top-padding);
-  padding-bottom: var(--vp-menulist-bottom-padding);
+  padding-top: var(--vp-menulist-top-padding) !important;
+  padding-bottom: var(--vp-menulist-bottom-padding) !important;
   margin: var(--vp-menulist-margin);
 }
 
 .VP_MenuItem {
-  padding: var(--vp-menuitem-padding);
+  padding: var(--vp-menuitem-padding) !important;
 }
 
 .VP_MenuItem_Shortcut {
@@ -32,8 +32,8 @@
 }
 
 .css-6hp17o-MuiList-root-MuiMenu-list {
-  padding-top: var(--vp-menulist-top-padding);
-  padding-bottom: var(--vp-menulist-bottom-padding);
+  padding-top: var(--vp-menulist-top-padding) !important;
+  padding-bottom: var(--vp-menulist-bottom-padding) !important;
 }
 
 .MuiPaper-root.MuiMenu-paper {
