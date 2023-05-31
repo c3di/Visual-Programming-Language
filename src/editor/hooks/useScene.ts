@@ -24,6 +24,7 @@ import {
   type XYPosition,
   type Node as RcNode,
 } from 'reactflow';
+import { UniqueNamePool, type IUniqueNamePool } from '../../utils';
 
 export interface ISceneActions {
   getSelectedCounts: () => selectedElementsCounts;
@@ -57,7 +58,6 @@ export interface ISceneActions {
   deleteAllEdgesOfSelectedNodes: () => void;
   isValidConnection: (params: any) => ConnectionStatus;
   centerSelectedNodes: () => void;
-  getFreeUniqueVariableName: (namePrefix: string) => string;
 }
 export interface ISceneState {
   graphStateRef: React.MutableRefObject<GraphState>;
@@ -86,7 +86,7 @@ export default function useScene(
     });
   };
 
-  const varsNamePool = useRef<string[]>([]);
+  const varsNamePool = useRef<IUniqueNamePool>(new UniqueNamePool());
 
   const saveNodesInSelectedCommentNode = (
     node: Node,
@@ -280,9 +280,9 @@ export default function useScene(
           !node.data.inputs.name.defaultValue
         ) {
           node.data.inputs.name.defaultValue =
-            getFreeUniqueVariableName('newVar');
+            varsNamePool.current.createNew('newVar');
         }
-        varsNamePool.current.push(
+        varsNamePool.current.add(
           node.data.inputs.name.value ?? node.data.inputs.name.defaultValue
         );
         return [
@@ -297,30 +297,6 @@ export default function useScene(
         ];
       });
     }
-  };
-
-  const getFreeUniqueVariableName = (namePrefix: string): string => {
-    console.log('getFreeUniqueVariableName', varsNamePool.current);
-    const names = varsNamePool.current;
-    console.log('names', names);
-    let counter = 0;
-    let name = `${namePrefix}_${counter}`;
-    console.log(
-      'name',
-      names,
-      name,
-      names.includes(name),
-      names[0],
-      names[0] === name
-    );
-
-    while (names.includes(name)) {
-      counter++;
-      name = `${namePrefix}_${counter}`;
-      console.log('name', name);
-    }
-
-    return name;
   };
 
   const initGraph = useRef<Graph | null>(null);
@@ -398,7 +374,6 @@ export default function useScene(
       deleteAllEdgesOfSelectedNodes: graphState.deleteAllEdgesOfSelectedNodes,
       isValidConnection: graphState.isValidConnection,
       centerSelectedNodes,
-      getFreeUniqueVariableName,
     },
   };
 }
