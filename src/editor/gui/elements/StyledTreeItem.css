@@ -1,0 +1,16 @@
+.MuiTreeItem-root .MuiTreeItem-content {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.MuiTreeItem-root .MuiTreeItem-content .MuiTreeItem-label {
+  padding-top: 0.1rem;
+  font-size: 1rem;
+  color: #000000de;
+}
+
+.MuiTreeItem-root .MuiTreeItem-content.Mui-selected,
+.MuiTreeItem-root .MuiTreeItem-content.Mui-selected.Mui-focused {
+  background-color: var(--tree-view-bg-color);
+  color: var(--tree-view-color);
+}

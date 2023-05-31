@@ -1,7 +1,8 @@
 import React from 'react';
 import { Box, styled } from '@mui/material';
 import { Typography, type SvgIconProps } from '@mui/material';
-import { TreeItem, type TreeItemProps, treeItemClasses } from '@mui/lab';
+import { TreeItem, type TreeItemProps } from '@mui/lab';
+import './StyledTreeItem.css';
 
 // from https://mui.com/material-ui/react-tree-view/#GmailTreeView.tsx
 declare module 'react' {
@@ -21,36 +22,7 @@ type StyledTreeItemProps = TreeItemProps & {
   onItemDelete?: (id: string) => void;
 };
 
-const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
-  color: theme.palette.text.secondary,
-  [`& .${treeItemClasses.content}`]: {
-    color: theme.palette.text.primary,
-    paddingRight: theme.spacing(0),
-    paddingLeft: theme.spacing(0),
-    fontWeight: theme.typography.fontWeightMedium,
-    '&.Mui-expanded': {
-      fontWeight: theme.typography.fontWeightRegular,
-    },
-    '&:hover': {
-      backgroundColor: theme.palette.action.hover,
-    },
-    '&.Mui-focused, &.Mui-selected, &.Mui-selected.Mui-focused': {
-      backgroundColor: `var(--tree-view-bg-color, ${theme.palette.action.selected})`,
-      color: 'var(--tree-view-color)',
-    },
-    [`& .${treeItemClasses.label}`]: {
-      // fontWeight: 'inherit',
-      paddingTop: theme.spacing(0.1),
-      fontSize: '1rem',
-      color: '#000000DE',
-    },
-  },
-  [`& .${treeItemClasses.group}`]: {
-    [`& .${treeItemClasses.content}`]: {
-      paddingLeft: theme.spacing(0),
-    },
-  },
-}));
+const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({}));
 
 export default function StyledTreeItem(
   props: StyledTreeItemProps
