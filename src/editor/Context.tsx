@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import React, { createContext, useContext } from 'react';
-import { type ISceneActions } from './hooks';
+import { type ISceneState } from './hooks';
 import { widgetFactory, type WidgetFactory } from './widgets';
 export const WidgetFactoryContext = createContext<WidgetFactory>(widgetFactory);
 
@@ -17,8 +17,8 @@ export const useWidgetFactory = () => {
   return useContext(WidgetFactoryContext);
 };
 
-export const SceneActionsContext = createContext<ISceneActions | null>(null);
+export const SceneStateContext = createContext<ISceneState | null>(null);
 
-export const useSceneActions = () => {
-  return useContext(SceneActionsContext);
+export const useSceneState = () => {
+  return useContext(SceneStateContext);
 };
