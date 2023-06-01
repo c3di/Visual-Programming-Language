@@ -24,7 +24,7 @@
     },
     {
       "id": "2",
-      "type": "extension1.Level2.module2.getter",
+      "type": "extension1.module1.getter",
       "position": {
         "x": 300,
         "y": 0

@@ -11,6 +11,7 @@ import {
   NodeMenu,
   EdgeMenu,
   HandleMenu,
+  GetterSetterMenu,
 } from '../gui';
 
 export interface Command {
@@ -56,6 +57,7 @@ export default function useGui(): IGui {
     nodeMenu: NodeMenu,
     edgeMenu: EdgeMenu,
     handleMenu: HandleMenu,
+    getterSetterMenu: GetterSetterMenu,
   };
 
   const openWidget = useCallback(
