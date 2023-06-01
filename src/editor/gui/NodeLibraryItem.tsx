@@ -1,5 +1,17 @@
 import React from 'react';
 
+declare module 'react' {
+  interface CSSProperties {
+    '--vp-accordion-item-border-color'?: string;
+    '--vp-accordion-item-title-font-size'?: string;
+    '--vp-accordion-item-title-font-color'?: string;
+    '--vp-accordion-item-content-font-size'?: string;
+    '--vp-accordion-item-content-font-color'?: string;
+    '--vp-accordion-item-content-button-font-size'?: string;
+    '--vp-accordion-item-content-button-font-color'?: string;
+  }
+}
+
 export interface INodeLibraryItem {
   title: string;
   href?: string;
@@ -22,9 +34,20 @@ export default function NodeLibraryItem({
     <li
       className="vp-nodelibrary-entry"
       style={{
+        '--vp-accordion-item-border-color': '#e0e0e0',
+
+        '--vp-accordion-item-title-font-size': '15.5px',
+        '--vp-accordion-item-title-font-color': '#1976D2',
+
+        '--vp-accordion-item-content-font-size': '15px',
+        '--vp-accordion-item-content-font-color': '#0000008A',
+
+        '--vp-accordion-item-content-button-font-size': '15px',
+        '--vp-accordion-item-content-button-font-color': '#0000008A',
+
         display: 'flex',
         borderBottom: '1px solid',
-        borderColor: 'rgba(0, 0, 0, .125)',
+        borderColor: 'var(--vp-accordion-item-border-color)',
         paddingTop: '5px',
         paddingLeft: '5px',
       }}
@@ -38,9 +61,9 @@ export default function NodeLibraryItem({
             href={href}
             style={{
               textDecoration: 'none',
-              color: '#1976D2',
+              color: 'var(--vp-accordion-item-title-font-color)',
               lineHeight: '1.28',
-              fontSize: '15.5px',
+              fontSize: 'var(--vp-accordion-item-title-font-size)',
               fontWeight: 405,
             }}
             target="_blank"
@@ -52,7 +75,10 @@ export default function NodeLibraryItem({
         <div className="vp-nodelibrary-entry-content">
           <div
             className="vp-nodelibrary-entry-description"
-            style={{ color: '#0000008A', fontSize: '15px' }}
+            style={{
+              color: 'var(--vp-accordion-item-content-font-color)',
+              fontSize: 'var(--vp-accordion-item-content-font-size)',
+            }}
           >
             {description ?? ''}
           </div>
@@ -66,10 +92,10 @@ export default function NodeLibraryItem({
                 marginRight: 5,
                 marginTop: '10px',
                 border: '0px',
-                color: '#0000008A',
+                color: 'var(--vp-accordion-item-content-button-font-color)',
                 backgroundColor: 'transparent',
                 paddingBottom: '8px',
-                fontSize: '15px',
+                fontSize: 'var(--vp-accordion-item-content-button-font-size)',
               }}
               onClick={onUninstall}
               type="button"
@@ -84,10 +110,10 @@ export default function NodeLibraryItem({
                 marginRight: 5,
                 marginTop: '10px',
                 border: '0px',
-                color: '#0000008A',
+                color: 'var(--vp-accordion-item-content-button-font-color)',
                 backgroundColor: 'transparent',
                 paddingBottom: '8px',
-                fontSize: '15px',
+                fontSize: 'var(--vp-accordion-item-content-button-font-size)',
               }}
               type="button"
               className="bp3-button bp3-minimal bp3-small minimal jp-Button"

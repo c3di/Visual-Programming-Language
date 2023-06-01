@@ -19,6 +19,13 @@ import { SearchInput } from './elements';
 import { type NodeConfig, type NodePackage } from '../types';
 import NodeLibraryItem, { type INodeLibraryItem } from './NodeLibraryItem';
 
+declare module 'react' {
+  interface CSSProperties {
+    '--vp-accordion-summary-hover-bgcolor'?: string;
+    '--vp-accordion-panel-border-color'?: string;
+  }
+}
+
 registerPlugin(FilepondZipper());
 
 function nodeConfigsToItemList(
@@ -80,7 +87,12 @@ export default function NodeLibraryList({
   const [files, setFiles] = useState<ActualFileObject[]>([]);
 
   return (
-    <>
+    <div
+      style={{
+        '--vp-accordion-summary-hover-bgcolor': '#f5f5f6f0',
+        '--vp-accordion-panel-border-color': '#e0e0e0',
+      }}
+    >
       <FilePond
         credits={false}
         files={files}
@@ -129,9 +141,10 @@ export default function NodeLibraryList({
         square
         sx={{
           borderTop: '0px',
-          border: '1px solid #e0e0e0',
+          border: '1px solid var(--vp-accordion-panel-border-color)',
+
           '&:not(:last-child)': {
-            borderBottom: '1px solid #e0e0e0  ',
+            borderBottom: '1px solid var(--vp-accordion-panel-border-color)  ',
             borderRight: '0px  ',
             borderLeft: '0px  ',
           },
@@ -158,7 +171,7 @@ export default function NodeLibraryList({
               transform: 'rotate(90deg)',
             },
             '&:hover': {
-              backgroundColor: '#f5f5f6f0',
+              backgroundColor: 'var(--vp-accordion-summary-hover-bgcolor)',
             },
 
             '& .MuiAccordionSummary-content': {
@@ -204,6 +217,6 @@ export default function NodeLibraryList({
           ))}
         </AccordionDetails>
       </Accordion>
-    </>
+    </div>
   );
 }
