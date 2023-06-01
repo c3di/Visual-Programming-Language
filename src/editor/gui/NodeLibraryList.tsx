@@ -1,10 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  styled,
   Accordion,
-  type AccordionProps,
   AccordionSummary,
-  type AccordionSummaryProps,
   AccordionDetails,
   Typography,
 } from '@mui/material';
@@ -41,53 +38,6 @@ function nodeConfigsToItemList(
   }
   return data;
 }
-const StyledAccordion = styled((props: AccordionProps) => (
-  <Accordion disableGutters elevation={0} square {...props} />
-))(({ theme }) => ({
-  border: `1px solid ${theme.palette.divider}`,
-  '&:not(:last-child)': {
-    borderBottom: '1px solid #e0e0e0  ',
-    borderRight: '0px  ',
-    borderLeft: '0px  ',
-  },
-  '&:before': {
-    display: 'none',
-  },
-}));
-
-const StyledAccordionSummary = styled((props: AccordionSummaryProps) => (
-  <AccordionSummary
-    sx={{
-      minHeight: '10px !important',
-      height: '33px !important',
-      padding: '4px 0px 4px 0px !important',
-    }}
-    expandIcon={
-      <PlayArrow
-        sx={{ width: '12px', height: '12px', padding: '6px 8px 8px 8px' }}
-      />
-    }
-    {...props}
-  />
-))(({ theme }) => ({
-  padding: '0px',
-  flexDirection: 'row-reverse',
-  '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
-    transform: 'rotate(90deg)',
-  },
-  '&:hover': {
-    backgroundColor: theme.palette.action.hover,
-  },
-
-  '& .MuiAccordionSummary-content': {
-    marginLeft: '0px',
-  },
-}));
-
-const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
-  padding: '0px',
-  borderTop: '1px solid rgba(0, 0, 0, .125)',
-}));
 
 export interface ITokens {
   authenticated: boolean;
@@ -173,8 +123,22 @@ export default function NodeLibraryList({
       >
         <SearchInput onChange={search} />
       </div>
-      <StyledAccordion
-        sx={{ borderTop: '0px' }}
+      <Accordion
+        disableGutters
+        elevation={0}
+        square
+        sx={{
+          borderTop: '0px',
+          border: '1px solid #e0e0e0',
+          '&:not(:last-child)': {
+            borderBottom: '1px solid #e0e0e0  ',
+            borderRight: '0px  ',
+            borderLeft: '0px  ',
+          },
+          '&:before': {
+            display: 'none',
+          },
+        }}
         expanded={expanded}
         onChange={() => {
           setExpanded((expanded) => {
@@ -182,9 +146,30 @@ export default function NodeLibraryList({
           });
         }}
       >
-        <StyledAccordionSummary
+        <AccordionSummary
           aria-controls="panel1d-content"
           id="panel1d-header"
+          sx={{
+            minHeight: '10px !important',
+            height: '33px !important',
+            padding: '0px',
+            flexDirection: 'row-reverse',
+            '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
+              transform: 'rotate(90deg)',
+            },
+            '&:hover': {
+              backgroundColor: '#f5f5f6f0',
+            },
+
+            '& .MuiAccordionSummary-content': {
+              marginLeft: '0px',
+            },
+          }}
+          expandIcon={
+            <PlayArrow
+              sx={{ width: '12px', height: '12px', padding: '6px 8px 8px 8px' }}
+            />
+          }
         >
           <Typography
             sx={{
@@ -195,8 +180,11 @@ export default function NodeLibraryList({
           >
             {title}
           </Typography>
-        </StyledAccordionSummary>
-        <StyledAccordionDetails>
+        </AccordionSummary>
+
+        <AccordionDetails
+          sx={{ padding: '0px', borderTop: '1px solid rgba(0, 0, 0, .125)' }}
+        >
           {itemList.map((item) => (
             <NodeLibraryItem
               key={item.title + (item.href ?? '')}
@@ -214,8 +202,8 @@ export default function NodeLibraryList({
               }}
             />
           ))}
-        </StyledAccordionDetails>
-      </StyledAccordion>
+        </AccordionDetails>
+      </Accordion>
     </>
   );
 }
