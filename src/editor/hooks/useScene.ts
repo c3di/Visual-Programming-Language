@@ -32,7 +32,8 @@ export interface ISceneActions {
   selectAll: (sure: boolean) => void;
   selectEdge: (edgeId: string) => void;
   selectNode: (nodeId: string) => void;
-  addNode: (configType: string, thisPosition?: XYPosition) => Node;
+  getNodeById: (nodeId: string) => Node | undefined;
+  addNode: (configType: string, thisPosition?: XYPosition, data?: any) => Node;
   addEdge: (
     source: string,
     sourceHandle: string,
@@ -253,7 +254,7 @@ export default function useScene(
   };
 
   const addNode = useCallback(
-    (configType: string, thisPosition?: XYPosition): Node => {
+    (configType: string, thisPosition?: XYPosition, data?: any): Node => {
       const id = getFreeUniqueNodeIds(1)[0];
       const position = thisPosition ?? {
         x: mousePos.current.mouseX,
@@ -264,6 +265,8 @@ export default function useScene(
         id,
         type: configType,
         position,
+        inputs: data?.inputs,
+        outputs: data?.outputs,
       });
       const node = deserializer.configToNode(config);
       onNodeAdd(node);
@@ -295,9 +298,13 @@ export default function useScene(
               item: any,
               e: React.MouseEvent<HTMLLIElement> | undefined
             ) => {
-              gui.openWidget('getterSetterMenu', {
+              const position = {
                 left: e?.clientX ?? 0,
                 top: e?.clientY ?? 0,
+              };
+              gui.openWidget('getterSetterMenu', position, {
+                createVarNodeRef: node.id,
+                position,
               });
             },
             category: 'Variables',
@@ -359,6 +366,7 @@ export default function useScene(
     anyConnectionToSelectedNode: graphState.anyConnectionToSelectedNode,
     extraCommands,
     sceneActions: {
+      getNodeById: graphState.getNodeById,
       getSelectedCounts: graphState.getSelectedCounts,
       setSelectedCounts: graphState.setSelectedCounts,
       selectNode: graphState.selectNode,
