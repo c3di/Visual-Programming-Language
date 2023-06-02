@@ -15,7 +15,7 @@ export interface TreeItemData {
   children?: TreeItemData[];
   tooltip?: string;
   labelIcon?: React.ElementType<SvgIconProps> | undefined;
-  onClick?: (item: any) => void;
+  onClick?: (item: TreeItemData, e: React.MouseEvent<HTMLLIElement>) => void;
   rank?: number;
 }
 
@@ -90,8 +90,8 @@ function ControlledTreeView({
         nodeId={item.id}
         labelText={item.name}
         labelIcon={item.labelIcon}
-        onClick={() => {
-          if (item.onClick) item.onClick(item);
+        onClick={(event: React.MouseEvent<HTMLLIElement>) => {
+          if (item.onClick) item.onClick(item, event);
           else onItemClick?.(item);
         }}
         title={item.tooltip}

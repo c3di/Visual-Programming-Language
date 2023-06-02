@@ -92,9 +92,9 @@ const SearchMenu = memo(function SearchMenu({
           name: command.name,
           tooltip: command.tooltip,
           labelIcon: command.labelIcon,
-          onClick: () => {
-            command.action();
+          onClick: (item: TreeItemData, e: React.MouseEvent<HTMLLIElement>) => {
             onClose();
+            command.action(item, e);
           },
           rank: command.rank,
         };

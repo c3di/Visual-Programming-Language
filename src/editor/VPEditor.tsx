@@ -12,7 +12,6 @@ import {
   useScene,
   useKeyDown,
   useTrackMousePos,
-  useGui,
   type ISceneActions,
 } from './hooks';
 
@@ -68,7 +67,7 @@ const Scene = ({
     toString,
   } = graphState ?? {};
   const { onKeyDown } = useKeyDown(sceneState ?? undefined);
-  const gui = useGui();
+  const gui = sceneState?.gui;
   const {
     view: viewSetting,
     select: selectSetting,
