@@ -66,6 +66,7 @@ export interface ISceneState {
   anyConnectableNodeSelected: boolean;
   anyConnectionToSelectedNode: boolean;
   extraCommands: Command[];
+  varsNamePool: React.MutableRefObject<IUniqueNamePool>;
   sceneActions: ISceneActions;
 }
 
@@ -267,6 +268,7 @@ export default function useScene(
         position,
         inputs: data?.inputs,
         outputs: data?.outputs,
+        nodeRef: data?.nodeRef,
       });
       const node = deserializer.configToNode(config);
       onNodeAdd(node);
@@ -361,6 +363,7 @@ export default function useScene(
 
   return {
     gui,
+    varsNamePool,
     graphStateRef,
     anyConnectableNodeSelected: graphState.anyConnectableNodeSelected,
     anyConnectionToSelectedNode: graphState.anyConnectionToSelectedNode,

@@ -31,6 +31,7 @@ export default function GetterSetterMenu({
       title: 'Get',
       action: () => {
         addNode?.('extension1.module1.getter', undefined, {
+          nodeRef: createVarNodeRef,
           outputs: {
             getter: handleData,
           },
@@ -42,6 +43,7 @@ export default function GetterSetterMenu({
       title: 'Set',
       action: () => {
         addNode?.('extension1.module1.setter', undefined, {
+          nodeRef: createVarNodeRef,
           inputs: {
             setter: handleData,
           },

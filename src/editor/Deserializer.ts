@@ -131,8 +131,17 @@ export class Deserializer {
   };
 
   private readonly defaultConfigToNode = (config: GraphNodeConfig): Node => {
-    const { id, title, inputs, outputs, tooltip, position, dataType, type } =
-      config;
+    const {
+      id,
+      title,
+      inputs,
+      outputs,
+      tooltip,
+      position,
+      dataType,
+      type,
+      nodeRef,
+    } = config;
     return {
       id,
       type: config.category,
@@ -144,6 +153,7 @@ export class Deserializer {
         inputs,
         outputs,
         configType: type,
+        nodeRef,
       },
     };
   };
