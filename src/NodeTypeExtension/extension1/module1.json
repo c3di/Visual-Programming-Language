@@ -1,6 +1,7 @@
 {
   "nodes": {
     "setter": {
+      "notShowInMenu": true,
       "type": "setter",
       "category": "setter",
       "inputs": {
@@ -10,6 +11,7 @@
       }
     },
     "getter": {
+      "notShowInMenu": true,
       "type": "getter",
       "category": "getter",
       "tooltip": "Return the value",

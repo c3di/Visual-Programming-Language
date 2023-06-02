@@ -1,28 +1,54 @@
+import { useSceneState } from '../Context';
 import { type NodeConfig } from '../types';
 import { type IMenuItem, CreateMenu } from './elements';
 
 export default function GetterSetterMenu({
   onClose,
   anchorPosition,
-  addNode,
+  createVarNodeRef,
 }: {
   onClose: () => void;
   anchorPosition: { top: number; left: number };
   nodeConfig: NodeConfig;
-  addNode?: (configType: string) => void;
+  createVarNodeRef?: string;
 }): JSX.Element {
+  const { addNode, getNodeById } = useSceneState()?.sceneActions ?? {};
+  const node = getNodeById?.(createVarNodeRef ?? '');
+  if (!node) {
+    onClose();
+  }
+  const handleData = {
+    title:
+      node?.data?.inputs.name?.value ?? node?.data?.inputs.name?.defaultValue,
+    dataType:
+      node?.data?.inputs.type?.value ?? node?.data?.inputs.type?.defaultValue,
+    value:
+      node?.data?.inputs.value?.value ?? node?.data?.inputs.value?.defaultValue,
+  };
+
   const items: IMenuItem[] = [
     {
       title: 'Get',
       action: () => {
-        addNode?.('extension1.module1.getter');
+        addNode?.('extension1.module1.getter', undefined, {
+          outputs: {
+            getter: handleData,
+          },
+        });
         onClose();
       },
     },
     {
       title: 'Set',
       action: () => {
-        addNode?.('extension1.module1.setter');
+        addNode?.('extension1.module1.setter', undefined, {
+          inputs: {
+            setter: handleData,
+          },
+          outputs: {
+            'setter-out': handleData,
+          },
+        });
         onClose();
       },
     },

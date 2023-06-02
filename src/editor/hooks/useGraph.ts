@@ -43,6 +43,7 @@ export interface GraphState {
   nodes: Node[];
   edges: Edge[];
   getFreeUniqueNodeIds: (count: number) => string[];
+  getNodeById: (id: string) => Node | undefined;
   setNodes: Dispatch<SetStateAction<Array<RcNode<any, string | undefined>>>>;
   onNodesChange: OnChange<NodeChange>;
   setEdges: (edges: Edge[]) => void;
@@ -90,6 +91,13 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
   });
   // the nodes will added more properties by reactflow, so we need to get the nodes from reactflow
   const { getNodes, getNode, getEdges } = useReactFlow();
+
+  const getNodeById = useCallback(
+    (id: string): Node | undefined => {
+      return nodes.find((n) => n.id === id);
+    },
+    [nodes]
+  );
 
   const getSelectedCounts = useCallback((): selectedElementsCounts => {
     return selectedCounts.current;
@@ -550,6 +558,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     initGraph,
     getFreeUniqueNodeIds,
     nodes,
+    getNodeById,
     setNodes,
     onNodesChange,
     edges,
