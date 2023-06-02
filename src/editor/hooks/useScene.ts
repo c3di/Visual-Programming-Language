@@ -16,7 +16,7 @@ import {
 } from '../types';
 import { type GraphState } from './useGraph';
 import { deserializer } from '../Deserializer';
-import { type Command } from './useGui';
+import useGui, { type IGui, type Command } from './useGui';
 import ContentPaste from '@mui/icons-material/ContentPaste';
 import {
   useReactFlow,
@@ -60,6 +60,7 @@ export interface ISceneActions {
   centerSelectedNodes: () => void;
 }
 export interface ISceneState {
+  gui: IGui;
   graphStateRef: React.MutableRefObject<GraphState>;
   anyConnectableNodeSelected: boolean;
   anyConnectionToSelectedNode: boolean;
@@ -87,7 +88,7 @@ export default function useScene(
   };
 
   const varsNamePool = useRef<IUniqueNamePool>(new UniqueNamePool());
-
+  const gui = useGui();
   const saveNodesInSelectedCommentNode = (
     node: Node,
     toBeDragNodeId: string
@@ -290,7 +291,15 @@ export default function useScene(
           {
             name:
               node.data.inputs.name.value ?? node.data.inputs.name.defaultValue,
-            action: () => {},
+            action: (
+              item: any,
+              e: React.MouseEvent<HTMLLIElement> | undefined
+            ) => {
+              gui.openWidget('getterSetterMenu', {
+                left: e?.clientX ?? 0,
+                top: e?.clientY ?? 0,
+              });
+            },
             category: 'Variables',
             categoryRank: 0,
           },
@@ -344,6 +353,7 @@ export default function useScene(
   };
 
   return {
+    gui,
     graphStateRef,
     anyConnectableNodeSelected: graphState.anyConnectableNodeSelected,
     anyConnectionToSelectedNode: graphState.anyConnectionToSelectedNode,

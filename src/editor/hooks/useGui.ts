@@ -16,7 +16,7 @@ import {
 
 export interface Command {
   name: string;
-  action: () => void;
+  action: (item?: any, e?: React.MouseEvent<HTMLLIElement>) => void;
   labelIcon?: React.ElementType<SvgIconProps> | undefined;
   labelInfo?: string;
   tooltip?: string;

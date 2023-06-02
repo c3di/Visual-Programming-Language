@@ -35,7 +35,7 @@ export default function GetterSetterMenu({
     undefined,
     undefined,
     {
-      width: '150px',
+      width: '80px',
     }
   );
 }
