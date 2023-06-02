@@ -4,6 +4,9 @@
   --vp-node-background-color: #f5f5f6f0;
   --vp-node-font-color: #222;
   --vp-node-font-size: 13px;
+  /* Here we use the defined variables from src\index.css */
+  --vp-node-font-size: var(--vp-ui-font-size);
+
   --vp-node-handles-container-gap: 5px;
 
   --vp-node-header-padding: 8px 10px;
