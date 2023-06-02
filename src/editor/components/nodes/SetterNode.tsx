@@ -3,6 +3,7 @@ import './SetterNode.css';
 import { type VariableNodeData } from '../../types';
 import SourceHandle from '../SourceHandle';
 import TargetHandle from '../TargetHandle';
+import { registVariableRef } from '../../util';
 
 function SetterNode({
   id,
@@ -11,6 +12,7 @@ function SetterNode({
   id: string;
   data: VariableNodeData;
 }): JSX.Element {
+  registVariableRef(data, id);
   const inputhandles = [];
   for (const inputId in data.inputs) {
     inputhandles.push(

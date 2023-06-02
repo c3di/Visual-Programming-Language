@@ -74,7 +74,7 @@ export class Serializer {
     isGeneraticHandle: boolean = false
   ): SerializedGraphNode => {
     const { id, type, position, data } = node;
-    const { dataType, configType } = data;
+    const { dataType, configType, nodeRef } = data;
     if (!id || !type || !position || !data)
       throw new Error('Invalid node config');
     const inputs: Record<string, SerializedHandle> = {};
@@ -111,6 +111,7 @@ export class Serializer {
       inputs: Object.keys(inputs).length > 0 ? inputs : undefined,
       outputs: Object.keys(outputs).length > 0 ? outputs : undefined,
       dataType,
+      nodeRef,
     };
   };
 

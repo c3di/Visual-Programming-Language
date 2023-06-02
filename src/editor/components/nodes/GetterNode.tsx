@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import './GetterNode.css';
 import { type VariableNodeData } from '../../types';
 import SourceHandle from '../SourceHandle';
+import { registVariableRef } from '../../util';
 
 function GetterNode({
   id,
@@ -10,6 +11,7 @@ function GetterNode({
   id: string;
   data: VariableNodeData;
 }): JSX.Element {
+  registVariableRef(data, id);
   const outputHandles = [];
   for (const outputId in data.outputs) {
     outputHandles.push(
