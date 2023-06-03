@@ -14,7 +14,8 @@ function CreateVariable({
   const forceUpdate = useCallback(() => {
     updateState({});
   }, []);
-  const { setNodes, setExtraCommands } = useSceneState()?.sceneActions ?? {};
+  const { setNodes, setExtraCommands, deleteAllEdgesOfNode } =
+    useSceneState()?.sceneActions ?? {};
 
   const updateName = useCallback((newVa: string, oldVa: string) => {
     setExtraCommands?.((cmds) =>
@@ -61,7 +62,8 @@ function CreateVariable({
     );
   }, []);
 
-  const changeValue = useCallback((newVa: any): void => {
+  const changeType = useCallback((newVa: any): void => {
+    const toUpdateEdge: string[] = [];
     setNodes?.((nds) =>
       nds.map((n) => {
         if (n.id === id) {
@@ -71,15 +73,46 @@ function CreateVariable({
             defaultValue: DataTypes[newVa].defaultValue,
             value: DataTypes[newVa].defaultValue,
           };
+        } else if (n.data.nodeRef === id) {
+          toUpdateEdge.push(n.id);
+          if (n.type === 'getter')
+            n.data = {
+              ...n.data,
+              outputs: {
+                getter: {
+                  ...n.data.outputs.getter,
+                  dataType: newVa,
+                },
+              },
+            };
+          else if (n.type === 'setter')
+            n.data = {
+              ...n.data,
+              inputs: {
+                setter: {
+                  ...n.data.inputs.setter,
+                  dataType: newVa,
+                },
+              },
+              outputs: {
+                'setter-out': {
+                  ...n.data.outputs['setter-out'],
+                  dataType: newVa,
+                },
+              },
+            };
         }
         return n;
       })
     );
+    toUpdateEdge.forEach((id) => {
+      deleteAllEdgesOfNode?.(id);
+    });
     forceUpdate();
   }, []);
 
   const onValueChanges: Record<string, any> = {
-    type: changeValue,
+    type: changeType,
     name: updateName,
   };
 
