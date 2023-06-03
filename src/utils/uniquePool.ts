@@ -2,17 +2,25 @@ export interface IUniqueNamePool {
   createNew: (prefix?: string) => string;
   add: (item: string) => boolean;
   addRef: (name: string, item: any) => void;
+  removeRef: (name: string, item: any) => void;
   remove: (item: string) => void;
   itemRef: (name: string) => any[];
-  onRemove?: (item: string) => void;
-  onAdd?: (item: string) => void;
+  all: () => string[];
+  allRef: () => Record<string, string[]>;
 }
 
 export default class UnqiueNamePool implements IUniqueNamePool {
   private readonly _pool: string[] = [];
-  private readonly _itemRef: Record<string, any[]> = {};
-  public onAdd?: (item: string) => void;
-  public onRemove?: (item: string) => void;
+  private readonly _itemRef: Record<string, string[]> = {};
+
+  all(): string[] {
+    return this._pool;
+  }
+
+  allRef(): Record<string, string[]> {
+    return this._itemRef;
+  }
+
   createNew(prefix?: string): string {
     let counter = 0;
     const namePrefix = prefix ?? 'item';
@@ -27,14 +35,14 @@ export default class UnqiueNamePool implements IUniqueNamePool {
   add(newName: string): boolean {
     if (!this._pool.includes(newName)) {
       this._pool.push(newName);
-      this._itemRef[newName] = [];
-      this.onAdd?.(newName);
+      if (!this._itemRef[newName]) this._itemRef[newName] = [];
       return true;
     }
     return false;
   }
 
   addRef(name: string, ref: any): void {
+    if (!this._itemRef[name]) this._itemRef[name] = [];
     if (!this._itemRef[name].includes(ref)) {
       this._itemRef[name].push(ref);
     }
@@ -46,7 +54,15 @@ export default class UnqiueNamePool implements IUniqueNamePool {
       this._pool.splice(index, 1);
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete this._itemRef[item];
-      this.onRemove?.(item);
+    }
+  }
+
+  removeRef(name: string, item: any): void {
+    if (this._itemRef[name]) {
+      const index = this._itemRef[name].indexOf(item);
+      if (index > -1) {
+        this._itemRef[name].splice(index, 1);
+      }
     }
   }
 
