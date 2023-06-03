@@ -28,7 +28,6 @@ export default function Handle({
 }): JSX.Element {
   const [label, setLabel] = useState(<></>);
   const widget = useRef<null | JSX.Element>();
-  const title = useRef<null | JSX.Element>();
   const isSourceHandle = handleType === 'source';
   const { setNodes } = useSceneState()?.sceneActions ?? {};
   const widgetFactory = useWidgetFactory();
@@ -73,15 +72,16 @@ export default function Handle({
         className: `nodrag handle-widget ${handleData.dataType}`,
         onChange: changeValue,
       });
-    if (showTitle && !title.current)
-      title.current = <span className="handle-title">{handleData.title}</span>;
+    let title: null | JSX.Element = null;
+    if (showTitle)
+      title = <span className="handle-title">{handleData.title}</span>;
     setLabel(
       <label>
-        {title.current}
+        {title}
         {(!toHideWidgetWhenConnected || !isConnected) && widget.current}
       </label>
     );
-  }, [handleData.connection, handleData.dataType]);
+  }, [handleData.connection, handleData.dataType, handleData.title]);
 
   return (
     <div className={className} title={handleData.tooltip}>
