@@ -59,6 +59,7 @@ export interface ISceneActions {
   deleteAllEdgesOfSelectedNodes: () => void;
   isValidConnection: (params: any) => ConnectionStatus;
   centerSelectedNodes: () => void;
+  onNodesDelete: (nodes: Node[]) => void;
 }
 export interface ISceneState {
   gui: IGui;
@@ -317,6 +318,24 @@ export default function useScene(
     }
   };
 
+  const onNodesDelete = (nodes: Node[]): void => {
+    nodes.forEach((node) => {
+      if (node.type === 'createVariable') {
+        const name =
+          node.data.inputs.name.value ?? node.data.inputs.name.defaultValue;
+        setExtraCommands((commands) => {
+          return commands.filter((command) => command.name !== name);
+        });
+        graphState.deleteNodes(varsNamePool.current.itemRef(name) ?? []);
+        varsNamePool.current.remove(name);
+      } else if (node.type === 'setter' || node.type === 'getter') {
+        const name =
+          node.data.inputs.setter?.title ?? node.data.inputs.getter?.title;
+        varsNamePool.current.removeRef(name, node.id);
+      }
+    });
+  };
+
   const initGraph = useRef<Graph | null>(null);
   if (
     graphState.initGraph &&
@@ -361,6 +380,11 @@ export default function useScene(
     });
   };
 
+  const deleteSelectedElements = (): void => {
+    onNodesDelete(selectedNodes());
+    graphState.deleteSelectedElements();
+  };
+
   return {
     gui,
     varsNamePool,
@@ -386,7 +410,7 @@ export default function useScene(
       copySelectedNodeToClipboard,
       pasteFromClipboard,
       clear: graphState.clear,
-      deleteSelectedElements: graphState.deleteSelectedElements,
+      deleteSelectedElements,
       duplicateSelectedNodes,
       cutSelectedNodesToClipboard,
       deleteEdge: graphState.deleteEdge,
@@ -395,6 +419,7 @@ export default function useScene(
       deleteAllEdgesOfSelectedNodes: graphState.deleteAllEdgesOfSelectedNodes,
       isValidConnection: graphState.isValidConnection,
       centerSelectedNodes,
+      onNodesDelete,
     },
   };
 }
