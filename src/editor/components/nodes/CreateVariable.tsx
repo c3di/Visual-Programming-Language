@@ -16,13 +16,47 @@ function CreateVariable({
   }, []);
   const { setNodes, setExtraCommands } = useSceneState()?.sceneActions ?? {};
 
-  const updateCommandName = useCallback((newVa: string, oldVa: string) => {
+  const updateName = useCallback((newVa: string, oldVa: string) => {
     setExtraCommands?.((cmds) =>
       cmds.map((cmd) => {
         if (cmd.name === oldVa) {
           cmd.name = newVa;
         }
         return cmd;
+      })
+    );
+
+    setNodes?.((nds) =>
+      nds.map((n) => {
+        if (n.data.nodeRef === id) {
+          if (n.type === 'getter')
+            n.data = {
+              ...n.data,
+              outputs: {
+                getter: {
+                  ...n.data.outputs.getter,
+                  title: newVa,
+                },
+              },
+            };
+          else if (n.type === 'setter')
+            n.data = {
+              ...n.data,
+              inputs: {
+                setter: {
+                  ...n.data.inputs.setter,
+                  title: newVa,
+                },
+              },
+              outputs: {
+                'setter-out': {
+                  ...n.data.outputs['setter-out'],
+                  title: newVa,
+                },
+              },
+            };
+        }
+        return n;
       })
     );
   }, []);
@@ -46,7 +80,7 @@ function CreateVariable({
 
   const onValueChanges: Record<string, any> = {
     type: changeValue,
-    name: updateCommandName,
+    name: updateName,
   };
 
   const inputhandles = [];
