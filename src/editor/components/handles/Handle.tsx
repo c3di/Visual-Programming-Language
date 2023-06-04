@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { type HandleData, DataTypes } from '../../types';
 import { Handle as RCHandle, type HandleType, type Position } from 'reactflow';
 import { useWidgetFactory, useSceneState } from '../../Context';
+import { type HandleData, DataTypes } from '../../types';
 
 export default function Handle({
   id,
@@ -74,9 +74,9 @@ export default function Handle({
       });
     let title: null | JSX.Element = null;
     if (showTitle)
-      title = <span className="handle-title">{handleData.title}</span>;
+      title = <span className="handle-title">{handleData.title} </span>;
     setLabel(
-      <label>
+      <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
         {title}
         {(!toHideWidgetWhenConnected || !isConnected) && widget.current}
       </label>
@@ -87,10 +87,20 @@ export default function Handle({
     <div className={className} title={handleData.tooltip}>
       {label}
       <RCHandle
+        className="vp-rc-handle"
         id={id}
         type={handleType}
         position={handlePosition}
         isConnectable={true}
+        style={{
+          top: 0,
+          left: 0,
+          transform:
+            handleType === 'target'
+              ? 'translate(-50%, 0)'
+              : 'translate(50%, 0)',
+          position: 'relative',
+        }}
       />
     </div>
   );

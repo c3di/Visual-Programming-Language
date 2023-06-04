@@ -1,7 +1,7 @@
 import React from 'react';
-import { type HandleData } from '../../types';
 import { Position } from 'reactflow';
 import Handle from './Handle';
+import { type HandleData } from '../../types';
 
 export default function SourceHandle({
   id,
