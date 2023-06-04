@@ -1,4 +1,10 @@
-import { useCallback, useRef, useState } from 'react';
+import {
+  type Dispatch,
+  type SetStateAction,
+  useCallback,
+  useRef,
+  useState,
+} from 'react';
 import {
   type Node,
   type ClipboardInfo,
@@ -6,12 +12,19 @@ import {
   type Edge,
   type selectedElementsCounts,
   isCommentNode,
+  type Graph,
 } from '../types';
 import { type GraphState } from './useGraph';
 import { deserializer } from '../Deserializer';
-import { type Command } from './useGui';
+import useGui, { type IGui, type Command } from './useGui';
 import ContentPaste from '@mui/icons-material/ContentPaste';
-import { useReactFlow, getRectOfNodes, type XYPosition } from 'reactflow';
+import {
+  useReactFlow,
+  getRectOfNodes,
+  type XYPosition,
+  type Node as RcNode,
+} from 'reactflow';
+import { UniqueNamePool, type IUniqueNamePool } from '../../utils';
 
 export interface ISceneActions {
   getSelectedCounts: () => selectedElementsCounts;
@@ -19,7 +32,8 @@ export interface ISceneActions {
   selectAll: (sure: boolean) => void;
   selectEdge: (edgeId: string) => void;
   selectNode: (nodeId: string) => void;
-  addNode: (configType: string, thisPosition?: XYPosition) => Node;
+  getNodeById: (nodeId: string) => Node | undefined;
+  addNode: (configType: string, thisPosition?: XYPosition, data?: any) => Node;
   addEdge: (
     source: string,
     sourceHandle: string,
@@ -27,6 +41,8 @@ export interface ISceneActions {
     targetHandle: string,
     dataType?: string
   ) => void;
+  setNodes: Dispatch<SetStateAction<Array<RcNode<any, string | undefined>>>>;
+  setExtraCommands: Dispatch<SetStateAction<Command[]>>;
   clearEdgeSelection: () => void;
   getHandleConnectionCounts: (nodeId: string, handleId: string) => number;
   onNodeDragStart: (evt: any, node: Node) => void;
@@ -43,12 +59,15 @@ export interface ISceneActions {
   deleteAllEdgesOfSelectedNodes: () => void;
   isValidConnection: (params: any) => ConnectionStatus;
   centerSelectedNodes: () => void;
+  onNodesDelete: (nodes: Node[]) => void;
 }
 export interface ISceneState {
+  gui: IGui;
   graphStateRef: React.MutableRefObject<GraphState>;
   anyConnectableNodeSelected: boolean;
   anyConnectionToSelectedNode: boolean;
   extraCommands: Command[];
+  varsNamePool: React.MutableRefObject<IUniqueNamePool>;
   sceneActions: ISceneActions;
 }
 
@@ -71,6 +90,8 @@ export default function useScene(
     });
   };
 
+  const varsNamePool = useRef<IUniqueNamePool>(new UniqueNamePool());
+  const gui = useGui();
   const saveNodesInSelectedCommentNode = (
     node: Node,
     toBeDragNodeId: string
@@ -235,7 +256,7 @@ export default function useScene(
   };
 
   const addNode = useCallback(
-    (configType: string, thisPosition?: XYPosition): Node => {
+    (configType: string, thisPosition?: XYPosition, data?: any): Node => {
       const id = getFreeUniqueNodeIds(1)[0];
       const position = thisPosition ?? {
         x: mousePos.current.mouseX,
@@ -246,13 +267,85 @@ export default function useScene(
         id,
         type: configType,
         position,
+        inputs: data?.inputs,
+        outputs: data?.outputs,
+        nodeRef: data?.nodeRef,
       });
       const node = deserializer.configToNode(config);
+      onNodeAdd(node);
       graphState.addElements({ newNodes: [node] });
       return node;
     },
     []
   );
+
+  const onNodeAdd = (node: Node): void => {
+    if (node.type === 'createVariable') {
+      setExtraCommands((commands) => {
+        if (
+          !node.data.inputs.name.value &&
+          !node.data.inputs.name.defaultValue
+        ) {
+          node.data.inputs.name.defaultValue =
+            varsNamePool.current.createNew('newVar');
+        }
+        varsNamePool.current.add(
+          node.data.inputs.name.value ?? node.data.inputs.name.defaultValue
+        );
+        return [
+          ...commands,
+          {
+            name:
+              node.data.inputs.name.value ?? node.data.inputs.name.defaultValue,
+            action: (
+              item: any,
+              e: React.MouseEvent<HTMLLIElement> | undefined
+            ) => {
+              const position = {
+                left: e?.clientX ?? 0,
+                top: e?.clientY ?? 0,
+              };
+              gui.openWidget('getterSetterMenu', position, {
+                createVarNodeRef: node.id,
+                position,
+              });
+            },
+            category: 'Variables',
+            categoryRank: 0,
+          },
+        ];
+      });
+    }
+  };
+
+  const onNodesDelete = (nodes: Node[]): void => {
+    nodes.forEach((node) => {
+      if (node.type === 'createVariable') {
+        const name =
+          node.data.inputs.name.value ?? node.data.inputs.name.defaultValue;
+        setExtraCommands((commands) => {
+          return commands.filter((command) => command.name !== name);
+        });
+        graphState.deleteNodes(varsNamePool.current.itemRef(name) ?? []);
+        varsNamePool.current.remove(name);
+      } else if (node.type === 'setter' || node.type === 'getter') {
+        const name =
+          node.data.inputs.setter?.title ?? node.data.inputs.getter?.title;
+        varsNamePool.current.removeRef(name, node.id);
+      }
+    });
+  };
+
+  const initGraph = useRef<Graph | null>(null);
+  if (
+    graphState.initGraph &&
+    JSON.stringify(initGraph.current) !== JSON.stringify(graphState.initGraph)
+  ) {
+    initGraph.current = graphState.initGraph;
+    initGraph.current.nodes.forEach((node) => {
+      onNodeAdd(node);
+    });
+  }
 
   const addEdge = useCallback(
     (
@@ -287,18 +380,28 @@ export default function useScene(
     });
   };
 
+  const deleteSelectedElements = (): void => {
+    onNodesDelete(selectedNodes());
+    graphState.deleteSelectedElements();
+  };
+
   return {
+    gui,
+    varsNamePool,
     graphStateRef,
     anyConnectableNodeSelected: graphState.anyConnectableNodeSelected,
     anyConnectionToSelectedNode: graphState.anyConnectionToSelectedNode,
     extraCommands,
     sceneActions: {
+      getNodeById: graphState.getNodeById,
       getSelectedCounts: graphState.getSelectedCounts,
       setSelectedCounts: graphState.setSelectedCounts,
       selectNode: graphState.selectNode,
       selectEdge: graphState.selectEdge,
       addNode,
       addEdge,
+      setNodes: graphState.setNodes,
+      setExtraCommands,
       selectAll: graphState.selectAll,
       clearEdgeSelection: graphState.clearEdgeSelection,
       getHandleConnectionCounts: graphState.getHandleConnectionCounts,
@@ -307,7 +410,7 @@ export default function useScene(
       copySelectedNodeToClipboard,
       pasteFromClipboard,
       clear: graphState.clear,
-      deleteSelectedElements: graphState.deleteSelectedElements,
+      deleteSelectedElements,
       duplicateSelectedNodes,
       cutSelectedNodesToClipboard,
       deleteEdge: graphState.deleteEdge,
@@ -316,6 +419,7 @@ export default function useScene(
       deleteAllEdgesOfSelectedNodes: graphState.deleteAllEdgesOfSelectedNodes,
       isValidConnection: graphState.isValidConnection,
       centerSelectedNodes,
+      onNodesDelete,
     },
   };
 }

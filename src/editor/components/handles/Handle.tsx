@@ -1,12 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  Handle as RCHandle,
-  type HandleType,
-  type Position,
-  useReactFlow,
-} from 'reactflow';
-import { useWidgetFactory } from '../../Context';
 import { type HandleData, DataTypes } from '../../types';
+import { Handle as RCHandle, type HandleType, type Position } from 'reactflow';
+import { useWidgetFactory, useSceneState } from '../../Context';
 
 export default function Handle({
   id,
@@ -18,6 +13,7 @@ export default function Handle({
   className,
   handleType,
   handlePosition,
+  onValueChange,
 }: {
   id: string;
   nodeId: string;
@@ -28,22 +24,29 @@ export default function Handle({
   className: string;
   handleType: HandleType;
   handlePosition: Position;
+  onValueChange?: (newVa: any, oldVa?: any) => void;
 }): JSX.Element {
   const [label, setLabel] = useState(<></>);
   const widget = useRef<null | JSX.Element>();
-  const title = useRef<null | JSX.Element>();
   const isSourceHandle = handleType === 'source';
-  const { setNodes } = useReactFlow();
+  const { setNodes } = useSceneState()?.sceneActions ?? {};
   const widgetFactory = useWidgetFactory();
   if (!handleData) {
     console.error('handleData is undefined');
   }
   const changeValue = useCallback((newVa: any): void => {
-    setNodes((nds) =>
+    setNodes?.((nds) =>
       nds.map((n) => {
         if (n.id === nodeId) {
-          if (isSourceHandle) n.data.outputs[id].value = newVa;
-          else n.data.inputs[id].value = newVa;
+          let oldVa;
+          if (isSourceHandle) {
+            oldVa = n.data.outputs[id].value ?? n.data.outputs[id].defaultValue;
+            n.data.outputs[id].value = newVa;
+          } else {
+            oldVa = n.data.inputs[id].value ?? n.data.inputs[id].defaultValue;
+            n.data.inputs[id].value = newVa;
+          }
+          onValueChange?.(newVa, oldVa);
         }
         return n;
       })
@@ -59,7 +62,7 @@ export default function Handle({
       showWidget &&
       handleData.dataType !== undefined &&
       (!toHideWidgetWhenConnected ||
-        (toHideWidgetWhenConnected && !isConnected && !widget.current))
+        (toHideWidgetWhenConnected && !isConnected))
     )
       widget.current = widgetFactory.createWidget(handleData.dataType, {
         value:
@@ -69,34 +72,25 @@ export default function Handle({
         className: `nodrag handle-widget ${handleData.dataType}`,
         onChange: changeValue,
       });
-    if (showTitle && !title.current)
-      title.current = <span className="handle-title">{handleData.title}</span>;
+    let title: null | JSX.Element = null;
+    if (showTitle)
+      title = <span className="handle-title">{handleData.title}</span>;
     setLabel(
-      <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-        {title.current}
+      <label>
+        {title}
         {(!toHideWidgetWhenConnected || !isConnected) && widget.current}
       </label>
     );
-  }, [handleData.connection]);
+  }, [handleData.connection, handleData.dataType, handleData.title]);
 
   return (
     <div className={className} title={handleData.tooltip}>
       {label}
       <RCHandle
-        className="vp-rc-handle"
         id={id}
         type={handleType}
         position={handlePosition}
         isConnectable={true}
-        style={{
-          top: 0,
-          left: 0,
-          transform:
-            handleType === 'target'
-              ? 'translate(-50%, 0)'
-              : 'translate(50%, 0)',
-          position: 'relative',
-        }}
       />
     </div>
   );

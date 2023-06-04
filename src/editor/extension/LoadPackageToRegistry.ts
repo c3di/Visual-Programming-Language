@@ -132,7 +132,6 @@ export const LoadPackageToRegistry = (
     Object.entries(p).forEach(([name, node]: [string, any]) => {
       nodeConfigRegistry.registerNodeConfig(name, node);
     });
-  console.log('LoadPackageToRegistry', nodeConfigRegistry.getAllNodeConfigs());
 };
 
 export const LoadDefaultModule = (): void => {

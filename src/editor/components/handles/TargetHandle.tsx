@@ -9,12 +9,14 @@ export default function TargetHandle({
   handleData,
   showWidget,
   showTitle,
+  onValueChange,
 }: {
   id: string;
   nodeId: string;
   handleData: HandleData;
   showWidget: boolean;
   showTitle: boolean;
+  onValueChange?: (newVa: any, oldVa?: any) => void;
 }): JSX.Element {
   return (
     <Handle
@@ -27,6 +29,7 @@ export default function TargetHandle({
       handlePosition={Position.Left}
       toHideWidgetWhenConnected={true}
       className="target-handle"
+      onValueChange={onValueChange}
     />
   );
 }

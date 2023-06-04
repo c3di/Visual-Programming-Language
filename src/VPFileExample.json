@@ -24,7 +24,7 @@
     },
     {
       "id": "2",
-      "type": "extension1.Level2.module2.getter",
+      "type": "extension1.module1.getter",
       "position": {
         "x": 300,
         "y": 0
@@ -125,6 +125,20 @@
       "outputs": {
         "output": {}
       }
+    },
+    {
+      "id": "9",
+      "type": "extension2.CreateVariable",
+      "position": {
+        "x": 600,
+        "y": 600
+      },
+      "inputs": {
+        "name": {
+          "value": "newVar_0"
+        }
+      },
+      "outputs": {}
     }
   ],
   "edges": [

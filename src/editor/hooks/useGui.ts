@@ -1,91 +1,86 @@
-import { type SvgIconProps } from '@mui/material/SvgIcon';
-import {
+import React, {
   useRef,
   useState,
   useCallback,
-  type SetStateAction,
-  type Dispatch,
   type MutableRefObject,
 } from 'react';
-import { type ConnectionStatus } from '../types';
+import { type SvgIconProps } from '@mui/material/SvgIcon';
+import {
+  ConnectionTip,
+  SearchMenu,
+  NodeMenu,
+  EdgeMenu,
+  HandleMenu,
+  GetterSetterMenu,
+} from '../gui';
 
 export interface Command {
   name: string;
-  action: () => void;
+  action: (item?: any, e?: React.MouseEvent<HTMLLIElement>) => void;
   labelIcon?: React.ElementType<SvgIconProps> | undefined;
   labelInfo?: string;
   tooltip?: string;
+  category?: string;
+  rank?: number;
+  categoryRank?: number;
 }
 
-export interface Gui {
-  showNodeMenu: boolean;
-  showEdgeMenu: boolean;
-  showHandleMenu: boolean;
-  showSearchMenu: boolean;
-  showConnectionTip: boolean;
-  connectionStatus: ConnectionStatus | undefined;
-  setconnectionStatus: Dispatch<SetStateAction<ConnectionStatus | undefined>>;
-  openWidget: (menu: string) => void;
+export interface IGui {
+  widget: JSX.Element | null;
+  openWidget: (
+    name: string,
+    anchorPosition: { top: number; left: number },
+    options?: Record<string, unknown>
+  ) => void;
   closeWidget: () => void;
   clickedHandle: React.MutableRefObject<{
     connection: number;
     id: string;
   } | null>;
   clickedNodeId: React.MutableRefObject<string | null>;
-  PosiontOnGui: { top: number; left: number };
-  setPosiontOnGui: (PosiontOnGui: { top: number; left: number }) => void;
   connectionStartNodeId: MutableRefObject<string | null>;
 }
 
-export default function useGui(): Gui {
-  const [showNodeMenu, setShowNodeMenu] = useState(false);
-  const [showEdgeMenu, setShowEdgeMenu] = useState(false);
-  const [showHandleMenu, setShowHandleMenu] = useState(false);
-  const [showSearchMenu, setShowSearchMenu] = useState(false);
-  const [showConnectionTip, setShowConnectionTip] = useState(false);
+export default function useGui(): IGui {
+  const [widget, setWidget] = useState<JSX.Element | null>(null);
   const connectionStartNodeId = useRef<string | null>(null);
-  const [connectionStatus, setconnectionStatus] = useState<
-    ConnectionStatus | undefined
-  >(undefined);
   const clickedHandle = useRef(null);
   const clickedNodeId = useRef(null);
-  const [PosiontOnGui, setPosiontOnGui] = useState<{
-    top: number;
-    left: number;
-  }>({ top: 0, left: 0 });
-
-  const menuSetter = {
-    node: setShowNodeMenu,
-    edge: setShowEdgeMenu,
-    handle: setShowHandleMenu,
-    search: setShowSearchMenu,
-    connectionTip: setShowConnectionTip,
-  };
-
-  const openWidget = useCallback((menu: string): void => {
-    Object.entries(menuSetter).forEach(([name, setter]) => {
-      setter(name === menu);
-    });
-  }, []);
 
   const closeWidget = useCallback((): void => {
-    Object.values(menuSetter).forEach((setter) => {
-      setter(false);
-    });
+    setWidget(null);
   }, []);
 
+  const widgetRegistry: Record<string, any> = {
+    connectionTip: ConnectionTip,
+    search: SearchMenu,
+    nodeMenu: NodeMenu,
+    edgeMenu: EdgeMenu,
+    handleMenu: HandleMenu,
+    getterSetterMenu: GetterSetterMenu,
+  };
+
+  const openWidget = useCallback(
+    (
+      name: string,
+      anchorPosition: { top: number; left: number },
+      options?: Record<string, unknown>
+    ): void => {
+      setWidget(
+        React.createElement(widgetRegistry[name], {
+          onClose: closeWidget,
+          anchorPosition,
+          ...options,
+        })
+      );
+    },
+    [closeWidget, widgetRegistry]
+  );
+
   return {
-    showNodeMenu,
-    showEdgeMenu,
-    showHandleMenu,
-    showSearchMenu,
-    showConnectionTip,
-    connectionStatus,
-    setconnectionStatus,
+    widget,
     clickedHandle,
     clickedNodeId,
-    PosiontOnGui,
-    setPosiontOnGui,
     connectionStartNodeId,
     openWidget,
     closeWidget,

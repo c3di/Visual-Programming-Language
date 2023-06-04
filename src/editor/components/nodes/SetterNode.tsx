@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { type VariableNodeData } from '../../types';
 import { TargetHandle, SourceHandle } from '../handles';
+import { registVariableRef } from '../../util';
 
 function SetterNode({
   id,
@@ -9,6 +10,7 @@ function SetterNode({
   id: string;
   data: VariableNodeData;
 }): JSX.Element {
+  registVariableRef(data, id);
   const inputhandles = [];
   for (const inputId in data.inputs) {
     inputhandles.push(
