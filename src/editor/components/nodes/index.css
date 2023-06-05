@@ -1,17 +1,31 @@
 :root {
-  --vp-node-box-shadow: 0 4px 6px -1px rgb(0 0 0 / 15%),
-    0 2px 4px -1px rgb(0 0 0 / 8%);
-  --vp-node-background-color: #f5f5f6f0;
-  --vp-node-font-color: #222;
-  --vp-node-font-size: 13px;
-  /* Here we use the defined variables from src\index.css */
-  --vp-node-font-size: var(--vp-ui-font-size);
+  /* Borders */
+  --vp-node-border-radius: var(--vp-border-radius);
+  --vp-node-border-width: var(--vp-border-width);
+  --vp-node-border-color: var(--vp-border-color);
 
+  /* Shadow */
+  --vp-node-box-shadow: var(--vp-box-shadow);
+
+  /* Layout Colors */
+  --vp-node-background-color: var(--vp-background-color);
+
+  /* UI Fonts */
+  --vp-node-font-color: var(--vp-ui-font-color-black);
+  --vp-node-font-size: var(--vp-ui-font-size);
+  --vp-node-font-family: var(--vp-ui-font-family);
+
+  /*******Following is module-specific CSS. ********/
+
+  /* Handle */
   --vp-node-handles-container-gap: 5px;
 
+  /* Header */
   --vp-node-header-padding: 8px 10px;
-  --vp-node-header-bottom-border: 1px solid #e2e8f0;
+  --vp-node-header-bottom-border: var(--vp-node-border-width) solid
+    var(--vp-node-border-color) !important;
 
+  /* Body */
   --vp-node-body-padding: 10px 0;
   --vp-node-body-gap: 20px;
 }
@@ -41,7 +55,11 @@
 
 .react-flow__node {
   font-size: var(--vp-node-font-size);
-  background: var(--vp-node-background-color);
+  background-color: var(--vp-node-background-color);
   color: var(--vp-node-font-color);
   box-shadow: var(--vp-node-box-shadow);
+  border-radius: var(--vp-node-border-radius);
+  border-width: var(--vp-node-border-width) !important;
+  border-style: solid !important;
+  border-color: var(--vp-node-border-color) !important;
 }
