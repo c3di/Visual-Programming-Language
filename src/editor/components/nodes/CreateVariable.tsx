@@ -143,7 +143,7 @@ function CreateVariable({
         id={outputId}
         nodeId={id}
         handleData={data.outputs[outputId]}
-        showWidget={!!handle.showWidget || handle.showWidget !== undefined}
+        showWidget={!!handle.showWidget}
         showTitle={!!handle.showTitle || handle.showTitle === undefined}
       />
     );

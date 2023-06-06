@@ -61,10 +61,10 @@
         }
       }
     },
-    "ifelse": {
-      "type": "ifelse",
+    "if else": {
+      "type": "if else",
       "category": "function",
-      "title": "if",
+      "title": "If",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -73,7 +73,6 @@
           "showWidget": false,
           "showTitle": false
         },
-
         "condition": {
           "title": "Condition",
           "tooltip": "condition",
@@ -92,6 +91,56 @@
         "False": {
           "title": "False",
           "tooltip": "False",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": true
+        }
+      }
+    },
+    "for each": {
+      "type": "for each",
+      "category": "function",
+      "title": "For Each Loop",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "Array": {
+          "title": "Array",
+          "tooltip": "Array",
+          "dataType": "Array",
+          "showWidget": false,
+          "showTitle": true
+        }
+      },
+      "outputs": {
+        "loopBody": {
+          "title": "Loop Body",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": true,
+          "tooltip": "Exec Out"
+        },
+        "ArrayElement": {
+          "title": "Array Element",
+          "tooltip": "Array Element",
+          "dataType": "any",
+          "showWidget": false,
+          "showTitle": true
+        },
+        "arrayIndex": {
+          "title": "Array Index",
+          "dataType": "integer",
+          "showWidget": false,
+          "showTitle": true
+        },
+        "complete": {
+          "title": "Completed",
+          "tooltip": "Exec Out",
           "dataType": "exec",
           "showWidget": false,
           "showTitle": true
