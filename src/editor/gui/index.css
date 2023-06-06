@@ -1,4 +1,42 @@
 :root {
+  /* Borders */
+  --vp-gui-border-radius: var(--vp-border-radius);
+  --vp-gui-border-width: var(--vp-border-width);
+  --vp-gui-border-color: var(--vp-border-color);
+
+  /* Shadow */
+  --vp-gui-box-shadow: var(--vp-box-shadow);
+
+  /* Layout Colors */
+  --vp-gui-background-color: var(--vp-background-color);
+
+  /* UI Fonts */
+  --vp-gui-font-color: var(--vp-ui-font-color-black);
+  --vp-gui-font-size1: var(--vp-ui-font-size1);
+  --vp-gui-font-size2: var(--vp-ui-font-size2);
+  --vp-gui-font-family: var(--vp-ui-font-family);
+  --vp-gui-font-title-color: var(--vp-ui-font-color-blue);
+  --vp-gui-font-content-color: var(--vp-ui-font-color-grey);
+
+  /*******Following is module-specific CSS. ********/
+
+  /*Accordion Item */
+
+  --vp-accordion-item-border-color: var(--vp-gui-border-color);
+
+  --vp-accordion-item-title-font-size: var(--vp-gui-font-size2);
+  --vp-accordion-item-title-font-color: var(--vp-gui-font-title-color);
+
+  --vp-accordion-item-content-font-size: var(--vp-gui-font-size2);
+  --vp-accordion-item-content-font-color: var(--vp-gui-font-content-color);
+
+  --vp-accordion-item-content-button-font-size: var(--vp-gui-font-size2);
+  --vp-accordion-item-content-button-font-color: var(
+    --vp-gui-font-content-color
+  );
+
+  /* Menu */
+
   --vp-menu-panel-radius: 0px;
 
   --vp-menulist-top-padding: 0px;

@@ -12,7 +12,7 @@
 
   /* UI Fonts */
   --vp-node-font-color: var(--vp-ui-font-color-black);
-  --vp-node-font-size: var(--vp-ui-font-size);
+  --vp-node-font-size: var(--vp-ui-font-size1);
   --vp-node-font-family: var(--vp-ui-font-family);
 
   /*******Following is module-specific CSS. ********/
