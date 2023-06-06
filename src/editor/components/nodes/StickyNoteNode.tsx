@@ -84,15 +84,27 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
               sx={{
                 padding: 0,
                 minWidth: '10px',
-                width: '14px',
-                height: '14px',
+                width: '1.4rem',
+                height: '1.4rem',
                 color: 'black',
               }}
             >
               {pinned ? (
-                <BsPinAngleFill title="The node is pinned" />
+                <BsPinAngleFill
+                  title="The node is pinned"
+                  style={{
+                    width: 'var(--vp-node-icon-size)',
+                    height: 'var(--vp-node-icon-size)',
+                  }}
+                />
               ) : (
-                <BsPinAngle title="The node is not pinned" />
+                <BsPinAngle
+                  title="The node is not pinned"
+                  style={{
+                    width: 'var(--vp-node-icon-size)',
+                    height: 'var(--vp-node-icon-size)',
+                  }}
+                />
               )}
             </Button>{' '}
             <Button
@@ -100,8 +112,8 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
               sx={{
                 padding: 0,
                 minWidth: '10px',
-                width: '12px',
-                height: '12px',
+                width: '1.2rem',
+                height: '1.2rem',
                 borderRadius: '1.5px',
                 border: '1.5px solid black',
                 marginLeft: '5px',

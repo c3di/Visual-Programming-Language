@@ -15,17 +15,21 @@
   --vp-node-font-size: var(--vp-ui-font-size1);
   --vp-node-font-family: var(--vp-ui-font-family);
 
+  /*Icon*/
+  --vp-node-icon-size: var(--vp-icon-size);
+  --vp-node-icon-color: var(--vp-icon-color);
+
   /*******Following is module-specific CSS. ********/
 
-  /* Handle */
+  /* Node Handle */
   --vp-node-handles-container-gap: 5px;
 
-  /* Header */
+  /* Node Header */
   --vp-node-header-padding: 8px 10px;
   --vp-node-header-bottom-border: var(--vp-node-border-width) solid
     var(--vp-node-border-color) !important;
 
-  /* Body */
+  /*Node Body */
   --vp-node-body-padding: 10px 0;
   --vp-node-body-gap: 20px;
 }
