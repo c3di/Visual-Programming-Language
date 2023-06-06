@@ -31,6 +31,7 @@
 
   --vp-accordion-panel-border-color: var(--vp-gui-border-color);
   --vp-accordion-panel-border-width: var(--vp-gui-border-width);
+  --vp-accordion-panel-border-radius: var(--vp-gui-border-radius);
 
   --vp-accordion-summary-hover-bgcolor: var(--vp-gui-hover-background-color);
   --vp-accordion-summary-font-size: var(--vp-gui-font-size1);
@@ -64,10 +65,23 @@
   --vp-menuitem-padding: 0px;
   --vp-menuitem-shortcut-right-padding: 8px;
 
+  /* Search Bar */
+  --vp-searchbar-font-size: var(--vp-gui-font-size2);
+
+  --vp-searchbar-border-radius: var(--vp-gui-border-radius);
+
+  --vp-searchbar-icon-size: var(--vp-gui-icon-size);
+  --vp-searchbar-icon-color: var(--vp-gui-icon-color);
+
   /* TreeView Menu */
+  --vp-treeview-icon-size: var(--vp-gui-icon-size);
+  --vp-treeview-icon-color: var(--vp-gui-icon-color);
+
+  --vp-treeview-font-color: var(--vp-gui-font-item-color);
+  --vp-treeview-font-size: var(--vp-gui-font-size3);
+  --vp-treeview-item-hover-bg-color: var(--vp-gui-hover-background-color);
 
   /*FilePond*/
-
   --vp-filepond-border-radius: var(--vp-gui-border-radius);
 }
 
@@ -100,7 +114,11 @@
 }
 
 .css-uk01t5-MuiPaper-root-MuiAccordion-root {
-  border-radius: var(--vp-menu-panel-border-radius);
+  border-radius: var(--vp-accordion-panel-border-radius) !important;
+}
+
+.css-15olx4d-MuiPaper-root-MuiAccordion-root {
+  border-radius: var(--vp-accordion-panel-border-radius) !important;
 }
 
 .filepond--panel-root {

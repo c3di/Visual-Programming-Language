@@ -15,9 +15,10 @@ export default function SearchInput({
       sx={{
         width: '100%',
         height: '30px',
-        fontSize: '16px',
-        borderRadius: '0',
         padding: '0px',
+        fontSize: 'var(--vp-searchbar-font-size)',
+        borderRadius: 'var(--vp-searchbar-border-radius)',
+
         '&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': {
           borderColor: 'none',
         },
@@ -37,7 +38,9 @@ export default function SearchInput({
         <InputAdornment position="start">
           {hasInput ? (
             <IconButton
-              sx={{ padding: 0 }}
+              sx={{
+                padding: 0,
+              }}
               onClick={() => {
                 if (inputRef.current) inputRef.current.value = '';
                 setHasInput(false);
@@ -46,16 +49,20 @@ export default function SearchInput({
             >
               <Clear
                 sx={{
-                  width: '20px',
+                  width: 'var(--vp-searchbar-icon-size)',
+                  height: 'var(--vp-searchbar-icon-size)',
                   marginRight: '-6px',
+                  color: 'var(--vp-searchbar-icon-color)',
                 }}
               />
             </IconButton>
           ) : (
             <Search
               sx={{
-                width: '20px',
+                width: 'var(--vp-searchbar-icon-size)',
+                height: 'var(--vp-searchbar-icon-size)',
                 marginRight: '-6px',
+                color: 'var(--vp-searchbar-icon-color)',
               }}
             />
           )}

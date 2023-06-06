@@ -4,12 +4,6 @@ import { Typography, type SvgIconProps } from '@mui/material';
 import { TreeItem, type TreeItemProps } from '@mui/lab';
 
 // from https://mui.com/material-ui/react-tree-view/#GmailTreeView.tsx
-declare module 'react' {
-  interface CSSProperties {
-    '--vp-treeview-font-color'?: string;
-    '--vp-treeview-item-hover-bg-color'?: string;
-  }
-}
 
 type StyledTreeItemProps = TreeItemProps & {
   bgColor?: string;
@@ -36,18 +30,10 @@ export default function StyledTreeItem(
   } = props;
   return (
     <TreeItem
-      style={{
-        '--vp-treeview-font-color': '#222',
-        '--vp-treeview-item-hover-bg-color': '#f5f5f6f0',
-      }}
       sx={{
         '& .MuiTreeItem-content': {
           paddingRight: 0,
           paddingLeft: 0,
-        },
-        '& .MuiTreeItem-content .MuiTreeItem-label': {
-          paddingTop: '0.1rem',
-          fontSize: '1rem',
         },
         '& .MuiTreeItem-content.Mui-selected, & .MuiTreeItem-content.Mui-selected.Mui-focused':
           {
@@ -58,9 +44,19 @@ export default function StyledTreeItem(
       icon={
         LabelIcon &&
         (iconColor ? (
-          <LabelIcon color={iconColor} />
+          <LabelIcon
+            sx={{
+              color: 'var(--vp-treeview-icon-color)',
+              width: 'var(--vp-treeview-icon-size)',
+            }}
+          />
         ) : (
-          <LabelIcon sx={{ color: 'rgba(0, 0, 0, 0.54)' }} />
+          <LabelIcon
+            sx={{
+              color: 'var(--vp-treeview-icon-color)',
+              width: 'var(--vp-treeview-icon-size)',
+            }}
+          />
         ))
       }
       label={
@@ -75,14 +71,20 @@ export default function StyledTreeItem(
             sx={{
               fontWeight: 'inherit',
               flexGrow: 0.8,
-              fontSize: '1rem',
+              fontSize: 'var( --vp-treeview-font-size)',
               color: 'var(--vp-treeview-font-color)',
             }}
           >
             {labelText}
           </Typography>
           {labelInfo && (
-            <Typography variant="caption" color="inherit">
+            <Typography
+              variant="caption"
+              sx={{
+                fontSize: 'var( --vp-treeview-font-size)',
+                color: 'var(--vp-treeview-font-color)',
+              }}
+            >
               {labelInfo}
             </Typography>
           )}
