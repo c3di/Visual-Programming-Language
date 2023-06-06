@@ -60,6 +60,43 @@
           "dataType": "float"
         }
       }
+    },
+    "ifelse": {
+      "type": "ifelse",
+      "category": "function",
+      "title": "if",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+
+        "condition": {
+          "title": "Condition",
+          "tooltip": "condition",
+          "dataType": "boolean",
+          "defaultValue": true
+        }
+      },
+      "outputs": {
+        "True": {
+          "title": "True",
+          "tooltip": "True",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": true
+        },
+        "False": {
+          "title": "False",
+          "tooltip": "False",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": true
+        }
+      }
     }
   }
 }
