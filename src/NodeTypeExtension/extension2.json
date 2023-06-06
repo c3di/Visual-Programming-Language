@@ -53,6 +53,9 @@
       "title": "New Variable",
       "tooltip": "Create a new variable",
       "inputs": {
+        "execIn": {
+          "dataType": "exec"
+        },
         "name": {
           "title": "name",
           "tooltip": "name of the variable",
@@ -69,6 +72,11 @@
           "tooltip": "value of the variable",
           "dataType": "string",
           "defaultValue": "string"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "dataType": "exec"
         }
       }
     }

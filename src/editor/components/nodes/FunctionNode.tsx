@@ -11,27 +11,29 @@ function FunctionNode({
 }): JSX.Element {
   const inputhandles = [];
   for (const inputId in data.inputs) {
+    const handle = data.inputs[inputId];
     inputhandles.push(
       <TargetHandle
         key={inputId}
         id={inputId}
         nodeId={id}
-        showWidget={true}
-        showTitle={true}
-        handleData={data.inputs[inputId]}
+        showWidget={!!handle.showWidget || handle.showWidget === undefined}
+        showTitle={!!handle.showWidget || handle.showTitle === undefined}
+        handleData={handle}
       />
     );
   }
   const outputHandles = [];
   for (const outputId in data.outputs) {
+    const handle = data.outputs[outputId];
     outputHandles.push(
       <SourceHandle
         key={outputId}
         id={outputId}
         nodeId={id}
         handleData={data.outputs[outputId]}
-        showWidget={false}
-        showTitle={true}
+        showWidget={!!handle.showWidget || handle.showWidget !== undefined}
+        showTitle={!!handle.showTitle || handle.showTitle === undefined}
       />
     );
   }

@@ -5,6 +5,11 @@
       "type": "setter",
       "category": "setter",
       "inputs": {
+        "execIn": {
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
         "setter": {
           "tooltip": "setter handle"
         }

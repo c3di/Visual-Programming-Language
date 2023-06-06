@@ -87,7 +87,7 @@ export default function Handle({
     <div className={className} title={handleData.tooltip}>
       {label}
       <RCHandle
-        className="vp-rc-handle"
+        className={`vp-rc-handle-${handleData.dataType ?? 'default'}`}
         id={id}
         type={handleType}
         position={handlePosition}

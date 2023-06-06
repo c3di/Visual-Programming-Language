@@ -20,6 +20,10 @@
   background-color: #778899;
 }
 
+.vp-rc-handle-exec {
+  clip-path: polygon(0% 0%, 40% 0%, 100% 50%, 40% 100%, 0% 100%);
+}
+
 .source-handle .react-flow__handle {
   width: 8px;
   height: 10px;

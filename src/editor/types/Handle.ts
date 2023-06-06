@@ -5,4 +5,6 @@ export interface Handle {
   dataType?: string;
   defaultValue?: any;
   value?: any;
+  showWidget?: boolean;
+  showTitle?: boolean;
 }
