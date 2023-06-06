@@ -23,7 +23,7 @@ export default function NodeLibraryItem({
       className="vp-nodelibrary-entry"
       style={{
         display: 'flex',
-        borderBottom: '1px solid',
+        borderBottom: 'var(--vp-accordion-item-border-width) solid',
         borderColor: 'var(--vp-accordion-item-border-color)',
         paddingTop: '5px',
         paddingLeft: '5px',

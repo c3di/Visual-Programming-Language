@@ -9,6 +9,7 @@
 
   /* Layout Colors */
   --vp-gui-background-color: var(--vp-background-color);
+  --vp-gui-hover-background-color: var(--vp-hover-background-color);
 
   /* UI Fonts */
   --vp-gui-font-color: var(--vp-ui-font-color-black);
@@ -20,16 +21,22 @@
 
   /*******Following is module-specific CSS. ********/
 
-  /*Accordion Item */
+  /*Accordion*/
+
+  --vp-accordion-panel-border-color: var(--vp-gui-border-color);
+  --vp-accordion-panel-border-width: var(--vp-gui-border-width);
+
+  --vp-accordion-summary-hover-bgcolor: var(--vp-gui-hover-background-color);
+  --vp-accordion-summary-font-size: var(--vp-gui-font-size1);
 
   --vp-accordion-item-border-color: var(--vp-gui-border-color);
+  --vp-accordion-item-border-width: var(--vp-gui-border-width);
 
   --vp-accordion-item-title-font-size: var(--vp-gui-font-size2);
   --vp-accordion-item-title-font-color: var(--vp-gui-font-title-color);
 
   --vp-accordion-item-content-font-size: var(--vp-gui-font-size2);
   --vp-accordion-item-content-font-color: var(--vp-gui-font-content-color);
-
   --vp-accordion-item-content-button-font-size: var(--vp-gui-font-size2);
   --vp-accordion-item-content-button-font-color: var(
     --vp-gui-font-content-color
@@ -37,7 +44,7 @@
 
   /* Menu */
 
-  --vp-menu-panel-radius: 0px;
+  --vp-menu-panel-border-radius: var(--vp-gui-border-radius);
 
   --vp-menulist-top-padding: 0px;
   --vp-menulist-bottom-padding: 0px;
@@ -45,6 +52,10 @@
 
   --vp-menuitem-padding: 0px;
   --vp-menuitem-shortcut-right-padding: 8px;
+
+  /*FilePond*/
+
+  --vp-filepond-border-radius: var(--vp-gui-border-radius);
 }
 
 .VP_MenuList {
@@ -74,6 +85,11 @@
   padding-bottom: var(--vp-menulist-bottom-padding) !important;
 }
 
-.MuiPaper-root.MuiMenu-paper {
-  border-radius: var(--vp-menu-panel-radius);
+.css-uk01t5-MuiPaper-root-MuiAccordion-root {
+  border-radius: var(--vp-menu-panel-border-radius);
+}
+
+.filepond--panel-root {
+  border-radius: var(--vp-filepond-border-radius) !important;
+  margin: 2px;
 }

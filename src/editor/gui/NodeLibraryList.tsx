@@ -14,17 +14,9 @@ import {
 } from 'filepond';
 import 'filepond/dist/filepond.min.css';
 import FilepondZipper from 'filepond-plugin-zipper';
-import './NodeLibraryList.css';
 import { SearchInput } from './elements';
 import { type NodeConfig, type NodePackage } from '../types';
 import NodeLibraryItem, { type INodeLibraryItem } from './NodeLibraryItem';
-
-declare module 'react' {
-  interface CSSProperties {
-    '--vp-accordion-summary-hover-bgcolor'?: string;
-    '--vp-accordion-panel-border-color'?: string;
-  }
-}
 
 registerPlugin(FilepondZipper());
 
@@ -87,12 +79,7 @@ export default function NodeLibraryList({
   const [files, setFiles] = useState<ActualFileObject[]>([]);
 
   return (
-    <div
-      style={{
-        '--vp-accordion-summary-hover-bgcolor': '#f5f5f6f0',
-        '--vp-accordion-panel-border-color': '#e0e0e0',
-      }}
-    >
+    <div>
       <FilePond
         credits={false}
         files={files}
@@ -141,10 +128,12 @@ export default function NodeLibraryList({
         square
         sx={{
           borderTop: '0px',
-          border: '1px solid var(--vp-accordion-panel-border-color)',
+          border:
+            'var(--vp-accordion-panel-border-width) solid var(--vp-accordion-panel-border-color)',
 
           '&:not(:last-child)': {
-            borderBottom: '1px solid var(--vp-accordion-panel-border-color)  ',
+            borderBottom:
+              'var(--vp-accordion-panel-border-width) solid var(--vp-accordion-panel-border-color)  ',
             borderRight: '0px  ',
             borderLeft: '0px  ',
           },
@@ -168,7 +157,7 @@ export default function NodeLibraryList({
             padding: '0px',
             flexDirection: 'row-reverse',
             '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
-              transform: 'rotate(90deg)',
+              transform: 'rotate(90deg) translateX(-2px)',
             },
             '&:hover': {
               backgroundColor: 'var(--vp-accordion-summary-hover-bgcolor)',
@@ -186,9 +175,9 @@ export default function NodeLibraryList({
         >
           <Typography
             sx={{
-              fontSize: '12.5px',
+              fontSize: 'var(--vp-accordion-summary-font-size)',
               letterSpacing: '1px',
-              fontWeight: '405',
+              fontWeight: '410',
             }}
           >
             {title}
@@ -196,7 +185,11 @@ export default function NodeLibraryList({
         </AccordionSummary>
 
         <AccordionDetails
-          sx={{ padding: '0px', borderTop: '1px solid rgba(0, 0, 0, .125)' }}
+          sx={{
+            padding: '0px',
+            borderTop:
+              'var(--vp-accordion-item-border-width) solid var(--vp-accordion-item-border-color)',
+          }}
         >
           {itemList.map((item) => (
             <NodeLibraryItem
