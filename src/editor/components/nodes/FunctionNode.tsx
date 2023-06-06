@@ -18,7 +18,7 @@ function FunctionNode({
         id={inputId}
         nodeId={id}
         showWidget={!!handle.showWidget || handle.showWidget === undefined}
-        showTitle={!!handle.showWidget || handle.showTitle === undefined}
+        showTitle={!!handle.showTitle || handle.showTitle === undefined}
         handleData={handle}
       />
     );
@@ -32,7 +32,7 @@ function FunctionNode({
         id={outputId}
         nodeId={id}
         handleData={data.outputs[outputId]}
-        showWidget={!!handle.showWidget || handle.showWidget !== undefined}
+        showWidget={!!handle.showWidget}
         showTitle={!!handle.showTitle || handle.showTitle === undefined}
       />
     );
