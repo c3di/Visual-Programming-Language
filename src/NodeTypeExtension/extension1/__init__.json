@@ -9,6 +9,13 @@
       "title": "function Node",
       "tooltip": "this is a function node",
       "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
         "input1": {
           "title": "input1",
           "tooltip": "input 1",
@@ -35,6 +42,13 @@
         }
       },
       "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "tooltip": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
         "output1": {
           "title": "output1",
           "tooltip": "output 1",

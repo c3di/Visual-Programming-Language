@@ -149,10 +149,10 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
       const sHandle = getNode(source)?.data.outputs?.[sourceHandle];
       const tHandle = getNode(target)?.data.inputs?.[targetHandle];
       if (!sHandle || !tHandle) return;
-      if (sHandle.connection === getMaxConnection('source', sHandle.type)) {
+      if (sHandle.connection === getMaxConnection('source', sHandle.dataType)) {
         deleteAllEdgesOfHandle(source, sourceHandle);
       }
-      if (tHandle.connection === getMaxConnection('target', tHandle.type)) {
+      if (tHandle.connection === getMaxConnection('target', tHandle.dataType)) {
         deleteAllEdgesOfHandle(target, targetHandle);
       }
     },

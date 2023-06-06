@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useState } from 'react';
 
-import { TargetHandle } from '../handles';
+import { SourceHandle, TargetHandle } from '../handles';
 import { useSceneState } from '../../Context';
 
 import { type ConnectableData, DataTypes } from '../../types';
@@ -134,7 +134,20 @@ function CreateVariable({
       />
     );
   }
-
+  const outputHandles = [];
+  for (const outputId in data.outputs) {
+    const handle = data.outputs[outputId];
+    outputHandles.push(
+      <SourceHandle
+        key={outputId}
+        id={outputId}
+        nodeId={id}
+        handleData={data.outputs[outputId]}
+        showWidget={!!handle.showWidget || handle.showWidget !== undefined}
+        showTitle={!!handle.showTitle || handle.showTitle === undefined}
+      />
+    );
+  }
   return (
     <div title={data.tooltip} className="vp-node-containter">
       <div className="node__header">
@@ -142,6 +155,7 @@ function CreateVariable({
       </div>
       <div className="node__body">
         <div className="vp-node-handles-containter">{inputhandles}</div>
+        <div className="vp-node-handles-containter">{outputHandles}</div>
       </div>
     </div>
   );
