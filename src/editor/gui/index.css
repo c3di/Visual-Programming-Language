@@ -5,18 +5,18 @@
   --vp-gui-border-color: var(--vp-border-color);
 
   /* Shadow */
-  --vp-gui-box-shadow: var(--vp-box-shadow);
+  --vp-gui-box-shadow: var(--vp-box-shadow-dark);
 
   /* Layout Colors */
-  --vp-gui-background-color: var(--vp-background-color);
+  --vp-gui-background-color-white: var(--vp-background-color-white);
   --vp-gui-hover-background-color: var(--vp-hover-background-color);
 
   /* UI Fonts */
-  --vp-gui-font-color: var(--vp-ui-font-color-black);
+  /* --vp-gui-font-color: var(--vp-ui-font-color-black); */
   --vp-gui-font-size1: var(--vp-ui-font-size1);
   --vp-gui-font-size2: var(--vp-ui-font-size2);
   --vp-gui-font-size3: var(--vp-ui-font-size3);
-  --vp-gui-font-family: var(--vp-ui-font-family);
+  /* --vp-gui-font-family: var(--vp-ui-font-family); */
   --vp-gui-font-title-color: var(--vp-ui-font-color-blue);
   --vp-gui-font-content-color: var(--vp-ui-font-color-grey);
   --vp-gui-font-item-color: var(--vp-ui-font-color-darkgrey);
@@ -32,6 +32,7 @@
   --vp-accordion-panel-border-color: var(--vp-gui-border-color);
   --vp-accordion-panel-border-width: var(--vp-gui-border-width);
   --vp-accordion-panel-border-radius: var(--vp-gui-border-radius);
+  --vp-acccordion-panel-background-color: var(--vp-gui-background-color-white);
 
   --vp-accordion-summary-hover-bgcolor: var(--vp-gui-hover-background-color);
   --vp-accordion-summary-font-size: var(--vp-gui-font-size1);
@@ -52,12 +53,15 @@
   /* Menu */
 
   --vp-menu-panel-border-radius: var(--vp-gui-border-radius);
+  --vp-menu-panel-background-color: var(--vp-gui-background-color-white);
+  --vp-menu-panel-box-shadow: var(--vp-gui-box-shadow);
 
   --vp-menuitem-icon-size: var(--vp-gui-icon-size);
   --vp-menuitem-icon-color: var(--vp-gui-icon-color);
   --vp-menuitem-font-size: var(--vp-gui-font-size3);
   --vp-menuitem-font-color: var(--vp-gui-font-item-color);
   --vp-menuitem-shortcut-color: var(--vp-gui-font-content-color);
+  --vp-menuitem-hover-background-color: var(--vp-gui-hover-background-color);
 
   --vp-menulist-top-padding: 0px;
   --vp-menulist-bottom-padding: 0px;
@@ -95,6 +99,10 @@
   padding: var(--vp-menuitem-padding) !important;
 }
 
+.VP_MenuItem:hover {
+  background-color: var(--vp-menuitem-hover-background-color) !important;
+}
+
 .VP_MenuItem_Shortcut {
   padding-right: var(--vp-menuitem-shortcut-right-padding);
 }
@@ -106,6 +114,8 @@
 .css-1ka5eyc-MuiPaper-root-MuiMenu-paper-MuiPopover-paper {
   pointer-events: auto !important;
   border-radius: var(--vp-menu-panel-border-radius) !important;
+  box-shadow: var(--vp-menu-panel-box-shadow) !important;
+  background-color: var(--vp-menu-panel-background-color) !important;
 }
 
 .css-6hp17o-MuiList-root-MuiMenu-list {

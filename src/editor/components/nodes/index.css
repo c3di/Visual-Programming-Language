@@ -8,11 +8,11 @@
   --vp-node-box-shadow: var(--vp-box-shadow);
 
   /* Layout Colors */
-  --vp-node-background-color: var(--vp-background-color);
+  --vp-node-background-color-lightgrey: var(--vp-background-color-lightgrey);
 
   /* UI Fonts */
   --vp-node-font-color: var(--vp-ui-font-color-black);
-  --vp-node-font-size: var(--vp-ui-font-size1);
+  --vp-node-font-size1: var(--vp-ui-font-size1);
   --vp-node-font-family: var(--vp-ui-font-family);
 
   /*Icon*/
@@ -58,8 +58,8 @@
 }
 
 .react-flow__node {
-  font-size: var(--vp-node-font-size);
-  background-color: var(--vp-node-background-color);
+  font-size: var(--vp-node-font-size1);
+  background-color: var(--vp-node-background-color-lightgrey);
   color: var(--vp-node-font-color);
   box-shadow: var(--vp-node-box-shadow);
   border-radius: var(--vp-node-border-radius);

@@ -127,6 +127,7 @@ export default function NodeLibraryList({
         elevation={0}
         square
         sx={{
+          backgroundColor: 'var(--vp-acccordion-panel-background-color)',
           borderTop: '0px',
           border:
             'var(--vp-accordion-panel-border-width) solid var(--vp-accordion-panel-border-color)',
