@@ -17,8 +17,10 @@ export default function SearchInput({
         height: '30px',
         padding: '0px',
         fontSize: 'var(--vp-searchbar-font-size)',
+        fontFamily: 'var(--vp-searchbar-font-family)',
         borderRadius: 'var(--vp-searchbar-border-radius)',
-
+        border:
+          'var(--vp-searchbar-border-width) solid var(--vp-searchbar-border-color)',
         '&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': {
           borderColor: 'none',
         },

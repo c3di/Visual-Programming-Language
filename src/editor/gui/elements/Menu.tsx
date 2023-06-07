@@ -43,7 +43,10 @@ export const createMenuItemElement = (item: IMenuItem): JSX.Element => {
         {item.title && (
           <Typography
             color="var(--vp-menuitem-font-color)"
-            sx={{ fontSize: 'var(--vp-menuitem-font-size)!important' }}
+            sx={{
+              fontSize: 'var(--vp-menuitem-font-size)!important',
+              fontFamily: 'var(--vp-menuitem-font-family)',
+            }}
           >
             {item.title}
           </Typography>
@@ -54,7 +57,10 @@ export const createMenuItemElement = (item: IMenuItem): JSX.Element => {
           className="VP_MenuItem_Shortcut"
           variant="body2"
           color="var(--vp-menuitem-shortcut-color)"
-          sx={{ fontSize: 'var(--vp-menuitem-font-size)!important' }}
+          sx={{
+            fontSize: 'var(--vp-menuitem-font-size)!important',
+            fontFamily: 'var(--vp-menuitem-font-family)',
+          }}
         >
           {item.subtitle}
         </Typography>

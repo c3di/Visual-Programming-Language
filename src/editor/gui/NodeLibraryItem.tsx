@@ -73,6 +73,7 @@ export default function NodeLibraryItem({
                 backgroundColor: 'transparent',
                 paddingBottom: '8px',
                 fontSize: 'var(--vp-accordion-item-content-button-font-size)',
+                fontFamily: 'var(--vp-accordion-font-family)',
               }}
               onClick={onUninstall}
               type="button"
@@ -91,6 +92,7 @@ export default function NodeLibraryItem({
                 backgroundColor: 'transparent',
                 paddingBottom: '8px',
                 fontSize: 'var(--vp-accordion-item-content-button-font-size)',
+                fontFamily: 'var(--vp-accordion-font-family)',
               }}
               type="button"
               className="bp3-button bp3-minimal bp3-small minimal jp-Button"

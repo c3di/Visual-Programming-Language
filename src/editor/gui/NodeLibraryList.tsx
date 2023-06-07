@@ -127,6 +127,7 @@ export default function NodeLibraryList({
         elevation={0}
         square
         sx={{
+          fontFamily: 'var(--vp-accordion-font-family) !important',
           backgroundColor: 'var(--vp-acccordion-panel-background-color)',
           borderTop: '0px',
           border:
@@ -177,6 +178,7 @@ export default function NodeLibraryList({
           <Typography
             sx={{
               fontSize: 'var(--vp-accordion-summary-font-size)',
+              fontFamily: 'var(--vp-accordion-font-family)',
               letterSpacing: '1px',
               fontWeight: '410',
             }}

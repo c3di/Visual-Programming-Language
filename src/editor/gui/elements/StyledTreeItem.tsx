@@ -73,6 +73,7 @@ export default function StyledTreeItem(
               flexGrow: 0.8,
               fontSize: 'var( --vp-treeview-font-size)',
               color: 'var(--vp-treeview-font-color)',
+              fontFamily: 'var(--vp-treeview-font-family)',
             }}
           >
             {labelText}
@@ -83,6 +84,7 @@ export default function StyledTreeItem(
               sx={{
                 fontSize: 'var( --vp-treeview-font-size)',
                 color: 'var(--vp-treeview-font-color)',
+                fontFamily: 'var(--vp-treeview-font-family)',
               }}
             >
               {labelInfo}

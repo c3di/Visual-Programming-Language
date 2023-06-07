@@ -77,6 +77,7 @@ export default function NodeMenu({
             sx={{
               marginTop: '4px !important',
               marginBottom: '4px !important',
+              borderBottomWidth: 'var(--vp-menu-panel-divider-border-width)',
             }}
           />
           {createMenuItemElement({
