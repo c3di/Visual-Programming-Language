@@ -1,5 +1,4 @@
 import React, { memo, useCallback, useState } from 'react';
-import './CommentNode.css';
 import { type Comment } from '../../types';
 import {
   NodeResizer,
@@ -30,7 +29,12 @@ function CommentNode({ data }: { data: Comment }): JSX.Element {
     <div
       title={comment}
       className="vp-node-container"
-      style={{ width: commentWidth, height: commentHeight, overflow: 'auto' }}
+      style={{
+        width: commentWidth,
+        height: commentHeight,
+        overflow: 'auto',
+        backgroundColor: 'var(--vp-node-background-color-lightgrey) !important',
+      }}
     >
       <NodeResizer
         color="#ffffff00"
@@ -46,7 +50,12 @@ function CommentNode({ data }: { data: Comment }): JSX.Element {
         }}
       />
       <div
-        style={{ padding: '4px' }}
+        style={{
+          padding: '4px',
+          fontFamily: 'var(--vp-node-font-family)',
+          fontSize: 'var( --vp-node-font-size1)',
+          color: '#fff !important',
+        }}
         className={
           enableDrag
             ? 'node__header node__header--enabled'
@@ -58,7 +67,7 @@ function CommentNode({ data }: { data: Comment }): JSX.Element {
           onStartEdit={onStartEdit}
           onStopEdit={onStopEdit}
           onEditChange={onEditChange}
-        />{' '}
+        />
       </div>
     </div>
   );
