@@ -141,3 +141,8 @@
   border-radius: var(--vp-filepond-border-radius) !important;
   margin: 2px;
 }
+
+.filepond--drop-label {
+  font-family: var(--vp-gui-font-family);
+  font-size: var(--vp-gui-font-size2);
+}
