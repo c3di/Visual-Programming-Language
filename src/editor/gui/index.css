@@ -93,6 +93,8 @@
 
   /*FilePond*/
   --vp-filepond-border-radius: var(--vp-gui-border-radius);
+  --vp-filepond-label-font-size: var(--vp-gui-font-size2);
+  --vp-filepond-label-font-family: var(--vp-gui-font-family);
 }
 
 .VP_MenuList {
@@ -140,4 +142,9 @@
 .filepond--panel-root {
   border-radius: var(--vp-filepond-border-radius) !important;
   margin: 2px;
+}
+
+.filepond--drop-label label {
+  font-family: var(--vp-filepond-label-font-family);
+  font-size: var(--vp-filepond-label-font-size) !important;
 }
