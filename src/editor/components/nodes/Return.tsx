@@ -49,7 +49,6 @@ export function ParameterHandle({
     });
     deleteAllEdgesOfHandle?.(nodeId, id);
   }, []);
-
   return (
     <div
       className={'parameter-handle'}
@@ -95,24 +94,26 @@ export function ParameterHandle({
             onChange: onDatatypeChange,
           })}
         </label>
-        <label
-          style={{
-            gridColumn: 'span 2',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '5px',
-          }}
-        >
-          defaultValue
-          {widgetFactory.createWidget(handleData.dataType!, {
-            value:
-              handleData.value ??
-              handleData.defaultValue ??
-              DataTypes[handleData.dataType!]?.defaultValue,
-            className: `nodrag handle-widget`,
-            // onChange: changeValue,
-          })}
-        </label>
+        {!handleData.connection && (
+          <label
+            style={{
+              gridColumn: 'span 2',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+            }}
+          >
+            defaultValue
+            {widgetFactory.createWidget(handleData.dataType!, {
+              value:
+                handleData.value ??
+                handleData.defaultValue ??
+                DataTypes[handleData.dataType!]?.defaultValue,
+              className: `nodrag handle-widget`,
+              // onChange: changeValue,
+            })}
+          </label>
+        )}
       </div>
       <IconButton
         style={{ padding: 1 }}
