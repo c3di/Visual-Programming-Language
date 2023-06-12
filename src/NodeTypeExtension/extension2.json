@@ -91,6 +91,17 @@
           "dataType": "exec"
         }
       }
+    },
+    "Return": {
+      "type": "Return",
+      "category": "return",
+      "tooltip": "Return",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec"
+        }
+      }
     }
   }
 }
