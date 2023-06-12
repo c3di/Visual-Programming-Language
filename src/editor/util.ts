@@ -19,3 +19,11 @@ export function registVariableRef(
     );
   }
 }
+
+export function stringArrayToObject(array: string[]): Record<string, string> {
+  const obj: Record<string, string> = {};
+  array.forEach((item) => {
+    obj[item] = item;
+  });
+  return obj;
+}
