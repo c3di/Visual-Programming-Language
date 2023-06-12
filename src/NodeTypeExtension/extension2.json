@@ -85,11 +85,6 @@
       "category": "createFunction",
       "title": "New Function",
       "tooltip": "Create a new function",
-      "inputs": {
-        "execIn": {
-          "dataType": "exec"
-        }
-      },
       "outputs": {
         "execOut": {
           "title": "execOut",
