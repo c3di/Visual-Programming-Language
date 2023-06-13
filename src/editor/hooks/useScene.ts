@@ -386,6 +386,32 @@ export default function useScene(
       } else if (node.type === 'functionCall') {
         const name = node.data.title;
         funNamePool.current.removeRef(name, node.id);
+      } else if (node.type === 'return') {
+        graphState.setNodes((nodes) =>
+          nodes.map((n) => {
+            if (n.type === 'functionCall' && n.data.nodeRef) {
+              const refNode = graphState.getNodeById(n.data.nodeRef);
+              if (refNode?.data.nodeRef === node.id) {
+                n.data = {
+                  ...n.data,
+                  outputs: { execOut: n.data.outputs.execIn },
+                };
+              }
+            }
+            return n;
+          })
+        );
+        graphState.setNodes((nodes) =>
+          nodes.map((n) => {
+            if (n.type === 'createFunction' && n.data.nodeRef === node.id) {
+              n.data = {
+                ...n.data,
+                nodeRef: undefined,
+              };
+            }
+            return n;
+          })
+        );
       }
     });
   };
