@@ -1,5 +1,5 @@
 :root {
-  --vp-handle-background-color: #778899;
+  --vp-handle-background-color: var(--vp-ui-font-color-greyblue);
   --vp-handle-border-radius: 2px;
   --vp-handle-panel-height: 20px;
 
