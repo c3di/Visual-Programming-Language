@@ -1,6 +1,14 @@
 import React from 'react';
 import { type WidgetProps } from './WidgetProps';
 
+const inputStyles = {
+  fontSize: 'var(--vp-widget-font-size1)',
+  fontFamily: 'var(--vp-widget-font-family)',
+  border: 'var(--vp-widget-border-width) var(--vp-widget-border-color) solid',
+  borderRadius: 'var(--vp-widget-border-radius)',
+  backgroundColor: 'var(--vp-widget-background-color-white)',
+};
+
 export function NumberInput(props: WidgetProps): JSX.Element {
   const { value, className, onChange } = props;
   return (
@@ -8,6 +16,7 @@ export function NumberInput(props: WidgetProps): JSX.Element {
       className={className}
       type={'number'}
       defaultValue={value}
+      style={inputStyles}
       onChange={(e) => {
         if (e.target.value === '') {
           onChange(0.0);
@@ -34,6 +43,7 @@ export function TextInput(props: WidgetProps): JSX.Element {
       className={className}
       type={'text'}
       defaultValue={value}
+      style={inputStyles}
       onChange={(e) => {
         onChange(e.target.value);
       }}
@@ -48,6 +58,7 @@ export function BooleanInput(props: WidgetProps): JSX.Element {
       className={className}
       type={'checkbox'}
       defaultChecked={value}
+      style={inputStyles}
       onChange={(e) => {
         onChange(e.target.checked);
       }}
@@ -62,6 +73,7 @@ export function EnumSelect(props: WidgetProps): JSX.Element {
     <select
       className={className}
       defaultValue={defaultValue}
+      style={inputStyles}
       onChange={(e) => {
         onChange(e.target.value);
       }}
@@ -83,6 +95,7 @@ export const IntegerInput = (props: WidgetProps): JSX.Element => {
       className={className}
       type={'number'}
       defaultValue={defaultVal}
+      style={inputStyles}
       onChange={(e) => {
         if (e.target.value === '') onChange(0);
         else {
