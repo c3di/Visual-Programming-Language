@@ -31,7 +31,6 @@
   --vp-accordion-font-family: var(--vp-gui-font-family);
   --vp-accordion-panel-border-color: var(--vp-gui-border-color);
   --vp-accordion-panel-border-width: var(--vp-gui-border-width);
-  --vp-accordion-panel-border-radius: var(--vp-gui-border-radius);
   --vp-acccordion-panel-background-color: var(--vp-gui-background-color-white);
 
   --vp-accordion-summary-hover-bgcolor: var(--vp-gui-hover-background-color);
@@ -93,6 +92,8 @@
 
   /*FilePond*/
   --vp-filepond-border-radius: var(--vp-gui-border-radius);
+  --vp-filepond-font-family: var(--vp-gui-font-family);
+  --vp-filepond-font-size: var(--vp-gui-font-size2);
 }
 
 .VP_MenuList {
@@ -129,20 +130,12 @@
   padding-bottom: var(--vp-menulist-bottom-padding) !important;
 }
 
-.css-uk01t5-MuiPaper-root-MuiAccordion-root {
-  border-radius: var(--vp-accordion-panel-border-radius) !important;
-}
-
-.css-15olx4d-MuiPaper-root-MuiAccordion-root {
-  border-radius: var(--vp-accordion-panel-border-radius) !important;
-}
-
 .filepond--panel-root {
   border-radius: var(--vp-filepond-border-radius) !important;
   margin: 2px;
 }
 
-.filepond--drop-label {
-  font-family: var(--vp-gui-font-family);
-  font-size: var(--vp-gui-font-size2);
+.filepond--drop-label > label {
+  font-family: var(--vp-filepond-font-family) !important;
+  font-size: var(--vp-filepond-font-size) !important;
 }

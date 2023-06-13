@@ -61,6 +61,7 @@
 
 .react-flow__node {
   font-size: var(--vp-node-font-size1);
+  font-family: var(--vp-node-font-family);
   background-color: var(--vp-node-background-color-lightgrey);
   color: var(--vp-node-font-color);
   box-shadow: var(--vp-node-box-shadow);

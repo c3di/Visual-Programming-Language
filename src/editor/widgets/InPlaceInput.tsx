@@ -33,6 +33,7 @@ export default function InPlaceInput({
         height: '100%',
         fontFamily: 'inherit',
         fontSize: 'inherit',
+        color: 'inherit',
         border: '0px',
       }}
       onDoubleClick={(e) => {
@@ -46,6 +47,7 @@ export default function InPlaceInput({
             width: '100%',
             fontFamily: 'inherit',
             fontSize: 'inherit',
+            color: 'inherit',
             padding: '0px',
             border: '0px',
             overflow: 'hidden',

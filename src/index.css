@@ -10,8 +10,7 @@ body,
   /* Borders */
   --vp-border-radius: 0px;
   --vp-border-width: 1px;
-  --vp-border-color: #e0e0e0;
-  /* --vp-border-color-light: #e2e8f0; */
+  --vp-border-color: #e0e0e0; /* Alternative value #e2e8f0; */
 
   /* Shadow */
   --vp-box-shadow: 0 4px 6px -1px rgb(0 0 0 / 15%),
@@ -27,7 +26,7 @@ body,
   /* UI Fonts */
   --vp-ui-font-family: 'Roboto', 'sans-serif';
   --vp-ui-font-size0: 10px; /* Base font size, 10px = 1rem */
-  --vp-ui-font-size1: 1.25rem;
+  --vp-ui-font-size1: 1.25rem; /* Used by  */
   --vp-ui-font-size2: 1.5rem;
   --vp-ui-font-size3: 1.7rem;
   --vp-ui-font-color-black: #222;
