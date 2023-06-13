@@ -8,6 +8,7 @@ import RerouteNode from './RerouteNode';
 import StickyNoteNode from './StickyNoteNode';
 import CreateVariable from './CreateVariable';
 import CreateFunction from './CreateFunction';
+import FunctionCall from './FunctionCall';
 import Return from './Return';
 import './index.css';
 
@@ -22,6 +23,8 @@ const VisualNodeTypes = {
   stickyNote: StickyNoteNode,
   createVariable: CreateVariable,
   createFunction: CreateFunction,
+  functionCall: FunctionCall,
+
   return: Return,
 };
 

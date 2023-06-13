@@ -83,7 +83,6 @@
     "CreateFunction": {
       "type": "CreateFunction",
       "category": "createFunction",
-      "title": "New Function",
       "tooltip": "Create a new function",
       "outputs": {
         "execOut": {
@@ -91,6 +90,11 @@
           "dataType": "exec"
         }
       }
+    },
+    "functionCall": {
+      "notShowInMenu": true,
+      "type": "functionCall",
+      "category": "functionCall"
     },
     "Return": {
       "type": "Return",

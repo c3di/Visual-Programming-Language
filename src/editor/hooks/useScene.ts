@@ -68,6 +68,7 @@ export interface ISceneState {
   anyConnectionToSelectedNode: boolean;
   extraCommands: Command[];
   varsNamePool: React.MutableRefObject<IUniqueNamePool>;
+  funNamePool: React.MutableRefObject<IUniqueNamePool>;
   sceneActions: ISceneActions;
 }
 
@@ -91,6 +92,8 @@ export default function useScene(
   };
 
   const varsNamePool = useRef<IUniqueNamePool>(new UniqueNamePool());
+  const funNamePool = useRef<IUniqueNamePool>(new UniqueNamePool());
+
   const gui = useGui();
   const saveNodesInSelectedCommentNode = (
     node: Node,
@@ -265,6 +268,7 @@ export default function useScene(
 
       const config = deserializer.serializedToGraphNodeConfig({
         id,
+        title: data?.title,
         type: configType,
         position,
         inputs: data?.inputs,
@@ -312,6 +316,37 @@ export default function useScene(
             },
             category: 'Variables',
             categoryRank: 0,
+          },
+        ];
+      });
+    } else if (node.type === 'createFunction') {
+      setExtraCommands((commands) => {
+        if (!node.data.title) {
+          node.data.title = funNamePool.current.createNew('newFun');
+        }
+        funNamePool.current.add(node.data.title);
+        return [
+          ...commands,
+          {
+            name: node.data.title,
+            action: (
+              item: any,
+              e: React.MouseEvent<HTMLLIElement> | undefined
+            ) => {
+              Object.values(node.data.outputs).forEach((output: any) => {
+                output.showWidget = false;
+                output.showTitle = output.dataType !== 'exec';
+              });
+
+              addNode('extension2.functionCall', undefined, {
+                title: node.data.title,
+                nodeRef: node.id,
+                inputs: node.data.outputs,
+                outputs: node.data.outputs,
+              });
+            },
+            category: 'Functions',
+            categoryRank: 1,
           },
         ];
       });
@@ -388,6 +423,7 @@ export default function useScene(
   return {
     gui,
     varsNamePool,
+    funNamePool,
     graphStateRef,
     anyConnectableNodeSelected: graphState.anyConnectableNodeSelected,
     anyConnectionToSelectedNode: graphState.anyConnectionToSelectedNode,

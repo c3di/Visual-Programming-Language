@@ -1,5 +1,5 @@
 import { useSceneState } from './Context';
-import { type VariableNodeData } from './types';
+import { type ConnectableData, type VariableNodeData } from './types';
 
 export function deepCopy(obj: any): any {
   return JSON.parse(JSON.stringify(obj));
@@ -17,6 +17,15 @@ export function registVariableRef(
       node?.data.inputs.name.value ?? node?.data.inputs.name.defaultValue,
       thisId
     );
+  }
+}
+
+export function registFunctionRef(data: ConnectableData, thisId: string): void {
+  const funNamePool = useSceneState()?.funNamePool.current;
+  const getNodeById = useSceneState()?.sceneActions.getNodeById;
+  const node = getNodeById?.(data.nodeRef ?? '');
+  if (data.nodeRef) {
+    funNamePool?.addRef(node?.data.title, thisId);
   }
 }
 
