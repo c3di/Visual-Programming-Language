@@ -367,6 +367,16 @@ export default function useScene(
         const name =
           node.data.inputs.setter?.title ?? node.data.inputs.getter?.title;
         varsNamePool.current.removeRef(name, node.id);
+      } else if (node.type === 'createFunction') {
+        const name = node.data.title;
+        setExtraCommands((commands) => {
+          return commands.filter((command) => command.name !== name);
+        });
+        graphState.deleteNodes(funNamePool.current.itemRef(name) ?? []);
+        funNamePool.current.remove(name);
+      } else if (node.type === 'functionCall') {
+        const name = node.data.title;
+        funNamePool.current.removeRef(name, node.id);
       }
     });
   };
