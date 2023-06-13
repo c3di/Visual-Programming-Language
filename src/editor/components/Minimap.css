@@ -1,0 +1,9 @@
+.minimap-toggle-button {
+  color: var(--vp-icon-color-black);
+  height: calc(var(--vp-icon-size) * var(--vp-ui-font-scale-factor2));
+  width: calc(var(--vp-icon-size) * var(--vp-ui-font-scale-factor2));
+}
+
+.minimap-toggle-button:hover {
+  background-color: var(--vp-hover-background-color);
+}

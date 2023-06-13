@@ -22,7 +22,7 @@
 
   /*Icon*/
   --vp-gui-icon-size: var(--vp-icon-size);
-  --vp-gui-icon-color: var(--vp-icon-color);
+  --vp-gui-icon-color-grey: var(--vp-icon-color-grey);
 
   /*******Following is module-specific CSS. ********/
 
@@ -57,7 +57,7 @@
   --vp-menu-panel-divider-border-width: var(--vp-gui-border-width);
 
   --vp-menuitem-icon-size: var(--vp-gui-icon-size);
-  --vp-menuitem-icon-color: var(--vp-gui-icon-color);
+  --vp-menuitem-icon-color: var(--vp-gui-icon-color-grey);
   --vp-menuitem-font-family: var(--vp-gui-font-family);
   --vp-menuitem-font-size: var(--vp-gui-font-size3);
   --vp-menuitem-font-color: var(--vp-gui-font-item-color);
@@ -79,11 +79,11 @@
   --vp-searchbar-border-color: var(--vp-gui-border-color);
 
   --vp-searchbar-icon-size: var(--vp-gui-icon-size);
-  --vp-searchbar-icon-color: var(--vp-gui-icon-color);
+  --vp-searchbar-icon-color: var(--vp-gui-icon-color-grey);
 
   /* TreeView Menu */
   --vp-treeview-icon-size: var(--vp-gui-icon-size);
-  --vp-treeview-icon-color: var(--vp-gui-icon-color);
+  --vp-treeview-icon-color: var(--vp-gui-icon-color-grey);
 
   --vp-treeview-font-family: var(--vp-menuitem-font-family);
   --vp-treeview-font-color: var(--vp-gui-font-item-color);

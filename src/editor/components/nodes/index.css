@@ -17,7 +17,7 @@
 
   /*Icon*/
   --vp-node-icon-size: var(--vp-icon-size);
-  --vp-node-icon-color-black: var(--vp-ui-font-color-black);
+  --vp-node-icon-color-black: var(--vp-icon-color-black);
 
   /*******Following is module-specific CSS. ********/
 
