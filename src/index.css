@@ -29,6 +29,8 @@ body,
   --vp-ui-font-size1: 1.25rem; /* Used by  */
   --vp-ui-font-size2: 1.5rem;
   --vp-ui-font-size3: 1.7rem;
+  --vp-ui-font-scale-factor1: 1.2; /* Used by StickyNodeIcon'size, to keep the visual coherence when the parent element doesn't use 10px as base font size  */
+  --vp-ui-font-scale-factor2: 1.5;
   --vp-ui-font-color-black: #222;
   --vp-ui-font-color-grey: #0000008a;
   --vp-ui-font-color-darkgrey: #000000de;

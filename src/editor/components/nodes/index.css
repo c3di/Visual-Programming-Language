@@ -17,9 +17,7 @@
 
   /*Icon*/
   --vp-node-icon-size: var(--vp-icon-size);
-  /* Not working fot Stickynote */
-  --vp-node-icon-color: var(--vp-icon-color);
-  /* Not working fot Stickynote */
+  --vp-node-icon-color-black: var(--vp-ui-font-color-black);
 
   /*******Following is module-specific CSS. ********/
 

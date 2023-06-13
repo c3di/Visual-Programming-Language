@@ -139,3 +139,11 @@
   font-family: var(--vp-filepond-font-family) !important;
   font-size: var(--vp-filepond-font-size) !important;
 }
+
+.MuiTreeItem-iconContainer {
+  width: auto !important;
+}
+.MuiTreeItem-iconContainer .MuiSvgIcon-root {
+  width: var(--vp-treeview-icon-size) !important;
+  height: var(--vp-treeview-icon-size) !important;
+}

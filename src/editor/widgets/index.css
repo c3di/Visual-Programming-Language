@@ -10,5 +10,7 @@
   /* UI Fonts */
   --vp-widget-font-color: var(--vp-ui-font-color-black);
   --vp-widget-font-size1: var(--vp-ui-font-size1);
-  --vp-widget-font-family: var(--vp-ui-font-family);
+  --vp-widget-font-family: var(
+    --vp-ui-font-family
+  ); /*Alternative value for input font: 'monospace';*/
 }
