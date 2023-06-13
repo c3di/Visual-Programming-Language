@@ -35,6 +35,16 @@ export function ParameterHandle({
           const { [id]: _, ...remeined } = nd.data.outputs;
           nd.data.outputs = remeined;
         }
+        if (nd.data.nodeRef === nodeId) {
+          const { [id]: _, ...remeined } = nd.data.inputs;
+          nd = {
+            ...nd,
+            data: {
+              ...nd.data,
+              inputs: remeined,
+            },
+          };
+        }
         return nd;
       });
     });
@@ -45,12 +55,26 @@ export function ParameterHandle({
         if (nd.id === nodeId) {
           nd.data.outputs[id].dataType = value;
         }
+        if (nd.data.nodeRef === nodeId) {
+          nd.data.inputs[id].dataType = value;
+          deleteAllEdgesOfHandle?.(nd.id, id);
+        }
         return nd;
       });
     });
     deleteAllEdgesOfHandle?.(nodeId, id);
   }, []);
 
+  const onParaNameChange = useCallback((value: string) => {
+    setNodes?.((nds) => {
+      return nds.map((nd) => {
+        if (nd.data.nodeRef === nodeId) {
+          nd.data.inputs[id].title = value;
+        }
+        return nd;
+      });
+    });
+  }, []);
   return (
     <div
       className={'parameter-handle'}
@@ -76,7 +100,7 @@ export function ParameterHandle({
           {widgetFactory.createWidget('string', {
             value: handleData.title,
             className: `nodrag handle-widget`,
-            // onChange: changeValue,
+            onChange: onParaNameChange,
           })}
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
@@ -150,14 +174,29 @@ function CreateFunction({
   }
 
   const addNewHandle = useCallback(() => {
+    const title = `new-arg-${handleCount.current++}`;
+    const value = {
+      dataType: 'boolean',
+      title: `new-arg-${handleCount.current}`,
+      showWidget: false,
+    };
     setNodes?.((nds) => {
       return nds.map((nd) => {
         if (nd.id === id) {
           nd.data.outputs = {
             ...nd.data.outputs,
-            [`output-${handleCount.current}`]: {
-              dataType: 'boolean',
-              title: `output-${handleCount.current++}`,
+            [title]: value,
+          };
+        }
+        if (nd.data.nodeRef === id) {
+          nd = {
+            ...nd,
+            data: {
+              ...nd.data,
+              inputs: {
+                ...nd.data.inputs,
+                [title]: value,
+              },
             },
           };
         }
@@ -202,7 +241,7 @@ function CreateFunction({
     </div>
   );
 
-  const { setNodes } = useSceneState()?.sceneActions ?? {};
+  const { setNodes, setExtraCommands } = useSceneState()?.sceneActions ?? {};
   const setEnableDrag = useCallback((enable: boolean) => {
     setNodes?.((nds) => {
       return nds.map((nd) => {
@@ -222,8 +261,30 @@ function CreateFunction({
   }, []);
   const onEditChange = useCallback((text: string) => {
     setTitle(text);
+    updateName(text, data.title);
     data.title = text;
   }, []);
+
+  const updateName = useCallback((newVa: string, oldVa: string) => {
+    setExtraCommands?.((cmds) =>
+      cmds.map((cmd) => {
+        if (cmd.name === oldVa) {
+          cmd.name = newVa;
+        }
+        return cmd;
+      })
+    );
+
+    setNodes?.((nds) =>
+      nds.map((n) => {
+        if (n.data.nodeRef === id) {
+          n.data = { ...n.data, title: newVa };
+        }
+        return n;
+      })
+    );
+  }, []);
+
   return (
     <div title={data.tooltip} className="vp-node-containter">
       <div className="node__header">
