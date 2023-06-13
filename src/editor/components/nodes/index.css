@@ -11,7 +11,7 @@
   --vp-node-background-color-lightgrey: var(--vp-background-color-lightgrey);
 
   /* UI Fonts */
-  --vp-node-font-color: var(--vp-ui-font-color-black);
+  --vp-node-font-color-black: var(--vp-ui-font-color-black);
   --vp-node-font-size1: var(--vp-ui-font-size1);
   --vp-node-font-family: var(--vp-ui-font-family);
 
@@ -61,7 +61,7 @@
   font-size: var(--vp-node-font-size1);
   font-family: var(--vp-node-font-family);
   background-color: var(--vp-node-background-color-lightgrey);
-  color: var(--vp-node-font-color);
+  color: var(--vp-node-font-color-black);
   box-shadow: var(--vp-node-box-shadow);
   border-radius: var(--vp-node-border-radius);
   border-width: var(--vp-node-border-width) !important;
