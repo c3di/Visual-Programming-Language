@@ -93,12 +93,9 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
   // the nodes will added more properties by reactflow, so we need to get the nodes from reactflow
   const { getNodes, getNode, getEdges } = useReactFlow();
 
-  const getNodeById = useCallback(
-    (id: string): Node | undefined => {
-      return nodes.find((n) => n.id === id);
-    },
-    [nodes]
-  );
+  const getNodeById = useCallback((id: string): Node | undefined => {
+    return getNodes().find((n) => n.id === id);
+  }, []);
 
   const getSelectedCounts = useCallback((): selectedElementsCounts => {
     return selectedCounts.current;
@@ -559,6 +556,57 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
       shouldUpdateDataTypeOfRerouteNode.current = false;
     }
   }, [nodes, edges]);
+
+  useEffect(() => {
+    setNodes((nds) =>
+      nds.map((n) => {
+        if (n.type === 'createFunction') {
+          let thisNode = n;
+          while (true) {
+            const edges = getConnectedEdges([thisNode], getEdges());
+            const execEdge = edges.find(
+              (e) =>
+                e.source === thisNode.id &&
+                thisNode.data.outputs[e.sourceHandle!].dataType === 'exec'
+            );
+            if (!execEdge) {
+              n = {
+                ...n,
+                data: {
+                  ...n.data,
+                  nodeRef: null,
+                },
+              };
+              break;
+            }
+            const nextNode = getNode(execEdge.target);
+            if (!nextNode) {
+              n = {
+                ...n,
+                data: {
+                  ...n.data,
+                  nodeRef: null,
+                },
+              };
+              break;
+            }
+            if (nextNode.type === 'return') {
+              n = {
+                ...n,
+                data: {
+                  ...n.data,
+                  nodeRef: nextNode.id,
+                },
+              };
+              break;
+            }
+            thisNode = nextNode;
+          }
+        }
+        return n;
+      })
+    );
+  }, [edges]);
 
   return {
     initGraph,

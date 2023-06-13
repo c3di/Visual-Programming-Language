@@ -79,6 +79,33 @@
           "dataType": "exec"
         }
       }
+    },
+    "CreateFunction": {
+      "type": "CreateFunction",
+      "category": "createFunction",
+      "tooltip": "Create a new function",
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec"
+        }
+      }
+    },
+    "functionCall": {
+      "notShowInMenu": true,
+      "type": "functionCall",
+      "category": "functionCall"
+    },
+    "Return": {
+      "type": "Return",
+      "category": "return",
+      "tooltip": "Return",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec"
+        }
+      }
     }
   }
 }

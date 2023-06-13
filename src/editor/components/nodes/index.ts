@@ -7,6 +7,9 @@ import CommentNode from './CommentNode';
 import RerouteNode from './RerouteNode';
 import StickyNoteNode from './StickyNoteNode';
 import CreateVariable from './CreateVariable';
+import CreateFunction from './CreateFunction';
+import FunctionCall from './FunctionCall';
+import Return from './Return';
 import './index.css';
 
 const VisualNodeTypes = {
@@ -19,6 +22,10 @@ const VisualNodeTypes = {
   reroute: RerouteNode,
   stickyNote: StickyNoteNode,
   createVariable: CreateVariable,
+  createFunction: CreateFunction,
+  functionCall: FunctionCall,
+
+  return: Return,
 };
 
 export default VisualNodeTypes;

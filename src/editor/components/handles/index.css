@@ -24,7 +24,8 @@
   clip-path: polygon(0% 0%, 40% 0%, 100% 50%, 40% 100%, 0% 100%);
 }
 
-.source-handle .react-flow__handle {
+.source-handle .react-flow__handle,
+.parameter-handle .react-flow__handle {
   width: 8px;
   height: 10px;
   border-radius: 2px;

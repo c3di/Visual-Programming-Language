@@ -68,6 +68,7 @@ export interface ISceneState {
   anyConnectionToSelectedNode: boolean;
   extraCommands: Command[];
   varsNamePool: React.MutableRefObject<IUniqueNamePool>;
+  funNamePool: React.MutableRefObject<IUniqueNamePool>;
   sceneActions: ISceneActions;
 }
 
@@ -91,6 +92,8 @@ export default function useScene(
   };
 
   const varsNamePool = useRef<IUniqueNamePool>(new UniqueNamePool());
+  const funNamePool = useRef<IUniqueNamePool>(new UniqueNamePool());
+
   const gui = useGui();
   const saveNodesInSelectedCommentNode = (
     node: Node,
@@ -265,6 +268,7 @@ export default function useScene(
 
       const config = deserializer.serializedToGraphNodeConfig({
         id,
+        title: data?.title,
         type: configType,
         position,
         inputs: data?.inputs,
@@ -315,6 +319,46 @@ export default function useScene(
           },
         ];
       });
+    } else if (node.type === 'createFunction') {
+      setExtraCommands((commands) => {
+        if (!node.data.title) {
+          node.data.title = funNamePool.current.createNew('newFun');
+        }
+        funNamePool.current.add(node.data.title);
+        return [
+          ...commands,
+          {
+            name: node.data.title,
+            action: (
+              item: any,
+              e: React.MouseEvent<HTMLLIElement> | undefined
+            ) => {
+              const latest = graphState.getNodeById(node.id)!;
+              Object.values(latest.data.outputs).forEach((output: any) => {
+                output.showWidget = false;
+                output.showTitle = output.dataType !== 'exec';
+              });
+
+              const returnNodeId = latest?.data?.nodeRef;
+              const returnNode = graphState.getNodeById(returnNodeId);
+              Object.values(returnNode?.data.inputs ?? {}).forEach(
+                (input: any) => {
+                  input.showWidget = false;
+                  input.showTitle = input.dataType !== 'exec';
+                }
+              );
+              addNode('extension2.functionCall', undefined, {
+                title: latest.data.title,
+                nodeRef: node.id,
+                inputs: latest.data.outputs,
+                outputs: returnNode?.data.inputs,
+              });
+            },
+            category: 'Functions',
+            categoryRank: 1,
+          },
+        ];
+      });
     }
   };
 
@@ -332,6 +376,42 @@ export default function useScene(
         const name =
           node.data.inputs.setter?.title ?? node.data.inputs.getter?.title;
         varsNamePool.current.removeRef(name, node.id);
+      } else if (node.type === 'createFunction') {
+        const name = node.data.title;
+        setExtraCommands((commands) => {
+          return commands.filter((command) => command.name !== name);
+        });
+        graphState.deleteNodes(funNamePool.current.itemRef(name) ?? []);
+        funNamePool.current.remove(name);
+      } else if (node.type === 'functionCall') {
+        const name = node.data.title;
+        funNamePool.current.removeRef(name, node.id);
+      } else if (node.type === 'return') {
+        graphState.setNodes((nodes) =>
+          nodes.map((n) => {
+            if (n.type === 'functionCall' && n.data.nodeRef) {
+              const refNode = graphState.getNodeById(n.data.nodeRef);
+              if (refNode?.data.nodeRef === node.id) {
+                n.data = {
+                  ...n.data,
+                  outputs: { execOut: n.data.outputs.execIn },
+                };
+              }
+            }
+            return n;
+          })
+        );
+        graphState.setNodes((nodes) =>
+          nodes.map((n) => {
+            if (n.type === 'createFunction' && n.data.nodeRef === node.id) {
+              n.data = {
+                ...n.data,
+                nodeRef: undefined,
+              };
+            }
+            return n;
+          })
+        );
       }
     });
   };
@@ -388,6 +468,7 @@ export default function useScene(
   return {
     gui,
     varsNamePool,
+    funNamePool,
     graphStateRef,
     anyConnectableNodeSelected: graphState.anyConnectableNodeSelected,
     anyConnectionToSelectedNode: graphState.anyConnectionToSelectedNode,

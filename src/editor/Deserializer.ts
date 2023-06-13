@@ -31,19 +31,18 @@ export class Deserializer {
     sNode: SerializedGraphNode
   ): GraphNodeConfig => {
     const nodeConfig = nodeConfigRegistry.getNodeConfig(sNode.type);
-    const inputs = Object.entries(nodeConfig.inputs ?? {}).reduce<
-      Record<string, HandleData>
-    >((acc, [title, handle]) => {
+    const inputs = Object.entries(
+      nodeConfig.inputs ?? sNode.inputs ?? {}
+    ).reduce<Record<string, HandleData>>((acc, [title, handle]) => {
       acc[title] = {
         ...handle,
         ...sNode.inputs?.[title],
       };
       return acc;
     }, {});
-    const outputs = Object.entries(nodeConfig.outputs ?? {}).reduce<
-      Record<string, HandleData>
-    >((acc, [title, handle]) => {
-      if (!nodeConfig.outputs?.[title]) return acc;
+    const outputs = Object.entries(
+      nodeConfig.outputs ?? sNode.outputs ?? {}
+    ).reduce<Record<string, HandleData>>((acc, [title, handle]) => {
       acc[title] = {
         ...handle,
         ...sNode.outputs?.[title],
@@ -53,6 +52,7 @@ export class Deserializer {
     return {
       ...nodeConfig,
       ...sNode,
+      title: sNode.title ?? nodeConfig.title,
       inputs,
       outputs,
     };
