@@ -25,7 +25,7 @@ export function ParameterHandle({
   if (!handleData) {
     console.error('handleData is undefined');
   }
-  const { setNodes, deleteAllEdgesOfHandle } =
+  const { setNodes, deleteAllEdgesOfHandle, getNodeById } =
     useSceneState()?.sceneActions ?? {};
   const removeHandle = useCallback(() => {
     setNodes?.((nds) => {
@@ -33,6 +33,17 @@ export function ParameterHandle({
         if (nd.id === nodeId) {
           const { [id]: _, ...remeined } = nd.data.inputs;
           nd.data.inputs = remeined;
+        }
+        const ref = getNodeById?.(nd.data.nodeRef);
+        if (ref?.data.nodeRef === nodeId) {
+          const { [id]: _, ...remeined } = nd.data.outputs;
+          nd = {
+            ...nd,
+            data: {
+              ...nd.data,
+              outputs: remeined,
+            },
+          };
         }
         return nd;
       });
@@ -44,10 +55,26 @@ export function ParameterHandle({
         if (nd.id === nodeId) {
           nd.data.inputs[id].dataType = value;
         }
+        const ref = getNodeById?.(nd.data.nodeRef);
+        if (ref?.data.nodeRef === nodeId) {
+          nd.data.outputs[id].dataType = value;
+          deleteAllEdgesOfHandle?.(nd.id, id);
+        }
         return nd;
       });
     });
     deleteAllEdgesOfHandle?.(nodeId, id);
+  }, []);
+  const onParaNameChange = useCallback((value: string) => {
+    setNodes?.((nds) => {
+      return nds.map((nd) => {
+        const ref = getNodeById?.(nd.data.nodeRef);
+        if (ref?.data.nodeRef === nodeId) {
+          nd.data.outputs[id].title = value;
+        }
+        return nd;
+      });
+    });
   }, []);
   return (
     <div
@@ -83,7 +110,7 @@ export function ParameterHandle({
           {widgetFactory.createWidget('string', {
             value: handleData.title,
             className: `nodrag handle-widget`,
-            // onChange: changeValue,
+            onChange: onParaNameChange,
           })}
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
@@ -134,15 +161,32 @@ function Return({
   data: ConnectableData;
 }): JSX.Element {
   const handleCount = useRef<number>(0);
+  const getNodeById = useSceneState()?.sceneActions.getNodeById;
   const addNewHandle = useCallback(() => {
+    const title = `new-arg-${handleCount.current++}`;
+    const value = {
+      dataType: 'boolean',
+      title: `new-arg-${handleCount.current}`,
+      showWidget: false,
+    };
     setNodes?.((nds) => {
       return nds.map((nd) => {
         if (nd.id === id) {
           nd.data.inputs = {
             ...nd.data.inputs,
-            [`output-${handleCount.current}`]: {
-              dataType: 'boolean',
-              title: `output-${handleCount.current++}`,
+            [title]: value,
+          };
+        }
+        const ref = getNodeById?.(nd.data.nodeRef);
+        if (ref?.data.nodeRef === id) {
+          nd = {
+            ...nd,
+            data: {
+              ...nd.data,
+              outputs: {
+                ...nd.data.outputs,
+                [title]: value,
+              },
             },
           };
         }

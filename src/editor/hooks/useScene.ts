@@ -333,16 +333,25 @@ export default function useScene(
               item: any,
               e: React.MouseEvent<HTMLLIElement> | undefined
             ) => {
-              Object.values(node.data.outputs).forEach((output: any) => {
+              const latest = graphState.getNodeById(node.id)!;
+              Object.values(latest.data.outputs).forEach((output: any) => {
                 output.showWidget = false;
                 output.showTitle = output.dataType !== 'exec';
               });
 
+              const returnNodeId = latest?.data?.nodeRef;
+              const returnNode = graphState.getNodeById(returnNodeId);
+              Object.values(returnNode?.data.inputs ?? {}).forEach(
+                (input: any) => {
+                  input.showWidget = false;
+                  input.showTitle = input.dataType !== 'exec';
+                }
+              );
               addNode('extension2.functionCall', undefined, {
-                title: node.data.title,
+                title: latest.data.title,
                 nodeRef: node.id,
-                inputs: node.data.outputs,
-                outputs: node.data.outputs,
+                inputs: latest.data.outputs,
+                outputs: returnNode?.data.inputs,
               });
             },
             category: 'Functions',

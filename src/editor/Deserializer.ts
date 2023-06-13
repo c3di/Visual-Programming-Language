@@ -43,7 +43,6 @@ export class Deserializer {
     const outputs = Object.entries(
       nodeConfig.outputs ?? sNode.outputs ?? {}
     ).reduce<Record<string, HandleData>>((acc, [title, handle]) => {
-      if (!nodeConfig.outputs?.[title]) return acc;
       acc[title] = {
         ...handle,
         ...sNode.outputs?.[title],
