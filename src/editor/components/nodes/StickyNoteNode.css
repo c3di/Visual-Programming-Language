@@ -6,7 +6,7 @@
 
 .react-flow__node-stickyNote .stickyNote__node__body--enabled {
   min-width: 120px;
-  min-height: 120px;
+  min-height: 20px;
 }
 
 ::-webkit-color-swatch-wrapper {
