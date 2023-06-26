@@ -80,8 +80,7 @@ export default function useScene(
   }>
 ): ISceneState {
   const graphStateRef = useRef(graphState);
-  const { nodes, selectedNodes, edges, getFreeUniqueNodeIds } =
-    graphStateRef.current;
+  const { nodes, selectedNodes, edges, getFreeUniqueNodeIds } = graphState;
   const nodesRefInCommentNode = useRef({});
   const [extraCommands, setExtraCommands] = useState<Command[]>([]);
   const { setCenter, getZoom } = useReactFlow();
