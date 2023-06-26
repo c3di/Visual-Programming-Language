@@ -29,11 +29,18 @@
   background-color: var(--vp-handle-background-color);
 }
 
-.source-handle .react-flow__handle {
-  width: var(--vp-handle-point-width);
-  height: var(--vp-handle-point-height);
-  border-radius: var(--vp-handle-border-radius);
-  background-color: var(--vp-handle-background-color);
+
+.vp-rc-handle-exec {
+  clip-path: polygon(0% 0%, 40% 0%, 100% 50%, 40% 100%, 0% 100%);
+}
+
+.source-handle .react-flow__handle,
+.parameter-handle .react-flow__handle {
+  width: 8px;
+  height: 10px;
+  border-radius: 2px;
+  background-color: #778899;
+
 }
 
 .handle-widget {

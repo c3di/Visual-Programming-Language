@@ -46,6 +46,66 @@
           "dataType": "float"
         }
       }
+    },
+    "CreateVariable": {
+      "type": "CreateVariable",
+      "category": "createVariable",
+      "title": "New Variable",
+      "tooltip": "Create a new variable",
+      "inputs": {
+        "execIn": {
+          "dataType": "exec"
+        },
+        "name": {
+          "title": "name",
+          "tooltip": "name of the variable",
+          "dataType": "string"
+        },
+        "type": {
+          "title": "type",
+          "tooltip": "type of the variable",
+          "dataType": "extension1.Level2.module2.EDataType",
+          "defaultValue": "string"
+        },
+        "value": {
+          "title": "value",
+          "tooltip": "value of the variable",
+          "dataType": "string",
+          "defaultValue": "string"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "dataType": "exec"
+        }
+      }
+    },
+    "CreateFunction": {
+      "type": "CreateFunction",
+      "category": "createFunction",
+      "tooltip": "Create a new function",
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec"
+        }
+      }
+    },
+    "functionCall": {
+      "notShowInMenu": true,
+      "type": "functionCall",
+      "category": "functionCall"
+    },
+    "Return": {
+      "type": "Return",
+      "category": "return",
+      "tooltip": "Return",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec"
+        }
+      }
     }
   }
 }

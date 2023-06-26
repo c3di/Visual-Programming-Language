@@ -1,11 +1,28 @@
 {
   "nodes": {
     "setter": {
+      "notShowInMenu": true,
       "type": "setter",
       "category": "setter",
       "inputs": {
+        "execIn": {
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
         "setter": {
           "tooltip": "setter handle"
+        }
+      }
+    },
+    "getter": {
+      "notShowInMenu": true,
+      "type": "getter",
+      "category": "getter",
+      "tooltip": "Return the value",
+      "outputs": {
+        "getter": {
+          "tooltip": "getter handle"
         }
       }
     }

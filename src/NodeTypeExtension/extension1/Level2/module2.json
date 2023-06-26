@@ -1,16 +1,5 @@
 {
-  "nodes": {
-    "getter": {
-      "type": "getter",
-      "category": "getter",
-      "tooltip": "Return the value",
-      "outputs": {
-        "getter": {
-          "tooltip": "getter handle"
-        }
-      }
-    }
-  },
+  "nodes": {},
   "types": {
     "EDataType": {
       "options": {

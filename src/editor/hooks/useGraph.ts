@@ -1,6 +1,7 @@
 import {
   type Node,
   type Edge,
+  type Graph,
   type SerializedGraph,
   type HandleData,
   type ConnectionStatus,
@@ -16,13 +17,21 @@ import {
   addEdge as rcAddEdge,
   type NodeChange,
   type EdgeChange,
+  type Node as RcNode,
   MarkerType,
   getConnectedEdges,
   getOutgoers,
   getIncomers,
   useReactFlow,
 } from 'reactflow';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  type Dispatch,
+  type SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { serializer } from '../Serializer';
 import { deserializer } from '../Deserializer';
 import { deepCopy } from '../util';
@@ -30,10 +39,12 @@ import { deepCopy } from '../util';
 type OnChange<ChangesType> = (changes: ChangesType[]) => void;
 
 export interface GraphState {
+  initGraph: Graph;
   nodes: Node[];
   edges: Edge[];
   getFreeUniqueNodeIds: (count: number) => string[];
-  setNodes: (nodes: Node[]) => void;
+  getNodeById: (id: string) => Node | undefined;
+  setNodes: Dispatch<SetStateAction<Array<RcNode<any, string | undefined>>>>;
   onNodesChange: OnChange<NodeChange>;
   setEdges: (edges: Edge[]) => void;
   onEdgesChange: OnChange<EdgeChange>;
@@ -47,6 +58,7 @@ export interface GraphState {
   selectEdge: (edgeId: string) => void;
   clearEdgeSelection: () => void;
   clear: () => void;
+  deleteNodes: (nodeIds: string[]) => void;
   deleteSelectedNodes: () => void;
   deleteSelectedElements: () => void;
   deleteEdge: (id: string) => void;
@@ -80,6 +92,10 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
   });
   // the nodes will added more properties by reactflow, so we need to get the nodes from reactflow
   const { getNodes, getNode, getEdges } = useReactFlow();
+
+  const getNodeById = useCallback((id: string): Node | undefined => {
+    return getNodes().find((n) => n.id === id);
+  }, []);
 
   const getSelectedCounts = useCallback((): selectedElementsCounts => {
     return selectedCounts.current;
@@ -130,10 +146,10 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
       const sHandle = getNode(source)?.data.outputs?.[sourceHandle];
       const tHandle = getNode(target)?.data.inputs?.[targetHandle];
       if (!sHandle || !tHandle) return;
-      if (sHandle.connection === getMaxConnection('source', sHandle.type)) {
+      if (sHandle.connection === getMaxConnection('source', sHandle.dataType)) {
         deleteAllEdgesOfHandle(source, sourceHandle);
       }
-      if (tHandle.connection === getMaxConnection('target', tHandle.type)) {
+      if (tHandle.connection === getMaxConnection('target', tHandle.dataType)) {
         deleteAllEdgesOfHandle(target, targetHandle);
       }
     },
@@ -381,6 +397,11 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     setEdges([]);
   }, []);
 
+  const deleteNodes = useCallback((nodesId: string[]): void => {
+    setNodes((nds) => nds.filter((n) => !nodesId.includes(n.id)));
+    shouldUpdateDataTypeOfRerouteNode.current = true;
+  }, []);
+
   const deleteSelectedNodes = useCallback((): void => {
     deleteEdges((e) => {
       const selectedNodesId = getNodes()
@@ -536,9 +557,63 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     }
   }, [nodes, edges]);
 
+  useEffect(() => {
+    setNodes((nds) =>
+      nds.map((n) => {
+        if (n.type === 'createFunction') {
+          let thisNode = n;
+          while (true) {
+            const edges = getConnectedEdges([thisNode], getEdges());
+            const execEdge = edges.find(
+              (e) =>
+                e.source === thisNode.id &&
+                thisNode.data.outputs[e.sourceHandle!].dataType === 'exec'
+            );
+            if (!execEdge) {
+              n = {
+                ...n,
+                data: {
+                  ...n.data,
+                  nodeRef: null,
+                },
+              };
+              break;
+            }
+            const nextNode = getNode(execEdge.target);
+            if (!nextNode) {
+              n = {
+                ...n,
+                data: {
+                  ...n.data,
+                  nodeRef: null,
+                },
+              };
+              break;
+            }
+            if (nextNode.type === 'return') {
+              n = {
+                ...n,
+                data: {
+                  ...n.data,
+                  nodeRef: nextNode.id,
+                },
+              };
+              break;
+            }
+            thisNode = nextNode;
+          }
+        }
+        return n;
+      })
+    );
+  }, [edges]);
+
   return {
+    initGraph,
     getFreeUniqueNodeIds,
     nodes,
+    deleteNodes,
+    getNodeById,
     setNodes,
     onNodesChange,
     edges,

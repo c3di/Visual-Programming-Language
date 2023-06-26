@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { type VariableNodeData } from '../../types';
 import { TargetHandle, SourceHandle } from '../handles';
+import { registVariableRef } from '../../util';
 
 function SetterNode({
   id,
@@ -9,29 +10,32 @@ function SetterNode({
   id: string;
   data: VariableNodeData;
 }): JSX.Element {
+  registVariableRef(data, id);
   const inputhandles = [];
   for (const inputId in data.inputs) {
+    const handle = data.inputs[inputId];
     inputhandles.push(
       <TargetHandle
         key={inputId}
         id={inputId}
         nodeId={id}
-        showWidget={true}
-        showTitle={true}
-        handleData={data.inputs[inputId]}
+        showWidget={!!handle.showWidget || handle.showWidget === undefined}
+        showTitle={!!handle.showTitle || handle.showTitle === undefined}
+        handleData={handle}
       />
     );
   }
   const outputHandles = [];
-  for (const id in data.outputs) {
+  for (const outputId in data.outputs) {
+    const handle = data.outputs[outputId];
     outputHandles.push(
       <SourceHandle
-        key={id}
-        id={id}
+        key={outputId}
+        id={outputId}
         nodeId={id}
-        handleData={data.outputs[id]}
-        showWidget={false}
-        showTitle={false}
+        handleData={data.outputs[outputId]}
+        showWidget={!!handle.showWidget}
+        showTitle={!!handle.showTitle || handle.showTitle === undefined}
       />
     );
   }

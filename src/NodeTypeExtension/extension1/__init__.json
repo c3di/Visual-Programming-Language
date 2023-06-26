@@ -9,6 +9,13 @@
       "title": "function Node",
       "tooltip": "this is a function node",
       "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
         "input1": {
           "title": "input1",
           "tooltip": "input 1",
@@ -35,6 +42,13 @@
         }
       },
       "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "tooltip": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
         "output1": {
           "title": "output1",
           "tooltip": "output 1",
@@ -44,6 +58,92 @@
           "title": "output2",
           "tooltip": "output 2",
           "dataType": "float"
+        }
+      }
+    },
+    "if else": {
+      "type": "if else",
+      "category": "function",
+      "title": "If",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "condition": {
+          "title": "Condition",
+          "tooltip": "condition",
+          "dataType": "boolean",
+          "defaultValue": true
+        }
+      },
+      "outputs": {
+        "True": {
+          "title": "True",
+          "tooltip": "True",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": true
+        },
+        "False": {
+          "title": "False",
+          "tooltip": "False",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": true
+        }
+      }
+    },
+    "for each": {
+      "type": "for each",
+      "category": "function",
+      "title": "For Each Loop",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "Array": {
+          "title": "Array",
+          "tooltip": "Array",
+          "dataType": "Array",
+          "showWidget": false,
+          "showTitle": true
+        }
+      },
+      "outputs": {
+        "loopBody": {
+          "title": "Loop Body",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": true,
+          "tooltip": "Exec Out"
+        },
+        "ArrayElement": {
+          "title": "Array Element",
+          "tooltip": "Array Element",
+          "dataType": "any",
+          "showWidget": false,
+          "showTitle": true
+        },
+        "arrayIndex": {
+          "title": "Array Index",
+          "dataType": "integer",
+          "showWidget": false,
+          "showTitle": true
+        },
+        "complete": {
+          "title": "Completed",
+          "tooltip": "Exec Out",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": true
         }
       }
     }

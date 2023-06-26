@@ -1,4 +1,10 @@
-import { useCallback, useRef, useState } from 'react';
+import {
+  type Dispatch,
+  type SetStateAction,
+  useCallback,
+  useRef,
+  useState,
+} from 'react';
 import {
   type Node,
   type ClipboardInfo,
@@ -6,12 +12,19 @@ import {
   type Edge,
   type selectedElementsCounts,
   isCommentNode,
+  type Graph,
 } from '../types';
 import { type GraphState } from './useGraph';
 import { deserializer } from '../Deserializer';
-import { type Command } from './useGui';
+import useGui, { type IGui, type Command } from './useGui';
 import ContentPaste from '@mui/icons-material/ContentPaste';
-import { useReactFlow, getRectOfNodes, type XYPosition } from 'reactflow';
+import {
+  useReactFlow,
+  getRectOfNodes,
+  type XYPosition,
+  type Node as RcNode,
+} from 'reactflow';
+import { UniqueNamePool, type IUniqueNamePool } from '../../utils';
 
 export interface ISceneActions {
   getSelectedCounts: () => selectedElementsCounts;
@@ -19,7 +32,8 @@ export interface ISceneActions {
   selectAll: (sure: boolean) => void;
   selectEdge: (edgeId: string) => void;
   selectNode: (nodeId: string) => void;
-  addNode: (configType: string, thisPosition?: XYPosition) => Node;
+  getNodeById: (nodeId: string) => Node | undefined;
+  addNode: (configType: string, thisPosition?: XYPosition, data?: any) => Node;
   addEdge: (
     source: string,
     sourceHandle: string,
@@ -27,6 +41,8 @@ export interface ISceneActions {
     targetHandle: string,
     dataType?: string
   ) => void;
+  setNodes: Dispatch<SetStateAction<Array<RcNode<any, string | undefined>>>>;
+  setExtraCommands: Dispatch<SetStateAction<Command[]>>;
   clearEdgeSelection: () => void;
   getHandleConnectionCounts: (nodeId: string, handleId: string) => number;
   onNodeDragStart: (evt: any, node: Node) => void;
@@ -43,12 +59,16 @@ export interface ISceneActions {
   deleteAllEdgesOfSelectedNodes: () => void;
   isValidConnection: (params: any) => ConnectionStatus;
   centerSelectedNodes: () => void;
+  onNodesDelete: (nodes: Node[]) => void;
 }
 export interface ISceneState {
+  gui: IGui;
   graphStateRef: React.MutableRefObject<GraphState>;
   anyConnectableNodeSelected: boolean;
   anyConnectionToSelectedNode: boolean;
   extraCommands: Command[];
+  varsNamePool: React.MutableRefObject<IUniqueNamePool>;
+  funNamePool: React.MutableRefObject<IUniqueNamePool>;
   sceneActions: ISceneActions;
 }
 
@@ -71,6 +91,10 @@ export default function useScene(
     });
   };
 
+  const varsNamePool = useRef<IUniqueNamePool>(new UniqueNamePool());
+  const funNamePool = useRef<IUniqueNamePool>(new UniqueNamePool());
+
+  const gui = useGui();
   const saveNodesInSelectedCommentNode = (
     node: Node,
     toBeDragNodeId: string
@@ -235,7 +259,7 @@ export default function useScene(
   };
 
   const addNode = useCallback(
-    (configType: string, thisPosition?: XYPosition): Node => {
+    (configType: string, thisPosition?: XYPosition, data?: any): Node => {
       const id = getFreeUniqueNodeIds(1)[0];
       const position = thisPosition ?? {
         x: mousePos.current.mouseX,
@@ -244,15 +268,164 @@ export default function useScene(
 
       const config = deserializer.serializedToGraphNodeConfig({
         id,
+        title: data?.title,
         type: configType,
         position,
+        inputs: data?.inputs,
+        outputs: data?.outputs,
+        nodeRef: data?.nodeRef,
       });
       const node = deserializer.configToNode(config);
+      onNodeAdd(node);
       graphState.addElements({ newNodes: [node] });
       return node;
     },
     []
   );
+
+  const onNodeAdd = (node: Node): void => {
+    if (node.type === 'createVariable') {
+      setExtraCommands((commands) => {
+        if (
+          !node.data.inputs.name.value &&
+          !node.data.inputs.name.defaultValue
+        ) {
+          node.data.inputs.name.defaultValue =
+            varsNamePool.current.createNew('newVar');
+        }
+        varsNamePool.current.add(
+          node.data.inputs.name.value ?? node.data.inputs.name.defaultValue
+        );
+        return [
+          ...commands,
+          {
+            name:
+              node.data.inputs.name.value ?? node.data.inputs.name.defaultValue,
+            action: (
+              item: any,
+              e: React.MouseEvent<HTMLLIElement> | undefined
+            ) => {
+              const position = {
+                left: e?.clientX ?? 0,
+                top: e?.clientY ?? 0,
+              };
+              gui.openWidget('getterSetterMenu', position, {
+                createVarNodeRef: node.id,
+                position,
+              });
+            },
+            category: 'Variables',
+            categoryRank: 0,
+          },
+        ];
+      });
+    } else if (node.type === 'createFunction') {
+      setExtraCommands((commands) => {
+        if (!node.data.title) {
+          node.data.title = funNamePool.current.createNew('newFun');
+        }
+        funNamePool.current.add(node.data.title);
+        return [
+          ...commands,
+          {
+            name: node.data.title,
+            action: (
+              item: any,
+              e: React.MouseEvent<HTMLLIElement> | undefined
+            ) => {
+              const latest = graphState.getNodeById(node.id)!;
+              Object.values(latest.data.outputs).forEach((output: any) => {
+                output.showWidget = false;
+                output.showTitle = output.dataType !== 'exec';
+              });
+
+              const returnNodeId = latest?.data?.nodeRef;
+              const returnNode = graphState.getNodeById(returnNodeId);
+              Object.values(returnNode?.data.inputs ?? {}).forEach(
+                (input: any) => {
+                  input.showWidget = false;
+                  input.showTitle = input.dataType !== 'exec';
+                }
+              );
+              addNode('extension2.functionCall', undefined, {
+                title: latest.data.title,
+                nodeRef: node.id,
+                inputs: latest.data.outputs,
+                outputs: returnNode?.data.inputs,
+              });
+            },
+            category: 'Functions',
+            categoryRank: 1,
+          },
+        ];
+      });
+    }
+  };
+
+  const onNodesDelete = (nodes: Node[]): void => {
+    nodes.forEach((node) => {
+      if (node.type === 'createVariable') {
+        const name =
+          node.data.inputs.name.value ?? node.data.inputs.name.defaultValue;
+        setExtraCommands((commands) => {
+          return commands.filter((command) => command.name !== name);
+        });
+        graphState.deleteNodes(varsNamePool.current.itemRef(name) ?? []);
+        varsNamePool.current.remove(name);
+      } else if (node.type === 'setter' || node.type === 'getter') {
+        const name =
+          node.data.inputs.setter?.title ?? node.data.inputs.getter?.title;
+        varsNamePool.current.removeRef(name, node.id);
+      } else if (node.type === 'createFunction') {
+        const name = node.data.title;
+        setExtraCommands((commands) => {
+          return commands.filter((command) => command.name !== name);
+        });
+        graphState.deleteNodes(funNamePool.current.itemRef(name) ?? []);
+        funNamePool.current.remove(name);
+      } else if (node.type === 'functionCall') {
+        const name = node.data.title;
+        funNamePool.current.removeRef(name, node.id);
+      } else if (node.type === 'return') {
+        graphState.setNodes((nodes) =>
+          nodes.map((n) => {
+            if (n.type === 'functionCall' && n.data.nodeRef) {
+              const refNode = graphState.getNodeById(n.data.nodeRef);
+              if (refNode?.data.nodeRef === node.id) {
+                n.data = {
+                  ...n.data,
+                  outputs: { execOut: n.data.outputs.execIn },
+                };
+              }
+            }
+            return n;
+          })
+        );
+        graphState.setNodes((nodes) =>
+          nodes.map((n) => {
+            if (n.type === 'createFunction' && n.data.nodeRef === node.id) {
+              n.data = {
+                ...n.data,
+                nodeRef: undefined,
+              };
+            }
+            return n;
+          })
+        );
+      }
+    });
+  };
+
+  const initGraph = useRef<Graph | null>(null);
+  if (
+    graphState.initGraph &&
+    JSON.stringify(initGraph.current) !== JSON.stringify(graphState.initGraph)
+  ) {
+    initGraph.current = graphState.initGraph;
+    initGraph.current.nodes.forEach((node) => {
+      onNodeAdd(node);
+    });
+  }
 
   const addEdge = useCallback(
     (
@@ -287,18 +460,29 @@ export default function useScene(
     });
   };
 
+  const deleteSelectedElements = (): void => {
+    onNodesDelete(selectedNodes());
+    graphState.deleteSelectedElements();
+  };
+
   return {
+    gui,
+    varsNamePool,
+    funNamePool,
     graphStateRef,
     anyConnectableNodeSelected: graphState.anyConnectableNodeSelected,
     anyConnectionToSelectedNode: graphState.anyConnectionToSelectedNode,
     extraCommands,
     sceneActions: {
+      getNodeById: graphState.getNodeById,
       getSelectedCounts: graphState.getSelectedCounts,
       setSelectedCounts: graphState.setSelectedCounts,
       selectNode: graphState.selectNode,
       selectEdge: graphState.selectEdge,
       addNode,
       addEdge,
+      setNodes: graphState.setNodes,
+      setExtraCommands,
       selectAll: graphState.selectAll,
       clearEdgeSelection: graphState.clearEdgeSelection,
       getHandleConnectionCounts: graphState.getHandleConnectionCounts,
@@ -307,7 +491,7 @@ export default function useScene(
       copySelectedNodeToClipboard,
       pasteFromClipboard,
       clear: graphState.clear,
-      deleteSelectedElements: graphState.deleteSelectedElements,
+      deleteSelectedElements,
       duplicateSelectedNodes,
       cutSelectedNodesToClipboard,
       deleteEdge: graphState.deleteEdge,
@@ -316,6 +500,7 @@ export default function useScene(
       deleteAllEdgesOfSelectedNodes: graphState.deleteAllEdgesOfSelectedNodes,
       isValidConnection: graphState.isValidConnection,
       centerSelectedNodes,
+      onNodesDelete,
     },
   };
 }

@@ -7,6 +7,7 @@ import {
   IntegerInput,
 } from './Widgets';
 import { DataTypes } from '.././types';
+import { stringArrayToObject } from '.././util';
 import { type WidgetProps } from './WidgetProps';
 
 export class WidgetFactory {
@@ -14,7 +15,7 @@ export class WidgetFactory {
   private readonly defaultWidgetProps: WidgetProps = {
     value: undefined,
     onChange: (value: any): void => {
-      throw new Error('Function not implemented.');
+      console.log('WidgetFactory.onChange', value);
     },
   };
 
@@ -59,6 +60,12 @@ export class WidgetFactory {
       console.warn('Invalid widget type, return <></> element.');
       return <></>;
     }
+  }
+
+  public createSelectorWidget(widgetOptions: any): JSX.Element {
+    const widget = this._availableWidgets.EnumSelect;
+    const options = stringArrayToObject(Object.keys(DataTypes));
+    return React.cloneElement(widget, { ...widgetOptions, options });
   }
 }
 

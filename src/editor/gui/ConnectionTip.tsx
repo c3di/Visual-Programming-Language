@@ -5,12 +5,10 @@ import { StyledTreeItem } from './elements';
 import { type ConnectionStatus, ConnectionAction } from '../types';
 
 const ConnectionTip = memo(function ConnectionTip({
-  open,
   onClose,
   anchorPosition,
   connectionStatus,
 }: {
-  open: boolean;
   onClose: () => void;
   anchorPosition: { top: number; left: number };
   connectionStatus?: ConnectionStatus;
@@ -22,7 +20,7 @@ const ConnectionTip = memo(function ConnectionTip({
       onContextMenu={(e) => {
         e.preventDefault();
       }}
-      open={open && connectionStatus !== undefined}
+      open={connectionStatus !== undefined}
       onClose={onClose}
       anchorReference="anchorPosition"
       anchorPosition={anchorPosition}

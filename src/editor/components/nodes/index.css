@@ -53,8 +53,8 @@
   padding: var(--vp-node-body-padding);
   width: 100%;
   display: flex;
-  justify-content: space-around;
-  gap: var(--vp-node-body-gap);
+  justify-content: space-between;
+  gap: 20px;
 }
 
 .react-flow__node {

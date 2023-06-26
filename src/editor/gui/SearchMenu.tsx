@@ -10,14 +10,12 @@ import { type Command } from '../hooks';
 import { nodeConfigRegistry } from '../extension';
 
 const SearchMenu = memo(function SearchMenu({
-  open,
   onClose,
   anchorPosition,
   addNode,
   clear,
   moreCommands,
 }: {
-  open: boolean;
   onClose: () => void;
   anchorPosition: { top: number; left: number };
   addNode?: (configType: string) => void;
@@ -68,14 +66,13 @@ const SearchMenu = memo(function SearchMenu({
   );
 
   useEffect(() => {
-    if (open) {
-      console.log('open', nodeConfigRegistry.getAllNodeConfigs());
-      setTreeData([
+    setTreeData(
+      [
         ...nodeConfigsToTreeData(nodeConfigRegistry.getAllNodeConfigs()),
         ...commandsToTreeData(commands),
-      ]);
-    }
-  }, [open, commands]);
+      ].sort((a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity))
+    );
+  }, [commands]);
 
   const onItemClick = useCallback((item: TreeItemData): void => {
     if (!item) return;
@@ -88,16 +85,40 @@ const SearchMenu = memo(function SearchMenu({
 
   const commandsToTreeData = useCallback(
     (commands: Command[]): TreeItemData[] => {
-      return commands.map((command) => ({
-        id: command.name,
-        name: command.name,
-        tooltip: command.tooltip,
-        labelIcon: command.labelIcon,
-        onClick: () => {
-          command.action();
-          onClose();
-        },
-      }));
+      const treeData: TreeItemData[] = [];
+      for (const command of commands) {
+        const item: TreeItemData = {
+          id: command.name,
+          name: command.name,
+          tooltip: command.tooltip,
+          labelIcon: command.labelIcon,
+          onClick: (item: TreeItemData, e: React.MouseEvent<HTMLLIElement>) => {
+            onClose();
+            command.action(item, e);
+          },
+          rank: command.rank,
+        };
+        if (!command.category) {
+          treeData.push(item);
+          continue;
+        }
+
+        const category = treeData.find(
+          (item) => item.name === command.category
+        );
+        if (!category) {
+          treeData.push({
+            id: command.category,
+            name: command.category,
+            children: [item],
+            rank: command.categoryRank,
+          });
+        } else {
+          if (!category.children) category.children = [];
+          category.children.push(item);
+        }
+      }
+      return treeData;
     },
     []
   );
@@ -108,7 +129,7 @@ const SearchMenu = memo(function SearchMenu({
       onContextMenu={(e) => {
         e.preventDefault();
       }}
-      open={open}
+      open={true}
       onClose={onClose}
       anchorReference="anchorPosition"
       anchorPosition={anchorPosition}
