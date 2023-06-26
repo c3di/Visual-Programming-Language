@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { MiniMap as RfMinimap } from 'reactflow';
 import { Map, MapOutlined } from '@mui/icons-material';
 import { Button } from '@mui/material';
+import './Minimap.css';
 
 interface IMiniMapProps {
   height: number;
@@ -43,16 +44,12 @@ export default function MiniMap({
           minWidth: '10px',
           width: '23px',
           height: '23px',
-          color: 'black',
+          color: 'inherit',
           marginRight: '15px',
           zIndex: 9999,
           border: 'none',
           cursor: 'pointer',
           opacity: 0.7,
-          '&:hover': {
-            backgroundColor: '#EEEEEE',
-            opacity: 1,
-          },
         }}
         className={`minimap-toggle-button minimap-${
           hidden ? 'hidden' : 'show'

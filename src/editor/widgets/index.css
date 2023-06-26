@@ -1,0 +1,16 @@
+:root {
+  /* Borders */
+  --vp-widget-border-radius: var(--vp-border-radius);
+  --vp-widget-border-width: var(--vp-border-width);
+  --vp-widget-border-color: var(--vp-border-color);
+
+  /* Layout Colors */
+  --vp-widget-background-color-white: var(--vp-background-color-white);
+
+  /* UI Fonts */
+  --vp-widget-font-color: var(--vp-ui-font-color-black);
+  --vp-widget-font-size1: var(--vp-ui-font-size1);
+  --vp-widget-font-family: var(
+    --vp-ui-font-family
+  ); /*Alternative value for input font: 'monospace';*/
+}

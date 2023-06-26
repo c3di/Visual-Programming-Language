@@ -109,8 +109,24 @@ function ControlledTreeView({
   return (
     <TreeView
       aria-label="nodes types"
-      defaultCollapseIcon={<ExpandMore sx={{ color: 'rgba(0, 0, 0, 0.54)' }} />}
-      defaultExpandIcon={<ChevronRight sx={{ color: 'rgba(0, 0, 0, 0.54)' }} />}
+      defaultCollapseIcon={
+        <ExpandMore
+          sx={{
+            color: 'var(--vp-treeview-icon-color)',
+            width: 'var( --vp-treeview-icon-size)',
+            height: 'var( --vp-treeview-icon-size)',
+          }}
+        />
+      }
+      defaultExpandIcon={
+        <ChevronRight
+          sx={{
+            color: 'var(--vp-treeview-icon-color)',
+            width: 'var( --vp-treeview-icon-size)',
+            height: 'var( --vp-treeview-icon-size)',
+          }}
+        />
+      }
       expanded={expanded}
       onNodeToggle={handleToggle}
       sx={{

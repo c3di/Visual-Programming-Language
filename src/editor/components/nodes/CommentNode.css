@@ -1,5 +1,4 @@
 .react-flow__node-comment {
-  background: hsla(240, 5%, 96%, 0.78) !important;
-  border-style: solid;
+  background: hsla(0, 0%, 99%, 0.5) !important;
   border-width: 1px;
 }

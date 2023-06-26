@@ -1,15 +1,117 @@
+:root {
+  /* Borders */
+  --vp-gui-border-radius: var(--vp-border-radius);
+  --vp-gui-border-width: var(--vp-border-width);
+  --vp-gui-border-color: var(--vp-border-color);
+
+  /* Shadow */
+  --vp-gui-box-shadow: var(--vp-box-shadow-dark);
+
+  /* Layout Colors */
+  --vp-gui-background-color-white: var(--vp-background-color-white);
+  --vp-gui-hover-background-color: var(--vp-hover-background-color);
+
+  /* UI Fonts */
+  --vp-gui-font-size1: var(--vp-ui-font-size1);
+  --vp-gui-font-size2: var(--vp-ui-font-size2);
+  --vp-gui-font-size3: var(--vp-ui-font-size3);
+  --vp-gui-font-family: var(--vp-ui-font-family);
+  --vp-gui-font-title-color: var(--vp-ui-font-color-blue);
+  --vp-gui-font-content-color: var(--vp-ui-font-color-grey);
+  --vp-gui-font-item-color: var(--vp-ui-font-color-darkgrey);
+
+  /*Icon*/
+  --vp-gui-icon-size: var(--vp-icon-size);
+  --vp-gui-icon-color-grey: var(--vp-icon-color-grey);
+
+  /*******Following is module-specific CSS. ********/
+
+  /*Accordion*/
+
+  --vp-accordion-font-family: var(--vp-gui-font-family);
+  --vp-accordion-panel-border-color: var(--vp-gui-border-color);
+  --vp-accordion-panel-border-width: var(--vp-gui-border-width);
+  --vp-acccordion-panel-background-color: var(--vp-gui-background-color-white);
+
+  --vp-accordion-summary-hover-bgcolor: var(--vp-gui-hover-background-color);
+  --vp-accordion-summary-font-size: var(--vp-gui-font-size1);
+
+  --vp-accordion-item-border-color: var(--vp-gui-border-color);
+  --vp-accordion-item-border-width: var(--vp-gui-border-width);
+
+  --vp-accordion-item-title-font-size: var(--vp-gui-font-size2);
+  --vp-accordion-item-title-font-color: var(--vp-gui-font-title-color);
+
+  --vp-accordion-item-content-font-size: var(--vp-gui-font-size2);
+  --vp-accordion-item-content-font-color: var(--vp-gui-font-content-color);
+  --vp-accordion-item-content-button-font-size: var(--vp-gui-font-size2);
+  --vp-accordion-item-content-button-font-color: var(
+    --vp-gui-font-content-color
+  );
+
+  /* Menu */
+
+  --vp-menu-panel-border-radius: var(--vp-gui-border-radius);
+  --vp-menu-panel-background-color: var(--vp-gui-background-color-white);
+  --vp-menu-panel-box-shadow: var(--vp-gui-box-shadow);
+  --vp-menu-panel-divider-border-width: var(--vp-gui-border-width);
+
+  --vp-menuitem-icon-size: var(--vp-gui-icon-size);
+  --vp-menuitem-icon-color: var(--vp-gui-icon-color-grey);
+  --vp-menuitem-font-family: var(--vp-gui-font-family);
+  --vp-menuitem-font-size: var(--vp-gui-font-size3);
+  --vp-menuitem-font-color: var(--vp-gui-font-item-color);
+  --vp-menuitem-shortcut-color: var(--vp-gui-font-content-color);
+  --vp-menuitem-hover-background-color: var(--vp-gui-hover-background-color);
+
+  --vp-menulist-top-padding: 0px;
+  --vp-menulist-bottom-padding: 0px;
+  --vp-menulist-margin: 6px;
+  --vp-menuitem-padding: 0px;
+  --vp-menuitem-shortcut-right-padding: 8px;
+
+  /* Search Bar */
+  --vp-searchbar-font-size: var(--vp-gui-font-size2);
+  --vp-searchbar-font-family: var(--vp-gui-font-family);
+
+  --vp-searchbar-border-radius: var(--vp-gui-border-radius);
+  --vp-searchbar-border-width: var(--vp-gui-border-width);
+  --vp-searchbar-border-color: var(--vp-gui-border-color);
+
+  --vp-searchbar-icon-size: var(--vp-gui-icon-size);
+  --vp-searchbar-icon-color: var(--vp-gui-icon-color-grey);
+
+  /* TreeView Menu */
+  --vp-treeview-icon-size: var(--vp-gui-icon-size);
+  --vp-treeview-icon-color: var(--vp-gui-icon-color-grey);
+
+  --vp-treeview-font-family: var(--vp-menuitem-font-family);
+  --vp-treeview-font-color: var(--vp-gui-font-item-color);
+  --vp-treeview-font-size: var(--vp-gui-font-size3);
+  --vp-treeview-item-hover-bg-color: var(--vp-gui-hover-background-color);
+
+  /*FilePond*/
+  --vp-filepond-border-radius: var(--vp-gui-border-radius);
+  --vp-filepond-font-family: var(--vp-gui-font-family);
+  --vp-filepond-font-size: var(--vp-gui-font-size2);
+}
+
 .VP_MenuList {
-  padding-top: 0px !important;
-  padding-bottom: 0px !important;
-  margin: 6px !important;
+  padding-top: var(--vp-menulist-top-padding) !important;
+  padding-bottom: var(--vp-menulist-bottom-padding) !important;
+  margin: var(--vp-menulist-margin);
 }
 
 .VP_MenuItem {
-  padding: 0px !important;
+  padding: var(--vp-menuitem-padding) !important;
+}
+
+.VP_MenuItem:hover {
+  background-color: var(--vp-menuitem-hover-background-color) !important;
 }
 
 .VP_MenuItem_Shortcut {
-  padding-right: 8px;
+  padding-right: var(--vp-menuitem-shortcut-right-padding);
 }
 
 .css-10nakn3-MuiModal-root-MuiPopover-root-MuiMenu-root {
@@ -18,13 +120,30 @@
 
 .css-1ka5eyc-MuiPaper-root-MuiMenu-paper-MuiPopover-paper {
   pointer-events: auto !important;
+  border-radius: var(--vp-menu-panel-border-radius) !important;
+  box-shadow: var(--vp-menu-panel-box-shadow) !important;
+  background-color: var(--vp-menu-panel-background-color) !important;
 }
 
 .css-6hp17o-MuiList-root-MuiMenu-list {
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
+  padding-top: var(--vp-menulist-top-padding) !important;
+  padding-bottom: var(--vp-menulist-bottom-padding) !important;
 }
 
-.MuiPaper-root.MuiMenu-paper {
-  border-radius: 0px;
+.filepond--panel-root {
+  border-radius: var(--vp-filepond-border-radius) !important;
+  margin: 2px;
+}
+
+.filepond--drop-label > label {
+  font-family: var(--vp-filepond-font-family) !important;
+  font-size: var(--vp-filepond-font-size) !important;
+}
+
+.MuiTreeItem-iconContainer {
+  width: auto !important;
+}
+.MuiTreeItem-iconContainer .MuiSvgIcon-root {
+  width: var(--vp-treeview-icon-size) !important;
+  height: var(--vp-treeview-icon-size) !important;
 }

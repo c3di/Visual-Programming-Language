@@ -36,11 +36,11 @@ function MathNode({
     );
   }
   return (
-    <div title={data.tooltip} className="vp-node-containter">
+    <div title={data.tooltip} className="vp-node-container">
       <div className="node__body">
-        <div className="vp-node-handles-containter">{inputHandles}</div>
+        <div className="vp-node-handles-container">{inputHandles}</div>
         <div
-          className="vp-node-handles-containter"
+          className="vp-node-handles-container"
           style={{
             textAlign: 'center',
             justifyContent: 'center',
@@ -50,7 +50,7 @@ function MathNode({
           <strong>{data.title}</strong>
         </div>
         <div
-          className="vp-node-handles-containter"
+          className="vp-node-handles-container"
           style={{ justifyContent: 'center' }}
         >
           {outputHandles}

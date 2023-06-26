@@ -38,7 +38,7 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
   }, [pinned]);
 
   return (
-    <div className="vp-node-containter">
+    <div className="vp-node-container">
       <div
         className={
           dragged
@@ -50,8 +50,8 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
         <NodeResizer
           color="#ffffff00"
           handleStyle={{ border: 'none' }}
-          minWidth={150}
-          minHeight={150}
+          minWidth={10}
+          minHeight={10}
           onResize={(
             event: ResizeDragEvent,
             params: ResizeParamsWithDirection
@@ -76,6 +76,7 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
               paddingTop: '2px',
               paddingBottom: '2px',
               borderBottom: '1px solid black',
+              height: 'auto',
             }}
           >
             <Button
@@ -84,24 +85,40 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
               sx={{
                 padding: 0,
                 minWidth: '10px',
-                width: '14px',
-                height: '14px',
-                color: 'black',
+                width: 'auto',
+                height: 'auto',
+                color: 'var(--vp-node-icon-color-black)',
               }}
             >
               {pinned ? (
-                <BsPinAngleFill title="The node is pinned" />
+                <BsPinAngleFill
+                  title="The node is pinned"
+                  style={{
+                    width:
+                      'calc(var(--vp-node-icon-size) / var(--vp-ui-font-scale-factor1))',
+                    height:
+                      'calc(var(--vp-node-icon-size) / var(--vp-ui-font-scale-factor1))',
+                  }}
+                />
               ) : (
-                <BsPinAngle title="The node is not pinned" />
+                <BsPinAngle
+                  title="The node is not pinned"
+                  style={{
+                    width:
+                      'calc(var(--vp-node-icon-size) / var(--vp-ui-font-scale-factor1))',
+                    height:
+                      'calc(var(--vp-node-icon-size) / var(--vp-ui-font-scale-factor1))',
+                  }}
+                />
               )}
-            </Button>{' '}
+            </Button>
             <Button
               disableRipple={true}
               sx={{
                 padding: 0,
                 minWidth: '10px',
-                width: '12px',
-                height: '12px',
+                width: 'auto',
+                height: 'auto',
                 borderRadius: '1.5px',
                 border: '1.5px solid black',
                 marginLeft: '5px',
@@ -113,8 +130,10 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
                 style={{
                   border: 0,
                   padding: 0,
-                  width: '100%',
-                  height: '100%',
+                  width:
+                    'calc(var(--vp-node-icon-size) / var(--vp-ui-font-scale-factor2))',
+                  height:
+                    'calc(var(--vp-node-icon-size) / var(--vp-ui-font-scale-factor2))',
                 }}
                 value={nodeBg}
                 onChange={(evt) => {

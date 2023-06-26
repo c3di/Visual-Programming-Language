@@ -29,23 +29,38 @@ export const createMenuItemElement = (item: IMenuItem): JSX.Element => {
         <ListItemIcon sx={{ minWidth: '20px !important' }}>
           {
             <item.icon
-              fontSize="small"
               sx={{
-                width: '16px',
+                color: 'var( --vp-menuitem-icon-color)',
+                width: 'var(--vp-menuitem-icon-size)',
+                height: 'var(--vp-menuitem-icon-size)',
+                padding: '0.15rem',
               }}
             />
           }
         </ListItemIcon>
       )}
       <ListItemText sx={{ fontSize: '15px!important', ...item.titleStyle }}>
-        {item.title}
+        {item.title && (
+          <Typography
+            color="var(--vp-menuitem-font-color)"
+            sx={{
+              fontSize: 'var(--vp-menuitem-font-size)!important',
+              fontFamily: 'var(--vp-menuitem-font-family)',
+            }}
+          >
+            {item.title}
+          </Typography>
+        )}
       </ListItemText>
       {item.subtitle && (
         <Typography
           className="VP_MenuItem_Shortcut"
           variant="body2"
-          color="text.secondary"
-          sx={{ fontSize: '15px!important' }}
+          color="var(--vp-menuitem-shortcut-color)"
+          sx={{
+            fontSize: 'var(--vp-menuitem-font-size)!important',
+            fontFamily: 'var(--vp-menuitem-font-family)',
+          }}
         >
           {item.subtitle}
         </Typography>

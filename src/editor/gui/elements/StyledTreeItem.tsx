@@ -1,15 +1,9 @@
 import React from 'react';
-import { Box, styled } from '@mui/material';
+import { Box } from '@mui/material';
 import { Typography, type SvgIconProps } from '@mui/material';
-import { TreeItem, type TreeItemProps, treeItemClasses } from '@mui/lab';
+import { TreeItem, type TreeItemProps } from '@mui/lab';
 
 // from https://mui.com/material-ui/react-tree-view/#GmailTreeView.tsx
-declare module 'react' {
-  interface CSSProperties {
-    '--tree-view-color'?: string;
-    '--tree-view-bg-color'?: string;
-  }
-}
 
 type StyledTreeItemProps = TreeItemProps & {
   bgColor?: string;
@@ -20,37 +14,6 @@ type StyledTreeItemProps = TreeItemProps & {
   iconColor?: 'success' | 'error' | 'warning' | undefined;
   onItemDelete?: (id: string) => void;
 };
-
-const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
-  color: theme.palette.text.secondary,
-  [`& .${treeItemClasses.content}`]: {
-    color: theme.palette.text.primary,
-    paddingRight: theme.spacing(0),
-    paddingLeft: theme.spacing(0),
-    fontWeight: theme.typography.fontWeightMedium,
-    '&.Mui-expanded': {
-      fontWeight: theme.typography.fontWeightRegular,
-    },
-    '&:hover': {
-      backgroundColor: theme.palette.action.hover,
-    },
-    '&.Mui-focused, &.Mui-selected, &.Mui-selected.Mui-focused': {
-      backgroundColor: `var(--tree-view-bg-color, ${theme.palette.action.selected})`,
-      color: 'var(--tree-view-color)',
-    },
-    [`& .${treeItemClasses.label}`]: {
-      // fontWeight: 'inherit',
-      paddingTop: theme.spacing(0.1),
-      fontSize: '1rem',
-      color: '#000000DE',
-    },
-  },
-  [`& .${treeItemClasses.group}`]: {
-    [`& .${treeItemClasses.content}`]: {
-      paddingLeft: theme.spacing(0),
-    },
-  },
-}));
 
 export default function StyledTreeItem(
   props: StyledTreeItemProps
@@ -66,13 +29,34 @@ export default function StyledTreeItem(
     ...other
   } = props;
   return (
-    <StyledTreeItemRoot
+    <TreeItem
+      sx={{
+        '& .MuiTreeItem-content': {
+          paddingRight: 0,
+          paddingLeft: 0,
+        },
+        '& .MuiTreeItem-content.Mui-selected, & .MuiTreeItem-content.Mui-selected.Mui-focused':
+          {
+            backgroundColor: 'var(--vp-treeview-item-hover-bg-color)',
+            color: 'var(--vp-treeview-font-color)',
+          },
+      }}
       icon={
         LabelIcon &&
         (iconColor ? (
-          <LabelIcon color={iconColor} />
+          <LabelIcon
+            sx={{
+              color: 'var(--vp-treeview-icon-color)',
+              width: 'var(--vp-treeview-icon-size)',
+            }}
+          />
         ) : (
-          <LabelIcon sx={{ color: 'rgba(0, 0, 0, 0.54)' }} />
+          <LabelIcon
+            sx={{
+              color: 'var(--vp-treeview-icon-color)',
+              width: 'var(--vp-treeview-icon-size)',
+            }}
+          />
         ))
       }
       label={
@@ -84,21 +68,30 @@ export default function StyledTreeItem(
         >
           <Typography
             variant="body1"
-            sx={{ fontWeight: 'inherit', flexGrow: 0.8 }}
+            sx={{
+              fontWeight: 'inherit',
+              flexGrow: 0.8,
+              fontSize: 'var( --vp-treeview-font-size)',
+              color: 'var(--vp-treeview-font-color)',
+              fontFamily: 'var(--vp-treeview-font-family)',
+            }}
           >
             {labelText}
           </Typography>
           {labelInfo && (
-            <Typography variant="caption" color="inherit">
+            <Typography
+              variant="caption"
+              sx={{
+                fontSize: 'var( --vp-treeview-font-size)',
+                color: 'var(--vp-treeview-font-color)',
+                fontFamily: 'var(--vp-treeview-font-family)',
+              }}
+            >
               {labelInfo}
             </Typography>
           )}
         </Box>
       }
-      style={{
-        '--tree-view-color': color,
-        '--tree-view-bg-color': bgColor,
-      }}
       {...other}
     />
   );

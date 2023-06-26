@@ -1,8 +1,17 @@
+:root {
+  --vp-handle-background-color: var(--vp-ui-font-color-greyblue);
+  --vp-handle-border-radius: 2px;
+  --vp-handle-panel-height: 20px;
+
+  --vp-handle-point-width: 8px;
+  --vp-handle-point-height: 10px;
+}
+
 .source-handle {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  height: 20px;
+  height: var(--vp-handle-panel-height);
 }
 
 .target-handle {
@@ -10,15 +19,16 @@
   flex-direction: row-reverse;
   justify-content: flex-end;
   align-items: center;
-  height: 20px;
+  height: var(--vp-handle-panel-height);
 }
 
 .target-handle .react-flow__handle {
-  width: 8px;
-  height: 10px;
-  border-radius: 2px;
-  background-color: #778899;
+  width: var(--vp-handle-point-width);
+  height: var(--vp-handle-point-height);
+  border-radius: var(--vp-handle-border-radius);
+  background-color: var(--vp-handle-background-color);
 }
+
 
 .vp-rc-handle-exec {
   clip-path: polygon(0% 0%, 40% 0%, 100% 50%, 40% 100%, 0% 100%);
@@ -30,6 +40,7 @@
   height: 10px;
   border-radius: 2px;
   background-color: #778899;
+
 }
 
 .handle-widget {

@@ -40,18 +40,18 @@ function SetterNode({
     );
   }
   return (
-    <div title={data.tooltip} className="vp-node-containter">
+    <div title={data.tooltip} className="vp-node-container">
       <div className="node__header" style={{ textAlign: 'center' }}>
         <strong>SET</strong>
       </div>
       <div className="node__body">
         <div
-          className="vp-node-handles-containter"
+          className="vp-node-handles-container"
           style={{ minWidth: '120px' }}
         >
           {inputhandles}
         </div>
-        <div className="vp-node-handles-containter">{outputHandles}</div>
+        <div className="vp-node-handles-container">{outputHandles}</div>
       </div>
     </div>
   );

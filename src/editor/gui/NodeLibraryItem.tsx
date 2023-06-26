@@ -23,8 +23,8 @@ export default function NodeLibraryItem({
       className="vp-nodelibrary-entry"
       style={{
         display: 'flex',
-        borderBottom: '1px solid',
-        borderColor: 'rgba(0, 0, 0, .125)',
+        borderBottom: 'var(--vp-accordion-item-border-width) solid',
+        borderColor: 'var(--vp-accordion-item-border-color)',
         paddingTop: '5px',
         paddingLeft: '5px',
       }}
@@ -38,9 +38,9 @@ export default function NodeLibraryItem({
             href={href}
             style={{
               textDecoration: 'none',
-              color: '#1976D2',
+              color: 'var(--vp-accordion-item-title-font-color)',
               lineHeight: '1.28',
-              fontSize: '15.5px',
+              fontSize: 'var(--vp-accordion-item-title-font-size)',
               fontWeight: 405,
             }}
             target="_blank"
@@ -52,7 +52,10 @@ export default function NodeLibraryItem({
         <div className="vp-nodelibrary-entry-content">
           <div
             className="vp-nodelibrary-entry-description"
-            style={{ color: '#0000008A', fontSize: '15px' }}
+            style={{
+              color: 'var(--vp-accordion-item-content-font-color)',
+              fontSize: 'var(--vp-accordion-item-content-font-size)',
+            }}
           >
             {description ?? ''}
           </div>
@@ -66,10 +69,11 @@ export default function NodeLibraryItem({
                 marginRight: 5,
                 marginTop: '10px',
                 border: '0px',
-                color: '#0000008A',
+                color: 'var(--vp-accordion-item-content-button-font-color)',
                 backgroundColor: 'transparent',
                 paddingBottom: '8px',
-                fontSize: '15px',
+                fontSize: 'var(--vp-accordion-item-content-button-font-size)',
+                fontFamily: 'var(--vp-accordion-font-family)',
               }}
               onClick={onUninstall}
               type="button"
@@ -84,10 +88,11 @@ export default function NodeLibraryItem({
                 marginRight: 5,
                 marginTop: '10px',
                 border: '0px',
-                color: '#0000008A',
+                color: 'var(--vp-accordion-item-content-button-font-color)',
                 backgroundColor: 'transparent',
                 paddingBottom: '8px',
-                fontSize: '15px',
+                fontSize: 'var(--vp-accordion-item-content-button-font-size)',
+                fontFamily: 'var(--vp-accordion-font-family)',
               }}
               type="button"
               className="bp3-button bp3-minimal bp3-small minimal jp-Button"

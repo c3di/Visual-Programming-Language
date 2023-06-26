@@ -25,10 +25,10 @@ function GetterNode({
     );
   }
   return (
-    <div title={data.tooltip} className="vp-node-containter">
+    <div title={data.tooltip} className="vp-node-container">
       <div className="node__body" style={{ padding: 0 }}>
         <div
-          className="vp-node-handles-containter"
+          className="vp-node-handles-container"
           style={{ marginLeft: '15px' }}
         >
           {outputHandles}
