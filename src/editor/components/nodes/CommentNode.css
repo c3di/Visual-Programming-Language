@@ -1,3 +1,4 @@
 .react-flow__node-comment {
-  background: var(--vp-node-background-color-lightgrey) !important;
+  background: hsla(0, 0%, 99%, 0.5) !important;
+  border-width: 1px;
 }
