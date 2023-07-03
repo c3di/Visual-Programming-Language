@@ -8,7 +8,8 @@
         "boolean": "boolean",
         "string": "string",
         "exec": "exec",
-        "any": "any"
+        "any": "any",
+        "ndarray": "ndarray"
       },
       "default": "float",
       "widget": "EnumSelect"

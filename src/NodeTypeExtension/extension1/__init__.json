@@ -112,7 +112,7 @@
         "Array": {
           "title": "Array",
           "tooltip": "Array",
-          "dataType": "Array",
+          "dataType": "list",
           "showWidget": false,
           "showTitle": true
         }

@@ -7,6 +7,7 @@ export const DataTypes: Record<string, any> = {
   string: { defaultValue: '', widget: 'TextInput' },
   exec: {},
   any: {},
+  ndarray: {},
 };
 
 export default DataTypes;

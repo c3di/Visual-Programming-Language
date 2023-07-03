@@ -120,8 +120,6 @@ function CreateVariable({
 
   const inputhandles = [];
   for (const inputId in data.inputs) {
-    if (inputId === 'value' && data.inputs.value.defaultValue === undefined)
-      continue;
     inputhandles.push(
       <TargetHandle
         key={inputId}

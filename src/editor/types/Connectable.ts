@@ -7,4 +7,5 @@ export interface ConnectableData extends BasicNodeData {
   outputs?: Record<string, Handle>;
   dataType?: string;
   nodeRef?: string;
+  [key: string]: any;
 }

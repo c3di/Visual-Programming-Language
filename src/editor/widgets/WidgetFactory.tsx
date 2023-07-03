@@ -51,6 +51,10 @@ export class WidgetFactory {
   }
 
   public createWidget(type: string, widgetOptions: any): JSX.Element {
+    if (!DataTypes[type]) {
+      console.warn('Invalid widget type, return <></> element.');
+      return <></>;
+    }
     const widgetTypeToUse = DataTypes[type].widget || type;
     const options = DataTypes[type].options || {};
     const widget = this._availableWidgets[widgetTypeToUse];

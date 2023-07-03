@@ -1,0 +1,37 @@
+{
+  "description": "os",
+  "enable": true,
+  "nodes": {
+    "listdir": {
+      "type": "listdir",
+      "category": "function",
+      "title": "listdir",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "dir": {
+          "title": "dir",
+          "dataType": "string"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "tooltip": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "entries": {
+          "title": "entries ",
+          "dataType": "list"
+        }
+      }
+    }
+  }
+}

@@ -32,6 +32,14 @@ const SearchMenu = memo(function SearchMenu({
       labelIcon: Comment,
     },
     {
+      name: 'Add Sticky Note...',
+      action: () => {
+        addNode?.('stickyNote');
+      },
+      tooltip: 'Add a sticky note',
+      labelIcon: Comment,
+    },
+    {
       name: 'Add Reroute...',
       action: () => {
         addNode?.('reroute');

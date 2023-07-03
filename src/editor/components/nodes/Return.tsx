@@ -10,14 +10,14 @@ export function ParameterHandle({
   id,
   nodeId,
   handleData,
+  showLabel,
   handlePosition,
   handleType,
 }: {
   id: string;
   nodeId: string;
   handleData: HandleData;
-  showWidget: boolean;
-  showTitle: boolean;
+  showLabel: boolean;
   handleType: 'source' | 'target';
   handlePosition: Position;
 }): JSX.Element {
@@ -97,51 +97,53 @@ export function ParameterHandle({
           position: 'relative',
         }}
       />
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          gridTemplateRows: 'repeat(2, 1fr)',
-          gridGap: '3px',
-        }}
-      >
-        <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-          name
-          {widgetFactory.createWidget('string', {
-            value: handleData.title,
-            className: `nodrag handle-widget`,
-            onChange: onParaNameChange,
-          })}
-        </label>
-        <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-          dataType
-          {widgetFactory.createSelectorWidget({
-            value: handleData.dataType,
-            className: `nodrag handle-widget`,
-            onChange: onDatatypeChange,
-          })}
-        </label>
-        {!handleData.connection && (
-          <label
-            style={{
-              gridColumn: 'span 2',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '5px',
-            }}
-          >
-            defaultValue
-            {widgetFactory.createWidget(handleData.dataType!, {
-              value:
-                handleData.value ??
-                handleData.defaultValue ??
-                DataTypes[handleData.dataType!]?.defaultValue,
+      {showLabel && (
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            gridTemplateRows: 'repeat(2, 1fr)',
+            gridGap: '3px',
+          }}
+        >
+          <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            name
+            {widgetFactory.createWidget('string', {
+              value: handleData.title,
               className: `nodrag handle-widget`,
-              // onChange: changeValue,
+              onChange: onParaNameChange,
             })}
           </label>
-        )}
-      </div>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            dataType
+            {widgetFactory.createSelectorWidget({
+              value: handleData.dataType,
+              className: `nodrag handle-widget`,
+              onChange: onDatatypeChange,
+            })}
+          </label>
+          {!handleData.connection && (
+            <label
+              style={{
+                gridColumn: 'span 2',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+              }}
+            >
+              defaultValue
+              {widgetFactory.createWidget(handleData.dataType!, {
+                value:
+                  handleData.value ??
+                  handleData.defaultValue ??
+                  DataTypes[handleData.dataType!]?.defaultValue,
+                className: `nodrag handle-widget`,
+                // onChange: changeValue,
+              })}
+            </label>
+          )}
+        </div>
+      )}
       <IconButton
         style={{ padding: 1 }}
         title="remove this"
@@ -165,7 +167,7 @@ function Return({
   const addNewHandle = useCallback(() => {
     const title = `new-arg-${handleCount.current++}`;
     const value = {
-      dataType: 'boolean',
+      dataType: 'any',
       title: `new-arg-${handleCount.current}`,
       showWidget: false,
     };
@@ -215,8 +217,7 @@ function Return({
           id={inputId}
           nodeId={id}
           handleData={data.inputs[inputId]}
-          showWidget={true}
-          showTitle={true}
+          showLabel={data.title === 'Return'}
           handleType="target"
           handlePosition={Position.Left}
         />
@@ -250,7 +251,7 @@ function Return({
   return (
     <div title={data.tooltip} className="vp-node-containter">
       <div className="node__header">
-        <strong>Return</strong>
+        <strong>{data.title}</strong>
       </div>
       <div className="node__body">
         <div className="vp-node-handles-containter">{inputhandles}</div>
