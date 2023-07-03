@@ -24,7 +24,7 @@ import {
   type XYPosition,
   type Node as RcNode,
 } from 'reactflow';
-import { UniqueNamePool, type IUniqueNamePool } from '../../utils';
+import { UniqueNamePool, type IUniqueNamePool } from '../utils';
 
 export interface ISceneActions {
   getSelectedCounts: () => selectedElementsCounts;
