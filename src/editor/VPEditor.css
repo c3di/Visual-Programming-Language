@@ -5,3 +5,9 @@
 .react-flow__node.selected {
   box-shadow: 0 0 0 1px #1a192b;
 }
+
+.vp-editor {
+  width: 100%;
+  height: 100%;
+  font-size: var(--vp-ui-font-size0);
+}

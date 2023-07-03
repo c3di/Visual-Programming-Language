@@ -17,6 +17,7 @@ import FilepondZipper from 'filepond-plugin-zipper';
 import { SearchInput } from './elements';
 import { type NodeConfig, type NodePackage } from '../types';
 import NodeLibraryItem, { type INodeLibraryItem } from './NodeLibraryItem';
+import './NodeLibraryList.css';
 
 registerPlugin(FilepondZipper());
 
@@ -79,7 +80,7 @@ export default function NodeLibraryList({
   const [files, setFiles] = useState<ActualFileObject[]>([]);
 
   return (
-    <div>
+    <div className="vp-nodelibrary">
       <FilePond
         credits={false}
         files={files}

@@ -1,4 +1,5 @@
 import { LoadDefaultModule } from './extension';
+import './index.css';
 export { default as VPEditor } from './VPEditor';
 export * from './extension';
 export * from './types';

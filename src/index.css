@@ -1,41 +1,9 @@
 html,
 body,
 #root {
-  --vp-border-radius: 8px;
-  --vp-border-width: 1px;
-  --vp-border-color: #e0e0e0; /* Alternative value #e2e8f0; */
-
-  --vp-box-shadow: 0 4px 6px -1px rgb(0 0 0 / 15%),
-    0 2px 4px -1px rgb(0 0 0 / 8%); /* Used by react-flow node panel */
-  --vp-box-shadow-dark: 0px 5px 5px -3px rgba(0, 0, 0, 0.2),
-    0px 8px 10px 1px rgba(0, 0, 0, 0.14), 0px 3px 14px 2px rgba(0, 0, 0, 0.12); /* Used by menu panel*/
-
-  --vp-background-color-lightgrey: #f5f5f6f0; /* Used by react-flow node background */
-  --vp-background-color-white: #fff; /* Used by menu, input widget background */
-  --vp-hover-background-color: #f5f5f6f0; /* Used by menuitem,minimap iconButton */
-
-  --vp-ui-font-family: 'Roboto', 'sans-serif';
-  --vp-ui-font-size0: 10px; /* Base font size, 10px = 1rem */
-  --vp-ui-font-size1: 1.25rem; /* Used by react-flow node,accordion-summary,input widget  */
-  --vp-ui-font-size2: 1.5rem; /* Used by accordion-item, searchBar label, Filepond label*/
-  --vp-ui-font-size3: 1.7rem; /* Used by menuitem */
-  --vp-ui-font-scale-factor1: 1.2; /* Both used by stickyNodeIcon'size, to keep the visual coherence when the parent element doesn't use 10px as base font size  */
-  --vp-ui-font-scale-factor2: 1.5;
-  --vp-ui-font-color-black: #222; /* Used by react-flow node, stickyNodeIcon'color, input widget's fontColor  */
-  --vp-ui-font-color-grey: #0000008a; /* Used by menuIcon, searchBar Icon, accordionItem content, menuItem shortcut  */
-  --vp-ui-font-color-darkgrey: #000000de; /* Used by menuitem  */
-  --vp-ui-font-color-blue: #1976d2; /* Used by accordion-content-title   */
-  --vp-ui-font-color-greyblue: #778899; /* Used by node handle   */
-
-  --vp-icon-size: 1.8rem;
-  --vp-icon-color-grey: var(--vp-ui-font-color-grey);
-  --vp-icon-color-black: var(--vp-ui-font-color-black);
-
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: var(--vp-ui-font-family);
-  font-size: var(--vp-ui-font-size0);
 }
