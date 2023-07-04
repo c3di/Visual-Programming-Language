@@ -59,7 +59,7 @@
   --vp-menuitem-icon-size: var(--vp-gui-icon-size);
   --vp-menuitem-icon-color: var(--vp-gui-icon-color-grey);
   --vp-menuitem-font-family: var(--vp-gui-font-family);
-  --vp-menuitem-font-size: var(--vp-gui-font-size3);
+  --vp-menuitem-font-size: var(--vp-gui-font-size2);
   --vp-menuitem-font-color: var(--vp-gui-font-item-color);
   --vp-menuitem-shortcut-color: var(--vp-gui-font-content-color);
   --vp-menuitem-hover-background-color: var(--vp-gui-hover-background-color);
@@ -71,7 +71,7 @@
   --vp-menuitem-shortcut-right-padding: 8px;
 
   /* Search Bar */
-  --vp-searchbar-font-size: var(--vp-gui-font-size2);
+  --vp-searchbar-font-size: var(--vp-gui-font-size);
   --vp-searchbar-font-family: var(--vp-gui-font-family);
 
   --vp-searchbar-border-radius: var(--vp-gui-border-radius);
@@ -87,7 +87,7 @@
 
   --vp-treeview-font-family: var(--vp-menuitem-font-family);
   --vp-treeview-font-color: var(--vp-gui-font-item-color);
-  --vp-treeview-font-size: var(--vp-gui-font-size3);
+  --vp-treeview-font-size: var(--vp-gui-font-size2);
   --vp-treeview-item-hover-bg-color: var(--vp-gui-hover-background-color);
 
   /*FilePond*/
