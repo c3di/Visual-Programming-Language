@@ -68,6 +68,9 @@ export function ParameterHandle({
   const onParaNameChange = useCallback((value: string) => {
     setNodes?.((nds) => {
       return nds.map((nd) => {
+        if (nd.id === nodeId) {
+          nd.data.inputs[id].title = value;
+        }
         const ref = getNodeById?.(nd.data.nodeRef);
         if (ref?.data.nodeRef === nodeId) {
           nd.data.outputs[id].title = value;
