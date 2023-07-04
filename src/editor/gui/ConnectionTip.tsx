@@ -35,8 +35,8 @@ const ConnectionTip = memo(function ConnectionTip({
           }
           iconColor={
             connectionStatus?.action === ConnectionAction.Reject
-              ? 'error'
-              : 'success'
+              ? 'red'
+              : 'green'
           }
         ></StyledTreeItem>
       </MenuList>

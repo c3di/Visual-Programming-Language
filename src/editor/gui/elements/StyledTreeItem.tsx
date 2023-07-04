@@ -11,7 +11,7 @@ type StyledTreeItemProps = TreeItemProps & {
   labelIcon?: React.ElementType<SvgIconProps> | undefined;
   labelInfo?: string;
   labelText: string;
-  iconColor?: 'success' | 'error' | 'warning' | undefined;
+  iconColor?: string;
   onItemDelete?: (id: string) => void;
 };
 
@@ -42,22 +42,14 @@ export default function StyledTreeItem(
           },
       }}
       icon={
-        LabelIcon &&
-        (iconColor ? (
+        LabelIcon && (
           <LabelIcon
             sx={{
-              color: 'var(--vp-treeview-icon-color)',
+              color: iconColor ?? 'var(--vp-treeview-icon-color)',
               width: 'var(--vp-treeview-icon-size)',
             }}
           />
-        ) : (
-          <LabelIcon
-            sx={{
-              color: 'var(--vp-treeview-icon-color)',
-              width: 'var(--vp-treeview-icon-size)',
-            }}
-          />
-        ))
+        )
       }
       label={
         <Box
