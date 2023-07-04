@@ -39,7 +39,7 @@ export const createMenuItemElement = (item: IMenuItem): JSX.Element => {
           }
         </ListItemIcon>
       )}
-      <ListItemText sx={{ fontSize: '15px!important', ...item.titleStyle }}>
+      <ListItemText sx={{ ...item.titleStyle }}>
         {item.title && (
           <Typography
             color="var(--vp-menuitem-font-color)"
