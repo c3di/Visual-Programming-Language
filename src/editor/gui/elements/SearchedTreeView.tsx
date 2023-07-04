@@ -178,20 +178,23 @@ export const SearchedTreeView = memo(function SearchedTreeView({
     return null;
   };
 
-  const search = useCallback((searchKeyword: string) => {
-    if (searchKeyword === '') {
-      setFilteredTreeData(treeData);
-      setToExpand(false);
-    } else {
-      const filteredTreeData: TreeItemData[] = [];
-      for (const item of treeData) {
-        const fItem = filteredTreeItemData(item, searchKeyword);
-        if (fItem) filteredTreeData.push(fItem);
+  const search = useCallback(
+    (searchKeyword: string) => {
+      if (searchKeyword === '') {
+        setFilteredTreeData(treeData);
+        setToExpand(false);
+      } else {
+        const filteredTreeData: TreeItemData[] = [];
+        for (const item of treeData) {
+          const fItem = filteredTreeItemData(item, searchKeyword);
+          if (fItem) filteredTreeData.push(fItem);
+        }
+        setFilteredTreeData(filteredTreeData);
+        setToExpand(true);
       }
-      setFilteredTreeData(filteredTreeData);
-      setToExpand(true);
-    }
-  }, []);
+    },
+    [treeData]
+  );
 
   const deleteItemInItemData = useCallback(
     (item: TreeItemData, type: string): null | TreeItemData => {
