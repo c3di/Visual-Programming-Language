@@ -48,6 +48,7 @@ export interface ITokens {
 export default function NodeLibraryList({
   title,
   nodeExtensions,
+  onInstall,
   onUninstall,
   onEnable,
   onDisable,
@@ -56,6 +57,7 @@ export default function NodeLibraryList({
 }: {
   title: string;
   nodeExtensions: Record<string, NodePackage | NodeConfig>;
+  onInstall?: (pkg: any) => void;
   onUninstall?: (pkg: string) => void;
   onEnable?: (pkg: string) => void;
   onDisable?: (pkg: string) => void;
@@ -100,7 +102,7 @@ export default function NodeLibraryList({
             },
             timeout: 7000,
             onload: (response) => {
-              console.log(response);
+              onInstall?.(response);
               return response;
             },
           },
