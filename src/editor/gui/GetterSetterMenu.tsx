@@ -45,6 +45,7 @@ export default function GetterSetterMenu({
         addNode?.('extension1.module1.setter', undefined, {
           nodeRef: createVarNodeRef,
           inputs: {
+            execIn: { title: 'execIn', dataType: 'exec' },
             setter: handleData,
           },
           outputs: {

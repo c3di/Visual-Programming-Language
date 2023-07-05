@@ -25,37 +25,6 @@
       }
     },
     {
-      "id": "2",
-      "type": "extension1.module1.getter",
-      "position": {
-        "x": 300,
-        "y": 0
-      },
-      "outputs": {
-        "getter": {
-          "title": "variable",
-          "dataType": "float"
-        }
-      }
-    },
-    {
-      "id": "3",
-      "type": "extension1.module1.setter",
-      "position": {
-        "x": 600,
-        "y": 0
-      },
-      "inputs": {
-        "execIn": {
-          "dataType": "exec"
-        },
-        "setter": {
-          "title": "account",
-          "dataType": "float"
-        }
-      }
-    },
-    {
       "id": "4",
       "type": "extension1.Level2.literal",
       "position": {
