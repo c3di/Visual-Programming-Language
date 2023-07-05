@@ -118,6 +118,7 @@ export class Serializer {
       outputs: Object.keys(outputs).length > 0 ? outputs : undefined,
       dataType,
       nodeRef,
+      title: data.title,
     };
   };
 

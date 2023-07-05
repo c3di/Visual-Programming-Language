@@ -17,8 +17,14 @@ function FunctionNode({
         key={inputId}
         id={inputId}
         nodeId={id}
-        showWidget={!!handle.showWidget || handle.showWidget === undefined}
-        showTitle={!!handle.showTitle || handle.showTitle === undefined}
+        showWidget={
+          (!!handle.showWidget || handle.showWidget === undefined) &&
+          handle.dataType !== 'exec'
+        }
+        showTitle={
+          (!!handle.showTitle || handle.showTitle === undefined) &&
+          handle.dataType !== 'exec'
+        }
         handleData={handle}
       />
     );
@@ -32,8 +38,11 @@ function FunctionNode({
         id={outputId}
         nodeId={id}
         handleData={data.outputs[outputId]}
-        showWidget={!!handle.showWidget}
-        showTitle={!!handle.showTitle || handle.showTitle === undefined}
+        showWidget={!!handle.showWidget && handle.dataType !== 'exec'}
+        showTitle={
+          (!!handle.showTitle || handle.showTitle === undefined) &&
+          handle.dataType !== 'exec'
+        }
       />
     );
   }
