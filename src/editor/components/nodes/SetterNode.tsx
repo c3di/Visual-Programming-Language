@@ -12,7 +12,6 @@ function SetterNode({
 }): JSX.Element {
   registVariableRef(data, id);
   const inputhandles = [];
-  console.log(data);
   for (const inputId in data.inputs) {
     const handle = data.inputs[inputId];
     inputhandles.push(

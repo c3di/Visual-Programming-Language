@@ -31,11 +31,11 @@ export class Serializer {
       return this.defaultNodeSerialize(node, true);
     },
     getter: (node: Node): SerializedGraphNode => {
-      return this.defaultNodeSerialize(node, false);
+      return this.defaultNodeSerialize(node, true);
     },
     setter: (node: Node): SerializedGraphNode => {
       node.data.outputs = undefined;
-      return this.defaultNodeSerialize(node, false);
+      return this.defaultNodeSerialize(node, true);
     },
     literal: (node: Node): SerializedGraphNode => {
       node.data.outputs = undefined;

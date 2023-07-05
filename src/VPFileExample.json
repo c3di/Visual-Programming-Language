@@ -69,7 +69,7 @@
       "comment": "This is a comment node",
       "position": {
         "x": 600,
-        "y": 300
+        "y": 0
       },
       "width": 250,
       "height": 150
@@ -79,8 +79,8 @@
       "type": "stickyNote",
       "stickyNote": "This is a sticky note",
       "position": {
-        "x": 450,
-        "y": 100
+        "x": 300,
+        "y": 0
       },
       "width": 150,
       "height": 150
@@ -89,8 +89,8 @@
       "id": "8",
       "type": "reroute",
       "position": {
-        "x": 300,
-        "y": 600
+        "x": 600,
+        "y": 300
       },
       "inputs": {
         "input": {}
@@ -104,8 +104,8 @@
       "id": "9",
       "type": "extension2.CreateVariable",
       "position": {
-        "x": 600,
-        "y": 600
+        "x": 0,
+        "y": 500
       },
       "inputs": {
         "execIn": {},
@@ -121,8 +121,8 @@
       "id": "10",
       "type": "extension2.CreateFunction",
       "position": {
-        "x": 321,
-        "y": 239.85000038146973
+        "x": 0,
+        "y": 700
       },
       "outputs": {
         "execOut": {
@@ -147,8 +147,8 @@
       "id": "11",
       "type": "extension2.Return",
       "position": {
-        "x": 350,
-        "y": 450
+        "x": 400,
+        "y": 700
       },
       "inputs": {
         "execIn": {
@@ -170,8 +170,8 @@
       "id": "0",
       "type": "extension2.functionCall",
       "position": {
-        "x": 324.6505934249379,
-        "y": 158.24457965257167
+        "x": 800,
+        "y": 700
       },
       "inputs": {
         "execOut": {
@@ -206,6 +206,42 @@
       },
       "nodeRef": "10",
       "title": "newFdun_0"
+    },
+    {
+      "id": "2",
+      "type": "extension1.module1.getter",
+      "position": {
+        "x": 300,
+        "y": 500
+      },
+      "outputs": {
+        "getter": {
+          "title": "newVar_0",
+          "value": "string",
+          "dataType": "string"
+        }
+      },
+      "nodeRef": "9"
+    },
+    {
+      "id": "3",
+      "type": "extension1.module1.setter",
+      "position": {
+        "x": 600,
+        "y": 500
+      },
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec"
+        },
+        "setter": {
+          "title": "newar_0",
+          "value": "string",
+          "dataType": "string"
+        }
+      },
+      "nodeRef": "9"
     }
   ],
   "edges": [
