@@ -152,8 +152,8 @@ function CreateVariable({
         <strong>{data.title}</strong>
       </div>
       <div className="node__body">
-        <div className="vp-node-handles-containter">{inputhandles}</div>
-        <div className="vp-node-handles-containter">{outputHandles}</div>
+        <div className="vp-node-handles-container">{inputhandles}</div>
+        <div className="vp-node-handles-container">{outputHandles}</div>
       </div>
     </div>
   );
