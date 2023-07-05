@@ -147,39 +147,114 @@
       "outputs": {
         "execOut": {}
       }
+    },
+    {
+      "id": "10",
+      "type": "extension2.CreateFunction",
+      "position": {
+        "x": 321,
+        "y": 239.85000038146973
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec"
+        },
+        "new-out-0": {
+          "title": "new-out-1",
+          "value": 4,
+          "dataType": "float"
+        },
+        "new-out-1": {
+          "title": "new-out-2",
+          "value": true,
+          "dataType": "boolean"
+        }
+      },
+      "nodeRef": "11",
+      "title": "newFdun_0"
+    },
+    {
+      "id": "11",
+      "type": "extension2.Return",
+      "position": {
+        "x": 350,
+        "y": 450
+      },
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec"
+        },
+        "new-in-0": {
+          "title": "new-in-1222",
+          "dataType": "integer"
+        },
+        "new-in-1": {
+          "title": "new-in-2",
+          "value": 9,
+          "dataType": "float"
+        }
+      }
+    },
+    {
+      "id": "0",
+      "type": "extension2.functionCall",
+      "position": {
+        "x": 324.6505934249379,
+        "y": 158.24457965257167
+      },
+      "inputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec"
+        },
+        "new-out-0": {
+          "title": "new-out-1",
+          "value": 4,
+          "dataType": "float"
+        },
+        "new-out-1": {
+          "title": "new-out-2",
+          "value": true,
+          "dataType": "boolean"
+        }
+      },
+      "outputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec"
+        },
+        "new-in-0": {
+          "title": "new-in-1222",
+          "dataType": "integer"
+        },
+        "new-in-1": {
+          "title": "new-in-2",
+          "value": 9,
+          "dataType": "float"
+        }
+      },
+      "nodeRef": "10",
+      "title": "newFdun_0"
     }
   ],
   "edges": [
     {
-      "id": "e1-3",
-      "output": "1",
-      "input": "3",
-      "outputHandle": "output1",
-      "inputHandle": "setter"
+      "id": "reactflow__edge-10execOut-11execIn",
+      "output": "10",
+      "input": "11",
+      "outputHandle": "execOut",
+      "inputHandle": "execIn",
+      "dataType": "exec"
     },
     {
-      "id": "e4-5",
-      "output": "4",
-      "input": "5",
-      "outputHandle": "input-out",
-      "inputHandle": "input1",
+      "id": "reactflow__edge-10new-arg-0-11new-arg-1",
+      "output": "10",
+      "input": "11",
+      "outputHandle": "new-out-0",
+      "inputHandle": "new-in-1",
       "dataType": "float"
-    },
-    {
-      "id": "reactflow__edge-1execOut-9execIn",
-      "output": "1",
-      "input": "9",
-      "outputHandle": "execOut",
-      "inputHandle": "execIn",
-      "dataType": "exec"
-    },
-    {
-      "id": "reactflow__edge-9execOut-3execIn",
-      "output": "9",
-      "input": "3",
-      "outputHandle": "execOut",
-      "inputHandle": "execIn",
-      "dataType": "exec"
     }
   ]
 }

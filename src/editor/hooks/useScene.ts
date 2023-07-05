@@ -336,6 +336,7 @@ export default function useScene(
               Object.values(latest.data.outputs).forEach((output: any) => {
                 output.showWidget = false;
                 output.showTitle = output.dataType !== 'exec';
+                output.connection = 0;
               });
 
               const returnNodeId = latest?.data?.nodeRef;
@@ -344,6 +345,7 @@ export default function useScene(
                 (input: any) => {
                   input.showWidget = false;
                   input.showTitle = input.dataType !== 'exec';
+                  input.connection = 0;
                 }
               );
               addNode('extension2.functionCall', undefined, {

@@ -78,6 +78,19 @@ export function ParameterHandle({
       });
     });
   }, []);
+  const onValueChange = useCallback((value: string) => {
+    setNodes?.((nds) => {
+      return nds.map((nd) => {
+        if (nd.id === nodeId) {
+          nd.data.outputs[id].value = value;
+        }
+        if (nd.data.nodeRef === nodeId) {
+          nd.data.inputs[id].value = value;
+        }
+        return nd;
+      });
+    });
+  }, []);
   return (
     <div
       className={'parameter-handle'}
@@ -129,7 +142,7 @@ export function ParameterHandle({
               handleData.defaultValue ??
               DataTypes[handleData.dataType!]?.defaultValue,
             className: `nodrag handle-widget`,
-            // onChange: changeValue,
+            onChange: onValueChange,
           })}
         </label>
       </div>
@@ -177,10 +190,10 @@ function CreateFunction({
   }
 
   const addNewHandle = useCallback(() => {
-    const title = `new-arg-${handleCount.current++}`;
+    const title = `new-out-${handleCount.current++}`;
     const value = {
       dataType: 'boolean',
-      title: `new-arg-${handleCount.current}`,
+      title: `new-out-${handleCount.current}`,
       showWidget: false,
     };
     setNodes?.((nds) => {
@@ -237,7 +250,11 @@ function CreateFunction({
       );
   }
   outputHandles.push(
-    <div className="source-handle" title="create a new">
+    <div
+      key={'create-new-button'}
+      className="source-handle"
+      title="create a new"
+    >
       <IconButton style={{ padding: 1 }} onClick={addNewHandle}>
         <AddCircle style={{ width: '20px', height: '20px' }} />
       </IconButton>
@@ -280,7 +297,7 @@ function CreateFunction({
 
     setNodes?.((nds) =>
       nds.map((n) => {
-        if (n.data.nodeRef === id) {
+        if (n.data.nodeRef === id || n.id === id) {
           n.data = { ...n.data, title: newVa };
         }
         return n;
@@ -296,7 +313,7 @@ function CreateFunction({
           onStartEdit={onStartEdit}
           onStopEdit={onStopEdit}
           onEditChange={onEditChange}
-        />{' '}
+        />
       </div>
       <div className="node__body">
         <div className="vp-node-handles-containter">{inputhandles}</div>
