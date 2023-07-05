@@ -181,10 +181,10 @@ function Return({
   const handleCount = useRef<number>(0);
   const getNodeById = useSceneState()?.sceneActions.getNodeById;
   const addNewHandle = useCallback(() => {
-    const title = `new-arg-${handleCount.current++}`;
+    const title = `new-in-${handleCount.current++}`;
     const value = {
       dataType: 'any',
-      title: `new-arg-${handleCount.current}`,
+      title: `new-in-${handleCount.current}`,
       showWidget: false,
     };
     setNodes?.((nds) => {

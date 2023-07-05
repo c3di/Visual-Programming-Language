@@ -160,13 +160,13 @@
           "title": "execOut",
           "dataType": "exec"
         },
-        "new-arg-0": {
-          "title": "new-arg-1",
+        "new-out-0": {
+          "title": "new-out-1",
           "value": 4,
           "dataType": "float"
         },
-        "new-arg-1": {
-          "title": "new-arg-2",
+        "new-out-1": {
+          "title": "new-out-2",
           "value": true,
           "dataType": "boolean"
         }
@@ -186,12 +186,12 @@
           "title": "execIn",
           "dataType": "exec"
         },
-        "new-arg-0": {
-          "title": "new-arg-1222",
+        "new-in-0": {
+          "title": "new-in-1222",
           "dataType": "integer"
         },
-        "new-arg-1": {
-          "title": "new-arg-2",
+        "new-in-1": {
+          "title": "new-in-2",
           "value": 9,
           "dataType": "float"
         }
@@ -209,13 +209,13 @@
           "title": "execOut",
           "dataType": "exec"
         },
-        "new-arg-0": {
-          "title": "new-arg-1",
+        "new-out-0": {
+          "title": "new-out-1",
           "value": 4,
           "dataType": "float"
         },
-        "new-arg-1": {
-          "title": "new-arg-2",
+        "new-out-1": {
+          "title": "new-out-2",
           "value": true,
           "dataType": "boolean"
         }
@@ -225,12 +225,12 @@
           "title": "execIn",
           "dataType": "exec"
         },
-        "new-arg-0": {
-          "title": "new-arg-1222",
+        "new-in-0": {
+          "title": "new-in-1222",
           "dataType": "integer"
         },
-        "new-arg-1": {
-          "title": "new-arg-2",
+        "new-in-1": {
+          "title": "new-in-2",
           "value": 9,
           "dataType": "float"
         }
@@ -252,8 +252,8 @@
       "id": "reactflow__edge-10new-arg-0-11new-arg-1",
       "output": "10",
       "input": "11",
-      "outputHandle": "new-arg-0",
-      "inputHandle": "new-arg-1",
+      "outputHandle": "new-out-0",
+      "inputHandle": "new-in-1",
       "dataType": "float"
     }
   ]

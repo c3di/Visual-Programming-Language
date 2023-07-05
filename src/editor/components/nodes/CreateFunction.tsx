@@ -190,10 +190,10 @@ function CreateFunction({
   }
 
   const addNewHandle = useCallback(() => {
-    const title = `new-arg-${handleCount.current++}`;
+    const title = `new-out-${handleCount.current++}`;
     const value = {
       dataType: 'boolean',
-      title: `new-arg-${handleCount.current}`,
+      title: `new-out-${handleCount.current}`,
       showWidget: false,
     };
     setNodes?.((nds) => {
