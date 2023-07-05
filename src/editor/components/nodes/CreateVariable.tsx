@@ -87,22 +87,24 @@ function CreateVariable({
                 },
               },
             };
-          else if (n.type === 'setter')
-            n.data = {
-              ...n.data,
-              inputs: {
-                setter: {
-                  ...n.data.inputs.setter,
-                  dataType: newVa,
-                },
-              },
-              outputs: {
-                'setter-out': {
-                  ...n.data.outputs['setter-out'],
-                  dataType: newVa,
-                },
+          else if (n.type === 'setter') {
+            n.data.inputs = {
+              ...n.data.inputs,
+              setter: {
+                ...n.data.inputs.setter,
+                dataType: newVa,
+                value: DataTypes[newVa].defaultValue,
               },
             };
+            n.data.outputs = {
+              ...n.data.outputs,
+              'setter-out': {
+                ...n.data.outputs['setter-out'],
+                dataType: newVa,
+                value: DataTypes[newVa].defaultValue,
+              },
+            };
+          }
         }
         return n;
       })
@@ -113,9 +115,44 @@ function CreateVariable({
     forceUpdate();
   }, []);
 
+  const changeValue = useCallback((newVa: any): void => {
+    setNodes?.((nds) =>
+      nds.map((n) => {
+        if (n.data.nodeRef === id) {
+          if (n.type === 'getter') {
+            n.data.outputs = {
+              ...n.data.outputs,
+              getter: {
+                ...n.data.outputs.getter,
+                value: newVa,
+              },
+            };
+          } else if (n.type === 'setter') {
+            n.data.inputs = {
+              ...n.data.inputs,
+              setter: {
+                ...n.data.inputs.setter,
+                value: newVa,
+              },
+            };
+            n.data.outputs = {
+              ...n.data.outputs,
+              'setter-out': {
+                ...n.data.outputs['setter-out'],
+                value: newVa,
+              },
+            };
+          }
+        }
+        return n;
+      })
+    );
+  }, []);
+
   const onValueChanges: Record<string, any> = {
     type: changeType,
     name: updateName,
+    value: changeValue,
   };
 
   const inputhandles = [];
