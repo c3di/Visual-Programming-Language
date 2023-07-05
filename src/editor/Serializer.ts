@@ -31,15 +31,15 @@ export class Serializer {
       return this.defaultNodeSerialize(node, true);
     },
     getter: (node: Node): SerializedGraphNode => {
-      return this.defaultNodeSerialize(node, true);
+      return this.defaultNodeSerialize(node, false);
     },
     setter: (node: Node): SerializedGraphNode => {
       node.data.outputs = undefined;
-      return this.defaultNodeSerialize(node, true);
+      return this.defaultNodeSerialize(node, false);
     },
     literal: (node: Node): SerializedGraphNode => {
       node.data.outputs = undefined;
-      return this.defaultNodeSerialize(node, true);
+      return this.defaultNodeSerialize(node, false);
     },
     comment: (node: Node): SerializedGraphNode => {
       const { id, position, type, data } = node;
@@ -77,7 +77,7 @@ export class Serializer {
 
   private readonly defaultNodeSerialize = (
     node: Node,
-    isGeneraticHandle: boolean = false
+    isNotGeneraticHandle: boolean = true
   ): SerializedGraphNode => {
     const { id, type, position, data } = node;
     const { dataType, configType, nodeRef } = data;
@@ -87,7 +87,7 @@ export class Serializer {
     if (data.inputs) {
       Object.entries(data.inputs).forEach(([title, handle]) => {
         const data = handle as HandleData;
-        inputs[title] = isGeneraticHandle
+        inputs[title] = isNotGeneraticHandle
           ? {
               title: data.title,
               value: data.value,
@@ -100,7 +100,7 @@ export class Serializer {
     if (data.outputs) {
       Object.entries(data.outputs).forEach(([title, handle]) => {
         const data = handle as HandleData;
-        outputs[title] = isGeneraticHandle
+        outputs[title] = isNotGeneraticHandle
           ? {
               title: data.title,
               value: data.value,

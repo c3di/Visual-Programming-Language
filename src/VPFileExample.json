@@ -147,6 +147,32 @@
       "outputs": {
         "execOut": {}
       }
+    },
+    {
+      "id": "10",
+      "type": "extension2.CreateFunction",
+      "position": {
+        "x": 321,
+        "y": 239.85000038146973
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec"
+        },
+        "new-arg-0": {
+          "title": "new-arg-1",
+          "value": 4,
+          "dataType": "float"
+        },
+        "new-arg-1": {
+          "title": "new-arg-2",
+          "value": true,
+          "dataType": "boolean"
+        }
+      },
+      "nodeRef": "11",
+      "title": "newFdun_0"
     }
   ],
   "edges": [
