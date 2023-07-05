@@ -59,6 +59,7 @@ export default function InPlaceInput({
             backgroundColor: 'transparent',
             opacity: currentText.length ? 1 : 0.5,
           }}
+          readOnly={true}
           value={currentText.length ? currentText : 'Double click to edit'}
         ></input>
       )}
