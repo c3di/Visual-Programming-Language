@@ -79,6 +79,19 @@ export function ParameterHandle({
       });
     });
   }, []);
+  const onValueChange = useCallback((value: string) => {
+    setNodes?.((nds) => {
+      return nds.map((nd) => {
+        if (nd.id === nodeId) {
+          nd.data.inputs[id].value = value;
+        }
+        if (nd.data.nodeRef === nodeId) {
+          nd.data.outputs[id].value = value;
+        }
+        return nd;
+      });
+    });
+  }, []);
   return (
     <div
       className={'parameter-handle'}
@@ -141,7 +154,7 @@ export function ParameterHandle({
                   handleData.defaultValue ??
                   DataTypes[handleData.dataType!]?.defaultValue,
                 className: `nodrag handle-widget`,
-                // onChange: changeValue,
+                onChange: onValueChange,
               })}
             </label>
           )}

@@ -173,6 +173,29 @@
       },
       "nodeRef": "11",
       "title": "newFdun_0"
+    },
+    {
+      "id": "11",
+      "type": "extension2.Return",
+      "position": {
+        "x": 350,
+        "y": 450
+      },
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec"
+        },
+        "new-arg-0": {
+          "title": "new-arg-1222",
+          "dataType": "integer"
+        },
+        "new-arg-1": {
+          "title": "new-arg-2",
+          "value": 9,
+          "dataType": "float"
+        }
+      }
     }
   ],
   "edges": [
