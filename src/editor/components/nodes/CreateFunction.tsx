@@ -237,7 +237,11 @@ function CreateFunction({
       );
   }
   outputHandles.push(
-    <div className="source-handle" title="create a new">
+    <div
+      key={'create-new-button'}
+      className="source-handle"
+      title="create a new"
+    >
       <IconButton style={{ padding: 1 }} onClick={addNewHandle}>
         <AddCircle style={{ width: '20px', height: '20px' }} />
       </IconButton>
@@ -296,7 +300,7 @@ function CreateFunction({
           onStartEdit={onStartEdit}
           onStopEdit={onStopEdit}
           onEditChange={onEditChange}
-        />{' '}
+        />
       </div>
       <div className="node__body">
         <div className="vp-node-handles-containter">{inputhandles}</div>

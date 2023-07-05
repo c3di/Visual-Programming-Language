@@ -242,7 +242,11 @@ function Return({
     );
   }
   inputhandles.push(
-    <div className="target-handle" title="create a new">
+    <div
+      className="target-handle"
+      title="create a new"
+      key={'create-new-button'}
+    >
       <IconButton style={{ padding: 1 }} onClick={addNewHandle}>
         <AddCircle style={{ width: '20px', height: '20px' }} />
       </IconButton>
