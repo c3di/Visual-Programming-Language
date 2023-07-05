@@ -229,6 +229,22 @@
       "outputHandle": "execOut",
       "inputHandle": "execIn",
       "dataType": "exec"
+    },
+    {
+      "id": "reactflow__edge-10execOut-11execIn",
+      "output": "10",
+      "input": "11",
+      "outputHandle": "execOut",
+      "inputHandle": "execIn",
+      "dataType": "exec"
+    },
+    {
+      "id": "reactflow__edge-10new-arg-0-11new-arg-1",
+      "output": "10",
+      "input": "11",
+      "outputHandle": "new-arg-0",
+      "inputHandle": "new-arg-1",
+      "dataType": "float"
     }
   ]
 }
