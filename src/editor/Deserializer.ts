@@ -89,6 +89,12 @@ export class Deserializer {
       config.outputs = this.copyInputsToOutputs(config.inputs);
       return this.defaultConfigToNode(config);
     },
+    createFunction: (config: GraphNodeConfig): Node => {
+      const node = this.defaultConfigToNode(config);
+      node.data = { ...node.data, title: config.title };
+      return node;
+    },
+
     comment: (config: GraphNodeConfig): Node => {
       const { id, category, comment, tooltip, position, width, height, type } =
         config;

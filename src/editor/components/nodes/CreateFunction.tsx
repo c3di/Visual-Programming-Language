@@ -280,7 +280,7 @@ function CreateFunction({
 
     setNodes?.((nds) =>
       nds.map((n) => {
-        if (n.data.nodeRef === id) {
+        if (n.data.nodeRef === id || n.id === id) {
           n.data = { ...n.data, title: newVa };
         }
         return n;

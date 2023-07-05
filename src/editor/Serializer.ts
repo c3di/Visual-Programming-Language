@@ -54,6 +54,12 @@ export class Serializer {
         height,
       };
     },
+    createFunction: (node: Node): SerializedGraphNode => {
+      return {
+        ...this.defaultNodeSerialize(node),
+        title: node.data.title,
+      };
+    },
     stickyNote: (node: Node): SerializedGraphNode => {
       const { id, position, type, data } = node;
       const { configType, stickyNote, height, width } = data;
