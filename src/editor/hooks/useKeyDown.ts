@@ -75,7 +75,7 @@ export default function useKeyDown(sceneState?: ISceneState): {
           : undefined,
         {
           width: (rect?.width ?? 200) + 2 * padding,
-          height: (rect?.height ?? 300) + 2 * padding,
+          height: (rect?.height ?? 150) + 2 * padding,
         }
       );
     }
