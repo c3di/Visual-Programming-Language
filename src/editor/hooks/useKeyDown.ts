@@ -81,6 +81,13 @@ export default function useKeyDown(sceneState?: ISceneState): {
     }
   }, [createCommentKeyPressed]);
 
+  const createStickyNodeKeyPressed = useKeyPress(['s', 'S']);
+  useEffect(() => {
+    if (createStickyNodeKeyPressed) {
+      sceneActions?.addNode('stickyNote');
+    }
+  }, [createStickyNodeKeyPressed]);
+
   const onKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
     if (target.classList.contains('handle-widget')) {
