@@ -1,4 +1,5 @@
 import React from 'react';
+import './NodeLibraryItem.css';
 
 export interface INodeLibraryItem {
   title: string;
@@ -31,7 +32,7 @@ export default function NodeLibraryItem({
     >
       <div
         className="vp-nodelibrary-entry-description"
-        style={{ paddingBottom: 5, paddingLeft: 5 }}
+        style={{ padding: '8px', width: '100%' }}
       >
         <div className="vp-nodelibrary-entry-title">
           <a
@@ -55,54 +56,52 @@ export default function NodeLibraryItem({
             style={{
               color: 'var(--vp-accordion-item-content-font-color)',
               fontSize: 'var(--vp-accordion-item-content-font-size)',
+              marginBottom: '3px',
             }}
           >
             {description ?? ''}
           </div>
           <div
             className="vp-nodelibrary-entry-buttons"
-            style={{ overflow: 'auto' }}
+            style={{
+              overflow: 'auto',
+              float: 'right',
+            }}
           >
             <button
+              className="vp-nodelibrary-entry-button"
               style={{
-                float: 'left',
-                marginRight: 5,
-                marginTop: '10px',
+                margin: '0px',
                 border: '0px',
-                color: 'var(--vp-accordion-item-content-button-font-color)',
-                backgroundColor: 'transparent',
-                paddingBottom: '8px',
-                fontSize: 'var(--vp-accordion-item-content-button-font-size)',
-                fontFamily: 'var(--vp-accordion-font-family)',
               }}
               onClick={onUninstall}
               type="button"
-              className="bp3-button bp3-minimal bp3-small minimal jp-Button"
             >
-              <span className="bp3-button-text">Uninstall</span>
+              <span
+                className="bp3-button-text"
+                style={{
+                  fontSize: '12px',
+                }}
+              >
+                Uninstall
+              </span>
             </button>
 
             <button
+              className="vp-nodelibrary-entry-button"
               style={{
-                float: 'left',
-                marginRight: 5,
                 marginTop: '10px',
+                margin: '0px',
                 border: '0px',
-                color: 'var(--vp-accordion-item-content-button-font-color)',
-                backgroundColor: 'transparent',
-                paddingBottom: '8px',
-                fontSize: 'var(--vp-accordion-item-content-button-font-size)',
-                fontFamily: 'var(--vp-accordion-font-family)',
               }}
               type="button"
-              className="bp3-button bp3-minimal bp3-small minimal jp-Button"
               onClick={() => {
                 if (enabled) onEnable?.();
                 else onDisable?.();
                 setEnabled(!enabled);
               }}
             >
-              <span className="bp3-button-text">
+              <span className="bp3-button-text" style={{ fontSize: '12px' }}>
                 {enabled ? 'Enable' : 'Disable'}
               </span>
             </button>

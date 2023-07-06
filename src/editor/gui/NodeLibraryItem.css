@@ -1,0 +1,12 @@
+.vp-nodelibrary-entry-button {
+  color: var(--vp-accordion-item-content-button-font-color);
+  background-color: transparent;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  font-size: var(--vp-accordion-item-content-button-font-size);
+  font-family: var(--vp-accordion-font-family);
+}
+
+.vp-nodelibrary-entry-button:hover {
+  background-color: var(--vp-accordion-item-content-button-hover-bgcolor);
+}
