@@ -85,9 +85,7 @@ export function ParameterHandle({
         if (nd.id === nodeId) {
           nd.data.inputs[id].value = value;
         }
-        if (nd.data.nodeRef === nodeId) {
-          nd.data.outputs[id].value = value;
-        }
+
         return nd;
       });
     });
