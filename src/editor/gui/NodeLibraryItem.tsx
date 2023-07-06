@@ -41,7 +41,7 @@ export default function NodeLibraryItem({
               color: 'var(--vp-accordion-item-title-font-color)',
               lineHeight: '1.28',
               fontSize: 'var(--vp-accordion-item-title-font-size)',
-              fontWeight: 405,
+              fontWeight: 'var(--vp-accordion-item-title-font-weight)',
             }}
             target="_blank"
             rel="noopener noreferrer"

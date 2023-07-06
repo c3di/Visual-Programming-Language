@@ -17,6 +17,7 @@
   --vp-gui-font-size3: var(--vp-ui-font-size3);
   --vp-gui-font-family: var(--vp-ui-font-family);
   --vp-gui-font-title-color: var(--vp-ui-font-color-blue);
+  --vp-gui-font-title-weight: var(--vp-ui-font-weight);
   --vp-gui-font-content-color: var(--vp-ui-font-color-grey);
   --vp-gui-font-item-color: var(--vp-ui-font-color-darkgrey);
 
@@ -41,6 +42,7 @@
 
   --vp-accordion-item-title-font-size: var(--vp-gui-font-size2);
   --vp-accordion-item-title-font-color: var(--vp-gui-font-title-color);
+  --vp-accordion-item-title-font-weight: var(--vp-gui-font-title-weight);
 
   --vp-accordion-item-content-font-size: var(--vp-gui-font-size2);
   --vp-accordion-item-content-font-color: var(--vp-gui-font-content-color);
