@@ -60,6 +60,7 @@ export interface ISceneActions {
   isValidConnection: (params: any) => ConnectionStatus;
   centerSelectedNodes: () => void;
   onNodesDelete: (nodes: Node[]) => void;
+  selectedNodes: () => Node[];
 }
 export interface ISceneState {
   gui: IGui;
@@ -273,6 +274,7 @@ export default function useScene(
         inputs: data?.inputs,
         outputs: data?.outputs,
         nodeRef: data?.nodeRef,
+        ...data,
       });
       const node = deserializer.configToNode(config);
       onNodeAdd(node);
@@ -513,6 +515,7 @@ export default function useScene(
       isValidConnection: graphState.isValidConnection,
       centerSelectedNodes,
       onNodesDelete,
+      selectedNodes: graphState.selectedNodes,
     },
   };
 }
