@@ -149,3 +149,7 @@
   width: var(--vp-treeview-icon-size) !important;
   height: var(--vp-treeview-icon-size) !important;
 }
+
+.css-pwcg7p-MuiCollapse-root {
+  overflow: auto !important;
+}
