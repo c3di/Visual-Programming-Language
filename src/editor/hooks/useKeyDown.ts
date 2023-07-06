@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { useKeyPress } from 'reactflow';
+import { type XYPosition, getRectOfNodes, useKeyPress } from 'reactflow';
 import { type ISceneState } from './useScene';
 
 export default function useKeyDown(sceneState?: ISceneState): {
@@ -59,6 +59,27 @@ export default function useKeyDown(sceneState?: ISceneState): {
       sceneActions?.centerSelectedNodes();
     }
   }, [centerNodeKeyPressed]);
+  const createCommentKeyPressed = useKeyPress('c');
+  useEffect(() => {
+    if (createCommentKeyPressed) {
+      const nds = sceneActions?.selectedNodes();
+      let rect = null;
+      if ((nds ?? []).length > 0) {
+        rect = getRectOfNodes(nds!);
+      }
+      const padding = 30;
+      sceneActions?.addNode(
+        'comment',
+        rect
+          ? ({ x: rect.x - padding, y: rect.y - padding } satisfies XYPosition)
+          : undefined,
+        {
+          width: (rect?.width ?? 200) + 2 * padding,
+          height: (rect?.height ?? 300) + 2 * padding,
+        }
+      );
+    }
+  }, [createCommentKeyPressed]);
 
   const onKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
