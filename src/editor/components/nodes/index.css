@@ -47,6 +47,7 @@
 .node__header {
   padding: var(--vp-node-header-padding);
   border-bottom: var(--vp-node-header-bottom-border);
+  font-weight: bold;
 }
 
 .node__body {
