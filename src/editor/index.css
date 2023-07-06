@@ -24,7 +24,7 @@
   --vp-ui-font-color-darkgrey: #000000de; /* Used by menuitem  */
   --vp-ui-font-color-blue: #0d47a1; /* Used by accordion-content-title   */
   --vp-ui-font-color-greyblue: #778899; /* Used by node handle   */
-  --vp-ui-font-weight: 700; /* Used by accordion-content-title  */
+  --vp-ui-font-weight: 600; /* Used by accordion-content-title  */
 
   --vp-icon-size: 1em;
   --vp-icon-color-grey: var(--vp-ui-font-color-grey);
