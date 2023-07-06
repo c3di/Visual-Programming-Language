@@ -559,6 +559,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
 
   useEffect(() => {
     const createFunNodeWithRef: Record<string, string> = {};
+    const createFunNodeWithoutRef: string[] = [];
     // the connection will affect the whole grapp, so we need to update the whole graph
     let allNodes = getNodes();
     allNodes = allNodes.map((n) => {
@@ -579,6 +580,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
                 nodeRef: null,
               },
             };
+            createFunNodeWithoutRef.push(n.id);
             break;
           }
           const nextNode = getNode(execEdge.target);
@@ -590,6 +592,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
                 nodeRef: null,
               },
             };
+            createFunNodeWithoutRef.push(n.id);
             break;
           }
           if (nextNode.type === 'return') {
@@ -633,6 +636,13 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
       }
       return n;
     });
+    for (const node of Object.values(allNodes)) {
+      if ((node.data.nodeRef as string) in createFunNodeWithoutRef) {
+        node.data.outputs = {
+          execOut: node.data.outputs.execOut,
+        };
+      }
+    }
     setNodes(allNodes);
   }, [edges]);
 
