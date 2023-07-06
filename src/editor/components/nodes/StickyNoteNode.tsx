@@ -150,6 +150,8 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
               flexGrow: 1,
               overflow: 'auto',
               backgroundColor: nodeBg,
+              borderBottomLeftRadius: 'var(--vp-node-border-radius)',
+              borderBottomRightRadius: 'var(--vp-node-border-radius)',
             }}
           >
             <div
