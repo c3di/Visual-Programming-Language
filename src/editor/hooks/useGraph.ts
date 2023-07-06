@@ -558,54 +558,82 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
   }, [nodes, edges]);
 
   useEffect(() => {
-    setNodes((nds) =>
-      nds.map((n) => {
-        if (n.type === 'createFunction') {
-          let thisNode = n;
-          while (true) {
-            const edges = getConnectedEdges([thisNode], getEdges());
-            const execEdge = edges.find(
-              (e) =>
-                e.source === thisNode.id &&
-                thisNode.data.outputs[e.sourceHandle!].dataType === 'exec'
-            );
-            if (!execEdge) {
-              n = {
-                ...n,
-                data: {
-                  ...n.data,
-                  nodeRef: null,
-                },
-              };
-              break;
-            }
-            const nextNode = getNode(execEdge.target);
-            if (!nextNode) {
-              n = {
-                ...n,
-                data: {
-                  ...n.data,
-                  nodeRef: null,
-                },
-              };
-              break;
-            }
-            if (nextNode.type === 'return') {
-              n = {
-                ...n,
-                data: {
-                  ...n.data,
-                  nodeRef: nextNode.id,
-                },
-              };
-              break;
-            }
-            thisNode = nextNode;
+    const createFunNodeWithRef: Record<string, string> = {};
+    // the connection will affect the whole grapp, so we need to update the whole graph
+    let allNodes = getNodes();
+    allNodes = allNodes.map((n) => {
+      if (n.type === 'createFunction') {
+        let thisNode = n;
+        while (true) {
+          const edges = getConnectedEdges([thisNode], getEdges());
+          const execEdge = edges.find(
+            (e) =>
+              e.source === thisNode.id &&
+              thisNode.data.outputs[e.sourceHandle!].dataType === 'exec'
+          );
+          if (!execEdge) {
+            n = {
+              ...n,
+              data: {
+                ...n.data,
+                nodeRef: null,
+              },
+            };
+            break;
           }
+          const nextNode = getNode(execEdge.target);
+          if (!nextNode) {
+            n = {
+              ...n,
+              data: {
+                ...n.data,
+                nodeRef: null,
+              },
+            };
+            break;
+          }
+          if (nextNode.type === 'return') {
+            n = {
+              ...n,
+              data: {
+                ...n.data,
+                nodeRef: nextNode.id,
+              },
+            };
+            createFunNodeWithRef[n.id] = nextNode.id;
+            break;
+          }
+          thisNode = nextNode;
         }
-        return n;
-      })
-    );
+      }
+      return n;
+    });
+
+    const toBeUpdated = Object.keys(createFunNodeWithRef);
+    allNodes = allNodes.map((n) => {
+      if (n.data.nodeRef in toBeUpdated) {
+        const returnNode = getNode(createFunNodeWithRef[n.data.nodeRef]);
+        if (
+          returnNode &&
+          Object.keys(n.data.outputs).length !==
+            Object.keys(returnNode.data.inputs).length
+        ) {
+          const inputsWithoutExec: Record<string, any> = {};
+          for (const [name, input] of Object.entries(returnNode.data.inputs)) {
+            if ((input as any).dataType !== 'exec') {
+              (input as any).showTitle = true;
+              inputsWithoutExec[name] = input;
+            }
+          }
+          n.data.outputs = {
+            execOut: n.data.outputs.execOut,
+            ...inputsWithoutExec,
+          };
+        }
+      }
+      return n;
+    });
+    setNodes(allNodes);
   }, [edges]);
 
   return {
