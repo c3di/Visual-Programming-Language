@@ -59,7 +59,7 @@ export default function useKeyDown(sceneState?: ISceneState): {
       sceneActions?.centerSelectedNodes();
     }
   }, [centerNodeKeyPressed]);
-  const createCommentKeyPressed = useKeyPress('c');
+  const createCommentKeyPressed = useKeyPress(['c', 'C']);
   useEffect(() => {
     if (createCommentKeyPressed) {
       const nds = sceneActions?.selectedNodes();
