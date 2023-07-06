@@ -50,6 +50,9 @@
   --vp-accordion-item-content-button-font-color: var(
     --vp-gui-font-content-color
   );
+  --vp-accordion-item-content-button-hover-bgcolor: var(
+    --vp-gui-hover-background-color
+  );
 
   /* Menu */
 
