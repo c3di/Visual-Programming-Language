@@ -111,7 +111,7 @@ export default function NodeLibraryList({
           restore: null,
         }}
         name="files" /* sets the file input name, it's filepond by default */
-        labelIdle='Drop your package file/folder or <span class="filepond--label-action">Browse</span>'
+        labelIdle='<span class="filepond--label">Drop your package file/folder or <span class="filepond--label-action">Browse</span></span>'
         onerror={(
           error: FilePondErrorDescription,
           _file?: FilePondFile,
@@ -120,6 +120,7 @@ export default function NodeLibraryList({
           console.log(error);
         }}
       />
+
       <div
         style={{
           marginLeft: '4px',

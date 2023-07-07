@@ -1,3 +1,8 @@
 .vp-nodelibrary {
   font-size: var(--vp-ui-font-size0);
 }
+
+.filepond--label {
+  font-size: var(--vp-filepond-font-size) !important;
+  font-family: var(--vp-filepond-font-family);
+}
