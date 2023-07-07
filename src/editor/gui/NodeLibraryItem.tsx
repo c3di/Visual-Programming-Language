@@ -77,14 +77,14 @@ export default function NodeLibraryItem({
               onClick={onUninstall}
               type="button"
             >
-              <span
+              <div
                 className="bp3-button-text"
                 style={{
                   fontSize: '12px',
                 }}
               >
                 Uninstall
-              </span>
+              </div>
             </button>
 
             <button
@@ -101,9 +101,9 @@ export default function NodeLibraryItem({
                 setEnabled(!enabled);
               }}
             >
-              <span className="bp3-button-text" style={{ fontSize: '12px' }}>
+              <div className="bp3-button-text" style={{ fontSize: '12px' }}>
                 {enabled ? 'Enable' : 'Disable'}
-              </span>
+              </div>
             </button>
           </div>
         </div>
