@@ -44,9 +44,9 @@
   --vp-accordion-item-title-font-color: var(--vp-gui-font-title-color);
   --vp-accordion-item-title-font-weight: var(--vp-gui-font-title-weight);
 
-  --vp-accordion-item-content-font-size: var(--vp-gui-font-size2);
+  --vp-accordion-item-content-font-size: var(--vp-gui-font-size1);
   --vp-accordion-item-content-font-color: var(--vp-gui-font-content-color);
-  --vp-accordion-item-content-button-font-size: var(--vp-gui-font-size2);
+  --vp-accordion-item-content-button-font-size: var(--vp-gui-font-size1);
   --vp-accordion-item-content-button-font-color: var(
     --vp-gui-font-content-color
   );
