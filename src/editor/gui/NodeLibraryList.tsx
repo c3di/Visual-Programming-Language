@@ -121,7 +121,12 @@ export default function NodeLibraryList({
         }}
       />
       <div
-        style={{ marginLeft: '4px', marginRight: '4px', marginBottom: '4px' }}
+        style={{
+          marginLeft: '4px',
+          marginRight: '4px',
+          marginBottom: '4px',
+          fontSize: '14px',
+        }}
       >
         <SearchInput onChange={search} />
       </div>
@@ -161,6 +166,7 @@ export default function NodeLibraryList({
             height: '33px !important',
             padding: '0px',
             flexDirection: 'row-reverse',
+            fontSize: '0.8333em',
             '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
               transform: 'rotate(90deg) translateX(-2px)',
             },

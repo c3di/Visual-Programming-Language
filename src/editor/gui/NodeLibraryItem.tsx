@@ -71,6 +71,7 @@ export default function NodeLibraryItem({
               style={{
                 margin: '0px',
                 border: '0px',
+                width: '60px',
               }}
               onClick={onUninstall}
               type="button"
@@ -91,6 +92,7 @@ export default function NodeLibraryItem({
                 marginTop: '10px',
                 margin: '0px',
                 border: '0px',
+                width: '60px',
               }}
               type="button"
               onClick={() => {
