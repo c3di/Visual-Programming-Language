@@ -26,8 +26,6 @@ export default function NodeLibraryItem({
         display: 'flex',
         borderBottom: 'var(--vp-accordion-item-border-width) solid',
         borderColor: 'var(--vp-accordion-item-border-color)',
-        paddingTop: '5px',
-        paddingLeft: '5px',
       }}
     >
       <div

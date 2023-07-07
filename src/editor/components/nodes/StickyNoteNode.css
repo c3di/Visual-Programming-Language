@@ -8,7 +8,10 @@
   min-width: 120px;
   min-height: 20px;
 }
-
+.stickyNote__node-container {
+  min-height: 150px;
+  min-width: 150px;
+}
 ::-webkit-color-swatch-wrapper {
   padding: 0;
 }

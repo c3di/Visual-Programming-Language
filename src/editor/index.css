@@ -14,7 +14,7 @@
 
   --vp-ui-font-family: 'Roboto', 'sans-serif';
   --vp-ui-font-size0: 10px; /* Base font size, 10px = 1rem */
-  --vp-ui-font-size1: 1.25em; /* Used by react-flow node,accordion-summary,input widget  */
+  --vp-ui-font-size1: 1.3em; /* Used by react-flow node,accordion-summary,input widget  */
   --vp-ui-font-size2: 1.5em; /* Used by accordion-item, searchBar label, Filepond label*/
   --vp-ui-font-size3: 1.7em; /* Used by menuitem */
   --vp-ui-font-scale-factor1: 1.2; /* Both used by stickyNodeIcon'size, to keep the visual coherence when the parent element doesn't use 10px as base font size  */
