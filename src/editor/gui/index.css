@@ -40,7 +40,7 @@
   --vp-accordion-item-border-color: var(--vp-gui-border-color);
   --vp-accordion-item-border-width: var(--vp-gui-border-width);
 
-  --vp-accordion-item-title-font-size: var(--vp-gui-font-size2);
+  --vp-accordion-item-title-font-size: var(--vp-gui-font-size1);
   --vp-accordion-item-title-font-color: var(--vp-gui-font-title-color);
   --vp-accordion-item-title-font-weight: var(--vp-gui-font-title-weight);
 
