@@ -16,6 +16,7 @@ export default function SearchInput({
         width: '100%',
         height: '30px',
         padding: '0px',
+        marginBottom: '3px',
         fontSize: 'var(--vp-searchbar-font-size)',
         fontFamily: 'var(--vp-searchbar-font-family)',
         borderRadius: 'var(--vp-searchbar-border-radius)',
