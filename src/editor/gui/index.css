@@ -98,7 +98,7 @@
   /*FilePond*/
   --vp-filepond-border-radius: var(--vp-gui-border-radius);
   --vp-filepond-font-family: var(--vp-gui-font-family);
-  --vp-filepond-font-size: var(--vp-gui-font-size2);
+  --vp-filepond-font-size: 16px;
 }
 
 .VP_MenuList {
