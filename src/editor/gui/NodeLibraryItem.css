@@ -9,4 +9,5 @@
 
 .vp-nodelibrary-entry-button:hover {
   background-color: var(--vp-accordion-item-content-button-hover-bgcolor);
+  cursor: pointer;
 }
