@@ -82,7 +82,10 @@ export default function NodeLibraryList({
   const [files, setFiles] = useState<ActualFileObject[]>([]);
 
   return (
-    <div className="vp-nodelibrary">
+    <div
+      className="vp-nodelibrary"
+      style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+    >
       <FilePond
         credits={false}
         files={files}
@@ -132,6 +135,9 @@ export default function NodeLibraryList({
         <SearchInput onChange={search} />
       </div>
       <Accordion
+        style={{
+          overflowY: 'scroll',
+        }}
         disableGutters
         elevation={0}
         square
