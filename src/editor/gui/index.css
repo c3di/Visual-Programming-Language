@@ -89,7 +89,7 @@
   --vp-searchbar-icon-color: var(--vp-gui-icon-color-grey);
 
   /* TreeView Menu */
-  --vp-treeview-icon-size: var(--vp-gui-icon-size);
+  --vp-treeview-icon-size: 17px;
   --vp-treeview-icon-color: var(--vp-gui-icon-color-grey);
 
   --vp-treeview-font-family: var(--vp-menuitem-font-family);
