@@ -60,6 +60,7 @@ export interface ISceneActions {
   isValidConnection: (params: any) => ConnectionStatus;
   centerSelectedNodes: () => void;
   onNodesDelete: (nodes: Node[]) => void;
+  selectedNodes: () => Node[];
 }
 export interface ISceneState {
   gui: IGui;
@@ -273,6 +274,7 @@ export default function useScene(
         inputs: data?.inputs,
         outputs: data?.outputs,
         nodeRef: data?.nodeRef,
+        ...data,
       });
       const node = deserializer.configToNode(config);
       onNodeAdd(node);
@@ -338,21 +340,32 @@ export default function useScene(
                 output.showTitle = output.dataType !== 'exec';
                 output.connection = 0;
               });
-
+              const outputs: Record<string, any> = {
+                execOut: {
+                  title: 'execOut',
+                  dataType: 'exec',
+                  showWidget: false,
+                  showTitle: false,
+                },
+              };
               const returnNodeId = latest?.data?.nodeRef;
               const returnNode = graphState.getNodeById(returnNodeId);
-              Object.values(returnNode?.data.inputs ?? {}).forEach(
-                (input: any) => {
+              Object.keys(returnNode?.data.inputs ?? {}).forEach(
+                (name: string) => {
+                  const input = returnNode!.data.inputs[name];
+                  if (input.dataType === 'exec') return;
                   input.showWidget = false;
-                  input.showTitle = input.dataType !== 'exec';
+                  input.showTitle = true;
                   input.connection = 0;
+                  outputs[name] = input;
                 }
               );
+
               addNode('extension2.functionCall', undefined, {
                 title: latest.data.title,
                 nodeRef: node.id,
                 inputs: latest.data.outputs,
-                outputs: returnNode?.data.inputs,
+                outputs,
               });
             },
             category: 'Functions',
@@ -502,6 +515,7 @@ export default function useScene(
       isValidConnection: graphState.isValidConnection,
       centerSelectedNodes,
       onNodesDelete,
+      selectedNodes: graphState.selectedNodes,
     },
   };
 }

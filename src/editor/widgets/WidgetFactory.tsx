@@ -52,7 +52,7 @@ export class WidgetFactory {
 
   public createWidget(type: string, widgetOptions: any): JSX.Element {
     if (!DataTypes[type]) {
-      console.warn('Invalid widget type, return <></> element.');
+      console.warn(`Invalid data type ${type}, return <></> element.`);
       return <></>;
     }
     const widgetTypeToUse = DataTypes[type].widget || type;
@@ -61,7 +61,7 @@ export class WidgetFactory {
     if (widget) {
       return React.cloneElement(widget, { ...widgetOptions, options });
     } else {
-      console.warn('Invalid widget type, return <></> element.');
+      console.warn(`Invalid widget type, return <></> element.`);
       return <></>;
     }
   }

@@ -12,7 +12,7 @@ function FunctionCall({
 }): JSX.Element {
   registFunctionRef(data, id);
 
-  return <FunctionNode id={id} data={data} />;
+  return <FunctionNode id={id} data={{ ...data }} />;
 }
 
 export default memo(FunctionCall);
