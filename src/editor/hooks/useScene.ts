@@ -99,8 +99,6 @@ export default function useScene(
     node: Node,
     toBeDragNodeId: string
   ): void => {
-    // return;
-    // eslint-disable-next-line no-unreachable
     if (
       !isCommentNode(node.data) ||
       (!node?.selected && node.id !== toBeDragNodeId)
@@ -121,7 +119,6 @@ export default function useScene(
       ...nodesRefInCommentNode.current,
       [node.id]: nodesInComment,
     };
-    console.log(nodesRefInCommentNode.current);
     // map to local coordinate
     nodesInComment.forEach((part, index, nodes) => {
       const n = nodes[index];
@@ -146,13 +143,13 @@ export default function useScene(
       };
       n.parentNode = undefined;
     });
-    nodesRefInCommentNode.current = {};
   };
 
   const onNodeDragStop = (evt: any, node: Node): void => {
     nodes.forEach((node) => {
       clearNodesInSelectedCommentNode(node);
     });
+    nodesRefInCommentNode.current = {};
   };
 
   const copySelectedNodeToClipboard = (): void => {
