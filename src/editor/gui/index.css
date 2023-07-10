@@ -35,7 +35,7 @@
   --vp-acccordion-panel-background-color: var(--vp-gui-background-color-white);
 
   --vp-accordion-summary-hover-bgcolor: var(--vp-gui-hover-background-color);
-  --vp-accordion-summary-font-size: var(--vp-gui-font-size1);
+  --vp-accordion-summary-font-size: 12.5px;
 
   --vp-accordion-item-border-color: var(--vp-gui-border-color);
   --vp-accordion-item-border-width: var(--vp-gui-border-width);
