@@ -30,6 +30,7 @@
   /*Accordion*/
 
   --vp-accordion-font-family: var(--vp-gui-font-family);
+  --vp-accordion-font-weight: 700;
   --vp-accordion-panel-border-color: var(--vp-gui-border-color);
   --vp-accordion-panel-border-width: var(--vp-gui-border-width);
   --vp-acccordion-panel-background-color: var(--vp-gui-background-color-white);

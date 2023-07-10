@@ -195,7 +195,7 @@ export default function NodeLibraryList({
             sx={{
               fontSize: 'var(--vp-accordion-summary-font-size)',
               fontFamily: 'var(--vp-accordion-font-family)',
-              fontWeight: 600,
+              fontWeight: 'var(--vp-accordion-font-weight)',
             }}
           >
             {title}
