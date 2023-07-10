@@ -162,7 +162,7 @@ function CreateVariable({
         key={inputId}
         id={inputId}
         nodeId={id}
-        showWidget={true}
+        showWidget={data.inputs[inputId].dataType !== 'exec'}
         showTitle={true}
         handleData={data.inputs[inputId]}
         onValueChange={onValueChanges[inputId]}
