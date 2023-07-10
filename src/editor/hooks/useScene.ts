@@ -99,6 +99,8 @@ export default function useScene(
     node: Node,
     toBeDragNodeId: string
   ): void => {
+    // return;
+    // eslint-disable-next-line no-unreachable
     if (
       !isCommentNode(node.data) ||
       (!node?.selected && node.id !== toBeDragNodeId)
@@ -111,13 +113,15 @@ export default function useScene(
         n.position.x + (n.width ?? 0) < node.position.x + (node.width ?? 0) &&
         n.position.y > node.position.y &&
         n.position.y + (n.height ?? 0) < node.position.y + (node.height ?? 0) &&
-        n.id !== node.id
+        n.id !== node.id &&
+        n.parentNode === undefined
     );
     if (!nodesInComment) return;
     nodesRefInCommentNode.current = {
       ...nodesRefInCommentNode.current,
       [node.id]: nodesInComment,
     };
+    console.log(nodesRefInCommentNode.current);
     // map to local coordinate
     nodesInComment.forEach((part, index, nodes) => {
       const n = nodes[index];
