@@ -10,11 +10,11 @@
 
   --vp-background-color-lightgrey: #f5f5f6f0; /* Used by react-flow node background */
   --vp-background-color-white: #fff; /* Used by menu, input widget background */
-  --vp-hover-background-color: #f5f5f6f0; /* Used by menuitem,minimap iconButton */
+  --vp-hover-background-color: #b8b4b43e; /* Used by menuitem,minimap iconButton */
 
   --vp-ui-font-family: 'Roboto', 'sans-serif';
   --vp-ui-font-size0: 10px; /* Base font size, 10px = 1rem */
-  --vp-ui-font-size1: 1.25em; /* Used by react-flow node,accordion-summary,input widget  */
+  --vp-ui-font-size1: 1.3em; /* Used by react-flow node,accordion-summary,input widget  */
   --vp-ui-font-size2: 1.5em; /* Used by accordion-item, searchBar label, Filepond label*/
   --vp-ui-font-size3: 1.7em; /* Used by menuitem */
   --vp-ui-font-scale-factor1: 1.2; /* Both used by stickyNodeIcon'size, to keep the visual coherence when the parent element doesn't use 10px as base font size  */
@@ -22,8 +22,9 @@
   --vp-ui-font-color-black: #222; /* Used by react-flow node, stickyNodeIcon'color, input widget's fontColor  */
   --vp-ui-font-color-grey: #0000008a; /* Used by menuIcon, searchBar Icon, accordionItem content, menuItem shortcut  */
   --vp-ui-font-color-darkgrey: #000000de; /* Used by menuitem  */
-  --vp-ui-font-color-blue: #1976d2; /* Used by accordion-content-title   */
+  --vp-ui-font-color-blue: #0d47a1; /* Used by accordion-content-title   */
   --vp-ui-font-color-greyblue: #778899; /* Used by node handle   */
+  --vp-ui-font-weight: 600; /* Used by accordion-content-title  */
 
   --vp-icon-size: 1em;
   --vp-icon-color-grey: var(--vp-ui-font-color-grey);

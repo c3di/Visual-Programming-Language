@@ -33,26 +33,28 @@ function MainArea({ id }: { id: string }): JSX.Element {
   return (
     <>
       <Progress enable={false} />
-      <NodeLibraryList
-        title="INSTALLED"
-        nodeExtensions={{ ...nodeExtensions }}
-        onUninstall={(name: string) => {
-          console.log('uninstall');
-          nodeConfigRegistry.removeNodeConfig(name);
-          console.log(nodeConfigRegistry.getAllNodeConfigs());
-          setNodeExtensions({ ...nodeConfigRegistry.getAllNodeConfigs() });
-        }}
-        onDisable={(name: string) => {
-          console.log('disable');
-          nodeConfigRegistry.enableNodeConfig(name, false);
-          setNodeExtensions(nodeConfigRegistry.getAllNodeConfigs());
-        }}
-        onEnable={(name: string) => {
-          console.log('enable');
-          nodeConfigRegistry.enableNodeConfig(name, true);
-          setNodeExtensions(nodeConfigRegistry.getAllNodeConfigs());
-        }}
-      />
+      <div style={{ height: '300px' }}>
+        <NodeLibraryList
+          title="INSTALLED"
+          nodeExtensions={{ ...nodeExtensions }}
+          onUninstall={(name: string) => {
+            console.log('uninstall');
+            nodeConfigRegistry.removeNodeConfig(name);
+            console.log(nodeConfigRegistry.getAllNodeConfigs());
+            setNodeExtensions({ ...nodeConfigRegistry.getAllNodeConfigs() });
+          }}
+          onDisable={(name: string) => {
+            console.log('disable');
+            nodeConfigRegistry.enableNodeConfig(name, false);
+            setNodeExtensions(nodeConfigRegistry.getAllNodeConfigs());
+          }}
+          onEnable={(name: string) => {
+            console.log('enable');
+            nodeConfigRegistry.enableNodeConfig(name, true);
+            setNodeExtensions(nodeConfigRegistry.getAllNodeConfigs());
+          }}
+        />
+      </div>
       <div style={{ margin: '20px', width: '200px' }}>
         <InPlaceTextArea text="hello world" />
       </div>

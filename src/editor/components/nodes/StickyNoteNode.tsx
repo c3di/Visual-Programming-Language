@@ -12,8 +12,8 @@ import './StickyNoteNode.css';
 import { Button, Toolbar } from '@mui/material';
 
 function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
-  const [width, setWidth] = useState<number>(data.width ?? 250);
-  const [height, setHeight] = useState<number>(data.height ?? 200);
+  const [width, setWidth] = useState<number>(data.width ?? 150);
+  const [height, setHeight] = useState<number>(data.height ?? 150);
   const [content, setContent] = useState<string>(data.stickyNote);
   const [nodeBg, setNodeBg] = useState<string>('#e06767');
   const [pinned, setPinned] = useState<boolean>(false);
@@ -38,26 +38,32 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
   }, [pinned]);
 
   return (
-    <div className="vp-node-container">
+    <div className="vp-node-container stickyNote__node-container">
       <div
         className={
           dragged
             ? 'stickyNote__node__body stickyNote__node__body--enabled'
             : 'stickyNote__node__body stickyNote__node__body--disabled'
         }
-        style={{ width, height }}
+        style={{
+          width,
+          height,
+          minHeight: '100%',
+          minWidth: '100%',
+          border: 'none',
+        }}
       >
         <NodeResizer
           color="#ffffff00"
           handleStyle={{ border: 'none' }}
-          minWidth={10}
-          minHeight={10}
+          minWidth={150}
+          minHeight={150}
           onResize={(
             event: ResizeDragEvent,
             params: ResizeParamsWithDirection
           ) => {
-            setWidth(params.width);
-            setHeight(params.height);
+            setWidth(params.width - 6);
+            setHeight(params.height - 2);
           }}
         />
         <div
@@ -150,6 +156,8 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
               flexGrow: 1,
               overflow: 'auto',
               backgroundColor: nodeBg,
+              borderBottomLeftRadius: 'var(--vp-node-border-radius)',
+              borderBottomRightRadius: 'var(--vp-node-border-radius)',
             }}
           >
             <div

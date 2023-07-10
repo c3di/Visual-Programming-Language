@@ -82,7 +82,10 @@ export default function NodeLibraryList({
   const [files, setFiles] = useState<ActualFileObject[]>([]);
 
   return (
-    <div className="vp-nodelibrary">
+    <div
+      className="vp-nodelibrary"
+      style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+    >
       <FilePond
         credits={false}
         files={files}
@@ -111,7 +114,7 @@ export default function NodeLibraryList({
           restore: null,
         }}
         name="files" /* sets the file input name, it's filepond by default */
-        labelIdle='Drop your package file/folder or <span class="filepond--label-action">Browse</span>'
+        labelIdle='<span class="filepond--label">Drop your package file/folder or <span class="filepond--label-action">Browse</span></span>'
         onerror={(
           error: FilePondErrorDescription,
           _file?: FilePondFile,
@@ -120,12 +123,21 @@ export default function NodeLibraryList({
           console.log(error);
         }}
       />
+
       <div
-        style={{ marginLeft: '4px', marginRight: '4px', marginBottom: '4px' }}
+        style={{
+          marginLeft: '4px',
+          marginRight: '4px',
+          marginBottom: '4px',
+          fontSize: '14px',
+        }}
       >
         <SearchInput onChange={search} />
       </div>
       <Accordion
+        style={{
+          overflowY: 'scroll',
+        }}
         disableGutters
         elevation={0}
         square
@@ -161,6 +173,7 @@ export default function NodeLibraryList({
             height: '33px !important',
             padding: '0px',
             flexDirection: 'row-reverse',
+            fontSize: '0.8333em',
             '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
               transform: 'rotate(90deg) translateX(-2px)',
             },
@@ -182,8 +195,7 @@ export default function NodeLibraryList({
             sx={{
               fontSize: 'var(--vp-accordion-summary-font-size)',
               fontFamily: 'var(--vp-accordion-font-family)',
-              letterSpacing: '1px',
-              fontWeight: '410',
+              fontWeight: 'var(--vp-accordion-font-weight)',
             }}
           >
             {title}
