@@ -68,7 +68,8 @@ export default function useKeyDown(sceneState?: ISceneState): {
         rect = getRectOfNodes(nds!);
       }
       const padding = 30;
-      sceneActions?.addNode(
+      sceneActions?.selectAll(false);
+      const node = sceneActions?.addNode(
         'comment',
         rect
           ? ({ x: rect.x - padding, y: rect.y - padding } satisfies XYPosition)
@@ -78,6 +79,9 @@ export default function useKeyDown(sceneState?: ISceneState): {
           height: (rect?.height ?? 150) + 2 * padding,
         }
       );
+      if (node) {
+        sceneActions?.selectNode(node.id);
+      }
     }
   }, [createCommentKeyPressed]);
 

@@ -18,7 +18,7 @@ export default function InPlaceInput({
 
   useEffect(() => {
     if (editable) {
-      inputRef.current?.focus();
+      inputRef.current?.focus({ preventScroll: true });
       onStartEdit?.();
     } else {
       inputRef.current?.blur();

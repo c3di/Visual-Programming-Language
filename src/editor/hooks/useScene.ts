@@ -111,7 +111,8 @@ export default function useScene(
         n.position.x + (n.width ?? 0) < node.position.x + (node.width ?? 0) &&
         n.position.y > node.position.y &&
         n.position.y + (n.height ?? 0) < node.position.y + (node.height ?? 0) &&
-        n.id !== node.id
+        n.id !== node.id &&
+        n.parentNode === undefined
     );
     if (!nodesInComment) return;
     nodesRefInCommentNode.current = {
@@ -142,13 +143,13 @@ export default function useScene(
       };
       n.parentNode = undefined;
     });
-    nodesRefInCommentNode.current = {};
   };
 
   const onNodeDragStop = (evt: any, node: Node): void => {
     nodes.forEach((node) => {
       clearNodesInSelectedCommentNode(node);
     });
+    nodesRefInCommentNode.current = {};
   };
 
   const copySelectedNodeToClipboard = (): void => {
