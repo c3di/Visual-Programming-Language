@@ -22,9 +22,9 @@
   --vp-ui-font-color-black: #222; /* Used by react-flow node, stickyNodeIcon'color, input widget's fontColor  */
   --vp-ui-font-color-grey: #0000008a; /* Used by menuIcon, searchBar Icon, accordionItem content, menuItem shortcut  */
   --vp-ui-font-color-darkgrey: #000000de; /* Used by menuitem  */
-  --vp-ui-font-color-blue: #1976d2; /* Used by accordion-content-title   */
+  --vp-ui-font-color-blue: #0d47a1; /* Used by accordion-content-title   */
   --vp-ui-font-color-greyblue: #778899; /* Used by node handle   */
-  --vp-ui-font-weight: 600; /* Used by accordion-content-title  */
+  --vp-ui-font-weight: 700; /* Used by accordion-content-title  */
 
   --vp-icon-size: 1em;
   --vp-icon-color-grey: var(--vp-ui-font-color-grey);
