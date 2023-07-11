@@ -30,11 +30,11 @@
   --vp-icon-color-grey: var(--vp-ui-font-color-grey);
   --vp-icon-color-black: var(--vp-ui-font-color-black);
 
-  --vp-boolean-color: #d900ff;
-  --vp-integer-color: #2196f3;
-  --vp-float-color: red;
-  --vp-exec-color: green;
-  --vp-string-color: #ff9800;
+  --vp-boolean-color: red;
+  --vp-integer-color: green;
+  --vp-float-color: blue;
+  --vp-exec-color: black;
+  --vp-string-color: #fa07ea;
 }
 
 .boolean > path {

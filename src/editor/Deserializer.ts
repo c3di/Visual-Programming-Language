@@ -179,8 +179,8 @@ export class Deserializer {
         dataType === 'exec'
           ? {
               type: MarkerType.Arrow,
-              width: 30,
-              height: 30,
+              width: 15,
+              height: 15,
               color: getComputedStyle(document.body).getPropertyValue(
                 '--vp-exec-color'
               ),
@@ -190,6 +190,9 @@ export class Deserializer {
         dataType,
       },
       className: dataType,
+      style: {
+        strokeWidth: 2,
+      },
     };
   };
 

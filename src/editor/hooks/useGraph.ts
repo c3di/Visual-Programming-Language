@@ -315,8 +315,8 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
             dataType === 'exec'
               ? {
                   type: MarkerType.Arrow,
-                  width: 30,
-                  height: 30,
+                  width: 15,
+                  height: 15,
                   color: getComputedStyle(document.body).getPropertyValue(
                     '--vp-exec-color'
                   ),
@@ -327,6 +327,9 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
             dataType,
           },
           className: dataType,
+          style: {
+            strokeWidth: 2,
+          },
         },
         eds
       )
