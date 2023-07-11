@@ -29,4 +29,30 @@
   --vp-icon-size: 1em;
   --vp-icon-color-grey: var(--vp-ui-font-color-grey);
   --vp-icon-color-black: var(--vp-ui-font-color-black);
+
+  --vp-boolean-color: #d900ff;
+  --vp-integer-color: #2196f3;
+  --vp-float-color: red;
+  --vp-exec-color: green;
+  --vp-string-color: #ff9800;
+}
+
+.boolean > path {
+  stroke: var(--vp-boolean-color) !important;
+}
+
+.integer > path {
+  stroke: var(--vp-integer-color) !important;
+}
+
+.float > path {
+  stroke: var(--vp-float-color) !important;
+}
+
+.exec > path {
+  stroke: var(--vp-exec-color) !important;
+}
+
+.string > path {
+  stroke: var(--vp-string-color) !important;
 }
