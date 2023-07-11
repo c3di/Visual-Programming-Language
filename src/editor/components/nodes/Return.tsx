@@ -94,6 +94,7 @@ export function ParameterHandle({
     <div
       className={'parameter-handle'}
       style={{ display: 'flex', alignItems: 'center', gap: '5px' }}
+      title={handleData.tooltip}
     >
       <RCHandle
         className={`vp-rc-handle-${handleData.dataType ?? 'default'}`}
@@ -160,7 +161,7 @@ export function ParameterHandle({
       )}
       <IconButton
         style={{ padding: 1 }}
-        title="remove this"
+        title="remove this parameter"
         onClick={removeHandle}
       >
         <RemoveCircle style={{ width: '20px', height: '20px' }} />
@@ -213,7 +214,7 @@ function Return({
   const inputhandles = [];
   for (const inputId in data.inputs) {
     const handle = data.inputs[inputId];
-    if (data.inputs[inputId].title === 'execIn')
+    if (handle.title === 'execIn')
       inputhandles.push(
         <TargetHandle
           key={inputId}
@@ -221,7 +222,7 @@ function Return({
           nodeId={id}
           showWidget={!!handle.showWidget || handle.showWidget === undefined}
           showTitle={false}
-          handleData={handle}
+          handleData={{ ...handle, tooltip: 'exec in' }}
         />
       );
     else {
@@ -230,7 +231,10 @@ function Return({
           key={inputId}
           id={inputId}
           nodeId={id}
-          handleData={data.inputs[inputId]}
+          handleData={{
+            ...handle,
+            tooltip: `the return value of ${String(handle.title)}`,
+          }}
           showLabel={data.title === 'Return'}
           handleType="target"
           handlePosition={Position.Left}
@@ -246,7 +250,7 @@ function Return({
         key={outputId}
         id={outputId}
         nodeId={id}
-        handleData={data.outputs[outputId]}
+        handleData={handle}
         showWidget={!!handle.showWidget}
         showTitle={false}
       />
@@ -255,7 +259,7 @@ function Return({
   inputhandles.push(
     <div
       className="target-handle"
-      title="create a new"
+      title="create a new return value"
       key={'create-new-button'}
     >
       <IconButton style={{ padding: 1 }} onClick={addNewHandle}>

@@ -25,7 +25,13 @@ function FunctionNode({
           (!!handle.showTitle || handle.showTitle === undefined) &&
           handle.dataType !== 'exec'
         }
-        handleData={handle}
+        handleData={{
+          ...handle,
+          tooltip:
+            handle.dataType === 'exec'
+              ? 'exec in'
+              : `input parameter of ${handle.title ?? ''}`,
+        }}
       />
     );
   }
@@ -37,7 +43,13 @@ function FunctionNode({
         key={outputId}
         id={outputId}
         nodeId={id}
-        handleData={data.outputs[outputId]}
+        handleData={{
+          ...handle,
+          tooltip:
+            handle.dataType === 'exec'
+              ? 'exec out'
+              : `return value of ${handle.title ?? ''}`,
+        }}
         showWidget={!!handle.showWidget && handle.dataType !== 'exec'}
         showTitle={
           (!!handle.showTitle || handle.showTitle === undefined) &&

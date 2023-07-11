@@ -54,7 +54,8 @@
       "tooltip": "Create a new variable",
       "inputs": {
         "execIn": {
-          "dataType": "exec"
+          "dataType": "exec",
+          "tooltip": "exec in"
         },
         "name": {
           "title": "name",
@@ -83,7 +84,6 @@
     "CreateFunction": {
       "type": "CreateFunction",
       "category": "createFunction",
-      "tooltip": "Create a new function",
       "outputs": {
         "execOut": {
           "title": "execOut",

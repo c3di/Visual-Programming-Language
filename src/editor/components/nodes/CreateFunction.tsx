@@ -95,10 +95,11 @@ export function ParameterHandle({
     <div
       className={'parameter-handle'}
       style={{ display: 'flex', alignItems: 'center', gap: '5px' }}
+      title={handleData.tooltip}
     >
       <IconButton
         style={{ padding: 1 }}
-        title="remove this"
+        title="remove this parameter"
         onClick={removeHandle}
       >
         <RemoveCircle style={{ width: '20px', height: '20px' }} />
@@ -224,13 +225,13 @@ function CreateFunction({
   const outputHandles = [];
   for (const outputId in data.outputs) {
     const handle = data.outputs[outputId];
-    if (data.outputs[outputId].title === 'execOut')
+    if (handle.title === 'execOut')
       outputHandles.push(
         <SourceHandle
           key={outputId}
           id={outputId}
           nodeId={id}
-          handleData={data.outputs[outputId]}
+          handleData={{ ...handle, tooltip: 'exec out' }}
           showWidget={!!handle.showWidget}
           showTitle={false}
         />
@@ -241,7 +242,10 @@ function CreateFunction({
           key={outputId}
           id={outputId}
           nodeId={id}
-          handleData={data.outputs[outputId]}
+          handleData={{
+            ...handle,
+            tooltip: `parameter ${String(handle.title)}`,
+          }}
           showWidget={true}
           showTitle={!!handle.showTitle || handle.showTitle === undefined}
           handleType="source"
@@ -253,7 +257,7 @@ function CreateFunction({
     <div
       key={'create-new-button'}
       className="source-handle"
-      title="create a new"
+      title="create a new parameter"
     >
       <IconButton style={{ padding: 1 }} onClick={addNewHandle}>
         <AddCircle style={{ width: '20px', height: '20px' }} />
@@ -306,7 +310,10 @@ function CreateFunction({
   }, []);
 
   return (
-    <div title={data.tooltip} className="vp-node-containter">
+    <div
+      title={`create a new function named ${title}`}
+      className="vp-node-containter"
+    >
       <div className="node__header">
         <InplaceInput
           text={title}
