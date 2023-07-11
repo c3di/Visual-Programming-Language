@@ -7,5 +7,5 @@ export interface Comment extends BasicNodeData {
 }
 
 export function isCommentNode(nodeData: BasicNodeData): boolean {
-  return 'comment' in nodeData;
+  return 'comment' in nodeData || nodeData.configType === 'comment';
 }
