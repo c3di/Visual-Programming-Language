@@ -100,6 +100,9 @@ export default function Handle({
               ? 'translate(-50%, 0)'
               : 'translate(50%, 0)',
           position: 'relative',
+          backgroundColor: `var(--vp-${
+            handleData.dataType ?? 'default'
+          }-color)`,
         }}
       />
     </div>
