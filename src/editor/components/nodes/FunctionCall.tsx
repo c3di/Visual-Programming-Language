@@ -12,7 +12,12 @@ function FunctionCall({
 }): JSX.Element {
   registFunctionRef(data, id);
 
-  return <FunctionNode id={id} data={{ ...data }} />;
+  return (
+    <FunctionNode
+      id={id}
+      data={{ ...data, tooltip: `call function ${data.title}` }}
+    />
+  );
 }
 
 export default memo(FunctionCall);

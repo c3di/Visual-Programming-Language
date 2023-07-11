@@ -10,20 +10,18 @@
     "reroute": {
       "type": "reroute",
       "category": "reroute",
-      "tooltip": "this is a reroute",
+      "tooltip": "Rerouter",
       "notShowInMenu": true,
       "dataType": "any",
       "inputs": {
         "input": {
           "title": "input",
-          "tooltip": "input",
           "dataType": "any"
         }
       },
       "outputs": {
         "output": {
           "title": "output",
-          "tooltip": "output",
           "dataType": "any"
         }
       }

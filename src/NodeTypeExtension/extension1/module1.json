@@ -12,9 +12,7 @@
       "category": "getter",
       "tooltip": "Return the value",
       "outputs": {
-        "getter": {
-          "tooltip": "getter handle"
-        }
+        "getter": {}
       }
     }
   }

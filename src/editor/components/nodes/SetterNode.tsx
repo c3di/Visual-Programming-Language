@@ -27,7 +27,13 @@ function SetterNode({
           (!!handle.showTitle || handle.showTitle === undefined) &&
           handle.dataType !== 'exec'
         }
-        handleData={handle}
+        handleData={{
+          ...handle,
+          tooltip:
+            handle.dataType === 'exec'
+              ? 'exec in'
+              : `set the new value of ${handle.title ?? ''} `,
+        }}
       />
     );
   }
@@ -39,7 +45,13 @@ function SetterNode({
         key={outputId}
         id={outputId}
         nodeId={id}
-        handleData={data.outputs[outputId]}
+        handleData={{
+          ...handle,
+          tooltip:
+            handle.dataType === 'exec'
+              ? 'exec out'
+              : `return the value of ${handle.title ?? ''} `,
+        }}
         showWidget={!!handle.showWidget && handle.dataType !== 'exec'}
         showTitle={
           (!!handle.showTitle || handle.showTitle === undefined) &&
