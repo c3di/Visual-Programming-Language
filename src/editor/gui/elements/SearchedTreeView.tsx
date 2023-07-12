@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState, useRef } from 'react';
 import { TreeView } from '@mui/lab';
 import { type SvgIconProps } from '@mui/material';
 import { ExpandMore, ChevronRight } from '@mui/icons-material';
@@ -155,6 +155,14 @@ export const SearchedTreeView = memo(function SearchedTreeView({
   const [filteredTreeData, setFilteredTreeData] =
     useState<TreeItemData[]>(treeData);
 
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, []);
+
   useEffect(() => {
     setFilteredTreeData(treeData);
   }, [treeData]);
@@ -232,7 +240,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
         alignItems: 'center',
       }}
     >
-      <SearchInput onChange={search} />
+      <SearchInput onChange={search} ref={searchInputRef} />
       <ControlledTreeView
         toExpand={toExpand}
         treeData={filteredTreeData}

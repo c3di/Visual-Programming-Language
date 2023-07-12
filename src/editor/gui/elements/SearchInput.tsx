@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IconButton, InputAdornment, OutlinedInput } from '@mui/material';
 import { Search, Clear } from '@mui/icons-material';
 
 export default function SearchInput({
   onChange,
+  ref,
 }: {
   onChange: (value: string) => void;
+  ref?: React.RefObject<HTMLInputElement>;
 }): JSX.Element {
   const [hasInput, setHasInput] = useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
-
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
   return (
     <OutlinedInput
       sx={{
