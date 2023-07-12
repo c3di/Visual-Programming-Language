@@ -28,7 +28,7 @@ const PanelSetting = {
     selectedIfFullShapeCovered: true,
   },
   Edge: {
-    portDetectionRadius: 10,
+    portDetectionRadius: 10, // keep this value less than the distance between two ports
     type: 'default', // 'default(bezier)', 'smoothstep', 'step', 'straight', 'bezier'
   },
 };
