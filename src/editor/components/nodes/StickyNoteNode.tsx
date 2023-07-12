@@ -56,7 +56,7 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
         <NodeResizer
           color="#ffffff00"
           handleStyle={{ border: 'none' }}
-          minWidth={150}
+          minWidth={152}
           minHeight={150}
           onResize={(
             event: ResizeDragEvent,
