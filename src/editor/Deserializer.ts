@@ -118,8 +118,16 @@ export class Deserializer {
       };
     },
     stickyNote: (config: GraphNodeConfig): Node => {
-      const { id, category, stickyNote, tooltip, position, width, height } =
-        config;
+      const {
+        id,
+        category,
+        stickyNote,
+        tooltip,
+        position,
+        width,
+        height,
+        type,
+      } = config;
       return {
         id,
         type: category,
@@ -132,6 +140,7 @@ export class Deserializer {
           tooltip,
           width,
           height,
+          configType: type,
         },
         position,
       };
