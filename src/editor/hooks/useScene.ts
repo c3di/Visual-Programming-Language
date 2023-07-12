@@ -342,8 +342,8 @@ export default function useScene(
                 output.connection = 0;
               });
               const outputs: Record<string, any> = {
-                execOut: {
-                  title: 'execOut',
+                functionCallExecOut: {
+                  title: 'functionCallExecOut',
                   dataType: 'exec',
                   showWidget: false,
                   showTitle: false,
