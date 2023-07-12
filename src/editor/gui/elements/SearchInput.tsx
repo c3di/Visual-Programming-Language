@@ -1,17 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { IconButton, InputAdornment, OutlinedInput } from '@mui/material';
 import { Search, Clear } from '@mui/icons-material';
 
 export default function SearchInput({
   onChange,
-  ref,
-  onKeyDown,
-  TreeViewRef,
+  onArrowDownKeyDown,
 }: {
   onChange: (value: string) => void;
-  ref?: React.RefObject<HTMLInputElement>;
-  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
-  TreeViewRef?: React.RefObject<HTMLDivElement>;
+  onArrowDownKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }): JSX.Element {
   const [hasInput, setHasInput] = useState(false);
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -21,15 +17,15 @@ export default function SearchInput({
     }
   }, []);
 
-  // const handleKeyDown = useCallback(
-  //   (event: React.KeyboardEvent<HTMLInputElement>) => {
-  //     if (event.key === 'ArrowDown') {
-  //       event.preventDefault();
-  //       TreeViewRef.current?.focus();
-  //     }
-  //   },
-  //   []
-  // );
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        onArrowDownKeyDown?.(event);
+      }
+    },
+    []
+  );
   return (
     <OutlinedInput
       sx={{
@@ -95,7 +91,7 @@ export default function SearchInput({
         setHasInput(e.target.value.length > 0);
         onChange(e.target.value);
       }}
-      // onKeyDown={handleKeyDown}
+      onKeyDown={handleKeyDown}
     />
   );
 }

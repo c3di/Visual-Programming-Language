@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState, useRef } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { TreeView } from '@mui/lab';
 import { type SvgIconProps } from '@mui/material';
 import { ExpandMore, ChevronRight } from '@mui/icons-material';
@@ -59,13 +59,13 @@ function ControlledTreeView({
   treeData,
   onItemClick,
   onItemDelete,
-  ref,
+  onArrowUpKeyDown,
 }: {
   toExpand: boolean;
   treeData: TreeItemData[];
   onItemClick?: (item: TreeItemData) => void;
   onItemDelete?: (path: string) => void;
-  ref?: React.RefObject<HTMLDivElement>;
+  onArrowUpKeyDown?: () => void;
 }): JSX.Element {
   const [expanded, setExpanded] = useState<string[]>([]);
   const handleToggle = (e: React.SyntheticEvent, nodeIds: string[]): void => {
@@ -80,8 +80,6 @@ function ControlledTreeView({
   }, []);
 
   const treeDataIds = treeData.map((item) => treeItemIds(item)).flat();
-
-  console.log('treeDataId is ', treeDataIds);
 
   useEffect(() => {
     if (toExpand) setExpanded(treeDataIds);
@@ -110,9 +108,30 @@ function ControlledTreeView({
       </StyledTreeItem>
     );
   }, []);
+  const ref = useRef<HTMLDivElement>(null);
+  const focusOnNew = useRef<boolean>(false);
+  const focusOnTop = useRef<boolean>(false);
 
   return (
     <TreeView
+      ref={ref}
+      onFocus={() => {
+        focusOnNew.current = false;
+      }}
+      onNodeFocus={(e, node) => {
+        focusOnNew.current = true;
+        focusOnTop.current =
+          ref.current?.children[0].id.includes(node) ?? false;
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          e.stopPropagation();
+
+          if (focusOnTop.current && !focusOnNew.current) onArrowUpKeyDown?.();
+        }
+        focusOnNew.current = false;
+      }}
       aria-label="nodes types"
       defaultCollapseIcon={
         <ExpandMore
@@ -159,14 +178,6 @@ export const SearchedTreeView = memo(function SearchedTreeView({
 }): JSX.Element {
   const [filteredTreeData, setFilteredTreeData] =
     useState<TreeItemData[]>(treeData);
-
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const TreeViewRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (searchInputRef.current) {
-      searchInputRef.current.focus();
-    }
-  }, []);
 
   useEffect(() => {
     setFilteredTreeData(treeData);
@@ -235,17 +246,17 @@ export const SearchedTreeView = memo(function SearchedTreeView({
       return newTreeData;
     });
   }, []);
-  const handleKeyDown = useCallback(
-    (event: React.KeyboardEvent<HTMLInputElement>) => {
-      if (event.key === 'ArrowDown') {
-        event.preventDefault();
-        if (TreeViewRef?.current) {
-          TreeViewRef.current?.focus();
-        }
-      }
-    },
-    []
-  );
+
+  const searchTreeViewRef = useRef<HTMLDivElement>(null);
+  const focusOnTreeView = useCallback(() => {
+    const treeView = searchTreeViewRef.current?.children[1];
+    (treeView?.children[0] as HTMLElement)?.focus();
+  }, []);
+  const focusOnSearchInput = useCallback(() => {
+    const searchInput = searchTreeViewRef.current?.children[0];
+    (searchInput?.children[0] as HTMLInputElement)?.focus();
+  }, []);
+
   return (
     <div
       className="VP_MenuList"
@@ -254,13 +265,9 @@ export const SearchedTreeView = memo(function SearchedTreeView({
         flexDirection: 'column',
         alignItems: 'center',
       }}
+      ref={searchTreeViewRef}
     >
-      <SearchInput
-        onChange={search}
-        ref={searchInputRef}
-        onKeyDown={handleKeyDown}
-        TreeViewRef={TreeViewRef}
-      />
+      <SearchInput onChange={search} onArrowDownKeyDown={focusOnTreeView} />
       <ControlledTreeView
         toExpand={toExpand}
         treeData={filteredTreeData}
@@ -269,7 +276,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
           deleteItemInTreeData(type);
           onItemDelete?.(type);
         }}
-        ref={TreeViewRef}
+        onArrowUpKeyDown={focusOnSearchInput}
       />
     </div>
   );
