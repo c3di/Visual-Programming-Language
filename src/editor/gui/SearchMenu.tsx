@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { Menu } from '@mui/material';
-import { Comment, Route, DoNotDisturb } from '@mui/icons-material';
+import { Comment, Route, DoNotDisturb, FitScreen } from '@mui/icons-material';
 import {
   SearchedTreeView,
   nodeConfigsToTreeData,
@@ -35,11 +35,13 @@ const SearchMenu = memo(function SearchMenu({
   anchorPosition,
   addNode,
   clear,
+  autoLayout,
   moreCommands,
 }: {
   onClose: () => void;
   anchorPosition: { top: number; left: number };
   addNode?: (configType: string) => void;
+  autoLayout?: () => void;
   clear?: () => void;
   moreCommands?: Command[];
 }): JSX.Element {
@@ -74,6 +76,13 @@ const SearchMenu = memo(function SearchMenu({
         clear?.();
       },
       labelIcon: DoNotDisturb,
+    },
+    {
+      name: 'Auto Arrange',
+      action: () => {
+        autoLayout?.();
+      },
+      labelIcon: FitScreen,
     },
     ...(moreCommands ?? []),
   ]);

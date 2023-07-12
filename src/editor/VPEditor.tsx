@@ -197,6 +197,7 @@ const Scene = ({
               {
                 addNode: sceneActions?.addNode,
                 clear: sceneActions?.clear,
+                autoLayout: sceneActions?.autoLayout,
                 moreCommands: sceneState?.extraCommands,
               }
             );

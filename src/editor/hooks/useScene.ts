@@ -18,6 +18,7 @@ import { type GraphState } from './useGraph';
 import { deserializer } from '../Deserializer';
 import useGui, { type IGui, type Command } from './useGui';
 import ContentPaste from '@mui/icons-material/ContentPaste';
+import ELK from 'elkjs/lib/elk.bundled.js';
 import {
   useReactFlow,
   getRectOfNodes,
@@ -61,6 +62,7 @@ export interface ISceneActions {
   centerSelectedNodes: () => void;
   onNodesDelete: (nodes: Node[]) => void;
   selectedNodes: () => Node[];
+  autoLayout: () => void;
 }
 export interface ISceneState {
   gui: IGui;
@@ -84,7 +86,7 @@ export default function useScene(
   const { nodes, selectedNodes, edges, getFreeUniqueNodeIds } = graphState;
   const nodesRefInCommentNode = useRef({});
   const [extraCommands, setExtraCommands] = useState<Command[]>([]);
-  const { setCenter, getZoom } = useReactFlow();
+  const { setCenter, getZoom, fitView } = useReactFlow();
   const onNodeDragStart = (evt: any, node: Node): void => {
     nodes.forEach((node) => {
       saveNodesInSelectedCommentNode(node, node.id);
@@ -480,6 +482,18 @@ export default function useScene(
     graphState.deleteSelectedElements();
   };
 
+  const autoLayout = useCallback(() => {
+    const ns = graphState.getNodes();
+    const es = graphState.getEdges();
+    getLayoutedElements(ns, es).then(
+      ({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) => {
+        graphState.setNodes(nodes);
+        graphState.setEdges(edges);
+        window.requestAnimationFrame(() => fitView());
+      }
+    );
+  }, []);
+
   return {
     gui,
     varsNamePool,
@@ -517,6 +531,35 @@ export default function useScene(
       centerSelectedNodes,
       onNodesDelete,
       selectedNodes: graphState.selectedNodes,
+      autoLayout,
     },
   };
 }
+
+// ref from https://reactflow.dev/docs/examples/layout/elkjs/
+const elk = new ELK();
+const elkOptions = {
+  'elk.algorithm': 'layered',
+  'elk.layered.spacing.nodeNodeBetweenLayers': '100',
+  'elk.spacing.nodeNode': '80',
+  'elk.direction': 'RIGHT',
+};
+
+const getLayoutedElements = (nodes: any, edges: any): any => {
+  const graph = {
+    id: 'root',
+    layoutOptions: elkOptions,
+    children: nodes,
+    edges,
+  };
+  return elk
+    .layout(graph)
+    .then((layoutedGraph) => ({
+      nodes: (layoutedGraph.children ?? []).map((node) => ({
+        ...node,
+        position: { x: node.x, y: node.y },
+      })),
+      edges: layoutedGraph.edges,
+    }))
+    .catch(console.error);
+};
