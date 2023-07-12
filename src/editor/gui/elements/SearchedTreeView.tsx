@@ -59,11 +59,13 @@ function ControlledTreeView({
   treeData,
   onItemClick,
   onItemDelete,
+  ref,
 }: {
   toExpand: boolean;
   treeData: TreeItemData[];
   onItemClick?: (item: TreeItemData) => void;
   onItemDelete?: (path: string) => void;
+  ref?: React.RefObject<HTMLDivElement>;
 }): JSX.Element {
   const [expanded, setExpanded] = useState<string[]>([]);
   const handleToggle = (e: React.SyntheticEvent, nodeIds: string[]): void => {
@@ -76,7 +78,10 @@ function ControlledTreeView({
     }
     return ids;
   }, []);
+
   const treeDataIds = treeData.map((item) => treeItemIds(item)).flat();
+
+  console.log('treeDataId is ', treeDataIds);
 
   useEffect(() => {
     if (toExpand) setExpanded(treeDataIds);
@@ -156,7 +161,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
     useState<TreeItemData[]>(treeData);
 
   const searchInputRef = useRef<HTMLInputElement>(null);
-
+  const TreeViewRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (searchInputRef.current) {
       searchInputRef.current.focus();
@@ -230,7 +235,17 @@ export const SearchedTreeView = memo(function SearchedTreeView({
       return newTreeData;
     });
   }, []);
-
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        if (TreeViewRef?.current) {
+          TreeViewRef.current?.focus();
+        }
+      }
+    },
+    []
+  );
   return (
     <div
       className="VP_MenuList"
@@ -240,7 +255,12 @@ export const SearchedTreeView = memo(function SearchedTreeView({
         alignItems: 'center',
       }}
     >
-      <SearchInput onChange={search} ref={searchInputRef} />
+      <SearchInput
+        onChange={search}
+        ref={searchInputRef}
+        onKeyDown={handleKeyDown}
+        TreeViewRef={TreeViewRef}
+      />
       <ControlledTreeView
         toExpand={toExpand}
         treeData={filteredTreeData}
@@ -249,6 +269,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
           deleteItemInTreeData(type);
           onItemDelete?.(type);
         }}
+        ref={TreeViewRef}
       />
     </div>
   );
