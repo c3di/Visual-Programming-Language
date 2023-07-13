@@ -60,12 +60,14 @@ function ControlledTreeView({
   onItemClick,
   onItemDelete,
   onArrowUpKeyDown,
+  onArrowDownKeyDown,
 }: {
   toExpand: boolean;
   treeData: TreeItemData[];
   onItemClick?: (item: TreeItemData) => void;
   onItemDelete?: (path: string) => void;
   onArrowUpKeyDown?: () => void;
+  onArrowDownKeyDown?: () => void;
 }): JSX.Element {
   const [expanded, setExpanded] = useState<string[]>([]);
   const handleToggle = (e: React.SyntheticEvent, nodeIds: string[]): void => {
@@ -111,6 +113,7 @@ function ControlledTreeView({
   const ref = useRef<HTMLDivElement>(null);
   const focusOnNew = useRef<boolean>(false);
   const focusOnTop = useRef<boolean>(false);
+  const focusOnBottom = useRef<boolean>(false);
 
   return (
     <TreeView
@@ -122,13 +125,27 @@ function ControlledTreeView({
         focusOnNew.current = true;
         focusOnTop.current =
           ref.current?.children[0].id.includes(node) ?? false;
+        focusOnBottom.current =
+          ref.current?.children[ref.current?.children.length - 1].id.includes(
+            node
+          ) ?? false;
       }}
       onKeyDown={(e) => {
         if (e.key === 'ArrowUp') {
           e.preventDefault();
           e.stopPropagation();
 
-          if (focusOnTop.current && !focusOnNew.current) onArrowUpKeyDown?.();
+          if (focusOnTop.current && !focusOnNew.current) {
+            onArrowUpKeyDown?.();
+          }
+        }
+
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          e.stopPropagation();
+
+          if (focusOnBottom.current && !focusOnNew.current)
+            onArrowDownKeyDown?.();
         }
         focusOnNew.current = false;
       }}
@@ -255,6 +272,18 @@ export const SearchedTreeView = memo(function SearchedTreeView({
   const focusOnSearchInput = useCallback(() => {
     const searchInput = searchTreeViewRef.current?.children[0];
     (searchInput?.children[0] as HTMLInputElement)?.focus();
+    scrollToTop();
+  }, []);
+  const scrollToBottom = useCallback(() => {
+    console.log('at bottom');
+    (
+      searchTreeViewRef.current?.children[1].lastChild as HTMLDivElement
+    ).scrollIntoView(false);
+  }, []);
+  const scrollToTop = useCallback(() => {
+    (
+      searchTreeViewRef.current?.children[1].firstChild as HTMLDivElement
+    ).scrollIntoView(true);
   }, []);
 
   return (
@@ -277,6 +306,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
           onItemDelete?.(type);
         }}
         onArrowUpKeyDown={focusOnSearchInput}
+        onArrowDownKeyDown={scrollToBottom}
       />
     </div>
   );
