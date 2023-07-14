@@ -2,6 +2,7 @@
   --vp-handle-background-color: var(--vp-ui-font-color-greyblue);
   --vp-handle-border-radius: 2px;
   --vp-handle-panel-height: 20px;
+  --vp-handle-border-width: 2px;
 
   --vp-handle-point-width: 8px;
   --vp-handle-point-height: 10px;
@@ -22,35 +23,36 @@
   height: var(--vp-handle-panel-height);
 }
 
-.target-handle .react-flow__handle {
+.target-handle .react-flow__handle,
+.source-handle .react-flow__handle,
+.parameter-handle .react-flow__handle,
+.handle_connected {
   width: var(--vp-handle-point-width);
   height: var(--vp-handle-point-height);
   border-radius: var(--vp-handle-border-radius);
   background-color: var(--vp-handle-background-color);
+  border: var(--vp-handle-border-width) solid;
+  border-color: transparent;
 }
 
 .vp-rc-handle-exec {
   clip-path: polygon(0% 0%, 40% 0%, 100% 50%, 40% 100%, 0% 100%);
 }
 
-.source-handle .react-flow__handle,
-.parameter-handle .react-flow__handle,
-.handle_connected {
-  width: 8px;
-  height: 10px;
-  border-radius: 2px;
-  background-color: #778899;
+.vp-rc-handle-exec::before {
+  content: '';
+  position: absolute;
+  top: 0px;
+  right: -2px;
+  bottom: 0px;
+  left: 0px;
+  clip-path: polygon(26% 0, 51% 0, 100% 50%, 52% 100%, 29% 100%, 76% 51%);
+  border: 4px solid;
+  border-color: inherit !important;
 }
 
 .handle_not_connected {
-  width: 9px;
-  height: 11.25px;
-  border-radius: 2px;
-  background-color: transparent;
-  border-width: 1px;
-  border: solid;
-  border-color: #778899;
-  box-sizing: border-box;
+  background-color: transparent !important;
 }
 
 .handle-widget {

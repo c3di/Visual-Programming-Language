@@ -87,7 +87,9 @@ export default function Handle({
     <div className={className} title={handleData.tooltip}>
       {label}
       <RCHandle
-        className={`vp-rc-handle-${handleData.dataType ?? 'default'}`}
+        className={`vp-rc-handle-${handleData.dataType ?? 'default'} ${
+          handleData.connection ? 'handle_connected' : 'handle_not_connected'
+        }`}
         id={id}
         type={handleType}
         position={handlePosition}
@@ -103,6 +105,9 @@ export default function Handle({
           backgroundColor: `var(--vp-${
             handleData.dataType ?? 'default'
           }-color)`,
+          borderColor: `var(--vp-${handleData.dataType ?? 'default'}-color)`,
+          borderWidth: '--vp-handle-border-width',
+          borderStyle: 'solid',
         }}
       />
     </div>

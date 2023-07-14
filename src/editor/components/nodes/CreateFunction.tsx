@@ -147,7 +147,9 @@ export function ParameterHandle({
         </label>
       </div>
       <RCHandle
-        className={`vp-rc-handle-${handleData.dataType ?? 'default'}`}
+        className={`vp-rc-handle-${handleData.dataType ?? 'default'} ${
+          handleData.connection ? 'handle_connected' : 'handle_not_connected'
+        }`}
         id={id}
         type={handleType}
         position={handlePosition}
