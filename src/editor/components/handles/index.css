@@ -34,7 +34,8 @@
 }
 
 .source-handle .react-flow__handle,
-.parameter-handle .react-flow__handle .handle_connected {
+.parameter-handle .react-flow__handle,
+.handle_connected {
   width: 8px;
   height: 10px;
   border-radius: 2px;
