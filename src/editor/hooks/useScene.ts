@@ -26,6 +26,17 @@ import {
 } from 'reactflow';
 import { UniqueNamePool, type IUniqueNamePool } from '../utils';
 
+function nodeInsideOfNode(n: Node, containter: Node): boolean {
+  return (
+    n.position.x > containter.position.x &&
+    n.position.x + (n.width ?? 0) <
+      containter.position.x + (containter.width ?? 0) &&
+    n.position.y > containter.position.y &&
+    n.position.y + (n.height ?? 0) <
+      containter.position.y + (containter.height ?? 0)
+  );
+}
+
 export interface ISceneActions {
   getSelectedCounts: () => selectedElementsCounts;
   setSelectedCounts: (newCounts: selectedElementsCounts) => void;
@@ -61,6 +72,7 @@ export interface ISceneActions {
   centerSelectedNodes: () => void;
   onNodesDelete: (nodes: Node[]) => void;
   selectedNodes: () => Node[];
+  sortZIndexOfComments: (nodes: Node[]) => Node[];
 }
 export interface ISceneState {
   gui: IGui;
@@ -106,11 +118,7 @@ export default function useScene(
       const nodesInComment = nodes.filter(
         (n) =>
           !n.selected &&
-          n.position.x > node.position.x &&
-          n.position.x + (n.width ?? 0) < node.position.x + (node.width ?? 0) &&
-          n.position.y > node.position.y &&
-          n.position.y + (n.height ?? 0) <
-            node.position.y + (node.height ?? 0) &&
+          nodeInsideOfNode(n, node) &&
           n.id !== node.id &&
           alreadyInComment(n)
       );
@@ -135,6 +143,7 @@ export default function useScene(
         node.parentNode = undefined;
       }
     });
+    sortZIndexOfComments(nodes);
     setNodes(nodes);
   };
 
@@ -368,6 +377,11 @@ export default function useScene(
           },
         ];
       });
+    } else if (node.type === 'comment') {
+      let nds = getNodes();
+      nds.push(node);
+      nds = sortZIndexOfComments(nds);
+      setNodes(nds.filter((n) => n.id !== node.id));
     }
   };
 
@@ -474,6 +488,30 @@ export default function useScene(
     graphState.deleteSelectedElements();
   };
 
+  function sortZIndexOfComments(nodes: Node[]): Node[] {
+    const selectedCommentNodes = nodes.filter((n) => isCommentNode(n.data));
+    const nodesInSizeAsec = selectedCommentNodes.sort((a, b) => {
+      return (
+        (a.width ?? 0) * (a.height ?? 0) - (b.width ?? 0) * (b.height ?? 0)
+      );
+    });
+    const hasChild: Record<string, boolean> = {};
+    for (let i = 0; i < nodesInSizeAsec.length; i++) {
+      for (let j = i + 1; j < nodesInSizeAsec.length; j++) {
+        if (!hasChild[nodesInSizeAsec[i].id]) nodesInSizeAsec[i].zIndex = -1001;
+        if (nodeInsideOfNode(nodesInSizeAsec[i], nodesInSizeAsec[j])) {
+          nodesInSizeAsec[j].zIndex = Math.min(
+            nodesInSizeAsec[j].zIndex!,
+            nodesInSizeAsec[i].zIndex! - 1001
+          );
+          hasChild[nodesInSizeAsec[j].id] = true;
+          break;
+        }
+      }
+    }
+    return nodes;
+  }
+
   return {
     gui,
     varsNamePool,
@@ -511,6 +549,7 @@ export default function useScene(
       centerSelectedNodes,
       onNodesDelete,
       selectedNodes: graphState.selectedNodes,
+      sortZIndexOfComments,
     },
   };
 }

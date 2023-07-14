@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useState } from 'react';
 import './CommentNode.css';
 import { type Comment } from '../../types';
+import { useSceneState } from '../../Context';
 import {
   NodeResizer,
   type ResizeDragEvent,
@@ -9,7 +10,7 @@ import {
 import '@reactflow/node-resizer/dist/style.css';
 import { InplaceInput } from '../../widgets';
 
-function CommentNode({ data }: { data: Comment }): JSX.Element {
+function CommentNode({ id, data }: { id: string; data: Comment }): JSX.Element {
   const [commentWidth, setCommentWidth] = useState<number>(data.width ?? 250);
   const [commentHeight, setCommentHeight] = useState<number>(
     data.height ?? 150
@@ -26,6 +27,8 @@ function CommentNode({ data }: { data: Comment }): JSX.Element {
     setComment(text);
     data.comment = text;
   }, []);
+  const { setNodes, sortZIndexOfComments } =
+    useSceneState()?.sceneActions ?? {};
   return (
     <div
       title={comment}
@@ -43,6 +46,19 @@ function CommentNode({ data }: { data: Comment }): JSX.Element {
         ) => {
           setCommentWidth(params.width);
           setCommentHeight(params.height);
+          setNodes?.((nds) => {
+            const nodes = nds.map((n) => {
+              if (n.id === id) {
+                n.data = {
+                  ...n.data,
+                  width: params.width,
+                  height: params.height,
+                };
+              }
+              return n;
+            });
+            return sortZIndexOfComments?.(nodes) ?? nodes;
+          });
         }}
       />
       <div
