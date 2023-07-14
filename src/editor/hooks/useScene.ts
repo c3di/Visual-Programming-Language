@@ -39,28 +39,6 @@ function nodeInsideOfNode(n: Node, containter: Node): boolean {
   );
 }
 
-function sortZIndexOfComments(nodes: Node[]): Node[] {
-  const selectedCommentNodes = nodes.filter((n) => isCommentNode(n.data));
-  const nodesInSizeAsec = selectedCommentNodes.sort((a, b) => {
-    return (a.width ?? 0) * (a.height ?? 0) - (b.width ?? 0) * (b.height ?? 0);
-  });
-  const hasChild: Record<string, boolean> = {};
-  for (let i = 0; i < nodesInSizeAsec.length; i++) {
-    for (let j = i + 1; j < nodesInSizeAsec.length; j++) {
-      if (!hasChild[nodesInSizeAsec[i].id]) nodesInSizeAsec[i].zIndex = -1001;
-      if (nodeInsideOfNode(nodesInSizeAsec[i], nodesInSizeAsec[j])) {
-        nodesInSizeAsec[j].zIndex = Math.min(
-          nodesInSizeAsec[j].zIndex!,
-          nodesInSizeAsec[i].zIndex! - 1001
-        );
-        hasChild[nodesInSizeAsec[j].id] = true;
-        break;
-      }
-    }
-  }
-  return nodes;
-}
-
 export interface ISceneActions {
   getSelectedCounts: () => selectedElementsCounts;
   setSelectedCounts: (newCounts: selectedElementsCounts) => void;
@@ -96,6 +74,7 @@ export interface ISceneActions {
   centerSelectedNodes: () => void;
   onNodesDelete: (nodes: Node[]) => void;
   selectedNodes: () => Node[];
+  sortZIndexOfComments: (nodes: Node[]) => Node[];
   autoLayout: () => void;
 }
 export interface ISceneState {
@@ -513,6 +492,30 @@ export default function useScene(
     graphState.deleteSelectedElements();
   };
 
+  function sortZIndexOfComments(nodes: Node[]): Node[] {
+    const selectedCommentNodes = nodes.filter((n) => isCommentNode(n.data));
+    const nodesInSizeAsec = selectedCommentNodes.sort((a, b) => {
+      return (
+        (a.width ?? 0) * (a.height ?? 0) - (b.width ?? 0) * (b.height ?? 0)
+      );
+    });
+    const hasChild: Record<string, boolean> = {};
+    for (let i = 0; i < nodesInSizeAsec.length; i++) {
+      for (let j = i + 1; j < nodesInSizeAsec.length; j++) {
+        if (!hasChild[nodesInSizeAsec[i].id]) nodesInSizeAsec[i].zIndex = -1001;
+        if (nodeInsideOfNode(nodesInSizeAsec[i], nodesInSizeAsec[j])) {
+          nodesInSizeAsec[j].zIndex = Math.min(
+            nodesInSizeAsec[j].zIndex!,
+            nodesInSizeAsec[i].zIndex! - 1001
+          );
+          hasChild[nodesInSizeAsec[j].id] = true;
+          break;
+        }
+      }
+    }
+    return nodes;
+  }
+
   const autoLayout = useCallback(() => {
     const ns = graphState.getNodes();
     const es = graphState.getEdges();
@@ -567,6 +570,7 @@ export default function useScene(
       centerSelectedNodes,
       onNodesDelete,
       selectedNodes: graphState.selectedNodes,
+      sortZIndexOfComments,
       autoLayout,
     },
   };
