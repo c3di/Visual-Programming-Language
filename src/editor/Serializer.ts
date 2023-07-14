@@ -42,7 +42,7 @@ export class Serializer {
       return this.defaultNodeSerialize(node, false);
     },
     comment: (node: Node): SerializedGraphNode => {
-      const { id, position, type, data } = node;
+      const { id, position, type, data, zIndex } = node;
       const { configType, comment, height, width } = data;
       if (!type) throw new Error('Invalid node config');
       return {
@@ -52,6 +52,7 @@ export class Serializer {
         position,
         width,
         height,
+        zIndex,
       };
     },
     createFunction: (node: Node): SerializedGraphNode => {
