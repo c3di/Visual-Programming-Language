@@ -81,75 +81,69 @@ export default function useScene(
   }>
 ): ISceneState {
   const graphStateRef = useRef(graphState);
-  const { nodes, selectedNodes, edges, getFreeUniqueNodeIds } = graphState;
-  const nodesRefInCommentNode = useRef({});
+  const { selectedNodes, edges, getFreeUniqueNodeIds } = graphState;
   const [extraCommands, setExtraCommands] = useState<Command[]>([]);
-  const { setCenter, getZoom } = useReactFlow();
-  const onNodeDragStart = (evt: any, node: Node): void => {
-    nodes.forEach((node) => {
-      saveNodesInSelectedCommentNode(node, node.id);
-    });
-  };
-
+  const { setCenter, getZoom, getNodes, setNodes } = useReactFlow();
   const varsNamePool = useRef<IUniqueNamePool>(new UniqueNamePool());
   const funNamePool = useRef<IUniqueNamePool>(new UniqueNamePool());
 
   const gui = useGui();
-  const saveNodesInSelectedCommentNode = (
-    node: Node,
-    toBeDragNodeId: string
-  ): void => {
-    if (
-      !isCommentNode(node.data) ||
-      (!node?.selected && node.id !== toBeDragNodeId)
-    )
-      return;
-    const nodesInComment = nodes.filter(
-      (n) =>
-        !n.selected &&
-        n.position.x > node.position.x &&
-        n.position.x + (n.width ?? 0) < node.position.x + (node.width ?? 0) &&
-        n.position.y > node.position.y &&
-        n.position.y + (n.height ?? 0) < node.position.y + (node.height ?? 0) &&
-        n.id !== node.id &&
-        n.parentNode === undefined
-    );
-    if (!nodesInComment) return;
-    nodesRefInCommentNode.current = {
-      ...nodesRefInCommentNode.current,
-      [node.id]: nodesInComment,
-    };
-    // map to local coordinate
-    nodesInComment.forEach((part, index, nodes) => {
-      const n = nodes[index];
-      n.position = {
-        x: n.position.x - node.position.x,
-        y: n.position.y - node.position.y,
-      };
-      n.parentNode = node.id;
+  const saveNodesInSelectedCommentNode = (node: Node): void => {
+    const nodes = getNodes();
+    nodes.forEach((n) => {
+      if (n.id === node.id && !n.selected) {
+        n.selected = true;
+      }
     });
+    const selectedCommentNodes = nodes.filter(
+      (n) => isCommentNode(n.data) && n.selected
+    );
+
+    selectedCommentNodes.forEach((node) => {
+      const alreadyInComment = (n: Node): boolean => {
+        return n.parentNode === undefined;
+      };
+      const nodesInComment = nodes.filter(
+        (n) =>
+          !n.selected &&
+          n.position.x > node.position.x &&
+          n.position.x + (n.width ?? 0) < node.position.x + (node.width ?? 0) &&
+          n.position.y > node.position.y &&
+          n.position.y + (n.height ?? 0) <
+            node.position.y + (node.height ?? 0) &&
+          n.id !== node.id &&
+          alreadyInComment(n)
+      );
+      if (!nodesInComment) return;
+      nodesInComment.forEach((n) => {
+        n.position.x -= node.position.x;
+        n.position.y -= node.position.y;
+        n.parentNode = node.id;
+      });
+    });
+
+    setNodes(nodes);
   };
 
   const clearNodesInSelectedCommentNode = (node: Node): void => {
-    if (!node || !isCommentNode(node.data)) return;
-    if (!nodesRefInCommentNode.current) return;
-    const nodesInComment = (nodesRefInCommentNode.current as any)[`${node.id}`];
-    if (!nodesInComment) return;
-    nodesInComment.forEach((part: any, index: number, nodes: Node[]) => {
-      const n = nodes[index];
-      n.position = {
-        x: n.position.x + node.position.x,
-        y: n.position.y + node.position.y,
-      };
-      n.parentNode = undefined;
+    const nodes = getNodes();
+    nodes.forEach((node) => {
+      if (node.parentNode) {
+        const parentNode = nodes.find((n) => n.id === node.parentNode) as Node;
+        node.position.x += parentNode.position.x;
+        node.position.y += parentNode.position.y;
+        node.parentNode = undefined;
+      }
     });
+    setNodes(nodes);
+  };
+
+  const onNodeDragStart = (evt: any, node: Node): void => {
+    saveNodesInSelectedCommentNode(node);
   };
 
   const onNodeDragStop = (evt: any, node: Node): void => {
-    nodes.forEach((node) => {
-      clearNodesInSelectedCommentNode(node);
-    });
-    nodesRefInCommentNode.current = {};
+    clearNodesInSelectedCommentNode(node);
   };
 
   const copySelectedNodeToClipboard = (): void => {
