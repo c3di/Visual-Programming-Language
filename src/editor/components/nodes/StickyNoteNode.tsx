@@ -10,8 +10,15 @@ import { type StickyNote } from '../../types';
 import { InPlaceTextArea } from '../../widgets';
 import './StickyNoteNode.css';
 import { Button, Toolbar } from '@mui/material';
+import { useSceneState } from '../../Context';
 
-function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
+function StickyNoteNode({
+  id,
+  data,
+}: {
+  id: string;
+  data: StickyNote;
+}): JSX.Element {
   const [width, setWidth] = useState<number>(data.width ?? 150);
   const [height, setHeight] = useState<number>(data.height ?? 150);
   const [content, setContent] = useState<string>(data.stickyNote);
@@ -37,6 +44,7 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
     setDragged(pinned);
   }, [pinned]);
 
+  const { setNodes } = useSceneState()?.sceneActions ?? {};
   return (
     <div className="vp-node-container stickyNote__node-container">
       <div
@@ -62,8 +70,22 @@ function StickyNoteNode({ data }: { data: StickyNote }): JSX.Element {
             event: ResizeDragEvent,
             params: ResizeParamsWithDirection
           ) => {
-            setWidth(params.width - 6);
-            setHeight(params.height - 2);
+            const w = params.width - 6;
+            const h = params.height - 2;
+            setWidth(w);
+            setHeight(h);
+            setNodes?.((nds) =>
+              nds.map((n) => {
+                if (n.id === id) {
+                  n.data = {
+                    ...n.data,
+                    width: w,
+                    height: h,
+                  };
+                }
+                return n;
+              })
+            );
           }}
         />
         <div
