@@ -27,7 +27,8 @@ function CommentNode({ id, data }: { id: string; data: Comment }): JSX.Element {
     setComment(text);
     data.comment = text;
   }, []);
-  const { setNodes } = useSceneState()?.sceneActions ?? {};
+  const { setNodes, sortZIndexOfComments } =
+    useSceneState()?.sceneActions ?? {};
   return (
     <div
       title={comment}
@@ -45,8 +46,8 @@ function CommentNode({ id, data }: { id: string; data: Comment }): JSX.Element {
         ) => {
           setCommentWidth(params.width);
           setCommentHeight(params.height);
-          setNodes?.((nds) =>
-            nds.map((n) => {
+          setNodes?.((nds) => {
+            const nodes = nds.map((n) => {
               if (n.id === id) {
                 n.data = {
                   ...n.data,
@@ -55,8 +56,9 @@ function CommentNode({ id, data }: { id: string; data: Comment }): JSX.Element {
                 };
               }
               return n;
-            })
-          );
+            });
+            return sortZIndexOfComments?.(nodes) ?? nodes;
+          });
         }}
       />
       <div
