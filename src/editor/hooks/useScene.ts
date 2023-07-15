@@ -99,7 +99,7 @@ export default function useScene(
   const graphStateRef = useRef(graphState);
   const { selectedNodes, edges, getFreeUniqueNodeIds } = graphState;
   const [extraCommands, setExtraCommands] = useState<Command[]>([]);
-  const { setCenter, getZoom, getNodes, setNodes, fitView } = useReactFlow();
+  const { setCenter, getZoom, getNodes, setNodes } = useReactFlow();
   const varsNamePool = useRef<IUniqueNamePool>(new UniqueNamePool());
   const funNamePool = useRef<IUniqueNamePool>(new UniqueNamePool());
 
