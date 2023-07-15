@@ -24,6 +24,7 @@ import {
   getRectOfNodes,
   type XYPosition,
   type Node as RcNode,
+  type ReactFlowInstance,
 } from 'reactflow';
 import { UniqueNamePool, type IUniqueNamePool } from '../utils';
 
@@ -80,7 +81,8 @@ export default function useScene(
   mousePos: React.MutableRefObject<{
     mouseX: number;
     mouseY: number;
-  }>
+  }>,
+  reactflowInstance: React.MutableRefObject<ReactFlowInstance | undefined>
 ): ISceneState {
   const graphStateRef = useRef(graphState);
   const { nodes, selectedNodes, edges, getFreeUniqueNodeIds } = graphState;
@@ -488,8 +490,13 @@ export default function useScene(
     getLayoutedElements(ns, es).then(
       ({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) => {
         graphState.setNodes(nodes);
-        graphState.setEdges(edges);
-        window.requestAnimationFrame(() => fitView());
+        window.requestAnimationFrame(() => {
+          window.requestAnimationFrame(() => {
+            window.requestAnimationFrame(() => {
+              reactflowInstance.current?.fitView();
+            });
+          });
+        });
       }
     );
   }, []);
@@ -538,22 +545,52 @@ export default function useScene(
 
 // ref from https://reactflow.dev/docs/examples/layout/elkjs/
 const elk = new ELK();
-const elkOptions = {
-  'elk.algorithm': 'layered',
-  'elk.layered.spacing.nodeNodeBetweenLayers': '100',
-  'elk.spacing.nodeNode': '80',
-  'elk.direction': 'RIGHT',
+const layoutOptions = {
+  algorithm: 'layered',
+  edgeRouting: 'SPLINES',
+  'layered.spacing.nodeNodeBetweenLayers': '32',
+  'elk.layered.nodePlacement.strategy': 'LINEAR_SEGMENTS',
 };
 
 const getLayoutedElements = (nodes: any, edges: any): any => {
+  const elkNodes = nodes.map((node: any) => {
+    const inputPorts = Object.keys(node.data.inputs ?? {}).map(
+      (key, index) => ({
+        id: 'p' + String(node.id) + String(key),
+        x: 10,
+        y: index * 20,
+        height: 8,
+        with: 8,
+      })
+    );
+    const outputPorts = Object.keys(node.data.outputs ?? {}).map(
+      (key, index) => ({
+        id: 'p' + String(node.id) + String(key),
+        x: node.width - 10,
+        y: index * 20,
+        height: 8,
+        with: 8,
+      })
+    );
+    return {
+      ...node,
+      ports: [...inputPorts, ...outputPorts],
+      layoutOptions: { portConstraints: 'FIXED_POS' },
+    };
+  });
+  const elkEdges = edges.map((edge: any) => ({
+    id: edge.id,
+    sources: ['p' + String(edge.source) + String(edge.sourceHandle)],
+    targets: ['p' + String(edge.target) + String(edge.targetHandle)],
+  }));
+
   const graph = {
     id: 'root',
-    layoutOptions: elkOptions,
-    children: nodes,
-    edges,
+    children: elkNodes,
+    edges: elkEdges,
   };
   return elk
-    .layout(graph)
+    .layout(graph, { layoutOptions })
     .then((layoutedGraph) => ({
       nodes: (layoutedGraph.children ?? []).map((node) => ({
         ...node,
