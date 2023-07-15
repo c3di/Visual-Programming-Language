@@ -548,30 +548,40 @@ const elk = new ELK();
 const layoutOptions = {
   algorithm: 'layered',
   edgeRouting: 'SPLINES',
-  'layered.spacing.nodeNodeBetweenLayers': '32',
+  'layered.spacing.nodeNodeBetweenLayers': '48',
   'elk.layered.nodePlacement.strategy': 'LINEAR_SEGMENTS',
 };
 
 const getLayoutedElements = (nodes: any, edges: any): any => {
   const elkNodes = nodes.map((node: any) => {
-    const inputPorts = Object.keys(node.data.inputs ?? {}).map(
-      (key, index) => ({
+    const nodeRect = document
+      .querySelector(`[data-id="${String(node.id)}"]`)
+      ?.getBoundingClientRect();
+    const scale = Number(nodeRect?.width) / Number(node?.width);
+    const inputPorts = Object.keys(node.data.inputs ?? {}).map((key) => {
+      const handleRect = document
+        .querySelector(`[data-id="${String(node.id)}-${key}-target"]`)
+        ?.getBoundingClientRect();
+      return {
         id: 'p' + String(node.id) + String(key),
-        x: 10,
-        y: index * 20,
-        height: 8,
-        with: 8,
-      })
-    );
-    const outputPorts = Object.keys(node.data.outputs ?? {}).map(
-      (key, index) => ({
+        x: ((handleRect?.x ?? 0) - (nodeRect?.x ?? 0)) / scale,
+        y: ((handleRect?.y ?? 0) - (nodeRect?.y ?? 0)) / scale,
+        height: Number(handleRect?.height) / scale ?? 20,
+        width: Number(handleRect?.width) / scale ?? 16,
+      };
+    });
+    const outputPorts = Object.keys(node.data.outputs ?? {}).map((key) => {
+      const handleRect = document
+        .querySelector(`[data-id="${String(node.id)}-${key}-source"]`)
+        ?.getBoundingClientRect();
+      return {
         id: 'p' + String(node.id) + String(key),
-        x: node.width - 10,
-        y: index * 20,
-        height: 8,
-        with: 8,
-      })
-    );
+        x: ((handleRect?.x ?? 0) - (nodeRect?.x ?? 0)) / scale,
+        y: ((handleRect?.y ?? 0) - (nodeRect?.y ?? 0)) / scale,
+        height: Number(handleRect?.height) / scale ?? 20,
+        width: Number(handleRect?.width) / scale ?? 16,
+      };
+    });
     return {
       ...node,
       ports: [...inputPorts, ...outputPorts],
