@@ -88,7 +88,7 @@ export default function useScene(
   const { nodes, selectedNodes, edges, getFreeUniqueNodeIds } = graphState;
   const nodesRefInCommentNode = useRef({});
   const [extraCommands, setExtraCommands] = useState<Command[]>([]);
-  const { setCenter, getZoom, fitView } = useReactFlow();
+  const { setCenter, getZoom } = useReactFlow();
   const onNodeDragStart = (evt: any, node: Node): void => {
     nodes.forEach((node) => {
       saveNodesInSelectedCommentNode(node, node.id);
