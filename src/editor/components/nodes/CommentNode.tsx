@@ -12,10 +12,8 @@ import { InplaceInput } from '../../widgets';
 
 function CommentNode({ id, data }: { id: string; data: Comment }): JSX.Element {
   const ref = useRef<HTMLDivElement>(null);
-  const [commentWidth, setCommentWidth] = useState<number>(data.width ?? 250);
-  const [commentHeight, setCommentHeight] = useState<number>(
-    data.height ?? 150
-  );
+  const [commentWidth, setCommentWidth] = useState<number>();
+  const [commentHeight, setCommentHeight] = useState<number>();
   const [enableDrag, setEnableDrag] = useState<boolean>(false);
   const [comment, setComment] = useState<string>(data.comment);
   const onStartEdit = useCallback(() => {
