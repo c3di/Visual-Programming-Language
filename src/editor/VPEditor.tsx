@@ -6,6 +6,7 @@ import ReactFlow, {
   ConnectionMode,
   getRectOfNodes,
   type ReactFlowInstance,
+  type PanelPosition,
 } from 'reactflow';
 import {
   useGraph,
@@ -366,7 +367,7 @@ const Scene = ({
           {!option?.controller?.hidden && (
             <ControlPanel
               className={cpSetting.className}
-              position={cpSetting.position}
+              position={cpSetting.position as PanelPosition}
             />
           )}
           <Background
