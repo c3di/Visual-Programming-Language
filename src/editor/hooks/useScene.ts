@@ -184,16 +184,17 @@ export default function useScene(
       .writeText(clipboardStr)
       .then(() => {
         setExtraCommands((commands) => {
-          return [
-            ...commands,
-            {
-              name: 'Paste',
-              action: pasteFromClipboard,
-              labelIcon: ContentPaste,
-              labelInfo: 'Ctrl+V',
-              tooltip: 'Paste from the clipboard',
-            },
-          ];
+          const newCmd = {
+            name: 'Paste',
+            action: pasteFromClipboard,
+            labelIcon: ContentPaste,
+            labelInfo: 'Ctrl+V',
+            tooltip: 'Paste from the clipboard',
+          };
+          const index = commands.findIndex((cmd) => cmd.name === 'Paste');
+          if (index !== -1) {
+            return commands.splice(index, 1, newCmd);
+          } else return [...commands, newCmd];
         });
       })
       .catch((err) => {
