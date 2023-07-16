@@ -14,6 +14,7 @@ export default function SearchInput({
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
+      document.body.style.cursor = 'text';
     }
   }, []);
 

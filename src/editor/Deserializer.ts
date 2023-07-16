@@ -109,18 +109,20 @@ export class Deserializer {
         type,
         zIndex,
       } = config;
+      const w = width ?? 250;
+      const h = height ?? 200;
       return {
         id,
         type: category,
         dragHandle: '.node__header--enabled',
         zIndex: zIndex ?? -1001,
-        width,
-        height,
+        width: w,
+        height: h,
         data: {
           comment,
           tooltip,
-          width,
-          height,
+          width: w,
+          height: h,
           configType: type,
         },
         position,

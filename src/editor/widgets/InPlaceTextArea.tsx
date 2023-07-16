@@ -14,7 +14,7 @@ export default function InPlaceTextArea({
   onStopEdit?: () => void;
   onEditChange?: (text: string) => void;
 }): JSX.Element {
-  const [currentText, setCurrentText] = useState(text ?? '');
+  const [currentText, setCurrentText] = useState(text ?? 'comment');
   const [editable, setEditable] = useState(false);
   const inputAreaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -22,12 +22,17 @@ export default function InPlaceTextArea({
     if (editable) {
       inputAreaRef.current?.focus();
       onStartEdit?.();
+      document.body.style.cursor = 'text';
     } else {
       inputAreaRef.current?.blur();
       onStopEdit?.();
     }
     updateTextAreaSize(inputAreaRef.current);
   }, [editable]);
+
+  useEffect(() => {
+    setEditable(true);
+  }, []);
 
   const updateTextAreaSize = useCallback(
     (target: HTMLTextAreaElement | null) => {
@@ -49,6 +54,7 @@ export default function InPlaceTextArea({
       }}
       onDoubleClick={(e) => {
         setEditable(true);
+        document.body.style.cursor = 'text';
       }}
     >
       {!editable && (
@@ -68,14 +74,9 @@ export default function InPlaceTextArea({
       {
         <textarea
           style={{
-            width: '100%',
             fontFamily: 'inherit',
             fontSize: 'inherit',
-            padding: '0px',
-            border: '0px',
             overflow: 'hidden',
-            height: '100%',
-            resize: 'none',
             wordWrap: 'break-word',
             display: editable ? 'block' : 'none',
           }}

@@ -9,6 +9,7 @@ import {
 import { type Command } from '../hooks';
 import { nodeConfigRegistry } from '../extension';
 import { createSvgIcon } from '@mui/material/utils';
+import { type XYPosition } from 'reactflow';
 
 const StickyNoteIcon = createSvgIcon(
   <svg
@@ -40,7 +41,12 @@ const SearchMenu = memo(function SearchMenu({
 }: {
   onClose: () => void;
   anchorPosition: { top: number; left: number };
-  addNode?: (configType: string) => void;
+  addNode?: (
+    configType: string,
+    thisPosition?: XYPosition,
+    data?: any,
+    positionOffset?: XYPosition
+  ) => void;
   autoLayout?: () => void;
   clear?: () => void;
   moreCommands?: Command[];
@@ -49,7 +55,10 @@ const SearchMenu = memo(function SearchMenu({
     {
       name: 'Add Comment...',
       action: () => {
-        addNode?.('comment');
+        addNode?.('comment', undefined, undefined, {
+          x: -20,
+          y: -10,
+        });
       },
       tooltip: 'Add a comment node',
       labelIcon: Comment,
@@ -57,7 +66,10 @@ const SearchMenu = memo(function SearchMenu({
     {
       name: 'Add Sticky Note...',
       action: () => {
-        addNode?.('stickyNote');
+        addNode?.('stickyNote', undefined, undefined, {
+          x: -20,
+          y: -20,
+        });
       },
       tooltip: 'Add a sticky note',
       labelIcon: StickyNoteIcon,
@@ -179,7 +191,10 @@ const SearchMenu = memo(function SearchMenu({
       open={true}
       onClose={onClose}
       anchorReference="anchorPosition"
-      anchorPosition={anchorPosition}
+      anchorPosition={{
+        top: anchorPosition.top - 20,
+        left: anchorPosition.left - 20,
+      }}
     >
       <SearchedTreeView treeData={treeData} onItemClick={onItemClick} />
     </Menu>
