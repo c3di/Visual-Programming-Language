@@ -11,6 +11,7 @@ import { InPlaceTextArea } from '../../widgets';
 import './StickyNoteNode.css';
 import { Button, Toolbar } from '@mui/material';
 import { useSceneState } from '../../Context';
+import ResizeIcon from './ResizeIcon';
 
 function StickyNoteNode({
   id,
@@ -61,6 +62,7 @@ function StickyNoteNode({
           border: 'none',
         }}
       >
+        <ResizeIcon />
         <NodeResizer
           color="#ffffff00"
           handleStyle={{ border: 'none' }}
