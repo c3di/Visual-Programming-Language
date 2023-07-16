@@ -191,7 +191,10 @@ const SearchMenu = memo(function SearchMenu({
       open={true}
       onClose={onClose}
       anchorReference="anchorPosition"
-      anchorPosition={anchorPosition}
+      anchorPosition={{
+        top: anchorPosition.top - 20,
+        left: anchorPosition.left - 20,
+      }}
     >
       <SearchedTreeView treeData={treeData} onItemClick={onItemClick} />
     </Menu>
