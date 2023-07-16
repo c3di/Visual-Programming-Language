@@ -42,6 +42,8 @@ export interface GraphState {
   initGraph: Graph;
   nodes: Node[];
   edges: Edge[];
+  getNodes: () => Node[];
+  getEdges: () => Edge[];
   getFreeUniqueNodeIds: (count: number) => string[];
   getNodeById: (id: string) => Node | undefined;
   setNodes: Dispatch<SetStateAction<Array<RcNode<any, string | undefined>>>>;
@@ -650,6 +652,8 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     initGraph,
     getFreeUniqueNodeIds,
     nodes,
+    getNodes,
+    getEdges,
     deleteNodes,
     getNodeById,
     setNodes,

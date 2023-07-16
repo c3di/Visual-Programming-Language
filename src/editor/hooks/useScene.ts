@@ -18,11 +18,13 @@ import { type GraphState } from './useGraph';
 import { deserializer } from '../Deserializer';
 import useGui, { type IGui, type Command } from './useGui';
 import ContentPaste from '@mui/icons-material/ContentPaste';
+import ELK from 'elkjs/lib/elk.bundled.js';
 import {
   useReactFlow,
   getRectOfNodes,
   type XYPosition,
   type Node as RcNode,
+  type ReactFlowInstance,
 } from 'reactflow';
 import { UniqueNamePool, type IUniqueNamePool } from '../utils';
 
@@ -73,6 +75,7 @@ export interface ISceneActions {
   onNodesDelete: (nodes: Node[]) => void;
   selectedNodes: () => Node[];
   sortZIndexOfComments: (nodes: Node[]) => Node[];
+  autoLayout: () => void;
 }
 export interface ISceneState {
   gui: IGui;
@@ -90,7 +93,8 @@ export default function useScene(
   mousePos: React.MutableRefObject<{
     mouseX: number;
     mouseY: number;
-  }>
+  }>,
+  reactflowInstance: React.MutableRefObject<ReactFlowInstance | undefined>
 ): ISceneState {
   const graphStateRef = useRef(graphState);
   const { selectedNodes, edges, getFreeUniqueNodeIds } = graphState;
@@ -512,6 +516,35 @@ export default function useScene(
     return nodes;
   }
 
+  const autoLayout = useCallback(() => {
+    const ns = graphState.getNodes();
+    const es = graphState.getEdges();
+    getLayoutedElements(ns, es).then(
+      ({ nodes, edges }: { nodes: any[]; edges: Edge[] }) => {
+        const flattenNds: any[] = [];
+        nodes.forEach((node) => {
+          flattenNode(node, flattenNds);
+        });
+
+        flattenNds.forEach((node) => {
+          delete node.ports;
+          delete node.x;
+          delete node.y;
+          delete node.edges;
+          delete node.layoutOptions;
+        });
+        graphState.setNodes(flattenNds);
+        window.requestAnimationFrame(() => {
+          window.requestAnimationFrame(() => {
+            window.requestAnimationFrame(() => {
+              reactflowInstance.current?.fitView();
+            });
+          });
+        });
+      }
+    );
+  }, []);
+
   return {
     gui,
     varsNamePool,
@@ -550,6 +583,128 @@ export default function useScene(
       onNodesDelete,
       selectedNodes: graphState.selectedNodes,
       sortZIndexOfComments,
+      autoLayout,
     },
   };
+}
+
+// ref from https://reactflow.dev/docs/examples/layout/elkjs/
+const elk = new ELK();
+const layoutOptions = {
+  algorithm: 'layered',
+  edgeRouting: 'SPLINES',
+  'layered.spacing.nodeNodeBetweenLayers': '48',
+  'elk.layered.nodePlacement.strategy': 'LINEAR_SEGMENTS',
+  hierarchyHandling: 'INCLUDE_CHILDREN',
+};
+
+const getLayoutedElements = (nodes: any, edges: any): any => {
+  const elkNodes = nodes.map((node: any) => {
+    const nodeRect = document
+      .querySelector(`[data-id="${String(node.id)}"]`)
+      ?.getBoundingClientRect();
+    const scale = Number(nodeRect?.width) / Number(node?.width);
+    const inputPorts = Object.keys(node.data.inputs ?? {}).map((key) => {
+      const handleRect = document
+        .querySelector(`[data-id="${String(node.id)}-${key}-target"]`)
+        ?.getBoundingClientRect();
+      return {
+        id: 'p' + String(node.id) + String(key),
+        x: ((handleRect?.x ?? 0) - (nodeRect?.x ?? 0)) / scale,
+        y: ((handleRect?.y ?? 0) - (nodeRect?.y ?? 0)) / scale,
+        height: Number(handleRect?.height) / scale ?? 20,
+        width: Number(handleRect?.width) / scale ?? 16,
+      };
+    });
+    const outputPorts = Object.keys(node.data.outputs ?? {}).map((key) => {
+      const handleRect = document
+        .querySelector(`[data-id="${String(node.id)}-${key}-source"]`)
+        ?.getBoundingClientRect();
+      return {
+        id: 'p' + String(node.id) + String(key),
+        x: ((handleRect?.x ?? 0) - (nodeRect?.x ?? 0)) / scale,
+        y: ((handleRect?.y ?? 0) - (nodeRect?.y ?? 0)) / scale,
+        height: Number(handleRect?.height) / scale ?? 20,
+        width: Number(handleRect?.width) / scale ?? 16,
+      };
+    });
+    return {
+      ...node,
+      ports: [...inputPorts, ...outputPorts],
+      layoutOptions: { portConstraints: 'FIXED_POS' },
+    };
+  });
+  const elkEdges = edges.map((edge: any) => ({
+    id: edge.id,
+    sources: ['p' + String(edge.source) + String(edge.sourceHandle)],
+    targets: ['p' + String(edge.target) + String(edge.targetHandle)],
+  }));
+
+  const comments = elkNodes.filter((node: Node) => node.type === 'comment');
+  const commentNodesInSizeOrderAsec = comments.sort(
+    (a: Node, b: Node) =>
+      (a.width ?? 0) * (a.height ?? 0) - (b.width ?? 0) * (b.height ?? 0)
+  );
+
+  const rootNodes: any[] = [];
+  elkNodes.forEach((node: any) => {
+    for (const comment of commentNodesInSizeOrderAsec) {
+      if (nodeInsideOfNode(node, comment)) {
+        if (!comment.children) {
+          comment.children = [];
+        }
+        comment.children.push(node);
+        node.parentId = comment.id;
+        break;
+      }
+    }
+    if (node.parentId === undefined) rootNodes.push(node);
+  });
+
+  commentNodesInSizeOrderAsec.forEach((comment: any) => {
+    if (!comment.children) return;
+    delete comment.width;
+    delete comment.height;
+  });
+
+  const graph = {
+    id: 'root',
+    children: rootNodes,
+    edges: elkEdges,
+    layoutOptions,
+  };
+  return elk
+    .layout(graph, {
+      layoutOptions: {
+        'elk.padding': '[top=32.0,left=16.0,bottom=16.0,right=16.0]',
+      },
+    })
+    .then((layoutedGraph) => ({
+      nodes: layoutedGraph.children ?? [],
+      edges: layoutedGraph.edges,
+    }))
+    .catch(console.error);
+};
+
+function flattenNode(
+  node: any,
+  nds: any[],
+  parentPosition?: { x: number; y: number }
+): void {
+  node.position = {
+    x: Number(node.x) + Number(parentPosition?.x ?? 0),
+    y: Number(node.y) + Number(parentPosition?.y ?? 0),
+  };
+
+  if (node.type === 'comment') {
+    node.data.width = node.width;
+    node.data.height = node.height;
+  }
+  nds.push(node);
+  if (node.children) {
+    node.children.forEach((child: any) => {
+      flattenNode(child, nds, { x: node.position.x, y: node.position.y });
+    });
+    delete node.children;
+  }
 }
