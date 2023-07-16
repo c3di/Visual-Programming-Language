@@ -9,6 +9,7 @@ import {
 } from '@reactflow/node-resizer';
 import '@reactflow/node-resizer/dist/style.css';
 import { InplaceInput } from '../../widgets';
+import ResizeIcon from './ResizeIcon';
 
 function CommentNode({ id, data }: { id: string; data: Comment }): JSX.Element {
   const ref = useRef<HTMLDivElement>(null);
@@ -46,6 +47,7 @@ function CommentNode({ id, data }: { id: string; data: Comment }): JSX.Element {
       className="vp-node-container"
       style={{ width: commentWidth, height: commentHeight, overflow: 'auto' }}
     >
+      <ResizeIcon />
       <NodeResizer
         color="#ffffff00"
         handleStyle={{ border: 'none' }}
