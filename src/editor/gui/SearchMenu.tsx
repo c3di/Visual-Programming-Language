@@ -84,19 +84,28 @@ const SearchMenu = memo(function SearchMenu({
       },
       labelIcon: FitScreen,
     },
-    ...(moreCommands ?? []),
   ]);
 
   useEffect(() => {
     if (!moreCommands || moreCommands.length === 0) return;
-    const commandNames = commands.map((command) => command.name);
-    const newCommands = [];
-    for (const command of moreCommands) {
-      if (commandNames.includes(command.name)) continue;
-      newCommands.push(command);
-    }
+    const newNames = moreCommands.map((item) => item.name);
 
-    setCommand([...commands, ...newCommands]);
+    const updatedCommands: Command[] = commands.map((item) => {
+      if (newNames.includes(item.name)) {
+        return (
+          moreCommands.find((newItem) => newItem.name === item.name) ?? item
+        );
+      }
+      return item;
+    });
+
+    moreCommands.forEach((newItem) => {
+      if (!commands.find((item) => item.name === newItem.name)) {
+        updatedCommands.push(newItem);
+      }
+    });
+
+    setCommand(updatedCommands);
   }, [moreCommands]);
 
   const [treeData, setTreeData] = useState<TreeItemData[]>(
