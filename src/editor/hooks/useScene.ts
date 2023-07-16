@@ -520,8 +520,20 @@ export default function useScene(
     const ns = graphState.getNodes();
     const es = graphState.getEdges();
     getLayoutedElements(ns, es).then(
-      ({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) => {
-        graphState.setNodes(nodes);
+      ({ nodes, edges }: { nodes: any[]; edges: Edge[] }) => {
+        const flattenNds: any[] = [];
+        nodes.forEach((node) => {
+          flattenNode(node, flattenNds);
+        });
+
+        flattenNds.forEach((node) => {
+          delete node.ports;
+          delete node.x;
+          delete node.y;
+          delete node.edges;
+          delete node.layoutOptions;
+        });
+        graphState.setNodes(flattenNds);
         window.requestAnimationFrame(() => {
           window.requestAnimationFrame(() => {
             window.requestAnimationFrame(() => {
@@ -583,6 +595,7 @@ const layoutOptions = {
   edgeRouting: 'SPLINES',
   'layered.spacing.nodeNodeBetweenLayers': '48',
   'elk.layered.nodePlacement.strategy': 'LINEAR_SEGMENTS',
+  hierarchyHandling: 'INCLUDE_CHILDREN',
 };
 
 const getLayoutedElements = (nodes: any, edges: any): any => {
@@ -627,19 +640,71 @@ const getLayoutedElements = (nodes: any, edges: any): any => {
     targets: ['p' + String(edge.target) + String(edge.targetHandle)],
   }));
 
+  const comments = elkNodes.filter((node: Node) => node.type === 'comment');
+  const commentNodesInSizeOrderAsec = comments.sort(
+    (a: Node, b: Node) =>
+      (a.width ?? 0) * (a.height ?? 0) - (b.width ?? 0) * (b.height ?? 0)
+  );
+
+  const rootNodes: any[] = [];
+  elkNodes.forEach((node: any) => {
+    for (const comment of commentNodesInSizeOrderAsec) {
+      if (nodeInsideOfNode(node, comment)) {
+        if (!comment.children) {
+          comment.children = [];
+        }
+        comment.children.push(node);
+        node.parentId = comment.id;
+        break;
+      }
+    }
+    if (node.parentId === undefined) rootNodes.push(node);
+  });
+
+  commentNodesInSizeOrderAsec.forEach((comment: any) => {
+    if (!comment.children) return;
+    delete comment.width;
+    delete comment.height;
+  });
+
   const graph = {
     id: 'root',
-    children: elkNodes,
+    children: rootNodes,
     edges: elkEdges,
+    layoutOptions,
   };
   return elk
-    .layout(graph, { layoutOptions })
+    .layout(graph, {
+      layoutOptions: {
+        'elk.padding': '[top=32.0,left=16.0,bottom=16.0,right=16.0]',
+      },
+    })
     .then((layoutedGraph) => ({
-      nodes: (layoutedGraph.children ?? []).map((node) => ({
-        ...node,
-        position: { x: node.x, y: node.y },
-      })),
+      nodes: layoutedGraph.children ?? [],
       edges: layoutedGraph.edges,
     }))
     .catch(console.error);
 };
+
+function flattenNode(
+  node: any,
+  nds: any[],
+  parentPosition?: { x: number; y: number }
+): void {
+  node.position = {
+    x: Number(node.x) + Number(parentPosition?.x ?? 0),
+    y: Number(node.y) + Number(parentPosition?.y ?? 0),
+  };
+
+  if (node.type === 'comment') {
+    node.data.width = node.width;
+    node.data.height = node.height;
+  }
+  nds.push(node);
+  if (node.children) {
+    node.children.forEach((child: any) => {
+      flattenNode(child, nds, { x: node.position.x, y: node.position.y });
+    });
+    delete node.children;
+  }
+}
