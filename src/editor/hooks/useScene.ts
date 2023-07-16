@@ -46,7 +46,12 @@ export interface ISceneActions {
   selectEdge: (edgeId: string) => void;
   selectNode: (nodeId: string) => void;
   getNodeById: (nodeId: string) => Node | undefined;
-  addNode: (configType: string, thisPosition?: XYPosition, data?: any) => Node;
+  addNode: (
+    configType: string,
+    thisPosition?: XYPosition,
+    data?: any,
+    positionOffset?: XYPosition
+  ) => Node;
   addEdge: (
     source: string,
     sourceHandle: string,
@@ -268,13 +273,21 @@ export default function useScene(
   };
 
   const addNode = useCallback(
-    (configType: string, thisPosition?: XYPosition, data?: any): Node => {
+    (
+      configType: string,
+      thisPosition?: XYPosition,
+      data?: any,
+      positionOffset?: XYPosition
+    ): Node => {
       const id = getFreeUniqueNodeIds(1)[0];
       const position = thisPosition ?? {
         x: mousePos.current.mouseX,
         y: mousePos.current.mouseY,
       };
-
+      if (positionOffset) {
+        position.x += positionOffset.x;
+        position.y += positionOffset.y;
+      }
       const config = deserializer.serializedToGraphNodeConfig({
         id,
         title: data?.title,
