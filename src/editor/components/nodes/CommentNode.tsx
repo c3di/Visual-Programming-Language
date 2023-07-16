@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useCallback, useRef, useState } from 'react';
 import './CommentNode.css';
 import { type Comment } from '../../types';
 import { useSceneState } from '../../Context';
@@ -11,6 +11,7 @@ import '@reactflow/node-resizer/dist/style.css';
 import { InplaceInput } from '../../widgets';
 
 function CommentNode({ id, data }: { id: string; data: Comment }): JSX.Element {
+  const ref = useRef<HTMLDivElement>(null);
   const [commentWidth, setCommentWidth] = useState<number>(data.width ?? 250);
   const [commentHeight, setCommentHeight] = useState<number>(
     data.height ?? 150
@@ -29,8 +30,20 @@ function CommentNode({ id, data }: { id: string; data: Comment }): JSX.Element {
   }, []);
   const { setNodes, sortZIndexOfComments } =
     useSceneState()?.sceneActions ?? {};
+
+  if (data.width !== commentWidth || data.height !== commentHeight) {
+    const w = data.width ?? 250;
+    const h = data.height ?? 150;
+    setCommentWidth(w);
+    setCommentHeight(h);
+    const parent = ref.current?.parentElement;
+    parent?.style.setProperty('width', String(w) + 'px');
+    parent?.style.setProperty('height', String(h) + 'px');
+  }
+
   return (
     <div
+      ref={ref}
       title={comment}
       className="vp-node-container"
       style={{ width: commentWidth, height: commentHeight, overflow: 'auto' }}
