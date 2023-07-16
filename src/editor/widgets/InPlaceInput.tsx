@@ -12,14 +12,15 @@ export default function InPlaceInput({
   onStopEdit?: () => void;
   onEditChange?: (text: string) => void;
 }): JSX.Element {
-  const [currentText, setCurrentText] = useState(text ?? '');
-  const [editable, setEditable] = useState(false);
+  const [currentText, setCurrentText] = useState(text ?? 'comment');
+  const [editable, setEditable] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (editable) {
       inputRef.current?.focus({ preventScroll: true });
       onStartEdit?.();
+      document.body.style.cursor = 'text';
     } else {
       inputRef.current?.blur();
       onStopEdit?.();
