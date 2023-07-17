@@ -277,6 +277,19 @@ export default function useScene(
           targetInput.connection++;
         }
 
+        Object.values(newNodes).forEach((node) => {
+          if (node.data.configType === 'reroute') {
+            if (
+              node.data.inputs.input.connection === 0 &&
+              node.data.outputs.output.connection === 0
+            ) {
+              node.data.dataType = 'any';
+              node.data.inputs.input.dataType = 'any';
+              node.data.outputs.output.dataType = 'any';
+            }
+          }
+        });
+
         graphState.selectAll(false);
         graphState.addElements({
           newNodes: Object.values(newNodes),
