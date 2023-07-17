@@ -616,7 +616,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
 
     const toBeUpdated = Object.keys(createFunNodeWithRef);
     allNodes = allNodes.map((n) => {
-      if (n.data.nodeRef in toBeUpdated) {
+      if (toBeUpdated.includes(n.data.nodeRef)) {
         const returnNode = getNode(createFunNodeWithRef[n.data.nodeRef]);
         if (
           returnNode &&
@@ -631,7 +631,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
             }
           }
           n.data.outputs = {
-            execOut: n.data.outputs.execOut,
+            functionCallExecOut: n.data.outputs.functionCallExecOut,
             ...inputsWithoutExec,
           };
         }
@@ -639,9 +639,9 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
       return n;
     });
     for (const node of Object.values(allNodes)) {
-      if ((node.data.nodeRef as string) in createFunNodeWithoutRef) {
+      if (createFunNodeWithoutRef.includes(node.data.nodeRef as string)) {
         node.data.outputs = {
-          execOut: node.data.outputs.execOut,
+          functionCallExecOut: node.data.outputs.functionCallExecOut,
         };
       }
     }

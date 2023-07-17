@@ -403,7 +403,7 @@ export default function useScene(
               });
               const outputs: Record<string, any> = {
                 functionCallExecOut: {
-                  title: 'functionCallExecOut',
+                  title: 'functionCallExecOut', // hardcode
                   dataType: 'exec',
                   showWidget: false,
                   showTitle: false,
