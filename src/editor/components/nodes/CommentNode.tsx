@@ -84,6 +84,7 @@ function CommentNode({ id, data }: { id: string; data: Comment }): JSX.Element {
       >
         <InplaceInput
           text={data.comment}
+          defaultEditable={true}
           onStartEdit={onStartEdit}
           onStopEdit={onStopEdit}
           onEditChange={onEditChange}

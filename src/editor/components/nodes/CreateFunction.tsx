@@ -317,6 +317,7 @@ function CreateFunction({
       <div className="node__header">
         <InplaceInput
           text={title}
+          defaultEditable={false}
           onStartEdit={onStartEdit}
           onStopEdit={onStopEdit}
           onEditChange={onEditChange}
