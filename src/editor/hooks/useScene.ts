@@ -251,6 +251,32 @@ export default function useScene(
             target: targetId,
           };
         });
+
+        Object.values(newNodes).forEach((node) => {
+          Object.values(node.data.inputs).forEach((input: any) => {
+            input.connection = 0;
+          });
+          Object.values(node.data.outputs).forEach((output: any) => {
+            output.connection = 0;
+          });
+        });
+
+        for (const edge of newEdges) {
+          const sourceNode = getNodeByIdIn(
+            edge.source,
+            Object.values(newNodes)
+          );
+          const targetNode = getNodeByIdIn(
+            edge.target,
+            Object.values(newNodes)
+          );
+          if (!sourceNode || !targetNode) continue;
+          const sourceOutput = sourceNode.data.outputs[edge.sourceHandle!];
+          const targetInput = targetNode.data.inputs[edge.targetHandle!];
+          sourceOutput.connection++;
+          targetInput.connection++;
+        }
+
         graphState.selectAll(false);
         graphState.addElements({
           newNodes: Object.values(newNodes),
@@ -721,4 +747,13 @@ function flattenNode(
     });
     delete node.children;
   }
+}
+
+function getNodeByIdIn(id: string, Nodes: Node[]): Node | undefined {
+  for (const node of Nodes) {
+    if (node.id === id) {
+      return node;
+    }
+  }
+  return undefined;
 }
