@@ -3,17 +3,19 @@ import './InPlaceInput.css';
 
 export default function InPlaceInput({
   text,
+  defaultEditable,
   onStartEdit,
   onStopEdit,
   onEditChange,
 }: {
   text?: string;
+  defaultEditable?: boolean;
   onStartEdit?: () => void;
   onStopEdit?: () => void;
   onEditChange?: (text: string) => void;
 }): JSX.Element {
   const [currentText, setCurrentText] = useState(text ?? 'comment');
-  const [editable, setEditable] = useState(true);
+  const [editable, setEditable] = useState(defaultEditable);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
