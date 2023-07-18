@@ -51,8 +51,8 @@ const Scene = ({
   const sceneInstance = useRef<ReactFlowInstance | undefined>(undefined);
 
   const graphState = useGraph(graph);
-  const reactflowDomRef = useRef<HTMLDivElement>(null);
-  const mouseTracker = useTrackMousePos(reactflowDomRef);
+  const sceneDomRef = useRef<HTMLDivElement>(null);
+  const mouseTracker = useTrackMousePos(sceneDomRef);
   const sceneState = useScene(graphState, mouseTracker.mousePos, sceneInstance);
   const sceneActions = sceneState?.sceneActions;
   useEffect(() => {
@@ -119,7 +119,13 @@ const Scene = ({
   const proOptions = { hideAttribution: true };
   return (
     <SceneStateContext.Provider value={sceneState}>
-      <div className="vp-editor">
+      <div
+        className="vp-editor"
+        ref={sceneDomRef}
+        onMouseMoveCapture={(e) => {
+          mouseTracker?.updateMousePos(e.clientX, e.clientY);
+        }}
+      >
         {gui.widget}
         <ReactFlow
           id={id}
@@ -128,9 +134,6 @@ const Scene = ({
             setInitialed(true);
           }}
           fitView={!initialed}
-          onMouseMove={(e) => {
-            mouseTracker?.updateMousePos(e.clientX, e.clientY);
-          }}
           onSelectionChange={(elements) => {
             if (!sceneActions) return;
             const selectedCounts = sceneActions.getSelectedCounts();
@@ -266,7 +269,6 @@ const Scene = ({
               { onDelete: sceneActions?.deleteSelectedElements }
             );
           }}
-          ref={reactflowDomRef}
           nodes={nodes}
           edges={edges}
           connectionMode={ConnectionMode.Loose}
@@ -346,15 +348,10 @@ const Scene = ({
           }}
           onNodeDragStop={sceneActions?.onNodeDragStop}
           onMove={(e) => {
-            if (e instanceof MouseEvent)
-              mouseTracker?.updateMousePos(e.clientX, e.clientY);
             closeWidget(null, true);
           }}
           onSelectionStart={(e) => {
             closeWidget(null, true);
-          }}
-          onNodeDrag={(e) => {
-            mouseTracker?.updateMousePos(e.clientX, e.clientY);
           }}
           proOptions={proOptions}
         >

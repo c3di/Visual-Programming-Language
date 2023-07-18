@@ -67,9 +67,9 @@ export interface ISceneActions {
   onNodeDragStart: (evt: any, node: Node) => void;
   onNodeDragStop: (evt: any, node: Node) => void;
   copySelectedNodeToClipboard: () => void;
-  pasteFromClipboard: (notUseMousePos?: boolean) => void;
+  pasteFromClipboard: () => void;
   deleteSelectedElements: () => void;
-  duplicateSelectedNodes: (notUseMousePos?: boolean) => void;
+  duplicateSelectedNodes: () => void;
   cutSelectedNodesToClipboard: () => void;
   clear: () => void;
   deleteEdge: (id: string) => void;
@@ -208,7 +208,7 @@ export default function useScene(
       });
   };
 
-  const pasteFromClipboard = (notUseMousePos?: boolean): void => {
+  const pasteFromClipboard = (): void => {
     navigator.clipboard
       .readText()
       .then((text) => {
@@ -226,16 +226,8 @@ export default function useScene(
             id: newId,
             selected: true,
             position: {
-              x:
-                node.position.x -
-                Number(!notUseMousePos) *
-                  (clipboard.minX - mousePos.current.mouseX) +
-                10,
-              y:
-                node.position.y -
-                Number(!notUseMousePos) *
-                  (clipboard.minY - mousePos.current.mouseY) +
-                10,
+              x: node.position.x - (clipboard.minX - mousePos.current.mouseX),
+              y: node.position.y - (clipboard.minY - mousePos.current.mouseY),
             },
           };
           newNodes[id] = newNode as Node;
@@ -302,9 +294,9 @@ export default function useScene(
       });
   };
 
-  const duplicateSelectedNodes = (notUseMousePos?: boolean): void => {
+  const duplicateSelectedNodes = (): void => {
     copySelectedNodeToClipboard();
-    pasteFromClipboard(notUseMousePos);
+    pasteFromClipboard();
   };
 
   const cutSelectedNodesToClipboard = (): void => {
@@ -366,7 +358,10 @@ export default function useScene(
               node.data.inputs.name.value ?? node.data.inputs.name.defaultValue,
             action: (
               item: any,
-              e: React.MouseEvent<HTMLLIElement> | undefined
+              e:
+                | React.MouseEvent<HTMLLIElement>
+                | undefined
+                | { clientX: number; clientY: number }
             ) => {
               const position = {
                 left: e?.clientX ?? 0,
