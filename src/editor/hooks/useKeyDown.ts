@@ -79,10 +79,12 @@ export default function useKeyDown(sceneState?: ISceneState): {
           height: (rect?.height ?? 150) + 2 * padding,
           defaultEditable: true,
         },
-        {
-          x: -20,
-          y: -10,
-        }
+        rect
+          ? undefined
+          : {
+              x: -20,
+              y: -10,
+            }
       );
       if (node) {
         sceneActions?.selectNode(node.id);
