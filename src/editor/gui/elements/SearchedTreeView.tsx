@@ -61,6 +61,7 @@ function ControlledTreeView({
   onItemDelete,
   onArrowUpKeyDown,
   onArrowDownKeyDown,
+  onEnterKeyDown,
 }: {
   toExpand: boolean;
   treeData: TreeItemData[];
@@ -68,6 +69,10 @@ function ControlledTreeView({
   onItemDelete?: (path: string) => void;
   onArrowUpKeyDown?: () => void;
   onArrowDownKeyDown?: () => void;
+  onEnterKeyDown?: (
+    event: React.KeyboardEvent<HTMLElement>,
+    item: TreeItemData
+  ) => void;
 }): JSX.Element {
   const [expanded, setExpanded] = useState<string[]>([]);
   const handleToggle = (e: React.SyntheticEvent, nodeIds: string[]): void => {
@@ -114,7 +119,23 @@ function ControlledTreeView({
   const focusOnNew = useRef<boolean>(false);
   const focusOnTop = useRef<boolean>(false);
   const focusOnBottom = useRef<boolean>(false);
-
+  const [focusedNodeId, setFocusedNodeId] = useState<string | undefined>(
+    undefined
+  );
+  const getNodeById = (
+    nodes: TreeItemData[],
+    id: string
+  ): TreeItemData | undefined => {
+    for (const node of nodes) {
+      if (node.id === id) {
+        return node;
+      }
+      if (node.children) {
+        const childNode = getNodeById(node.children, id);
+        if (childNode) return childNode;
+      }
+    }
+  };
   return (
     <TreeView
       ref={ref}
@@ -129,6 +150,7 @@ function ControlledTreeView({
           ref.current?.children[ref.current?.children.length - 1].id.includes(
             node
           ) ?? false;
+        setFocusedNodeId(node);
       }}
       onKeyDown={(e) => {
         if (e.key === 'ArrowUp') {
@@ -147,6 +169,22 @@ function ControlledTreeView({
           if (focusOnBottom.current && !focusOnNew.current)
             onArrowDownKeyDown?.();
         }
+
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log('Enter key down in Treeview', focusedNodeId);
+          console.log('Current treeData', treeData);
+
+          if (focusedNodeId !== undefined && focusedNodeId !== null) {
+            const focusedNode = getNodeById(treeData, focusedNodeId);
+            console.log('focusedNode', focusedNode);
+            if (focusedNode !== undefined && focusedNode !== null) {
+              onEnterKeyDown?.(e, focusedNode);
+            }
+          }
+        }
+
         focusOnNew.current = false;
       }}
       aria-label="nodes types"
@@ -188,10 +226,15 @@ export const SearchedTreeView = memo(function SearchedTreeView({
   treeData,
   onItemClick,
   onItemDelete,
+  onEnterKeyDown,
 }: {
   treeData: TreeItemData[];
   onItemClick?: (item: TreeItemData) => void;
   onItemDelete?: (type: string) => void;
+  onEnterKeyDown?: (
+    event: React.KeyboardEvent<HTMLElement>,
+    item: TreeItemData
+  ) => void;
 }): JSX.Element {
   const [filteredTreeData, setFilteredTreeData] =
     useState<TreeItemData[]>(treeData);
@@ -275,7 +318,6 @@ export const SearchedTreeView = memo(function SearchedTreeView({
     scrollToTop();
   }, []);
   const scrollToBottom = useCallback(() => {
-    console.log('at bottom');
     (
       searchTreeViewRef.current?.children[1].lastChild as HTMLDivElement
     ).scrollIntoView(false);
@@ -307,6 +349,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
         }}
         onArrowUpKeyDown={focusOnSearchInput}
         onArrowDownKeyDown={scrollToBottom}
+        onEnterKeyDown={onEnterKeyDown}
       />
     </div>
   );

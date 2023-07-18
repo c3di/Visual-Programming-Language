@@ -112,6 +112,19 @@ const SearchMenu = memo(function SearchMenu({
     }
   }, []);
 
+  const onEnterKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLElement>, item: TreeItemData) => {
+      if (!item) return;
+      if (Array.isArray(item.children)) return;
+      if (event.key === 'Enter' && item.configType) {
+        addNode?.(item.configType);
+        // addNode?.('stickyNote');
+        onClose();
+      }
+    },
+    []
+  );
+
   const commandsToTreeData = useCallback(
     (commands: Command[]): TreeItemData[] => {
       const treeData: TreeItemData[] = [];
@@ -163,7 +176,11 @@ const SearchMenu = memo(function SearchMenu({
       anchorReference="anchorPosition"
       anchorPosition={anchorPosition}
     >
-      <SearchedTreeView treeData={treeData} onItemClick={onItemClick} />
+      <SearchedTreeView
+        treeData={treeData}
+        onItemClick={onItemClick}
+        onEnterKeyDown={onEnterKeyDown}
+      />
     </Menu>
   );
 });
