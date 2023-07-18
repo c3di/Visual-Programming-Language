@@ -3,7 +3,8 @@ import { type ISceneState } from './useScene';
 
 export function onKeyDown(
   e: React.KeyboardEvent<HTMLDivElement>,
-  sceneState?: ISceneState
+  sceneState?: ISceneState,
+  rootRef?: React.RefObject<HTMLDivElement>
 ): void {
   const sceneActions = sceneState?.sceneActions;
   if (e.code === 'Escape') {
@@ -22,6 +23,7 @@ export function onKeyDown(
     sceneActions?.duplicateSelectedNodes();
   } else if (e.code === 'KeyX' && e.ctrlKey) {
     sceneActions?.cutSelectedNodesToClipboard();
+    rootRef?.current?.focus();
   } else if (e.code === 'Delete') {
     sceneActions?.deleteSelectedElements();
   } else if (e.code === 'KeyF') {

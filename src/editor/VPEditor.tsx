@@ -123,7 +123,7 @@ const Scene = ({
         ref={sceneDomRef}
         tabIndex={0}
         onKeyDown={(e) => {
-          onKeyDown(e, sceneState ?? undefined);
+          onKeyDown(e, sceneState ?? undefined, sceneDomRef);
         }}
         onMouseMoveCapture={(e) => {
           mouseTracker?.updateMousePos(e.clientX, e.clientY);
