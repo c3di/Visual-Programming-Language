@@ -33,7 +33,7 @@
     "lodash.debounce": "^4.0.8",
     "react-filepond": "^7.1.2",
     "react-icons": "^4.8.0",
-    "reactflow": "^11.7.0"
+    "reactflow": "^11.7.4"
   },
   "peerDependencies": {
     "react": "^18.2.0",
