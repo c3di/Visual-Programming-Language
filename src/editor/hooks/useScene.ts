@@ -253,10 +253,10 @@ export default function useScene(
         });
 
         Object.values(newNodes).forEach((node) => {
-          Object.values(node.data.inputs).forEach((input: any) => {
+          Object.values(node.data.inputs ?? {}).forEach((input: any) => {
             input.connection = 0;
           });
-          Object.values(node.data.outputs).forEach((output: any) => {
+          Object.values(node.data.outputs ?? {}).forEach((output: any) => {
             output.connection = 0;
           });
         });
