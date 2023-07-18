@@ -4,6 +4,7 @@ export interface Comment extends BasicNodeData {
   comment: string;
   width?: number;
   height?: number;
+  defaultEditable?: boolean;
 }
 
 export function isCommentNode(nodeData: BasicNodeData): boolean {

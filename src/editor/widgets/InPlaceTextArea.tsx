@@ -4,18 +4,20 @@ import './InPlaceTextArea.css';
 export default function InPlaceTextArea({
   text,
   initialRow = 1,
+  defaultEditable,
   onStartEdit,
   onStopEdit,
   onEditChange,
 }: {
   text?: string;
   initialRow?: number;
+  defaultEditable?: boolean;
   onStartEdit?: () => void;
   onStopEdit?: () => void;
   onEditChange?: (text: string) => void;
 }): JSX.Element {
   const [currentText, setCurrentText] = useState(text ?? 'comment');
-  const [editable, setEditable] = useState(false);
+  const [editable, setEditable] = useState<boolean>(false);
   const inputAreaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -31,7 +33,7 @@ export default function InPlaceTextArea({
   }, [editable]);
 
   useEffect(() => {
-    setEditable(true);
+    if (editable !== defaultEditable) setEditable(!!defaultEditable);
   }, []);
 
   const updateTextAreaSize = useCallback(
