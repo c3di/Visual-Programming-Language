@@ -128,6 +128,7 @@ const Scene = ({
         onMouseMoveCapture={(e) => {
           mouseTracker?.updateMousePos(e.clientX, e.clientY);
         }}
+        style={{ outline: 'none' }}
       >
         {gui.widget}
         <ReactFlow
