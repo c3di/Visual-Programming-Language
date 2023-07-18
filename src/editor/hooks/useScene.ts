@@ -27,6 +27,7 @@ import {
   type ReactFlowInstance,
 } from 'reactflow';
 import { UniqueNamePool, type IUniqueNamePool } from '../utils';
+import { copy } from '../util';
 
 function nodeInsideOfNode(n: Node, containter: Node): boolean {
   return (
@@ -175,7 +176,7 @@ export default function useScene(
     const selectedNds = selectedNodes();
     if (selectedNds.length === 0) return;
     selectedNds.forEach((node) => {
-      clipboard.nodes[node.id] = node;
+      clipboard.nodes[node.id] = copy(node);
       clipboard.minX = Math.min(clipboard.minX, node.position.x);
       clipboard.minY = Math.min(clipboard.minY, node.position.y);
     });

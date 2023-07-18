@@ -1,8 +1,27 @@
 import { useSceneState } from './Context';
-import { type ConnectableData, type VariableNodeData } from './types';
+import {
+  type Node,
+  type ConnectableData,
+  type VariableNodeData,
+} from './types';
 
 export function deepCopy(obj: any): any {
   return JSON.parse(JSON.stringify(obj));
+}
+
+export function copy(node: Node): Node {
+  if (
+    node.data.configType === 'comment' ||
+    node.data.configType === 'stickyNote'
+  ) {
+    return {
+      ...node,
+      data: {
+        ...node.data,
+        defaultEditable: false,
+      },
+    };
+  } else return node;
 }
 
 export function registVariableRef(
