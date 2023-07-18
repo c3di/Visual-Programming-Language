@@ -103,6 +103,15 @@ const SearchMenu = memo(function SearchMenu({
     );
   }, [commands]);
 
+  function executeCommandByName(
+    commands: Command[],
+    commandName: string
+  ): void {
+    const command = commands.find((c) => c.name === commandName);
+    if (command) {
+      command.action();
+    }
+  }
   const onItemClick = useCallback((item: TreeItemData): void => {
     if (!item) return;
     if (Array.isArray(item.children)) return;
@@ -118,7 +127,13 @@ const SearchMenu = memo(function SearchMenu({
       if (Array.isArray(item.children)) return;
       if (event.key === 'Enter' && item.configType) {
         addNode?.(item.configType);
-        // addNode?.('stickyNote');
+        onClose();
+      }
+      if (item.id === 'Clear') {
+        clear?.();
+        onClose();
+      } else {
+        executeCommandByName(commands, item.name);
         onClose();
       }
     },

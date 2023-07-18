@@ -173,12 +173,8 @@ function ControlledTreeView({
         if (e.key === 'Enter') {
           e.preventDefault();
           e.stopPropagation();
-          console.log('Enter key down in Treeview', focusedNodeId);
-          console.log('Current treeData', treeData);
-
           if (focusedNodeId !== undefined && focusedNodeId !== null) {
             const focusedNode = getNodeById(treeData, focusedNodeId);
-            console.log('focusedNode', focusedNode);
             if (focusedNode !== undefined && focusedNode !== null) {
               onEnterKeyDown?.(e, focusedNode);
             }
