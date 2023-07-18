@@ -77,6 +77,7 @@ export default function useKeyDown(sceneState?: ISceneState): {
         {
           width: (rect?.width ?? 200) + 2 * padding,
           height: (rect?.height ?? 150) + 2 * padding,
+          defaultEditable: true,
         },
         {
           x: -20,
@@ -92,10 +93,15 @@ export default function useKeyDown(sceneState?: ISceneState): {
   const createStickyNodeKeyPressed = useKeyPress(['s', 'S']);
   useEffect(() => {
     if (createStickyNodeKeyPressed) {
-      sceneActions?.addNode('stickyNote', undefined, undefined, {
-        x: -20,
-        y: -20,
-      });
+      sceneActions?.addNode(
+        'stickyNote',
+        undefined,
+        { defaultEditable: true },
+        {
+          x: -20,
+          y: -20,
+        }
+      );
     }
   }, [createStickyNodeKeyPressed]);
 

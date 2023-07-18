@@ -191,6 +191,7 @@ function StickyNoteNode({
             >
               <InPlaceTextArea
                 text={data.stickyNote}
+                defaultEditable={data.defaultEditable}
                 onStartEdit={onStartEdit}
                 onStopEdit={onStopEdit}
                 onEditChange={onEditChange}

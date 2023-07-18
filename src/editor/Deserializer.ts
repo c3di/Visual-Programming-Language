@@ -108,6 +108,7 @@ export class Deserializer {
         height,
         type,
         zIndex,
+        defaultEditable,
       } = config;
       const w = width ?? 250;
       const h = height ?? 200;
@@ -124,6 +125,7 @@ export class Deserializer {
           width: w,
           height: h,
           configType: type,
+          defaultEditable,
         },
         position,
       };
@@ -138,6 +140,7 @@ export class Deserializer {
         width,
         height,
         type,
+        defaultEditable,
       } = config;
       return {
         id,
@@ -152,6 +155,7 @@ export class Deserializer {
           width,
           height,
           configType: type,
+          defaultEditable,
         },
         position,
       };

@@ -55,10 +55,15 @@ const SearchMenu = memo(function SearchMenu({
     {
       name: 'Add Comment...',
       action: () => {
-        addNode?.('comment', undefined, undefined, {
-          x: -20,
-          y: -10,
-        });
+        addNode?.(
+          'comment',
+          undefined,
+          { defaultEditable: true },
+          {
+            x: -20,
+            y: -10,
+          }
+        );
       },
       tooltip: 'Add a comment node',
       labelIcon: Comment,
@@ -66,10 +71,15 @@ const SearchMenu = memo(function SearchMenu({
     {
       name: 'Add Sticky Note...',
       action: () => {
-        addNode?.('stickyNote', undefined, undefined, {
-          x: -20,
-          y: -20,
-        });
+        addNode?.(
+          'stickyNote',
+          undefined,
+          { defaultEditable: true },
+          {
+            x: -20,
+            y: -20,
+          }
+        );
       },
       tooltip: 'Add a sticky note',
       labelIcon: StickyNoteIcon,
