@@ -584,6 +584,16 @@ export default function useScene(
           delete node.edges;
           delete node.layoutOptions;
         });
+        graphState.setNodes((nodes) => {
+          const newNodes = nodes.map((node) => {
+            const n = flattenNds.find((n) => n.id === node.id);
+            if (n) {
+              return { ...node, position: n.position };
+            }
+            return node;
+          });
+          return newNodes;
+        });
         graphState.setNodes(flattenNds);
         window.requestAnimationFrame(() => {
           window.requestAnimationFrame(() => {
@@ -698,6 +708,7 @@ const getLayoutedElements = (nodes: any, edges: any): any => {
 
   const rootNodes: any[] = [];
   elkNodes.forEach((node: any) => {
+    node.parentId = undefined;
     for (const comment of commentNodesInSizeOrderAsec) {
       if (nodeInsideOfNode(node, comment)) {
         if (!comment.children) {
@@ -708,7 +719,9 @@ const getLayoutedElements = (nodes: any, edges: any): any => {
         break;
       }
     }
-    if (node.parentId === undefined) rootNodes.push(node);
+    if (node.parentId === undefined) {
+      rootNodes.push(node);
+    }
   });
 
   commentNodesInSizeOrderAsec.forEach((comment: any) => {
