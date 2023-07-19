@@ -85,7 +85,6 @@ export interface ISceneActions {
 }
 export interface ISceneState {
   gui: IGui;
-  graphStateRef: React.MutableRefObject<GraphState>;
   anyConnectableNodeSelected: boolean;
   anyConnectionToSelectedNode: boolean;
   extraCommands: Command[];
@@ -102,59 +101,62 @@ export default function useScene(
   }>,
   reactflowInstance: React.MutableRefObject<ReactFlowInstance | undefined>
 ): ISceneState {
-  const graphStateRef = useRef(graphState);
   const { selectedNodes, edges, getFreeUniqueNodeIds } = graphState;
   const [extraCommands, setExtraCommands] = useState<Command[]>([]);
-  const { setCenter, getZoom, getNodes, setNodes } = useReactFlow();
+  const { setCenter, getZoom, getNodes } = useReactFlow();
   const varsNamePool = useRef<IUniqueNamePool>(new UniqueNamePool());
   const funNamePool = useRef<IUniqueNamePool>(new UniqueNamePool());
 
   const gui = useGui();
-  const saveNodesInSelectedCommentNode = (node: Node): void => {
-    const nodes = getNodes();
-    nodes.forEach((n) => {
-      if (n.id === node.id && !n.selected) {
-        n.selected = true;
-      }
-    });
-    const selectedCommentNodes = nodes.filter(
-      (n) => isCommentNode(n.data) && n.selected
-    );
-
-    selectedCommentNodes.forEach((node) => {
-      const alreadyInComment = (n: Node): boolean => {
-        return n.parentNode === undefined;
-      };
-      const nodesInComment = nodes.filter(
-        (n) =>
-          !n.selected &&
-          nodeInsideOfNode(n, node) &&
-          n.id !== node.id &&
-          alreadyInComment(n)
-      );
-      if (!nodesInComment) return;
-      nodesInComment.forEach((n) => {
-        n.position.x -= node.position.x;
-        n.position.y -= node.position.y;
-        n.parentNode = node.id;
+  const saveNodesInSelectedCommentNode = (draggedNode: Node): void => {
+    graphState.setNodes((nodes) => {
+      nodes.forEach((n) => {
+        if (n.id === draggedNode.id && !n.selected) {
+          n.selected = true;
+        }
       });
-    });
+      const selectedCommentNodes = nodes.filter(
+        (n) => isCommentNode(n.data) && n.selected
+      );
 
-    setNodes(nodes);
+      selectedCommentNodes.forEach((node) => {
+        const alreadyInComment = (n: Node): boolean => {
+          return n.parentNode === undefined;
+        };
+        const nodesInComment = nodes.filter(
+          (n) =>
+            !n.selected &&
+            nodeInsideOfNode(n, node) &&
+            n.id !== node.id &&
+            alreadyInComment(n)
+        );
+        if (!nodesInComment) return;
+        nodesInComment.forEach((n) => {
+          n.position.x -= node.position.x;
+          n.position.y -= node.position.y;
+          n.parentNode = node.id;
+        });
+      });
+      return nodes;
+    });
   };
 
-  const clearNodesInSelectedCommentNode = (node: Node): void => {
-    const nodes = getNodes();
-    nodes.forEach((node) => {
-      if (node.parentNode) {
-        const parentNode = nodes.find((n) => n.id === node.parentNode) as Node;
-        node.position.x += parentNode.position.x;
-        node.position.y += parentNode.position.y;
-        node.parentNode = undefined;
-      }
+  const clearNodesInSelectedCommentNode = (): void => {
+    graphState.setNodes((nodes) => {
+      const newNodes = nodes.map((node) => {
+        if (node.parentNode) {
+          const parentNode = nodes.find(
+            (n) => n.id === node.parentNode
+          ) as Node;
+          node.position.x += parentNode.position.x;
+          node.position.y += parentNode.position.y;
+          node.parentNode = undefined;
+        }
+        return node;
+      });
+      sortZIndexOfComments(newNodes);
+      return newNodes;
     });
-    sortZIndexOfComments(nodes);
-    setNodes(nodes);
   };
 
   const onNodeDragStart = (evt: any, node: Node): void => {
@@ -162,7 +164,7 @@ export default function useScene(
   };
 
   const onNodeDragStop = (evt: any, node: Node): void => {
-    clearNodesInSelectedCommentNode(node);
+    clearNodesInSelectedCommentNode();
   };
 
   const copySelectedNodeToClipboard = (): void => {
@@ -434,7 +436,7 @@ export default function useScene(
       let nds = getNodes();
       nds.push(node);
       nds = sortZIndexOfComments(nds);
-      setNodes(nds.filter((n) => n.id !== node.id));
+      graphState.setNodes(nds.filter((n) => n.id !== node.id));
     }
   };
 
@@ -598,7 +600,6 @@ export default function useScene(
     gui,
     varsNamePool,
     funNamePool,
-    graphStateRef,
     anyConnectableNodeSelected: graphState.anyConnectableNodeSelected,
     anyConnectionToSelectedNode: graphState.anyConnectionToSelectedNode,
     extraCommands,
