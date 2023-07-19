@@ -128,10 +128,6 @@ const SearchMenu = memo(function SearchMenu({
       if (event.key === 'Enter' && item.configType) {
         addNode?.(item.configType);
         onClose();
-      }
-      if (item.id === 'Clear') {
-        clear?.();
-        onClose();
       } else {
         executeCommandByName(commands, item.name);
         onClose();
