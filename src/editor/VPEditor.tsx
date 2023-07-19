@@ -11,7 +11,7 @@ import ReactFlow, {
 import {
   useGraph,
   useScene,
-  useKeyDown,
+  onKeyDown,
   useTrackMousePos,
   type ISceneActions,
 } from './hooks';
@@ -67,7 +67,6 @@ const Scene = ({
     fromJSON,
     toString,
   } = graphState ?? {};
-  const { onKeyDown } = useKeyDown(sceneState ?? undefined);
   const gui = sceneState?.gui;
   const {
     view: viewSetting,
@@ -122,9 +121,14 @@ const Scene = ({
       <div
         className="vp-editor"
         ref={sceneDomRef}
+        tabIndex={0}
+        onKeyDown={(e) => {
+          onKeyDown(e, sceneState ?? undefined, sceneDomRef);
+        }}
         onMouseMoveCapture={(e) => {
           mouseTracker?.updateMousePos(e.clientX, e.clientY);
         }}
+        style={{ outline: 'none' }}
       >
         {gui.widget}
         <ReactFlow
@@ -188,7 +192,6 @@ const Scene = ({
           onDoubleClick={(e) => {
             e.preventDefault();
           }}
-          onKeyDown={onKeyDown}
           onPaneContextMenu={(e) => {
             e.preventDefault();
             sceneActions?.selectAll(false);
