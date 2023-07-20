@@ -123,8 +123,11 @@ const Scene = ({
         ref={sceneDomRef}
         tabIndex={0}
         onKeyDown={(e) => {
-          if (e.target !== sceneDomRef.current) return;
-          onKeyDown(e, sceneState ?? undefined, sceneDomRef);
+          if (
+            e.target === sceneDomRef.current ||
+            (e.target as HTMLElement).classList.contains('react-flow__node')
+          )
+            onKeyDown(e, sceneState ?? undefined, sceneDomRef);
         }}
         onMouseMoveCapture={(e) => {
           mouseTracker?.updateMousePos(e.clientX, e.clientY);
