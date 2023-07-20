@@ -146,6 +146,7 @@ const SearchMenu = memo(function SearchMenu({
     if (Array.isArray(item.children)) return;
     if (item.configType) {
       addNode?.(item.configType);
+      addNodeWithSceneCoord?.(item.configType, anchorPosition);
       onClose();
     }
   }, []);
