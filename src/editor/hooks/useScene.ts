@@ -27,7 +27,7 @@ import {
   type ReactFlowInstance,
 } from 'reactflow';
 import { UniqueNamePool, type IUniqueNamePool } from '../utils';
-import { copy } from '../util';
+import { copy, fromClientCoordToScene } from '../util';
 
 function nodeInsideOfNode(n: Node, containter: Node): boolean {
   return (
@@ -52,6 +52,10 @@ export interface ISceneActions {
     thisPosition?: XYPosition,
     data?: any,
     positionOffset?: XYPosition
+  ) => Node;
+  addNodeWithSceneCoord: (
+    configType: string,
+    anchorPosition: { top: number; left: number }
   ) => Node;
   setNodes: Dispatch<SetStateAction<Array<RcNode<any, string | undefined>>>>;
   setExtraCommands: Dispatch<SetStateAction<Command[]>>;
@@ -92,11 +96,13 @@ export default function useScene(
     mouseX: number;
     mouseY: number;
   }>,
-  reactflowInstance: React.MutableRefObject<ReactFlowInstance | undefined>
+  reactflowInstance: React.MutableRefObject<ReactFlowInstance | undefined>,
+  domReference: React.RefObject<HTMLDivElement>
 ): ISceneState {
   const { selectedNodes, edges, getFreeUniqueNodeIds } = graphState;
   const [extraCommands, setExtraCommands] = useState<Command[]>([]);
-  const { setCenter, getZoom, getNodes } = useReactFlow();
+  const { setCenter, getZoom, project } = useReactFlow();
+
   const varsNamePool = useRef<IUniqueNamePool>(new UniqueNamePool());
   const funNamePool = useRef<IUniqueNamePool>(new UniqueNamePool());
 
@@ -155,7 +161,6 @@ export default function useScene(
   const onNodeDragStart = (evt: any, node: Node): void => {
     saveNodesInSelectedCommentNode(node);
   };
-
   const onNodeDragStop = (evt: any, node: Node): void => {
     clearNodesInSelectedCommentNode();
   };
@@ -333,6 +338,21 @@ export default function useScene(
     []
   );
 
+  const addNodeWithSceneCoord = (
+    configType: string,
+    anchorPosition: { top: number; left: number }
+  ): Node => {
+    const node = addNode(
+      configType,
+      fromClientCoordToScene(
+        { clientX: anchorPosition.left, clientY: anchorPosition.top },
+        domReference,
+        project
+      )
+    );
+    return node;
+  };
+
   const onNodeAdd = (node: Node): void => {
     if (node.type === 'createVariable') {
       setExtraCommands((commands) => {
@@ -426,7 +446,7 @@ export default function useScene(
         ];
       });
     } else if (node.type === 'comment') {
-      let nds = getNodes();
+      let nds = graphState.getNodes();
       nds.push(node);
       nds = sortZIndexOfComments(nds);
       graphState.setNodes(nds.filter((n) => n.id !== node.id));
@@ -590,6 +610,7 @@ export default function useScene(
       selectNode: graphState.selectNode,
       selectEdge: graphState.selectEdge,
       addNode,
+      addNodeWithSceneCoord,
       setNodes: graphState.setNodes,
       setExtraCommands,
       selectAll: graphState.selectAll,

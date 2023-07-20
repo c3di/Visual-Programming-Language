@@ -53,7 +53,12 @@ const Scene = ({
   const graphState = useGraph(graph);
   const sceneDomRef = useRef<HTMLDivElement>(null);
   const mouseTracker = useTrackMousePos(sceneDomRef);
-  const sceneState = useScene(graphState, mouseTracker.mousePos, sceneInstance);
+  const sceneState = useScene(
+    graphState,
+    mouseTracker.mousePos,
+    sceneInstance,
+    sceneDomRef
+  );
   const sceneActions = sceneState?.sceneActions;
   useEffect(() => {
     onSceneActionsInit?.(sceneActions);
@@ -212,6 +217,7 @@ const Scene = ({
               },
               {
                 addNode: sceneActions?.addNode,
+                addNodeWithSceneCoord: sceneActions?.addNodeWithSceneCoord,
                 clear: sceneActions?.clear,
                 autoLayout: sceneActions?.autoLayout,
                 moreCommands: sceneState?.extraCommands,

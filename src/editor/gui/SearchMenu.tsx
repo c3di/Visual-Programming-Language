@@ -35,6 +35,7 @@ const SearchMenu = memo(function SearchMenu({
   onClose,
   anchorPosition,
   addNode,
+  addNodeWithSceneCoord,
   clear,
   autoLayout,
   moreCommands,
@@ -47,6 +48,10 @@ const SearchMenu = memo(function SearchMenu({
     data?: any,
     positionOffset?: XYPosition
   ) => void;
+  addNodeWithSceneCoord?: (
+    configType: string,
+    anchorPosition: { top: number; left: number }
+  ) => void;
   autoLayout?: () => void;
   clear?: () => void;
   moreCommands?: Command[];
@@ -55,15 +60,7 @@ const SearchMenu = memo(function SearchMenu({
     {
       name: 'Add Comment...',
       action: () => {
-        addNode?.(
-          'comment',
-          undefined,
-          { defaultEditable: true },
-          {
-            x: -20,
-            y: -10,
-          }
-        );
+        addNodeWithSceneCoord?.('comment', anchorPosition);
       },
       tooltip: 'Add a comment node',
       labelIcon: Comment,
@@ -71,15 +68,7 @@ const SearchMenu = memo(function SearchMenu({
     {
       name: 'Add Sticky Note...',
       action: () => {
-        addNode?.(
-          'stickyNote',
-          undefined,
-          { defaultEditable: true },
-          {
-            x: -20,
-            y: -20,
-          }
-        );
+        addNodeWithSceneCoord?.('stickyNote', anchorPosition);
       },
       tooltip: 'Add a sticky note',
       labelIcon: StickyNoteIcon,
@@ -87,7 +76,7 @@ const SearchMenu = memo(function SearchMenu({
     {
       name: 'Add Reroute...',
       action: () => {
-        addNode?.('reroute');
+        addNodeWithSceneCoord?.('reroute', anchorPosition);
       },
       tooltip: 'Add a reroute node',
       labelIcon: Route,
@@ -143,14 +132,39 @@ const SearchMenu = memo(function SearchMenu({
     );
   }, [commands]);
 
+  function executeCommandByName(
+    commands: Command[],
+    commandName: string
+  ): void {
+    const command = commands.find((c) => c.name === commandName);
+    if (command) {
+      command.action();
+    }
+  }
   const onItemClick = useCallback((item: TreeItemData): void => {
     if (!item) return;
     if (Array.isArray(item.children)) return;
     if (item.configType) {
       addNode?.(item.configType);
+      addNodeWithSceneCoord?.(item.configType, anchorPosition);
       onClose();
     }
   }, []);
+
+  const onEnterKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLElement>, item: TreeItemData) => {
+      if (!item) return;
+      if (Array.isArray(item.children)) return;
+      if (event.key === 'Enter' && item.configType) {
+        addNodeWithSceneCoord?.(item.configType, anchorPosition);
+        onClose();
+      } else {
+        executeCommandByName(commands, item.name);
+        onClose();
+      }
+    },
+    []
+  );
 
   const commandsToTreeData = useCallback(
     (commands: Command[]): TreeItemData[] => {
@@ -206,7 +220,11 @@ const SearchMenu = memo(function SearchMenu({
         left: anchorPosition.left - 20,
       }}
     >
-      <SearchedTreeView treeData={treeData} onItemClick={onItemClick} />
+      <SearchedTreeView
+        treeData={treeData}
+        onItemClick={onItemClick}
+        onEnterKeyDown={onEnterKeyDown}
+      />
     </Menu>
   );
 });
