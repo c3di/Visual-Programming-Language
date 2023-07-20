@@ -167,28 +167,33 @@ const Scene = ({
           onEdgeDoubleClick={(e, edge) => {
             closeWidget(e);
             sceneActions?.clearEdgeSelection();
-            const x = mouseTracker?.mousePos.current.mouseX;
-            const y = mouseTracker?.mousePos.current.mouseY;
-            const position = {
-              // hardcode the width(10) and height(5) of the reroute node
-              x: x === undefined ? 0 : x - 10,
-              y: y === undefined ? 0 : y - 5,
-            };
-            const node = sceneActions?.addNode('reroute', position);
-            sceneActions?.deleteEdge(edge.id);
+            const node = sceneActions?.addNode(
+              'reroute',
+              undefined,
+              {
+                width: 21,
+                height: 19,
+              },
+              { x: -10, y: -5 }
+            );
             if (!node) return;
-            sceneActions?.addEdge(
-              node.id,
-              'input',
-              edge.source,
-              edge.sourceHandle!
-            );
-            sceneActions?.addEdge(
-              edge.target,
-              edge.targetHandle!,
-              node.id,
-              'output'
-            );
+            // temp solution wait for the node to be rendered
+            window.requestAnimationFrame(() => {
+              onConnect({
+                source: edge.source,
+                sourceHandle: edge.sourceHandle!,
+                target: node.id,
+                targetHandle: 'input',
+              });
+              window.requestAnimationFrame(() => {
+                onConnect({
+                  source: node.id,
+                  sourceHandle: 'output',
+                  target: edge.target,
+                  targetHandle: edge.targetHandle!,
+                });
+              });
+            });
           }}
           onDoubleClick={(e) => {
             e.preventDefault();
