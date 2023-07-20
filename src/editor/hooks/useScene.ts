@@ -53,13 +53,6 @@ export interface ISceneActions {
     data?: any,
     positionOffset?: XYPosition
   ) => Node;
-  addEdge: (
-    source: string,
-    sourceHandle: string,
-    target: string,
-    targetHandle: string,
-    dataType?: string
-  ) => void;
   setNodes: Dispatch<SetStateAction<Array<RcNode<any, string | undefined>>>>;
   setExtraCommands: Dispatch<SetStateAction<Command[]>>;
   clearEdgeSelection: () => void;
@@ -505,29 +498,6 @@ export default function useScene(
     });
   }
 
-  const addEdge = useCallback(
-    (
-      inputId: string,
-      inputHandle: string,
-      outputId: string,
-      outputHandle: string,
-      dataType?: string
-    ): Edge => {
-      const id = `e${inputId}-${inputHandle}-${outputId}-${outputHandle}`;
-      const edge = deserializer.configToEdge({
-        id,
-        input: inputId,
-        inputHandle,
-        output: outputId,
-        outputHandle,
-        dataType,
-      });
-      graphState.addElements({ newEdges: [edge] });
-      return edge;
-    },
-    []
-  );
-
   const centerSelectedNodes = (): void => {
     const nodes = selectedNodes();
     if (nodes.length === 0) return;
@@ -620,7 +590,6 @@ export default function useScene(
       selectNode: graphState.selectNode,
       selectEdge: graphState.selectEdge,
       addNode,
-      addEdge,
       setNodes: graphState.setNodes,
       setExtraCommands,
       selectAll: graphState.selectAll,

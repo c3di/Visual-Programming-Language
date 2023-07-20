@@ -179,11 +179,14 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
                 (output as HandleData).dataType = dataType;
               });
             }
-            n.data = {
-              ...n.data,
-              dataType,
-              inputs,
-              outputs,
+            n = {
+              ...n,
+              data: {
+                ...n.data,
+                dataType: `${dataType}`,
+                inputs,
+                outputs,
+              },
             };
           }
           return n;
@@ -203,7 +206,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
         return newEdges;
       });
     },
-    []
+    [setNodes, nodes]
   );
 
   const graphIncludeNodeWithType = useCallback(
@@ -301,8 +304,12 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
         allVisitedNodeIds.push(...visitedNodeIds);
       }
     }
-    subGraphs.forEach((nodeIds) => {
-      setDataTypeOfGraph(nodeIds, 'any');
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        subGraphs.forEach((nodeIds) => {
+          setDataTypeOfGraph(nodeIds, 'any');
+        });
+      });
     });
   }, []);
 
