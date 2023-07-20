@@ -98,21 +98,34 @@ export class Deserializer {
     },
 
     comment: (config: GraphNodeConfig): Node => {
-      const { id, category, comment, tooltip, position, width, height, type } =
-        config;
+      const {
+        id,
+        category,
+        comment,
+        tooltip,
+        position,
+        width,
+        height,
+        type,
+        zIndex,
+        defaultEditable,
+      } = config;
+      const w = width ?? 250;
+      const h = height ?? 200;
       return {
         id,
         type: category,
         dragHandle: '.node__header--enabled',
-        zIndex: -1001,
-        width,
-        height,
+        zIndex: zIndex ?? -1001,
+        width: w,
+        height: h,
         data: {
           comment,
           tooltip,
-          width,
-          height,
+          width: w,
+          height: h,
           configType: type,
+          defaultEditable,
         },
         position,
       };
@@ -127,6 +140,7 @@ export class Deserializer {
         width,
         height,
         type,
+        defaultEditable,
       } = config;
       return {
         id,
@@ -141,6 +155,7 @@ export class Deserializer {
           width,
           height,
           configType: type,
+          defaultEditable,
         },
         position,
       };

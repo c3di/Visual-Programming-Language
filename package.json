@@ -1,6 +1,6 @@
 {
   "name": "visual-programming-editor",
-  "version": "8.0.8",
+  "version": "8.1.4",
   "description": "General Node-based Visual Programing editor",
   "private": false,
   "repository": {
@@ -26,13 +26,14 @@
     "@mui/icons-material": "^5.11.11",
     "@mui/lab": "^5.0.0-alpha.125",
     "@mui/material": "^5.11.15",
+    "elkjs": "^0.8.2",
     "filepond": "^4.30.4",
     "filepond-plugin-zipper": "^2.0.0",
     "lodash": "^4.17.21",
     "lodash.debounce": "^4.0.8",
     "react-filepond": "^7.1.2",
     "react-icons": "^4.8.0",
-    "reactflow": "^11.7.0"
+    "reactflow": "^11.7.4"
   },
   "peerDependencies": {
     "react": "^18.2.0",

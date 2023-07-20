@@ -42,6 +42,8 @@ export interface GraphState {
   initGraph: Graph;
   nodes: Node[];
   edges: Edge[];
+  getNodes: () => Node[];
+  getEdges: () => Edge[];
   getFreeUniqueNodeIds: (count: number) => string[];
   getNodeById: (id: string) => Node | undefined;
   setNodes: Dispatch<SetStateAction<Array<RcNode<any, string | undefined>>>>;
@@ -177,11 +179,14 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
                 (output as HandleData).dataType = dataType;
               });
             }
-            n.data = {
-              ...n.data,
-              dataType,
-              inputs,
-              outputs,
+            n = {
+              ...n,
+              data: {
+                ...n.data,
+                dataType: `${dataType}`,
+                inputs,
+                outputs,
+              },
             };
           }
           return n;
@@ -201,7 +206,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
         return newEdges;
       });
     },
-    []
+    [setNodes, nodes]
   );
 
   const graphIncludeNodeWithType = useCallback(
@@ -299,8 +304,12 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
         allVisitedNodeIds.push(...visitedNodeIds);
       }
     }
-    subGraphs.forEach((nodeIds) => {
-      setDataTypeOfGraph(nodeIds, 'any');
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        subGraphs.forEach((nodeIds) => {
+          setDataTypeOfGraph(nodeIds, 'any');
+        });
+      });
     });
   }, []);
 
@@ -614,7 +623,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
 
     const toBeUpdated = Object.keys(createFunNodeWithRef);
     allNodes = allNodes.map((n) => {
-      if (n.data.nodeRef in toBeUpdated) {
+      if (toBeUpdated.includes(n.data.nodeRef)) {
         const returnNode = getNode(createFunNodeWithRef[n.data.nodeRef]);
         if (
           returnNode &&
@@ -629,7 +638,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
             }
           }
           n.data.outputs = {
-            execOut: n.data.outputs.execOut,
+            functionCallExecOut: n.data.outputs.functionCallExecOut,
             ...inputsWithoutExec,
           };
         }
@@ -637,9 +646,9 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
       return n;
     });
     for (const node of Object.values(allNodes)) {
-      if ((node.data.nodeRef as string) in createFunNodeWithoutRef) {
+      if (createFunNodeWithoutRef.includes(node.data.nodeRef as string)) {
         node.data.outputs = {
-          execOut: node.data.outputs.execOut,
+          functionCallExecOut: node.data.outputs.functionCallExecOut,
         };
       }
     }
@@ -650,6 +659,8 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     initGraph,
     getFreeUniqueNodeIds,
     nodes,
+    getNodes,
+    getEdges,
     deleteNodes,
     getNodeById,
     setNodes,

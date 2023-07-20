@@ -81,12 +81,19 @@ function MainArea({ id }: { id: string }): JSX.Element {
       >
         clear
       </button>
+      <button
+        onClick={() => {
+          sceneActions?.autoLayout();
+        }}
+      >
+        auto layout
+      </button>
       <textarea value={JSON.stringify(changedCount)} onChange={() => {}} />
       <VPEditor
         id={id}
         content={content}
         onContentChange={(content) => {
-          // console.log('content changed', content);
+          console.log('content changed', content);
           setChangedCount((count) => count + 1);
         }}
         activated={activated}
@@ -96,7 +103,7 @@ function MainArea({ id }: { id: string }): JSX.Element {
         onSelectionChange={(selection) => {
           // console.log('selection changed', selection);
         }}
-        option={{ controller: { hidden: true } }}
+        option={{ controller: { hidden: false } }}
       />
     </>
   );
