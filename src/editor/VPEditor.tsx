@@ -52,7 +52,11 @@ const Scene = ({
   const graphState = useGraph(graph);
   const reactflowDomRef = useRef<HTMLDivElement>(null);
   const mouseTracker = useTrackMousePos(reactflowDomRef);
-  const sceneState = useScene(graphState, mouseTracker.mousePos);
+  const sceneState = useScene(
+    graphState,
+    mouseTracker.mousePos,
+    mouseTracker.domReference
+  );
   const sceneActions = sceneState?.sceneActions;
   useEffect(() => {
     onSceneActionsInit?.(sceneActions);
@@ -196,6 +200,8 @@ const Scene = ({
               },
               {
                 addNode: sceneActions?.addNode,
+                addNodeWithProjectAnchorPosition:
+                  sceneActions?.addNodeWithProjectAnchorPosition,
                 clear: sceneActions?.clear,
                 moreCommands: sceneState?.extraCommands,
               }

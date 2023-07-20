@@ -5,6 +5,7 @@ import { type MousePos } from '../types';
 export interface IMouseTracker {
   mousePos: React.MutableRefObject<MousePos>;
   updateMousePos: (clientX: number, clientY: number) => void;
+  domReference: React.RefObject<HTMLDivElement>;
 }
 
 export default function useTrackMousePos(
@@ -12,8 +13,9 @@ export default function useTrackMousePos(
 ): IMouseTracker {
   const mousePos = useRef({ mouseX: 0, mouseY: 0 });
   const mapToLocalCoord = useReactFlow().project;
+  const domReference = domRef;
   const updateMousePos = (clientX: number, clientY: number): void => {
-    const bounding = domRef.current?.getBoundingClientRect();
+    const bounding = domReference.current?.getBoundingClientRect();
     if (!bounding) return;
     const relativePos = {
       x: clientX - bounding.left,
@@ -26,5 +28,5 @@ export default function useTrackMousePos(
     };
   };
 
-  return { mousePos, updateMousePos };
+  return { mousePos, updateMousePos, domReference };
 }

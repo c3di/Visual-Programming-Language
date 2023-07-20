@@ -34,12 +34,20 @@ const SearchMenu = memo(function SearchMenu({
   onClose,
   anchorPosition,
   addNode,
+  addNodeWithProjectAnchorPosition,
   clear,
   moreCommands,
 }: {
   onClose: () => void;
   anchorPosition: { top: number; left: number };
-  addNode?: (configType: string) => void;
+  addNode?: (
+    configType: string,
+    thisPosition?: { x: number; y: number }
+  ) => void;
+  addNodeWithProjectAnchorPosition?: (
+    configType: string,
+    anchorPosition: { top: number; left: number }
+  ) => void;
   clear?: () => void;
   moreCommands?: Command[];
 }): JSX.Element {
@@ -47,7 +55,7 @@ const SearchMenu = memo(function SearchMenu({
     {
       name: 'Add Comment...',
       action: () => {
-        addNode?.('comment');
+        addNodeWithProjectAnchorPosition?.('comment', anchorPosition);
       },
       tooltip: 'Add a comment node',
       labelIcon: Comment,
@@ -55,7 +63,7 @@ const SearchMenu = memo(function SearchMenu({
     {
       name: 'Add Sticky Note...',
       action: () => {
-        addNode?.('stickyNote');
+        addNodeWithProjectAnchorPosition?.('stickyNote', anchorPosition);
       },
       tooltip: 'Add a sticky note',
       labelIcon: StickyNoteIcon,
@@ -63,7 +71,7 @@ const SearchMenu = memo(function SearchMenu({
     {
       name: 'Add Reroute...',
       action: () => {
-        addNode?.('reroute');
+        addNodeWithProjectAnchorPosition?.('reroute', anchorPosition);
       },
       tooltip: 'Add a reroute node',
       labelIcon: Route,
@@ -126,7 +134,7 @@ const SearchMenu = memo(function SearchMenu({
       if (!item) return;
       if (Array.isArray(item.children)) return;
       if (event.key === 'Enter' && item.configType) {
-        addNode?.(item.configType);
+        addNodeWithProjectAnchorPosition?.(item.configType, anchorPosition);
         onClose();
       } else {
         executeCommandByName(commands, item.name);

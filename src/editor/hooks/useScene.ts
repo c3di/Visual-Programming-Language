@@ -34,6 +34,10 @@ export interface ISceneActions {
   selectNode: (nodeId: string) => void;
   getNodeById: (nodeId: string) => Node | undefined;
   addNode: (configType: string, thisPosition?: XYPosition, data?: any) => Node;
+  addNodeWithProjectAnchorPosition: (
+    configType: string,
+    anchorPosition: { top: number; left: number }
+  ) => Node;
   addEdge: (
     source: string,
     sourceHandle: string,
@@ -78,13 +82,14 @@ export default function useScene(
   mousePos: React.MutableRefObject<{
     mouseX: number;
     mouseY: number;
-  }>
+  }>,
+  domReference: React.RefObject<HTMLDivElement>
 ): ISceneState {
   const graphStateRef = useRef(graphState);
   const { nodes, selectedNodes, edges, getFreeUniqueNodeIds } = graphState;
   const nodesRefInCommentNode = useRef({});
   const [extraCommands, setExtraCommands] = useState<Command[]>([]);
-  const { setCenter, getZoom } = useReactFlow();
+  const { setCenter, getZoom, project } = useReactFlow();
   const onNodeDragStart = (evt: any, node: Node): void => {
     nodes.forEach((node) => {
       saveNodesInSelectedCommentNode(node, node.id);
@@ -284,6 +289,30 @@ export default function useScene(
     },
     []
   );
+
+  const projectAnchorPosition = (
+    anchorPosition: { top: number; left: number },
+    domRefCurrent: React.RefObject<HTMLDivElement>
+  ): XYPosition => {
+    const bounding = domRefCurrent.current?.getBoundingClientRect();
+    if (!bounding) return { x: anchorPosition.left, y: anchorPosition.top };
+    const projectedPosition = project({
+      x: anchorPosition.left - bounding.left,
+      y: anchorPosition.top - bounding.top,
+    });
+    return projectedPosition;
+  };
+
+  const addNodeWithProjectAnchorPosition = (
+    configType: string,
+    anchorPosition: { top: number; left: number }
+  ): Node => {
+    const node = addNode(
+      configType,
+      projectAnchorPosition(anchorPosition, domReference)
+    );
+    return node;
+  };
 
   const onNodeAdd = (node: Node): void => {
     if (node.type === 'createVariable') {
@@ -495,6 +524,7 @@ export default function useScene(
       selectNode: graphState.selectNode,
       selectEdge: graphState.selectEdge,
       addNode,
+      addNodeWithProjectAnchorPosition,
       addEdge,
       setNodes: graphState.setNodes,
       setExtraCommands,
