@@ -34,7 +34,7 @@ const SearchMenu = memo(function SearchMenu({
   onClose,
   anchorPosition,
   addNode,
-  addNodeWithProjectAnchorPosition,
+  addNodeWithSceneCoord,
   clear,
   moreCommands,
 }: {
@@ -44,7 +44,7 @@ const SearchMenu = memo(function SearchMenu({
     configType: string,
     thisPosition?: { x: number; y: number }
   ) => void;
-  addNodeWithProjectAnchorPosition?: (
+  addNodeWithSceneCoord?: (
     configType: string,
     anchorPosition: { top: number; left: number }
   ) => void;
@@ -55,7 +55,7 @@ const SearchMenu = memo(function SearchMenu({
     {
       name: 'Add Comment...',
       action: () => {
-        addNodeWithProjectAnchorPosition?.('comment', anchorPosition);
+        addNodeWithSceneCoord?.('comment', anchorPosition);
       },
       tooltip: 'Add a comment node',
       labelIcon: Comment,
@@ -63,7 +63,7 @@ const SearchMenu = memo(function SearchMenu({
     {
       name: 'Add Sticky Note...',
       action: () => {
-        addNodeWithProjectAnchorPosition?.('stickyNote', anchorPosition);
+        addNodeWithSceneCoord?.('stickyNote', anchorPosition);
       },
       tooltip: 'Add a sticky note',
       labelIcon: StickyNoteIcon,
@@ -71,7 +71,7 @@ const SearchMenu = memo(function SearchMenu({
     {
       name: 'Add Reroute...',
       action: () => {
-        addNodeWithProjectAnchorPosition?.('reroute', anchorPosition);
+        addNodeWithSceneCoord?.('reroute', anchorPosition);
       },
       tooltip: 'Add a reroute node',
       labelIcon: Route,
@@ -134,7 +134,7 @@ const SearchMenu = memo(function SearchMenu({
       if (!item) return;
       if (Array.isArray(item.children)) return;
       if (event.key === 'Enter' && item.configType) {
-        addNodeWithProjectAnchorPosition?.(item.configType, anchorPosition);
+        addNodeWithSceneCoord?.(item.configType, anchorPosition);
         onClose();
       } else {
         executeCommandByName(commands, item.name);

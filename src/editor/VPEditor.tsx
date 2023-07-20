@@ -55,7 +55,7 @@ const Scene = ({
   const sceneState = useScene(
     graphState,
     mouseTracker.mousePos,
-    mouseTracker.domReference
+    reactflowDomRef
   );
   const sceneActions = sceneState?.sceneActions;
   useEffect(() => {
@@ -200,8 +200,7 @@ const Scene = ({
               },
               {
                 addNode: sceneActions?.addNode,
-                addNodeWithProjectAnchorPosition:
-                  sceneActions?.addNodeWithProjectAnchorPosition,
+                addNodeWithSceneCoord: sceneActions?.addNodeWithSceneCoord,
                 clear: sceneActions?.clear,
                 moreCommands: sceneState?.extraCommands,
               }

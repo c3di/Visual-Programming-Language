@@ -25,6 +25,7 @@ import {
   type Node as RcNode,
 } from 'reactflow';
 import { UniqueNamePool, type IUniqueNamePool } from '../utils';
+import { fromClientCoordToScene } from '../util';
 
 export interface ISceneActions {
   getSelectedCounts: () => selectedElementsCounts;
@@ -34,7 +35,7 @@ export interface ISceneActions {
   selectNode: (nodeId: string) => void;
   getNodeById: (nodeId: string) => Node | undefined;
   addNode: (configType: string, thisPosition?: XYPosition, data?: any) => Node;
-  addNodeWithProjectAnchorPosition: (
+  addNodeWithSceneCoord: (
     configType: string,
     anchorPosition: { top: number; left: number }
   ) => Node;
@@ -290,26 +291,17 @@ export default function useScene(
     []
   );
 
-  const projectAnchorPosition = (
-    anchorPosition: { top: number; left: number },
-    domRefCurrent: React.RefObject<HTMLDivElement>
-  ): XYPosition => {
-    const bounding = domRefCurrent.current?.getBoundingClientRect();
-    if (!bounding) return { x: anchorPosition.left, y: anchorPosition.top };
-    const projectedPosition = project({
-      x: anchorPosition.left - bounding.left,
-      y: anchorPosition.top - bounding.top,
-    });
-    return projectedPosition;
-  };
-
-  const addNodeWithProjectAnchorPosition = (
+  const addNodeWithSceneCoord = (
     configType: string,
     anchorPosition: { top: number; left: number }
   ): Node => {
     const node = addNode(
       configType,
-      projectAnchorPosition(anchorPosition, domReference)
+      fromClientCoordToScene(
+        { clientX: anchorPosition.left, clientY: anchorPosition.top },
+        domReference,
+        project
+      )
     );
     return node;
   };
@@ -524,7 +516,7 @@ export default function useScene(
       selectNode: graphState.selectNode,
       selectEdge: graphState.selectEdge,
       addNode,
-      addNodeWithProjectAnchorPosition,
+      addNodeWithSceneCoord,
       addEdge,
       setNodes: graphState.setNodes,
       setExtraCommands,
