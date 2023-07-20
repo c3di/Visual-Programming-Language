@@ -119,13 +119,12 @@ function ControlledTreeView({
   const focusOnNew = useRef<boolean>(false);
   const focusOnTop = useRef<boolean>(false);
   const focusOnBottom = useRef<boolean>(false);
-  const [focusedNodeId, setFocusedNodeId] = useState<string | undefined>(
-    undefined
-  );
+  const focusedNodeId = useRef<string | undefined>(undefined);
   const getNodeById = (
     nodes: TreeItemData[],
-    id: string
+    id?: string
   ): TreeItemData | undefined => {
+    if (id === undefined) return undefined;
     for (const node of nodes) {
       if (node.id === id) {
         return node;
@@ -150,7 +149,7 @@ function ControlledTreeView({
           ref.current?.children[ref.current?.children.length - 1].id.includes(
             node
           ) ?? false;
-        setFocusedNodeId(node);
+        focusedNodeId.current = node;
       }}
       onKeyDown={(e) => {
         if (e.key === 'ArrowUp') {
@@ -173,9 +172,9 @@ function ControlledTreeView({
         if (e.key === 'Enter') {
           e.preventDefault();
           e.stopPropagation();
-          if (focusedNodeId !== undefined && focusedNodeId !== null) {
-            const focusedNode = getNodeById(treeData, focusedNodeId);
-            if (focusedNode !== undefined && focusedNode !== null) {
+          if (focusedNodeId.current !== undefined) {
+            const focusedNode = getNodeById(treeData, focusedNodeId.current);
+            if (focusedNode) {
               onEnterKeyDown?.(e, focusedNode);
             }
           }
