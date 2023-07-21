@@ -353,9 +353,21 @@ export default function useScene(
     );
     return node;
   };
+
   const deleteHandle = (
     nodeId: string,
     configType: string,
+    handleId: string
+  ): void => {
+    if (configType.includes('CreateFunction')) {
+      deleteOutputHandleOfCreateFunction(nodeId, handleId);
+    } else if (configType.includes('Return')) {
+      deleteInputHandleOfReturnNode(nodeId, handleId);
+    }
+  };
+
+  const deleteOutputHandleOfCreateFunction = (
+    nodeId: string,
     handleId: string
   ): void => {
     graphState.setNodes((nds) => {
@@ -364,10 +376,7 @@ export default function useScene(
           const { [handleId]: _, ...remained } = nd.data.outputs;
           nd.data.outputs = remained;
         }
-        if (
-          configType.includes('CreateFunction') &&
-          nd.data.nodeRef === nodeId
-        ) {
+        if (nd.data.nodeRef === nodeId) {
           const { [handleId]: _, ...remained } = nd.data.inputs;
           nd = {
             ...nd,
@@ -381,6 +390,32 @@ export default function useScene(
       });
     });
   };
+
+  const deleteInputHandleOfReturnNode = useCallback(
+    (nodeId: string, handleId: string) => {
+      graphState.setNodes((nds) => {
+        return nds.map((nd) => {
+          if (nd.id === nodeId) {
+            const { [handleId]: _, ...remained } = nd.data.inputs;
+            nd.data.inputs = remained;
+          }
+          const ref = graphState.getNodeById(nd.data.nodeRef);
+          if (ref?.data.nodeRef === nodeId) {
+            const { [handleId]: _, ...remained } = nd.data.outputs;
+            nd = {
+              ...nd,
+              data: {
+                ...nd.data,
+                outputs: remained,
+              },
+            };
+          }
+          return nd;
+        });
+      });
+    },
+    []
+  );
 
   const onNodeAdd = (node: Node): void => {
     if (node.type === 'createVariable') {
