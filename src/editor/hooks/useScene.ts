@@ -363,7 +363,7 @@ export default function useScene(
       deleteOutputHandleOfCreateFunction(nodeId, handleId);
     } else if (configType.includes('Return')) {
       deleteInputHandleOfReturnNode(nodeId, handleId);
-    } else if (configType.includes('sequence')) {
+    } else if (configType.includes('Sequence')) {
       deleteHandleOfSequenceNode(nodeId, handleId);
     }
   };
