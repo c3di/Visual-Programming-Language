@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useRef, useState } from 'react';
 import { IconButton } from '@mui/material';
-import { AddCircle, RemoveCircle } from '@mui/icons-material';
+import { AddCircle } from '@mui/icons-material';
 import { SourceHandle, TargetHandle } from '../handles';
 import { type HandleData, type ConnectableData, DataTypes } from '../../types';
 import { InplaceInput } from '../../widgets';
@@ -28,27 +28,6 @@ export function ParameterHandle({
   }
   const { setNodes, deleteAllEdgesOfHandle } =
     useSceneState()?.sceneActions ?? {};
-  const removeHandle = useCallback(() => {
-    setNodes?.((nds) => {
-      return nds.map((nd) => {
-        if (nd.id === nodeId) {
-          const { [id]: _, ...remeined } = nd.data.outputs;
-          nd.data.outputs = remeined;
-        }
-        if (nd.data.nodeRef === nodeId) {
-          const { [id]: _, ...remeined } = nd.data.inputs;
-          nd = {
-            ...nd,
-            data: {
-              ...nd.data,
-              inputs: remeined,
-            },
-          };
-        }
-        return nd;
-      });
-    });
-  }, []);
   const onDatatypeChange = useCallback((value: string) => {
     setNodes?.((nds) => {
       return nds.map((nd) => {
@@ -97,13 +76,6 @@ export function ParameterHandle({
       style={{ display: 'flex', alignItems: 'center', gap: '5px' }}
       title={handleData.tooltip}
     >
-      <IconButton
-        style={{ padding: 1 }}
-        title="remove this parameter"
-        onClick={removeHandle}
-      >
-        <RemoveCircle style={{ width: '20px', height: '20px' }} />
-      </IconButton>
       <div
         style={{
           display: 'grid',

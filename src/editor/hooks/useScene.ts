@@ -79,6 +79,7 @@ export interface ISceneActions {
   selectedNodes: () => Node[];
   sortZIndexOfComments: (nodes: Node[]) => Node[];
   autoLayout: () => void;
+  deleteHandle: (nodeId: string, nodeType: string, handleId: string) => void;
 }
 export interface ISceneState {
   gui: IGui;
@@ -352,6 +353,69 @@ export default function useScene(
     );
     return node;
   };
+
+  const deleteHandle = (
+    nodeId: string,
+    configType: string,
+    handleId: string
+  ): void => {
+    if (configType.includes('CreateFunction')) {
+      deleteOutputHandleOfCreateFunction(nodeId, handleId);
+    } else if (configType.includes('Return')) {
+      deleteInputHandleOfReturnNode(nodeId, handleId);
+    }
+  };
+
+  const deleteOutputHandleOfCreateFunction = (
+    nodeId: string,
+    handleId: string
+  ): void => {
+    graphState.setNodes((nds) => {
+      return nds.map((nd) => {
+        if (nd.id === nodeId) {
+          const { [handleId]: _, ...remained } = nd.data.outputs;
+          nd.data.outputs = remained;
+        }
+        if (nd.data.nodeRef === nodeId) {
+          const { [handleId]: _, ...remained } = nd.data.inputs;
+          nd = {
+            ...nd,
+            data: {
+              ...nd.data,
+              inputs: remained,
+            },
+          };
+        }
+        return nd;
+      });
+    });
+  };
+
+  const deleteInputHandleOfReturnNode = useCallback(
+    (nodeId: string, handleId: string) => {
+      graphState.setNodes((nds) => {
+        return nds.map((nd) => {
+          if (nd.id === nodeId) {
+            const { [handleId]: _, ...remained } = nd.data.inputs;
+            nd.data.inputs = remained;
+          }
+          const ref = graphState.getNodeById(nd.data.nodeRef);
+          if (ref?.data.nodeRef === nodeId) {
+            const { [handleId]: _, ...remained } = nd.data.outputs;
+            nd = {
+              ...nd,
+              data: {
+                ...nd.data,
+                outputs: remained,
+              },
+            };
+          }
+          return nd;
+        });
+      });
+    },
+    []
+  );
 
   const onNodeAdd = (node: Node): void => {
     if (node.type === 'createVariable') {
@@ -634,6 +698,7 @@ export default function useScene(
       selectedNodes: graphState.selectedNodes,
       sortZIndexOfComments,
       autoLayout,
+      deleteHandle,
     },
   };
 }

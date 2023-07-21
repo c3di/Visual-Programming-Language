@@ -253,6 +253,15 @@ const Scene = ({
                         gui.clickedHandle.current.id
                       );
                   },
+                  onDeleteHandle: () => {
+                    if (gui.clickedHandle.current && gui.clickedNodeId.current)
+                      sceneActions?.deleteHandle(
+                        gui.clickedNodeId.current,
+                        graphState.getNodeById(gui.clickedNodeId.current)?.data
+                          .configType,
+                        gui.clickedHandle.current.id
+                      );
+                  },
                 }
               );
             } else
