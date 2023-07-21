@@ -27,7 +27,7 @@ import {
   type ReactFlowInstance,
 } from 'reactflow';
 import { UniqueNamePool, type IUniqueNamePool } from '../utils';
-import { copy, fromClientCoordToScene } from '../util';
+import { copy, deepCopy, fromClientCoordToScene } from '../util';
 
 function nodeInsideOfNode(n: Node, containter: Node): boolean {
   return (
@@ -470,7 +470,7 @@ export default function useScene(
               item: any,
               e: React.MouseEvent<HTMLLIElement> | undefined
             ) => {
-              const latest = graphState.getNodeById(node.id)!;
+              const latest = deepCopy(graphState.getNodeById(node.id));
               Object.values(latest.data.outputs).forEach((output: any) => {
                 output.showWidget = false;
                 output.showTitle = output.dataType !== 'exec';
@@ -485,10 +485,10 @@ export default function useScene(
                 },
               };
               const returnNodeId = latest?.data?.nodeRef;
-              const returnNode = graphState.getNodeById(returnNodeId);
+              const returnNode = deepCopy(graphState.getNodeById(returnNodeId));
               Object.keys(returnNode?.data.inputs ?? {}).forEach(
                 (name: string) => {
-                  const input = returnNode!.data.inputs[name];
+                  const input = returnNode.data.inputs[name];
                   if (input.dataType === 'exec') return;
                   input.showWidget = false;
                   input.showTitle = true;
