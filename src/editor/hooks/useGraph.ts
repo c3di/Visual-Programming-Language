@@ -321,11 +321,24 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
       rcAddEdge(
         {
           ...params,
-          markerEnd: {
-            type: MarkerType.ArrowClosed,
-          },
+          markerEnd:
+            dataType === 'exec'
+              ? {
+                  type: MarkerType.Arrow,
+                  width: 15,
+                  height: 15,
+                  color: getComputedStyle(document.body).getPropertyValue(
+                    '--vp-exec-color'
+                  ),
+                }
+              : undefined,
+
           data: {
             dataType,
+          },
+          className: dataType,
+          style: {
+            strokeWidth: 2,
           },
         },
         eds

@@ -14,8 +14,9 @@ import type {
   HandleData,
   SerializedGraphEdge,
 } from './types';
-import { MarkerType } from 'reactflow';
+// import { MarkerType } from 'reactflow';
 import { nodeConfigRegistry } from './extension';
+import { MarkerType } from 'reactflow';
 
 export class Deserializer {
   private static instance: Deserializer;
@@ -198,11 +199,23 @@ export class Deserializer {
       target: input,
       sourceHandle: outputHandle,
       targetHandle: inputHandle,
-      markerEnd: {
-        type: MarkerType.ArrowClosed,
-      },
+      markerEnd:
+        dataType === 'exec'
+          ? {
+              type: MarkerType.Arrow,
+              width: 15,
+              height: 15,
+              color: getComputedStyle(document.body).getPropertyValue(
+                '--vp-exec-color'
+              ),
+            }
+          : undefined,
       data: {
         dataType,
+      },
+      className: dataType,
+      style: {
+        strokeWidth: 2,
       },
     };
   };
