@@ -229,7 +229,7 @@ function CreateFunction({
     <div
       key={'create-new-button'}
       className="source-handle"
-      title="create a new parameter"
+      title="add a new parameter"
     >
       <IconButton style={{ padding: 1 }} onClick={addNewHandle}>
         <AddCircle style={{ width: '20px', height: '20px' }} />
@@ -283,7 +283,7 @@ function CreateFunction({
 
   return (
     <div
-      title={`create a new function named ${title}`}
+      title={`add a new function named ${title}`}
       className="vp-node-containter"
     >
       <div className="node__header">

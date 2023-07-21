@@ -230,7 +230,7 @@ function Return({
   inputhandles.push(
     <div
       className="target-handle"
-      title="create a new return value"
+      title="add a new return value"
       key={'create-new-button'}
     >
       <IconButton style={{ padding: 1 }} onClick={addNewHandle}>
