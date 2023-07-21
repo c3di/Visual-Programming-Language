@@ -494,7 +494,7 @@ export default function useScene(
             ) => {
               const latest = deepCopy(graphState.getNodeById(node.id));
               Object.values(latest.data.outputs).forEach((output: any) => {
-                output.showWidget = false;
+                output.showWidget = true;
                 output.showTitle = output.dataType !== 'exec';
                 output.connection = 0;
               });
@@ -507,7 +507,9 @@ export default function useScene(
                 },
               };
               const returnNodeId = latest?.data?.nodeRef;
-              const returnNode = deepCopy(graphState.getNodeById(returnNodeId));
+              const returnNode = returnNodeId
+                ? deepCopy(graphState.getNodeById(returnNodeId))
+                : undefined;
               Object.keys(returnNode?.data.inputs ?? {}).forEach(
                 (name: string) => {
                   const input = returnNode.data.inputs[name];
