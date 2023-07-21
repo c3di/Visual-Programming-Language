@@ -245,6 +245,7 @@ const Scene = ({
                   top: e.clientY,
                 },
                 {
+                  deletable: graphState.getHandle(node.id, id)?.deletable,
                   connection: gui.clickedHandle.current?.connection,
                   onBreakLinks: () => {
                     if (gui.clickedHandle.current && gui.clickedNodeId.current)

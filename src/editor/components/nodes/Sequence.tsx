@@ -48,6 +48,7 @@ function Sequence({
     const value = {
       dataType: 'exec',
       title: `Then ${Object.keys(data.outputs ?? {}).length}`,
+      deletable: true,
     };
     setNodes?.((nds) => {
       return nds.map((nd) => {

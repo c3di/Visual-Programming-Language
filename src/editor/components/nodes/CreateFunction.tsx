@@ -168,6 +168,7 @@ function CreateFunction({
       dataType: 'boolean',
       title: `new-out-${handleCount.current}`,
       showWidget: false,
+      deletable: true,
     };
     setNodes?.((nds) => {
       return nds.map((nd) => {

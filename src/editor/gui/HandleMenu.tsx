@@ -3,12 +3,14 @@ import DeleteIcon from '@mui/icons-material/Delete';
 export default function HandleMenu({
   onClose,
   anchorPosition,
+  deletable,
   connection,
   onBreakLinks,
   onDeleteHandle,
 }: {
   onClose: () => void;
   anchorPosition: { top: number; left: number };
+  deletable: boolean;
   connection?: number | undefined;
   onBreakLinks?: () => void;
   onDeleteHandle?: () => void;
@@ -21,6 +23,7 @@ export default function HandleMenu({
         onClose();
       },
       icon: DeleteIcon,
+      disabled: !deletable,
     },
     {
       title: 'Break Node Link(s)',

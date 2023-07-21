@@ -32,12 +32,14 @@
         "execOut0": {
           "title": "Then 0",
           "tooltip": "Then 0",
-          "dataType": "exec"
+          "dataType": "exec",
+          "deletable": true
         },
         "execOut1": {
           "title": "Then 1",
           "tooltip": "Then 1",
-          "dataType": "exec"
+          "dataType": "exec",
+          "deletable": true
         }
       }
     },
