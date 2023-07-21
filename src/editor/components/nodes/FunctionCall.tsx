@@ -11,7 +11,18 @@ function FunctionCall({
   data: ConnectableData;
 }): JSX.Element {
   registFunctionRef(data, id);
-
+  Object.values(data.inputs ?? {}).forEach((value) => {
+    if (value.dataType === 'exec') {
+      value.showWidget = false;
+      value.showTitle = false;
+    }
+  });
+  Object.values(data.outputs ?? {}).forEach((value) => {
+    if (value.dataType === 'exec') {
+      value.showWidget = false;
+      value.showTitle = false;
+    }
+  });
   return (
     <FunctionNode
       id={id}
