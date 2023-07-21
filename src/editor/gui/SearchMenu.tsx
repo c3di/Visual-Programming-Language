@@ -145,7 +145,6 @@ const SearchMenu = memo(function SearchMenu({
     if (!item) return;
     if (Array.isArray(item.children)) return;
     if (item.configType) {
-      addNode?.(item.configType);
       addNodeWithSceneCoord?.(item.configType, anchorPosition);
       onClose();
     }
