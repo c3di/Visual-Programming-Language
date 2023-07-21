@@ -156,6 +156,7 @@ function Return({
       dataType: 'any',
       title: `new-in-${handleCount.current}`,
       showWidget: false,
+      deletable: true,
     };
     setNodes?.((nds) => {
       return nds.map((nd) => {

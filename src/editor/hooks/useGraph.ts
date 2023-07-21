@@ -74,6 +74,7 @@ export interface GraphState {
     newNodes?: Node[];
     newEdges?: Edge[];
   }) => void;
+  getHandle: (nodeId: string, handleId: string) => HandleData | undefined;
   getHandleConnectionCounts: (nodeId: string, handleId: string) => number;
   anyConnectableNodeSelected: boolean;
   anyConnectionToSelectedNode: boolean;
@@ -379,6 +380,14 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     []
   );
 
+  const getHandle = useCallback(
+    (nodeId: string, handleId: string): HandleData | undefined => {
+      const node = getNodeById(nodeId);
+      if (!node) return undefined;
+      return node.data.inputs?.[handleId] || node.data.outputs?.[handleId];
+    },
+    []
+  );
   const selectedNodes = useCallback(() => {
     return getNodes().filter((n) => n.selected);
   }, []);
@@ -685,6 +694,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     deleteAllEdgesOfNode,
     deleteAllEdgesOfHandle,
     addElements,
+    getHandle,
     getHandleConnectionCounts,
     anyConnectableNodeSelected,
     anyConnectionToSelectedNode,
