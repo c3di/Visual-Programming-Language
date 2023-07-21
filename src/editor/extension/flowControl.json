@@ -2,6 +2,20 @@
   "description": "Flow control nodes are used to control the execution order of a program. They include sequence, for loop, if, and other nodes that can alter the flow based on conditions or iterations. ",
   "enable": true,
   "nodes": {
+    "Execute Start": {
+      "type": "Execute Start",
+      "category": "function",
+      "title": "Execute Start",
+      "tooltip": "The execute start point of the program",
+      "outputs": {
+        "execOut": {
+          "tooltip": "exec out",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        }
+      }
+    },
     "Sequence": {
       "type": "Sequence",
       "category": "sequence",
