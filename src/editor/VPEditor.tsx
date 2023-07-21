@@ -6,11 +6,12 @@ import ReactFlow, {
   ConnectionMode,
   getRectOfNodes,
   type ReactFlowInstance,
+  type PanelPosition,
 } from 'reactflow';
 import {
   useGraph,
   useScene,
-  useKeyDown,
+  onKeyDown,
   useTrackMousePos,
   type ISceneActions,
 } from './hooks';
@@ -50,9 +51,14 @@ const Scene = ({
   const sceneInstance = useRef<ReactFlowInstance | undefined>(undefined);
 
   const graphState = useGraph(graph);
-  const reactflowDomRef = useRef<HTMLDivElement>(null);
-  const mouseTracker = useTrackMousePos(reactflowDomRef);
-  const sceneState = useScene(graphState, mouseTracker.mousePos);
+  const sceneDomRef = useRef<HTMLDivElement>(null);
+  const mouseTracker = useTrackMousePos(sceneDomRef);
+  const sceneState = useScene(
+    graphState,
+    mouseTracker.mousePos,
+    sceneInstance,
+    sceneDomRef
+  );
   const sceneActions = sceneState?.sceneActions;
   useEffect(() => {
     onSceneActionsInit?.(sceneActions);
@@ -66,7 +72,6 @@ const Scene = ({
     fromJSON,
     toString,
   } = graphState ?? {};
-  const { onKeyDown } = useKeyDown(sceneState ?? undefined);
   const gui = sceneState?.gui;
   const {
     view: viewSetting,
@@ -118,7 +123,22 @@ const Scene = ({
   const proOptions = { hideAttribution: true };
   return (
     <SceneStateContext.Provider value={sceneState}>
-      <div className="vp-editor">
+      <div
+        className="vp-editor"
+        ref={sceneDomRef}
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (
+            e.target === sceneDomRef.current ||
+            (e.target as HTMLElement).classList.contains('react-flow__node')
+          )
+            onKeyDown(e, sceneState ?? undefined, sceneDomRef);
+        }}
+        onMouseMoveCapture={(e) => {
+          mouseTracker?.updateMousePos(e.clientX, e.clientY);
+        }}
+        style={{ outline: 'none' }}
+      >
         {gui.widget}
         <ReactFlow
           id={id}
@@ -127,9 +147,6 @@ const Scene = ({
             setInitialed(true);
           }}
           fitView={!initialed}
-          onMouseMove={(e) => {
-            mouseTracker?.updateMousePos(e.clientX, e.clientY);
-          }}
           onSelectionChange={(elements) => {
             if (!sceneActions) return;
             const selectedCounts = sceneActions.getSelectedCounts();
@@ -158,33 +175,37 @@ const Scene = ({
           onEdgeDoubleClick={(e, edge) => {
             closeWidget(e);
             sceneActions?.clearEdgeSelection();
-            const x = mouseTracker?.mousePos.current.mouseX;
-            const y = mouseTracker?.mousePos.current.mouseY;
-            const position = {
-              // hardcode the width(10) and height(5) of the reroute node
-              x: x === undefined ? 0 : x - 10,
-              y: y === undefined ? 0 : y - 5,
-            };
-            const node = sceneActions?.addNode('reroute', position);
-            sceneActions?.deleteEdge(edge.id);
+            const node = sceneActions?.addNode(
+              'reroute',
+              undefined,
+              {
+                width: 21,
+                height: 19,
+              },
+              { x: -10, y: -5 }
+            );
             if (!node) return;
-            sceneActions?.addEdge(
-              node.id,
-              'input',
-              edge.source,
-              edge.sourceHandle!
-            );
-            sceneActions?.addEdge(
-              edge.target,
-              edge.targetHandle!,
-              node.id,
-              'output'
-            );
+            // temp solution wait for the node to be rendered
+            window.requestAnimationFrame(() => {
+              onConnect({
+                source: edge.source,
+                sourceHandle: edge.sourceHandle!,
+                target: node.id,
+                targetHandle: 'input',
+              });
+              window.requestAnimationFrame(() => {
+                onConnect({
+                  source: node.id,
+                  sourceHandle: 'output',
+                  target: edge.target,
+                  targetHandle: edge.targetHandle!,
+                });
+              });
+            });
           }}
           onDoubleClick={(e) => {
             e.preventDefault();
           }}
-          onKeyDown={onKeyDown}
           onPaneContextMenu={(e) => {
             e.preventDefault();
             sceneActions?.selectAll(false);
@@ -196,7 +217,9 @@ const Scene = ({
               },
               {
                 addNode: sceneActions?.addNode,
+                addNodeWithSceneCoord: sceneActions?.addNodeWithSceneCoord,
                 clear: sceneActions?.clear,
+                autoLayout: sceneActions?.autoLayout,
                 moreCommands: sceneState?.extraCommands,
               }
             );
@@ -222,11 +245,21 @@ const Scene = ({
                   top: e.clientY,
                 },
                 {
+                  deletable: graphState.getHandle(node.id, id)?.deletable,
                   connection: gui.clickedHandle.current?.connection,
                   onBreakLinks: () => {
                     if (gui.clickedHandle.current && gui.clickedNodeId.current)
                       sceneActions?.deleteAllEdgesOfHandle(
                         gui.clickedNodeId.current,
+                        gui.clickedHandle.current.id
+                      );
+                  },
+                  onDeleteHandle: () => {
+                    if (gui.clickedHandle.current && gui.clickedNodeId.current)
+                      sceneActions?.deleteHandle(
+                        gui.clickedNodeId.current,
+                        graphState.getNodeById(gui.clickedNodeId.current)?.data
+                          .configType,
                         gui.clickedHandle.current.id
                       );
                   },
@@ -264,7 +297,6 @@ const Scene = ({
               { onDelete: sceneActions?.deleteSelectedElements }
             );
           }}
-          ref={reactflowDomRef}
           nodes={nodes}
           edges={edges}
           connectionMode={ConnectionMode.Loose}
@@ -344,15 +376,10 @@ const Scene = ({
           }}
           onNodeDragStop={sceneActions?.onNodeDragStop}
           onMove={(e) => {
-            if (e instanceof MouseEvent)
-              mouseTracker?.updateMousePos(e.clientX, e.clientY);
             closeWidget(null, true);
           }}
           onSelectionStart={(e) => {
             closeWidget(null, true);
-          }}
-          onNodeDrag={(e) => {
-            mouseTracker?.updateMousePos(e.clientX, e.clientY);
           }}
           proOptions={proOptions}
         >
@@ -365,7 +392,7 @@ const Scene = ({
           {!option?.controller?.hidden && (
             <ControlPanel
               className={cpSetting.className}
-              position={cpSetting.position}
+              position={cpSetting.position as PanelPosition}
             />
           )}
           <Background

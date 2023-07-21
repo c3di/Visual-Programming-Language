@@ -4,32 +4,55 @@
       "id": "1",
       "type": "extension1.function1",
       "position": {
-        "x": 0,
+        "x": 64,
         "y": 0
       },
       "inputs": {
-        "execIn": {},
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec"
+        },
         "input1": {
-          "value": 10
+          "title": "input1",
+          "value": 10,
+          "dataType": "float"
         },
-        "input2": {},
+        "input2": {
+          "title": "input2 long name",
+          "dataType": "boolean"
+        },
         "input3": {
-          "value": "world"
+          "title": "input3",
+          "value": "world",
+          "dataType": "string"
         },
-        "input4": {}
+        "input4": {
+          "title": "long name",
+          "dataType": "extension1.Level2.module2.EDataType"
+        }
       },
       "outputs": {
-        "execOut": {},
-        "output1": {},
-        "output2": {}
-      }
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec"
+        },
+        "output1": {
+          "title": "output1",
+          "dataType": "float"
+        },
+        "output2": {
+          "title": "output2",
+          "dataType": "float"
+        }
+      },
+      "title": "function Node"
     },
     {
       "id": "4",
       "type": "extension1.Level2.literal",
       "position": {
-        "x": 0,
-        "y": 300
+        "x": 64,
+        "y": 304
       },
       "inputs": {
         "input": {
@@ -43,8 +66,8 @@
       "id": "5",
       "type": "extension1.Level2.Level3.module3.PlusMath",
       "position": {
-        "x": 300,
-        "y": 300
+        "x": 352,
+        "y": 304
       },
       "inputs": {
         "input1": {
@@ -61,14 +84,15 @@
           "title": "output",
           "dataType": "boolean"
         }
-      }
+      },
+      "title": "+"
     },
     {
       "id": "6",
       "type": "comment",
       "comment": "This is a comment node",
       "position": {
-        "x": 600,
+        "x": 656,
         "y": 0
       },
       "width": 250,
@@ -79,18 +103,18 @@
       "type": "stickyNote",
       "stickyNote": "This is a sticky note",
       "position": {
-        "x": 300,
+        "x": 368,
         "y": 0
       },
       "width": 150,
-      "height": 150
+      "height": 250
     },
     {
       "id": "8",
       "type": "reroute",
       "position": {
-        "x": 600,
-        "y": 300
+        "x": 656,
+        "y": 304
       },
       "inputs": {
         "input": {}
@@ -104,25 +128,40 @@
       "id": "9",
       "type": "extension2.CreateVariable",
       "position": {
-        "x": 0,
-        "y": 500
+        "x": 64,
+        "y": 496
       },
       "inputs": {
-        "execIn": {},
+        "execIn": {
+          "dataType": "exec"
+        },
         "name": {
-          "value": "newVar_0"
+          "title": "name",
+          "value": "newVar_0",
+          "dataType": "string"
+        },
+        "type": {
+          "title": "type",
+          "dataType": "extension1.Level2.module2.EDataType"
+        },
+        "value": {
+          "title": "value",
+          "dataType": "string"
         }
       },
       "outputs": {
-        "execOut": {}
-      }
+        "execOut": {
+          "dataType": "exec"
+        }
+      },
+      "title": "New Variable"
     },
     {
       "id": "10",
       "type": "extension2.CreateFunction",
       "position": {
-        "x": 0,
-        "y": 700
+        "x": 64,
+        "y": 704
       },
       "outputs": {
         "execOut": {
@@ -147,8 +186,8 @@
       "id": "11",
       "type": "extension2.Return",
       "position": {
-        "x": 400,
-        "y": 700
+        "x": 464,
+        "y": 704
       },
       "inputs": {
         "execIn": {
@@ -164,14 +203,15 @@
           "value": 9,
           "dataType": "float"
         }
-      }
+      },
+      "title": "Return"
     },
     {
       "id": "0",
       "type": "extension2.functionCall",
       "position": {
-        "x": 800,
-        "y": 700
+        "x": 864,
+        "y": 704
       },
       "inputs": {
         "execOut": {
@@ -211,8 +251,8 @@
       "id": "2",
       "type": "extension1.module1.getter",
       "position": {
-        "x": 300,
-        "y": 500
+        "x": 352,
+        "y": 496
       },
       "outputs": {
         "getter": {
@@ -227,8 +267,8 @@
       "id": "3",
       "type": "extension1.module1.setter",
       "position": {
-        "x": 600,
-        "y": 500
+        "x": 656,
+        "y": 496
       },
       "inputs": {
         "execIn": {
@@ -242,6 +282,39 @@
         }
       },
       "nodeRef": "9"
+    },
+    {
+      "id": "12",
+      "type": "comment",
+      "position": {
+        "x": 2,
+        "y": -46
+      },
+      "width": 1118,
+      "height": 957,
+      "zIndex": -3003
+    },
+    {
+      "id": "13",
+      "type": "comment",
+      "position": {
+        "x": 18,
+        "y": 450
+      },
+      "width": 1118,
+      "height": 461,
+      "zIndex": -2002
+    },
+    {
+      "id": "14",
+      "type": "comment",
+      "position": {
+        "x": 34,
+        "y": 674
+      },
+      "width": 800,
+      "height": 253,
+      "zIndex": -1001
     }
   ],
   "edges": [

@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { TreeView } from '@mui/lab';
 import { type SvgIconProps } from '@mui/material';
 import { ExpandMore, ChevronRight } from '@mui/icons-material';
@@ -59,11 +59,20 @@ function ControlledTreeView({
   treeData,
   onItemClick,
   onItemDelete,
+  onArrowUpKeyDown,
+  onArrowDownKeyDown,
+  onEnterKeyDown,
 }: {
   toExpand: boolean;
   treeData: TreeItemData[];
   onItemClick?: (item: TreeItemData) => void;
   onItemDelete?: (path: string) => void;
+  onArrowUpKeyDown?: () => void;
+  onArrowDownKeyDown?: () => void;
+  onEnterKeyDown?: (
+    event: React.KeyboardEvent<HTMLElement>,
+    item: TreeItemData
+  ) => void;
 }): JSX.Element {
   const [expanded, setExpanded] = useState<string[]>([]);
   const handleToggle = (e: React.SyntheticEvent, nodeIds: string[]): void => {
@@ -76,6 +85,7 @@ function ControlledTreeView({
     }
     return ids;
   }, []);
+
   const treeDataIds = treeData.map((item) => treeItemIds(item)).flat();
 
   useEffect(() => {
@@ -105,9 +115,73 @@ function ControlledTreeView({
       </StyledTreeItem>
     );
   }, []);
-
+  const ref = useRef<HTMLDivElement>(null);
+  const focusOnNew = useRef<boolean>(false);
+  const focusOnTop = useRef<boolean>(false);
+  const focusOnBottom = useRef<boolean>(false);
+  const focusedNodeId = useRef<string | undefined>(undefined);
+  const getNodeById = (
+    nodes: TreeItemData[],
+    id?: string
+  ): TreeItemData | undefined => {
+    if (id === undefined) return undefined;
+    for (const node of nodes) {
+      if (node.id === id) {
+        return node;
+      }
+      if (node.children) {
+        const childNode = getNodeById(node.children, id);
+        if (childNode) return childNode;
+      }
+    }
+  };
   return (
     <TreeView
+      ref={ref}
+      onFocus={() => {
+        focusOnNew.current = false;
+      }}
+      onNodeFocus={(e, node) => {
+        focusOnNew.current = true;
+        focusOnTop.current =
+          ref.current?.children[0].id.includes(node) ?? false;
+        focusOnBottom.current =
+          ref.current?.children[ref.current?.children.length - 1].id.includes(
+            node
+          ) ?? false;
+        focusedNodeId.current = node;
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          e.stopPropagation();
+
+          if (focusOnTop.current && !focusOnNew.current) {
+            onArrowUpKeyDown?.();
+          }
+        }
+
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          e.stopPropagation();
+
+          if (focusOnBottom.current && !focusOnNew.current)
+            onArrowDownKeyDown?.();
+        }
+
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          e.stopPropagation();
+          if (focusedNodeId.current !== undefined) {
+            const focusedNode = getNodeById(treeData, focusedNodeId.current);
+            if (focusedNode) {
+              onEnterKeyDown?.(e, focusedNode);
+            }
+          }
+        }
+
+        focusOnNew.current = false;
+      }}
       aria-label="nodes types"
       defaultCollapseIcon={
         <ExpandMore
@@ -147,10 +221,15 @@ export const SearchedTreeView = memo(function SearchedTreeView({
   treeData,
   onItemClick,
   onItemDelete,
+  onEnterKeyDown,
 }: {
   treeData: TreeItemData[];
   onItemClick?: (item: TreeItemData) => void;
   onItemDelete?: (type: string) => void;
+  onEnterKeyDown?: (
+    event: React.KeyboardEvent<HTMLElement>,
+    item: TreeItemData
+  ) => void;
 }): JSX.Element {
   const [filteredTreeData, setFilteredTreeData] =
     useState<TreeItemData[]>(treeData);
@@ -223,6 +302,27 @@ export const SearchedTreeView = memo(function SearchedTreeView({
     });
   }, []);
 
+  const searchTreeViewRef = useRef<HTMLDivElement>(null);
+  const focusOnTreeView = useCallback(() => {
+    const treeView = searchTreeViewRef.current?.children[1];
+    (treeView?.children[0] as HTMLElement)?.focus();
+  }, []);
+  const focusOnSearchInput = useCallback(() => {
+    const searchInput = searchTreeViewRef.current?.children[0];
+    (searchInput?.children[0] as HTMLInputElement)?.focus();
+    scrollToTop();
+  }, []);
+  const scrollToBottom = useCallback(() => {
+    (
+      searchTreeViewRef.current?.children[1].lastChild as HTMLDivElement
+    ).scrollIntoView(false);
+  }, []);
+  const scrollToTop = useCallback(() => {
+    (
+      searchTreeViewRef.current?.children[1].firstChild as HTMLDivElement
+    ).scrollIntoView(true);
+  }, []);
+
   return (
     <div
       className="VP_MenuList"
@@ -231,8 +331,9 @@ export const SearchedTreeView = memo(function SearchedTreeView({
         flexDirection: 'column',
         alignItems: 'center',
       }}
+      ref={searchTreeViewRef}
     >
-      <SearchInput onChange={search} />
+      <SearchInput onChange={search} onArrowDownKeyDown={focusOnTreeView} />
       <ControlledTreeView
         toExpand={toExpand}
         treeData={filteredTreeData}
@@ -241,6 +342,9 @@ export const SearchedTreeView = memo(function SearchedTreeView({
           deleteItemInTreeData(type);
           onItemDelete?.(type);
         }}
+        onArrowUpKeyDown={focusOnSearchInput}
+        onArrowDownKeyDown={scrollToBottom}
+        onEnterKeyDown={onEnterKeyDown}
       />
     </div>
   );

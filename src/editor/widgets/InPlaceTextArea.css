@@ -1,16 +1,15 @@
 .text-area {
   width: 100%;
-  height: 100%;
+  height: 100% !important;
   resize: none;
-  border: none;
   outline: none;
   padding: 0;
+  border: none;
   margin: 0;
   font-size: 14px;
   font-family: 'Roboto', sans-serif;
   color: #333;
   background-color: transparent;
-  overflow: auto;
   white-space: pre-wrap;
   box-sizing: border-box;
   -webkit-box-sizing: border-box;

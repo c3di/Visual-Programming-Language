@@ -1,0 +1,236 @@
+{
+  "description": "Flow control nodes are used to control the execution order of a program. They include sequence, for loop, if, and other nodes that can alter the flow based on conditions or iterations. ",
+  "enable": true,
+  "nodes": {
+    "Execute Start": {
+      "type": "Execute Start",
+      "category": "function",
+      "title": "Execute Start",
+      "tooltip": "The execute start point of the program",
+      "outputs": {
+        "execOut": {
+          "tooltip": "exec out",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        }
+      }
+    },
+    "Sequence": {
+      "type": "Sequence",
+      "category": "sequence",
+      "title": "Sequence",
+      "tooltip": "Execute a series of nodes in order",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "execIn",
+          "dataType": "exec"
+        }
+      },
+      "outputs": {
+        "execOut0": {
+          "title": "Then 0",
+          "tooltip": "Then 0",
+          "dataType": "exec",
+          "deletable": true
+        },
+        "execOut1": {
+          "title": "Then 1",
+          "tooltip": "Then 1",
+          "dataType": "exec",
+          "deletable": true
+        }
+      }
+    },
+    "If Else": {
+      "type": "If Else",
+      "category": "function",
+      "title": "If Else",
+      "tooltip": "If-Else Statement. If Condition is true, execution goes to True, otherwise it goes to False",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "condition": {
+          "title": "Condition",
+          "tooltip": "condition",
+          "dataType": "boolean",
+          "defaultValue": true
+        }
+      },
+      "outputs": {
+        "True": {
+          "title": "True",
+          "tooltip": "True",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": true
+        },
+        "False": {
+          "title": "False",
+          "tooltip": "False",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": true
+        }
+      }
+    },
+    "For Each Loop": {
+      "type": "For Each Loop",
+      "category": "function",
+      "title": "For Each Loop",
+      "tooltip": "Executes LoopBody for each element in Array",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "Array": {
+          "title": "Array",
+          "tooltip": "Array",
+          "dataType": "list",
+          "showWidget": false,
+          "showTitle": true
+        }
+      },
+      "outputs": {
+        "loopBody": {
+          "title": "Loop Body",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": true,
+          "tooltip": "Exec Out"
+        },
+        "ArrayElement": {
+          "title": "Array Element",
+          "tooltip": "Array Element",
+          "dataType": "any",
+          "showWidget": false,
+          "showTitle": true
+        },
+        "arrayIndex": {
+          "title": "Array Index",
+          "dataType": "integer",
+          "showWidget": false,
+          "showTitle": true
+        },
+        "complete": {
+          "title": "Completed",
+          "tooltip": "Exec Out",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": true
+        }
+      }
+    },
+    "For Loop": {
+      "type": "For Loop",
+      "category": "function",
+      "title": "For Loop",
+      "tooltip": "Executes LoopBody for each Index from StartIndex to StopIndex, inclusive",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "First Index": {
+          "title": "First Index",
+          "tooltip": "First Index",
+          "dataType": "integer"
+        },
+        "Last Index": {
+          "title": "Last Index",
+          "tooltip": "Last Index",
+          "dataType": "integer"
+        }
+      },
+      "outputs": {
+        "loopBody": {
+          "title": "Loop Body",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": true,
+          "tooltip": "Exec Out"
+        },
+        "Index": {
+          "title": "Index",
+          "dataType": "integer",
+          "showWidget": false,
+          "showTitle": true
+        },
+        "complete": {
+          "title": "Completed",
+          "tooltip": "exec out",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": true
+        }
+      }
+    },
+    "For Loop with Break": {
+      "type": "For Loop with Break",
+      "category": "function",
+      "title": "For Loop with Break",
+      "tooltip": "Executes LoopBody for each index FirstIndex to lastIndex, inclusive. If execution goes in to break the loop will exit without executing the remaining indices",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "First Index": {
+          "title": "First Index",
+          "tooltip": "First Index",
+          "dataType": "integer"
+        },
+        "Last Index": {
+          "title": "Last Index",
+          "tooltip": "Last Index",
+          "dataType": "integer"
+        },
+        "break": {
+          "title": "Break",
+          "tooltip": "Break",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": true
+        }
+      },
+      "outputs": {
+        "loopBody": {
+          "title": "Loop Body",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": true,
+          "tooltip": "Exec Out"
+        },
+        "Index": {
+          "title": "Index",
+          "dataType": "integer",
+          "showWidget": false,
+          "showTitle": true
+        },
+        "complete": {
+          "title": "Completed",
+          "tooltip": "exec out",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": true
+        }
+      }
+    }
+  }
+}

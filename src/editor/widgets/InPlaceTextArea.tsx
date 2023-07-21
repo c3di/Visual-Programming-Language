@@ -4,30 +4,37 @@ import './InPlaceTextArea.css';
 export default function InPlaceTextArea({
   text,
   initialRow = 1,
+  defaultEditable,
   onStartEdit,
   onStopEdit,
   onEditChange,
 }: {
   text?: string;
   initialRow?: number;
+  defaultEditable?: boolean;
   onStartEdit?: () => void;
   onStopEdit?: () => void;
   onEditChange?: (text: string) => void;
 }): JSX.Element {
-  const [currentText, setCurrentText] = useState(text ?? '');
-  const [editable, setEditable] = useState(false);
+  const [currentText, setCurrentText] = useState(text ?? 'comment');
+  const [editable, setEditable] = useState<boolean>(false);
   const inputAreaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     if (editable) {
       inputAreaRef.current?.focus();
       onStartEdit?.();
+      document.body.style.cursor = 'text';
     } else {
       inputAreaRef.current?.blur();
       onStopEdit?.();
     }
     updateTextAreaSize(inputAreaRef.current);
   }, [editable]);
+
+  useEffect(() => {
+    if (editable !== defaultEditable) setEditable(!!defaultEditable);
+  }, []);
 
   const updateTextAreaSize = useCallback(
     (target: HTMLTextAreaElement | null) => {
@@ -49,6 +56,7 @@ export default function InPlaceTextArea({
       }}
       onDoubleClick={(e) => {
         setEditable(true);
+        document.body.style.cursor = 'text';
       }}
     >
       {!editable && (
@@ -68,14 +76,9 @@ export default function InPlaceTextArea({
       {
         <textarea
           style={{
-            width: '100%',
             fontFamily: 'inherit',
             fontSize: 'inherit',
-            padding: '0px',
-            border: '0px',
             overflow: 'hidden',
-            height: '100%',
-            resize: 'none',
             wordWrap: 'break-word',
             display: editable ? 'block' : 'none',
           }}

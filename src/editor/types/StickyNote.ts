@@ -4,4 +4,5 @@ export interface StickyNote extends BasicNodeData {
   stickyNote: string;
   width?: number;
   height?: number;
+  defaultEditable?: boolean;
 }

@@ -7,4 +7,5 @@ export interface Handle {
   value?: any;
   showWidget?: boolean;
   showTitle?: boolean;
+  deletable?: boolean;
 }

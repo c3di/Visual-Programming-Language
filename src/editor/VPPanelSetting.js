@@ -2,7 +2,7 @@ const PanelSetting = {
   view: {
     zoomSize: [0.5, 2.0],
     snapToGrid: false,
-    snapGridSize: [25, 25],
+    snapGridSize: [16, 16],
     onlyRenderVisibleElements: true,
   },
   background: {
@@ -28,7 +28,7 @@ const PanelSetting = {
     selectedIfFullShapeCovered: true,
   },
   Edge: {
-    portDetectionRadius: 10,
+    portDetectionRadius: 10, // keep this value less than the distance between two ports
     type: 'default', // 'default(bezier)', 'smoothstep', 'step', 'straight', 'bezier'
   },
 };

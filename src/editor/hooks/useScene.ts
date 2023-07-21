@@ -18,13 +18,27 @@ import { type GraphState } from './useGraph';
 import { deserializer } from '../Deserializer';
 import useGui, { type IGui, type Command } from './useGui';
 import ContentPaste from '@mui/icons-material/ContentPaste';
+import ELK from 'elkjs/lib/elk.bundled.js';
 import {
   useReactFlow,
   getRectOfNodes,
   type XYPosition,
   type Node as RcNode,
+  type ReactFlowInstance,
 } from 'reactflow';
 import { UniqueNamePool, type IUniqueNamePool } from '../utils';
+import { copy, deepCopy, fromClientCoordToScene } from '../util';
+
+function nodeInsideOfNode(n: Node, containter: Node): boolean {
+  return (
+    n.position.x > containter.position.x &&
+    n.position.x + (n.width ?? 0) <
+      containter.position.x + (containter.width ?? 0) &&
+    n.position.y > containter.position.y &&
+    n.position.y + (n.height ?? 0) <
+      containter.position.y + (containter.height ?? 0)
+  );
+}
 
 export interface ISceneActions {
   getSelectedCounts: () => selectedElementsCounts;
@@ -33,14 +47,16 @@ export interface ISceneActions {
   selectEdge: (edgeId: string) => void;
   selectNode: (nodeId: string) => void;
   getNodeById: (nodeId: string) => Node | undefined;
-  addNode: (configType: string, thisPosition?: XYPosition, data?: any) => Node;
-  addEdge: (
-    source: string,
-    sourceHandle: string,
-    target: string,
-    targetHandle: string,
-    dataType?: string
-  ) => void;
+  addNode: (
+    configType: string,
+    thisPosition?: XYPosition,
+    data?: any,
+    positionOffset?: XYPosition
+  ) => Node;
+  addNodeWithSceneCoord: (
+    configType: string,
+    anchorPosition: { top: number; left: number }
+  ) => Node;
   setNodes: Dispatch<SetStateAction<Array<RcNode<any, string | undefined>>>>;
   setExtraCommands: Dispatch<SetStateAction<Command[]>>;
   clearEdgeSelection: () => void;
@@ -48,9 +64,9 @@ export interface ISceneActions {
   onNodeDragStart: (evt: any, node: Node) => void;
   onNodeDragStop: (evt: any, node: Node) => void;
   copySelectedNodeToClipboard: () => void;
-  pasteFromClipboard: (notUseMousePos?: boolean) => void;
+  pasteFromClipboard: () => void;
   deleteSelectedElements: () => void;
-  duplicateSelectedNodes: (notUseMousePos?: boolean) => void;
+  duplicateSelectedNodes: () => void;
   cutSelectedNodesToClipboard: () => void;
   clear: () => void;
   deleteEdge: (id: string) => void;
@@ -61,10 +77,12 @@ export interface ISceneActions {
   centerSelectedNodes: () => void;
   onNodesDelete: (nodes: Node[]) => void;
   selectedNodes: () => Node[];
+  sortZIndexOfComments: (nodes: Node[]) => Node[];
+  autoLayout: () => void;
+  deleteHandle: (nodeId: string, nodeType: string, handleId: string) => void;
 }
 export interface ISceneState {
   gui: IGui;
-  graphStateRef: React.MutableRefObject<GraphState>;
   anyConnectableNodeSelected: boolean;
   anyConnectionToSelectedNode: boolean;
   extraCommands: Command[];
@@ -78,78 +96,74 @@ export default function useScene(
   mousePos: React.MutableRefObject<{
     mouseX: number;
     mouseY: number;
-  }>
+  }>,
+  reactflowInstance: React.MutableRefObject<ReactFlowInstance | undefined>,
+  domReference: React.RefObject<HTMLDivElement>
 ): ISceneState {
-  const graphStateRef = useRef(graphState);
-  const { nodes, selectedNodes, edges, getFreeUniqueNodeIds } = graphState;
-  const nodesRefInCommentNode = useRef({});
+  const { selectedNodes, edges, getFreeUniqueNodeIds } = graphState;
   const [extraCommands, setExtraCommands] = useState<Command[]>([]);
-  const { setCenter, getZoom } = useReactFlow();
-  const onNodeDragStart = (evt: any, node: Node): void => {
-    nodes.forEach((node) => {
-      saveNodesInSelectedCommentNode(node, node.id);
-    });
-  };
+  const { setCenter, getZoom, project } = useReactFlow();
 
   const varsNamePool = useRef<IUniqueNamePool>(new UniqueNamePool());
   const funNamePool = useRef<IUniqueNamePool>(new UniqueNamePool());
 
   const gui = useGui();
-  const saveNodesInSelectedCommentNode = (
-    node: Node,
-    toBeDragNodeId: string
-  ): void => {
-    if (
-      !isCommentNode(node.data) ||
-      (!node?.selected && node.id !== toBeDragNodeId)
-    )
-      return;
-    const nodesInComment = nodes.filter(
-      (n) =>
-        !n.selected &&
-        n.position.x > node.position.x &&
-        n.position.x + (n.width ?? 0) < node.position.x + (node.width ?? 0) &&
-        n.position.y > node.position.y &&
-        n.position.y + (n.height ?? 0) < node.position.y + (node.height ?? 0) &&
-        n.id !== node.id &&
-        n.parentNode === undefined
-    );
-    if (!nodesInComment) return;
-    nodesRefInCommentNode.current = {
-      ...nodesRefInCommentNode.current,
-      [node.id]: nodesInComment,
-    };
-    // map to local coordinate
-    nodesInComment.forEach((part, index, nodes) => {
-      const n = nodes[index];
-      n.position = {
-        x: n.position.x - node.position.x,
-        y: n.position.y - node.position.y,
-      };
-      n.parentNode = node.id;
+  const saveNodesInSelectedCommentNode = (draggedNode: Node): void => {
+    graphState.setNodes((nodes) => {
+      nodes.forEach((n) => {
+        if (n.id === draggedNode.id && !n.selected) {
+          n.selected = true;
+        }
+      });
+      const selectedCommentNodes = nodes.filter(
+        (n) => isCommentNode(n.data) && n.selected
+      );
+
+      selectedCommentNodes.forEach((node) => {
+        const alreadyInComment = (n: Node): boolean => {
+          return n.parentNode === undefined;
+        };
+        const nodesInComment = nodes.filter(
+          (n) =>
+            !n.selected &&
+            nodeInsideOfNode(n, node) &&
+            n.id !== node.id &&
+            alreadyInComment(n)
+        );
+        if (!nodesInComment) return;
+        nodesInComment.forEach((n) => {
+          n.position.x -= node.position.x;
+          n.position.y -= node.position.y;
+          n.parentNode = node.id;
+        });
+      });
+      return nodes;
     });
   };
 
-  const clearNodesInSelectedCommentNode = (node: Node): void => {
-    if (!node || !isCommentNode(node.data)) return;
-    if (!nodesRefInCommentNode.current) return;
-    const nodesInComment = (nodesRefInCommentNode.current as any)[`${node.id}`];
-    if (!nodesInComment) return;
-    nodesInComment.forEach((part: any, index: number, nodes: Node[]) => {
-      const n = nodes[index];
-      n.position = {
-        x: n.position.x + node.position.x,
-        y: n.position.y + node.position.y,
-      };
-      n.parentNode = undefined;
+  const clearNodesInSelectedCommentNode = (): void => {
+    graphState.setNodes((nodes) => {
+      const newNodes = nodes.map((node) => {
+        if (node.parentNode) {
+          const parentNode = nodes.find(
+            (n) => n.id === node.parentNode
+          ) as Node;
+          node.position.x += parentNode.position.x;
+          node.position.y += parentNode.position.y;
+          node.parentNode = undefined;
+        }
+        return node;
+      });
+      sortZIndexOfComments(newNodes);
+      return newNodes;
     });
   };
 
+  const onNodeDragStart = (evt: any, node: Node): void => {
+    saveNodesInSelectedCommentNode(node);
+  };
   const onNodeDragStop = (evt: any, node: Node): void => {
-    nodes.forEach((node) => {
-      clearNodesInSelectedCommentNode(node);
-    });
-    nodesRefInCommentNode.current = {};
+    clearNodesInSelectedCommentNode();
   };
 
   const copySelectedNodeToClipboard = (): void => {
@@ -163,7 +177,7 @@ export default function useScene(
     const selectedNds = selectedNodes();
     if (selectedNds.length === 0) return;
     selectedNds.forEach((node) => {
-      clipboard.nodes[node.id] = node;
+      clipboard.nodes[node.id] = copy(node);
       clipboard.minX = Math.min(clipboard.minX, node.position.x);
       clipboard.minY = Math.min(clipboard.minY, node.position.y);
     });
@@ -177,16 +191,17 @@ export default function useScene(
       .writeText(clipboardStr)
       .then(() => {
         setExtraCommands((commands) => {
-          return [
-            ...commands,
-            {
-              name: 'Paste',
-              action: pasteFromClipboard,
-              labelIcon: ContentPaste,
-              labelInfo: 'Ctrl+V',
-              tooltip: 'Paste from the clipboard',
-            },
-          ];
+          const newCmd = {
+            name: 'Paste',
+            action: pasteFromClipboard,
+            labelIcon: ContentPaste,
+            labelInfo: 'Ctrl+V',
+            tooltip: 'Paste from the clipboard',
+          };
+          const index = commands.findIndex((cmd) => cmd.name === 'Paste');
+          if (index !== -1) {
+            return commands.splice(index, 1, newCmd);
+          } else return [...commands, newCmd];
         });
       })
       .catch((err) => {
@@ -194,7 +209,7 @@ export default function useScene(
       });
   };
 
-  const pasteFromClipboard = (notUseMousePos?: boolean): void => {
+  const pasteFromClipboard = (): void => {
     navigator.clipboard
       .readText()
       .then((text) => {
@@ -212,16 +227,8 @@ export default function useScene(
             id: newId,
             selected: true,
             position: {
-              x:
-                node.position.x -
-                Number(!notUseMousePos) *
-                  (clipboard.minX - mousePos.current.mouseX) +
-                10,
-              y:
-                node.position.y -
-                Number(!notUseMousePos) *
-                  (clipboard.minY - mousePos.current.mouseY) +
-                10,
+              x: node.position.x - (clipboard.minX - mousePos.current.mouseX),
+              y: node.position.y - (clipboard.minY - mousePos.current.mouseY),
             },
           };
           newNodes[id] = newNode as Node;
@@ -238,6 +245,45 @@ export default function useScene(
             target: targetId,
           };
         });
+
+        Object.values(newNodes).forEach((node) => {
+          Object.values(node.data.inputs ?? {}).forEach((input: any) => {
+            input.connection = 0;
+          });
+          Object.values(node.data.outputs ?? {}).forEach((output: any) => {
+            output.connection = 0;
+          });
+        });
+
+        for (const edge of newEdges) {
+          const sourceNode = getNodeByIdIn(
+            edge.source,
+            Object.values(newNodes)
+          );
+          const targetNode = getNodeByIdIn(
+            edge.target,
+            Object.values(newNodes)
+          );
+          if (!sourceNode || !targetNode) continue;
+          const sourceOutput = sourceNode.data.outputs[edge.sourceHandle!];
+          const targetInput = targetNode.data.inputs[edge.targetHandle!];
+          sourceOutput.connection++;
+          targetInput.connection++;
+        }
+
+        Object.values(newNodes).forEach((node) => {
+          if (node.data.configType === 'reroute') {
+            if (
+              node.data.inputs.input.connection === 0 &&
+              node.data.outputs.output.connection === 0
+            ) {
+              node.data.dataType = 'any';
+              node.data.inputs.input.dataType = 'any';
+              node.data.outputs.output.dataType = 'any';
+            }
+          }
+        });
+
         graphState.selectAll(false);
         graphState.addElements({
           newNodes: Object.values(newNodes),
@@ -249,9 +295,9 @@ export default function useScene(
       });
   };
 
-  const duplicateSelectedNodes = (notUseMousePos?: boolean): void => {
+  const duplicateSelectedNodes = (): void => {
     copySelectedNodeToClipboard();
-    pasteFromClipboard(notUseMousePos);
+    pasteFromClipboard();
   };
 
   const cutSelectedNodesToClipboard = (): void => {
@@ -260,13 +306,21 @@ export default function useScene(
   };
 
   const addNode = useCallback(
-    (configType: string, thisPosition?: XYPosition, data?: any): Node => {
+    (
+      configType: string,
+      thisPosition?: XYPosition,
+      data?: any,
+      positionOffset?: XYPosition
+    ): Node => {
       const id = getFreeUniqueNodeIds(1)[0];
       const position = thisPosition ?? {
         x: mousePos.current.mouseX,
         y: mousePos.current.mouseY,
       };
-
+      if (positionOffset) {
+        position.x += positionOffset.x;
+        position.y += positionOffset.y;
+      }
       const config = deserializer.serializedToGraphNodeConfig({
         id,
         title: data?.title,
@@ -281,6 +335,106 @@ export default function useScene(
       onNodeAdd(node);
       graphState.addElements({ newNodes: [node] });
       return node;
+    },
+    []
+  );
+
+  const addNodeWithSceneCoord = (
+    configType: string,
+    anchorPosition: { top: number; left: number }
+  ): Node => {
+    const node = addNode(
+      configType,
+      fromClientCoordToScene(
+        { clientX: anchorPosition.left, clientY: anchorPosition.top },
+        domReference,
+        project
+      )
+    );
+    return node;
+  };
+
+  const deleteHandle = (
+    nodeId: string,
+    configType: string,
+    handleId: string
+  ): void => {
+    if (configType.includes('CreateFunction')) {
+      deleteOutputHandleOfCreateFunction(nodeId, handleId);
+    } else if (configType.includes('Return')) {
+      deleteInputHandleOfReturnNode(nodeId, handleId);
+    } else if (configType.includes('Sequence')) {
+      deleteHandleOfSequenceNode(nodeId, handleId);
+    }
+  };
+
+  const deleteHandleOfSequenceNode = (
+    nodeId: string,
+    handleId: string
+  ): void => {
+    graphState.setNodes((nds) => {
+      return nds.map((nd) => {
+        if (nd.id === nodeId) {
+          const { [handleId]: _, ...remained } = nd.data.outputs;
+          Object.keys(remained).forEach((key, index) => {
+            const newTitle = `Then ${index}`;
+            remained[key].title = newTitle;
+          });
+          nd.data.outputs = remained;
+        }
+
+        return nd;
+      });
+    });
+  };
+
+  const deleteOutputHandleOfCreateFunction = (
+    nodeId: string,
+    handleId: string
+  ): void => {
+    graphState.setNodes((nds) => {
+      return nds.map((nd) => {
+        if (nd.id === nodeId) {
+          const { [handleId]: _, ...remained } = nd.data.outputs;
+          nd.data.outputs = remained;
+        }
+        if (nd.data.nodeRef === nodeId) {
+          const { [handleId]: _, ...remained } = nd.data.inputs;
+          nd = {
+            ...nd,
+            data: {
+              ...nd.data,
+              inputs: remained,
+            },
+          };
+        }
+        return nd;
+      });
+    });
+  };
+
+  const deleteInputHandleOfReturnNode = useCallback(
+    (nodeId: string, handleId: string) => {
+      graphState.setNodes((nds) => {
+        return nds.map((nd) => {
+          if (nd.id === nodeId) {
+            const { [handleId]: _, ...remained } = nd.data.inputs;
+            nd.data.inputs = remained;
+          }
+          const ref = graphState.getNodeById(nd.data.nodeRef);
+          if (ref?.data.nodeRef === nodeId) {
+            const { [handleId]: _, ...remained } = nd.data.outputs;
+            nd = {
+              ...nd,
+              data: {
+                ...nd.data,
+                outputs: remained,
+              },
+            };
+          }
+          return nd;
+        });
+      });
     },
     []
   );
@@ -305,7 +459,10 @@ export default function useScene(
               node.data.inputs.name.value ?? node.data.inputs.name.defaultValue,
             action: (
               item: any,
-              e: React.MouseEvent<HTMLLIElement> | undefined
+              e:
+                | React.MouseEvent<HTMLLIElement>
+                | undefined
+                | { clientX: number; clientY: number }
             ) => {
               const position = {
                 left: e?.clientX ?? 0,
@@ -335,25 +492,25 @@ export default function useScene(
               item: any,
               e: React.MouseEvent<HTMLLIElement> | undefined
             ) => {
-              const latest = graphState.getNodeById(node.id)!;
+              const latest = deepCopy(graphState.getNodeById(node.id));
               Object.values(latest.data.outputs).forEach((output: any) => {
                 output.showWidget = false;
                 output.showTitle = output.dataType !== 'exec';
                 output.connection = 0;
               });
               const outputs: Record<string, any> = {
-                execOut: {
-                  title: 'execOut',
+                functionCallExecOut: {
+                  title: 'functionCallExecOut', // hardcode
                   dataType: 'exec',
                   showWidget: false,
                   showTitle: false,
                 },
               };
               const returnNodeId = latest?.data?.nodeRef;
-              const returnNode = graphState.getNodeById(returnNodeId);
+              const returnNode = deepCopy(graphState.getNodeById(returnNodeId));
               Object.keys(returnNode?.data.inputs ?? {}).forEach(
                 (name: string) => {
-                  const input = returnNode!.data.inputs[name];
+                  const input = returnNode.data.inputs[name];
                   if (input.dataType === 'exec') return;
                   input.showWidget = false;
                   input.showTitle = true;
@@ -374,6 +531,11 @@ export default function useScene(
           },
         ];
       });
+    } else if (node.type === 'comment') {
+      let nds = graphState.getNodes();
+      nds.push(node);
+      nds = sortZIndexOfComments(nds);
+      graphState.setNodes(nds.filter((n) => n.id !== node.id));
     }
   };
 
@@ -442,29 +604,6 @@ export default function useScene(
     });
   }
 
-  const addEdge = useCallback(
-    (
-      inputId: string,
-      inputHandle: string,
-      outputId: string,
-      outputHandle: string,
-      dataType?: string
-    ): Edge => {
-      const id = `e${inputId}-${inputHandle}-${outputId}-${outputHandle}`;
-      const edge = deserializer.configToEdge({
-        id,
-        input: inputId,
-        inputHandle,
-        output: outputId,
-        outputHandle,
-        dataType,
-      });
-      graphState.addElements({ newEdges: [edge] });
-      return edge;
-    },
-    []
-  );
-
   const centerSelectedNodes = (): void => {
     const nodes = selectedNodes();
     if (nodes.length === 0) return;
@@ -480,11 +619,73 @@ export default function useScene(
     graphState.deleteSelectedElements();
   };
 
+  function sortZIndexOfComments(nodes: Node[]): Node[] {
+    const selectedCommentNodes = nodes.filter((n) => isCommentNode(n.data));
+    const nodesInSizeAsec = selectedCommentNodes.sort((a, b) => {
+      return (
+        (a.width ?? 0) * (a.height ?? 0) - (b.width ?? 0) * (b.height ?? 0)
+      );
+    });
+    const hasChild: Record<string, boolean> = {};
+    for (let i = 0; i < nodesInSizeAsec.length; i++) {
+      for (let j = i + 1; j < nodesInSizeAsec.length; j++) {
+        if (!hasChild[nodesInSizeAsec[i].id]) nodesInSizeAsec[i].zIndex = -1001;
+        if (nodeInsideOfNode(nodesInSizeAsec[i], nodesInSizeAsec[j])) {
+          nodesInSizeAsec[j].zIndex = Math.min(
+            nodesInSizeAsec[j].zIndex!,
+            nodesInSizeAsec[i].zIndex! - 1001
+          );
+          hasChild[nodesInSizeAsec[j].id] = true;
+          break;
+        }
+      }
+    }
+    return nodes;
+  }
+
+  const autoLayout = useCallback(() => {
+    const ns = graphState.getNodes();
+    const es = graphState.getEdges();
+    getLayoutedElements(ns, es).then(
+      ({ nodes, edges }: { nodes: any[]; edges: Edge[] }) => {
+        const flattenNds: any[] = [];
+        nodes.forEach((node) => {
+          flattenNode(node, flattenNds);
+        });
+
+        flattenNds.forEach((node) => {
+          delete node.ports;
+          delete node.x;
+          delete node.y;
+          delete node.edges;
+          delete node.layoutOptions;
+        });
+        graphState.setNodes((nodes) => {
+          const newNodes = nodes.map((node) => {
+            const n = flattenNds.find((n) => n.id === node.id);
+            if (n) {
+              return { ...node, position: n.position };
+            }
+            return node;
+          });
+          return newNodes;
+        });
+        graphState.setNodes(flattenNds);
+        window.requestAnimationFrame(() => {
+          window.requestAnimationFrame(() => {
+            window.requestAnimationFrame(() => {
+              reactflowInstance.current?.fitView();
+            });
+          });
+        });
+      }
+    );
+  }, []);
+
   return {
     gui,
     varsNamePool,
     funNamePool,
-    graphStateRef,
     anyConnectableNodeSelected: graphState.anyConnectableNodeSelected,
     anyConnectionToSelectedNode: graphState.anyConnectionToSelectedNode,
     extraCommands,
@@ -495,7 +696,7 @@ export default function useScene(
       selectNode: graphState.selectNode,
       selectEdge: graphState.selectEdge,
       addNode,
-      addEdge,
+      addNodeWithSceneCoord,
       setNodes: graphState.setNodes,
       setExtraCommands,
       selectAll: graphState.selectAll,
@@ -517,6 +718,142 @@ export default function useScene(
       centerSelectedNodes,
       onNodesDelete,
       selectedNodes: graphState.selectedNodes,
+      sortZIndexOfComments,
+      autoLayout,
+      deleteHandle,
     },
   };
+}
+
+// ref from https://reactflow.dev/docs/examples/layout/elkjs/
+const elk = new ELK();
+const layoutOptions = {
+  algorithm: 'layered',
+  edgeRouting: 'SPLINES',
+  'layered.spacing.nodeNodeBetweenLayers': '48',
+  'elk.layered.nodePlacement.strategy': 'LINEAR_SEGMENTS',
+  hierarchyHandling: 'INCLUDE_CHILDREN',
+};
+
+const getLayoutedElements = (nodes: any, edges: any): any => {
+  const elkNodes = nodes.map((node: any) => {
+    const nodeRect = document
+      .querySelector(`[data-id="${String(node.id)}"]`)
+      ?.getBoundingClientRect();
+    const scale = Number(nodeRect?.width) / Number(node?.width);
+    const inputPorts = Object.keys(node.data.inputs ?? {}).map((key) => {
+      const handleRect = document
+        .querySelector(`[data-id="${String(node.id)}-${key}-target"]`)
+        ?.getBoundingClientRect();
+      return {
+        id: 'p' + String(node.id) + String(key),
+        x: ((handleRect?.x ?? 0) - (nodeRect?.x ?? 0)) / scale,
+        y: ((handleRect?.y ?? 0) - (nodeRect?.y ?? 0)) / scale,
+        height: Number(handleRect?.height) / scale ?? 20,
+        width: Number(handleRect?.width) / scale ?? 16,
+      };
+    });
+    const outputPorts = Object.keys(node.data.outputs ?? {}).map((key) => {
+      const handleRect = document
+        .querySelector(`[data-id="${String(node.id)}-${key}-source"]`)
+        ?.getBoundingClientRect();
+      return {
+        id: 'p' + String(node.id) + String(key),
+        x: ((handleRect?.x ?? 0) - (nodeRect?.x ?? 0)) / scale,
+        y: ((handleRect?.y ?? 0) - (nodeRect?.y ?? 0)) / scale,
+        height: Number(handleRect?.height) / scale ?? 20,
+        width: Number(handleRect?.width) / scale ?? 16,
+      };
+    });
+    return {
+      ...node,
+      ports: [...inputPorts, ...outputPorts],
+      layoutOptions: { portConstraints: 'FIXED_POS' },
+    };
+  });
+  const elkEdges = edges.map((edge: any) => ({
+    id: edge.id,
+    sources: ['p' + String(edge.source) + String(edge.sourceHandle)],
+    targets: ['p' + String(edge.target) + String(edge.targetHandle)],
+  }));
+
+  const comments = elkNodes.filter((node: Node) => node.type === 'comment');
+  const commentNodesInSizeOrderAsec = comments.sort(
+    (a: Node, b: Node) =>
+      (a.width ?? 0) * (a.height ?? 0) - (b.width ?? 0) * (b.height ?? 0)
+  );
+
+  const rootNodes: any[] = [];
+  elkNodes.forEach((node: any) => {
+    node.parentId = undefined;
+    for (const comment of commentNodesInSizeOrderAsec) {
+      if (nodeInsideOfNode(node, comment)) {
+        if (!comment.children) {
+          comment.children = [];
+        }
+        comment.children.push(node);
+        node.parentId = comment.id;
+        break;
+      }
+    }
+    if (node.parentId === undefined) {
+      rootNodes.push(node);
+    }
+  });
+
+  commentNodesInSizeOrderAsec.forEach((comment: any) => {
+    if (!comment.children) return;
+    delete comment.width;
+    delete comment.height;
+  });
+
+  const graph = {
+    id: 'root',
+    children: rootNodes,
+    edges: elkEdges,
+    layoutOptions,
+  };
+  return elk
+    .layout(graph, {
+      layoutOptions: {
+        'elk.padding': '[top=32.0,left=16.0,bottom=16.0,right=16.0]',
+      },
+    })
+    .then((layoutedGraph) => ({
+      nodes: layoutedGraph.children ?? [],
+      edges: layoutedGraph.edges,
+    }))
+    .catch(console.error);
+};
+
+function flattenNode(
+  node: any,
+  nds: any[],
+  parentPosition?: { x: number; y: number }
+): void {
+  node.position = {
+    x: Number(node.x) + Number(parentPosition?.x ?? 0),
+    y: Number(node.y) + Number(parentPosition?.y ?? 0),
+  };
+
+  if (node.type === 'comment') {
+    node.data.width = node.width;
+    node.data.height = node.height;
+  }
+  nds.push(node);
+  if (node.children) {
+    node.children.forEach((child: any) => {
+      flattenNode(child, nds, { x: node.position.x, y: node.position.y });
+    });
+    delete node.children;
+  }
+}
+
+function getNodeByIdIn(id: string, Nodes: Node[]): Node | undefined {
+  for (const node of Nodes) {
+    if (node.id === id) {
+      return node;
+    }
+  }
+  return undefined;
 }

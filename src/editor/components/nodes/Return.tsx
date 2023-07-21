@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useRef } from 'react';
 import { IconButton } from '@mui/material';
-import { AddCircle, RemoveCircle } from '@mui/icons-material';
+import { AddCircle } from '@mui/icons-material';
 import { SourceHandle, TargetHandle } from '../handles';
 import { type HandleData, type ConnectableData, DataTypes } from '../../types';
 import { useSceneState, useWidgetFactory } from '../../Context';
@@ -27,28 +27,6 @@ export function ParameterHandle({
   }
   const { setNodes, deleteAllEdgesOfHandle, getNodeById } =
     useSceneState()?.sceneActions ?? {};
-  const removeHandle = useCallback(() => {
-    setNodes?.((nds) => {
-      return nds.map((nd) => {
-        if (nd.id === nodeId) {
-          const { [id]: _, ...remeined } = nd.data.inputs;
-          nd.data.inputs = remeined;
-        }
-        const ref = getNodeById?.(nd.data.nodeRef);
-        if (ref?.data.nodeRef === nodeId) {
-          const { [id]: _, ...remeined } = nd.data.outputs;
-          nd = {
-            ...nd,
-            data: {
-              ...nd.data,
-              outputs: remeined,
-            },
-          };
-        }
-        return nd;
-      });
-    });
-  }, []);
   const onDatatypeChange = useCallback((value: string) => {
     setNodes?.((nds) => {
       return nds.map((nd) => {
@@ -94,6 +72,7 @@ export function ParameterHandle({
     <div
       className={'parameter-handle'}
       style={{ display: 'flex', alignItems: 'center', gap: '5px' }}
+      title={handleData.tooltip}
     >
       <RCHandle
         className={`vp-rc-handle-${handleData.dataType ?? 'default'} ${
@@ -166,13 +145,6 @@ export function ParameterHandle({
           )}
         </div>
       )}
-      <IconButton
-        style={{ padding: 1 }}
-        title="remove this"
-        onClick={removeHandle}
-      >
-        <RemoveCircle style={{ width: '20px', height: '20px' }} />
-      </IconButton>
     </div>
   );
 }
@@ -192,6 +164,7 @@ function Return({
       dataType: 'any',
       title: `new-in-${handleCount.current}`,
       showWidget: false,
+      deletable: true,
     };
     setNodes?.((nds) => {
       return nds.map((nd) => {
@@ -221,7 +194,7 @@ function Return({
   const inputhandles = [];
   for (const inputId in data.inputs) {
     const handle = data.inputs[inputId];
-    if (data.inputs[inputId].title === 'execIn')
+    if (handle.title === 'execIn')
       inputhandles.push(
         <TargetHandle
           key={inputId}
@@ -229,7 +202,7 @@ function Return({
           nodeId={id}
           showWidget={!!handle.showWidget || handle.showWidget === undefined}
           showTitle={false}
-          handleData={handle}
+          handleData={{ ...handle, tooltip: 'exec in' }}
         />
       );
     else {
@@ -238,7 +211,10 @@ function Return({
           key={inputId}
           id={inputId}
           nodeId={id}
-          handleData={data.inputs[inputId]}
+          handleData={{
+            ...handle,
+            tooltip: `the return value of ${String(handle.title)}`,
+          }}
           showLabel={data.title === 'Return'}
           handleType="target"
           handlePosition={Position.Left}
@@ -254,7 +230,7 @@ function Return({
         key={outputId}
         id={outputId}
         nodeId={id}
-        handleData={data.outputs[outputId]}
+        handleData={handle}
         showWidget={!!handle.showWidget}
         showTitle={false}
       />
@@ -263,7 +239,7 @@ function Return({
   inputhandles.push(
     <div
       className="target-handle"
-      title="create a new"
+      title="add a new return value"
       key={'create-new-button'}
     >
       <IconButton style={{ padding: 1 }} onClick={addNewHandle}>

@@ -1,5 +1,4 @@
 {
-  "notShowInMenu": true,
   "nodes": {
     "setter": {
       "notShowInMenu": true,
@@ -12,9 +11,7 @@
       "category": "getter",
       "tooltip": "Return the value",
       "outputs": {
-        "getter": {
-          "tooltip": "getter handle"
-        }
+        "getter": {}
       }
     }
   }

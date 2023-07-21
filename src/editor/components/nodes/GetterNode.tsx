@@ -18,7 +18,10 @@ function GetterNode({
         key={outputId}
         id={outputId}
         nodeId={id}
-        handleData={data.outputs[outputId]}
+        handleData={{
+          ...data.outputs[outputId],
+          tooltip: `return the value of ${data.outputs[outputId].title ?? ''} `,
+        }}
         showWidget={false}
         showTitle={true}
       />

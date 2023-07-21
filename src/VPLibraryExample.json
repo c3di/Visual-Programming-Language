@@ -50,18 +50,14 @@
       "category": "getter",
       "tooltip": "Return the value",
       "outputs": {
-        "getter": {
-          "tooltip": "getter handle"
-        }
+        "getter": {}
       }
     },
     "setter": {
       "type": "setter",
       "category": "setter",
       "inputs": {
-        "setter": {
-          "tooltip": "setter handle"
-        }
+        "setter": {}
       }
     },
     "literal": {
