@@ -146,6 +146,31 @@
           "showTitle": true
         }
       }
+    },
+    "sequence": {
+      "type": "sequence",
+      "category": "sequence",
+      "title": "Sequence",
+      "tooltip": "Execute a series of nodes in order",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "execIn",
+          "dataType": "exec"
+        }
+      },
+      "outputs": {
+        "execOut0": {
+          "title": "Then 0",
+          "tooltip": "Then 0",
+          "dataType": "exec"
+        },
+        "execOut1": {
+          "title": "Then 1",
+          "tooltip": "Then 1",
+          "dataType": "exec"
+        }
+      }
     }
   }
 }

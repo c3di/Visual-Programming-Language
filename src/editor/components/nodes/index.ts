@@ -10,6 +10,7 @@ import CreateVariable from './CreateVariable';
 import CreateFunction from './CreateFunction';
 import FunctionCall from './FunctionCall';
 import Return from './Return';
+import Sequence from './Sequence';
 import './index.css';
 
 const VisualNodeTypes = {
@@ -24,7 +25,7 @@ const VisualNodeTypes = {
   createVariable: CreateVariable,
   createFunction: CreateFunction,
   functionCall: FunctionCall,
-
+  sequence: Sequence,
   return: Return,
 };
 
