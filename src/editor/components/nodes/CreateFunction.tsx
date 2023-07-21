@@ -284,7 +284,7 @@ function CreateFunction({
   return (
     <div
       title={`add a new function named ${title}`}
-      className="vp-node-containter"
+      className="vp-node-container"
     >
       <div className="node__header">
         <InplaceInput
@@ -296,8 +296,8 @@ function CreateFunction({
         />
       </div>
       <div className="node__body">
-        <div className="vp-node-handles-containter">{inputhandles}</div>
-        <div className="vp-node-handles-containter">{outputHandles}</div>
+        <div className="vp-node-handles-container">{inputhandles}</div>
+        <div className="vp-node-handles-container">{outputHandles}</div>
       </div>
     </div>
   );
