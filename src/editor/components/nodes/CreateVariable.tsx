@@ -184,7 +184,7 @@ function CreateVariable({
     );
   }
   return (
-    <div title={data.tooltip} className="vp-node-containter">
+    <div title={data.tooltip} className="vp-node-container">
       <div className="node__header">
         <strong>{data.title}</strong>
       </div>

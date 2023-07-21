@@ -230,7 +230,7 @@ function Return({
   inputhandles.push(
     <div
       className="target-handle"
-      title="create a new return value"
+      title="add a new return value"
       key={'create-new-button'}
     >
       <IconButton style={{ padding: 1 }} onClick={addNewHandle}>
@@ -242,13 +242,13 @@ function Return({
   const { setNodes } = useSceneState()?.sceneActions ?? {};
 
   return (
-    <div title={data.tooltip} className="vp-node-containter">
+    <div title={data.tooltip} className="vp-node-container">
       <div className="node__header">
         <strong>{data.title}</strong>
       </div>
       <div className="node__body">
-        <div className="vp-node-handles-containter">{inputhandles}</div>
-        <div className="vp-node-handles-containter">{outputHandles}</div>
+        <div className="vp-node-handles-container">{inputhandles}</div>
+        <div className="vp-node-handles-container">{outputHandles}</div>
       </div>
     </div>
   );

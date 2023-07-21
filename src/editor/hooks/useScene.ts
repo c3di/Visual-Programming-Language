@@ -363,7 +363,29 @@ export default function useScene(
       deleteOutputHandleOfCreateFunction(nodeId, handleId);
     } else if (configType.includes('Return')) {
       deleteInputHandleOfReturnNode(nodeId, handleId);
+    } else if (configType.includes('Sequence')) {
+      deleteHandleOfSequenceNode(nodeId, handleId);
     }
+  };
+
+  const deleteHandleOfSequenceNode = (
+    nodeId: string,
+    handleId: string
+  ): void => {
+    graphState.setNodes((nds) => {
+      return nds.map((nd) => {
+        if (nd.id === nodeId) {
+          const { [handleId]: _, ...remained } = nd.data.outputs;
+          Object.keys(remained).forEach((key, index) => {
+            const newTitle = `Then ${index}`;
+            remained[key].title = newTitle;
+          });
+          nd.data.outputs = remained;
+        }
+
+        return nd;
+      });
+    });
   };
 
   const deleteOutputHandleOfCreateFunction = (

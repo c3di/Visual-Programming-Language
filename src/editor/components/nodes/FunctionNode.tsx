@@ -17,14 +17,8 @@ function FunctionNode({
         key={inputId}
         id={inputId}
         nodeId={id}
-        showWidget={
-          (!!handle.showWidget || handle.showWidget === undefined) &&
-          handle.dataType !== 'exec'
-        }
-        showTitle={
-          (!!handle.showTitle || handle.showTitle === undefined) &&
-          handle.dataType !== 'exec'
-        }
+        showWidget={!!handle.showWidget || handle.showWidget === undefined}
+        showTitle={!!handle.showTitle || handle.showTitle === undefined}
         handleData={{
           ...handle,
           tooltip:
@@ -51,10 +45,7 @@ function FunctionNode({
               : `return value of ${handle.title ?? ''}`,
         }}
         showWidget={!!handle.showWidget && handle.dataType !== 'exec'}
-        showTitle={
-          (!!handle.showTitle || handle.showTitle === undefined) &&
-          handle.dataType !== 'exec'
-        }
+        showTitle={!!handle.showTitle || handle.showTitle === undefined}
       />
     );
   }
