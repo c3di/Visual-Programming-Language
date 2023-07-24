@@ -342,9 +342,31 @@ const Scene = ({
             gui.connectionStartNodeId.current = params.nodeId;
             closeWidget(null, true);
           }}
-          onConnectEnd={() => {
+          onConnectEnd={(e) => {
+            // // how to add useCallBack here?
+            const targetIsPane = (
+              event?.target as HTMLElement
+            )?.classList.contains('react-flow__pane');
+            if (targetIsPane) {
+              e.preventDefault();
+              sceneActions?.selectAll(false);
+              const { clientX, clientY } = event as MouseEvent;
+              gui.openWidget(
+                'search',
+                {
+                  left: clientX,
+                  top: clientY,
+                },
+                {
+                  addNode: sceneActions?.addNode,
+                  addNodeWithSceneCoord: sceneActions?.addNodeWithSceneCoord,
+                  clear: sceneActions?.clear,
+                  autoLayout: sceneActions?.autoLayout,
+                  moreCommands: sceneState?.extraCommands,
+                }
+              );
+            }
             gui.connectionStartNodeId.current = null;
-            gui.closeWidget();
           }}
           attributionPosition="top-right"
           nodeTypes={componentType.nodeTypes}
