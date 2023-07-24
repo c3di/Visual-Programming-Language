@@ -28,6 +28,8 @@ import {
 } from 'reactflow';
 import { UniqueNamePool, type IUniqueNamePool } from '../utils';
 import { copy, deepCopy, fromClientCoordToScene } from '../util';
+import Mustache from 'mustache';
+import { type Handle } from '../types/Handle';
 
 function nodeInsideOfNode(n: Node, containter: Node): boolean {
   return (
@@ -80,6 +82,7 @@ export interface ISceneActions {
   sortZIndexOfComments: (nodes: Node[]) => Node[];
   autoLayout: () => void;
   deleteHandle: (nodeId: string, nodeType: string, handleId: string) => void;
+  sourceCode: () => string;
 }
 export interface ISceneState {
   gui: IGui;
@@ -684,6 +687,140 @@ export default function useScene(
     );
   }, []);
 
+  const sourceCode = (): string => {
+    const startNode = graphState
+      .getNodes()
+      .find((n) => n.data.configType.includes('Start'));
+    const indentLevel = 0;
+    return startNode ? sourceCodeStartFrom(startNode, indentLevel) : '';
+  };
+
+  const isExecNode = (node: Node): boolean => {
+    return (
+      !!Object.values(node.data.inputs ?? {}).find(
+        (input: any) => input.dataType === 'exec'
+      ) ||
+      !!Object.values(node.data.outputs ?? {}).find(
+        (output: any) => output.dataType === 'exec'
+      )
+    );
+  };
+
+  const getSourceCodeOfInputDataHandle = (
+    nodeId: string,
+    handleId: string,
+    handle: Handle,
+    indentLevel: number
+  ): { prerequisites: string | null; source: string } => {
+    if (!handle.connection) {
+      return {
+        prerequisites: null,
+        source: handle.value ?? handle.defaultValue ?? null,
+      };
+    }
+    const { Nodes: outputNodes } = graphState.getConnectedNodes(
+      nodeId,
+      handleId
+    );
+    const outputHandleName = getUniqueNameOfHandle(outputNodes[0].id, handleId);
+    if (isExecNode(outputNodes[0]))
+      return {
+        prerequisites: null,
+        source: outputHandleName,
+      };
+    let prerequisites = '';
+    const inputs: string[] = [];
+    const connectedNode = outputNodes[0];
+    for (const id in connectedNode.data.inputs ?? {}) {
+      const { prerequisites: prerequisitesOfInput, source } =
+        getSourceCodeOfInputDataHandle(
+          connectedNode.id,
+          id,
+          connectedNode.data.inputs[id],
+          indentLevel
+        );
+      if (prerequisitesOfInput) prerequisites += prerequisitesOfInput;
+      inputs.push(source);
+    }
+    const outputs: string[] = [];
+    for (const id in connectedNode.data.outputs ?? {}) {
+      outputs.push(getUniqueNameOfHandle(connectedNode.id, id));
+    }
+    if (!connectedNode.data.sourceCode)
+      console.error(
+        `no source code found for node ${connectedNode.data.type as string}`
+      );
+    else {
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+      prerequisites += Mustache.render(connectedNode.data.sourceCode, {
+        inputs,
+        outputs,
+        indent: '\t'.repeat(indentLevel),
+      });
+    }
+    return { prerequisites, source: outputHandleName };
+  };
+  const sourceCodeStartFrom = (
+    node: Node | undefined,
+    indentLevel: number
+  ): string => {
+    if (!node?.data) return '';
+    let source = '';
+    if (!node.data.sourceCode) {
+      console.error(
+        `no source code found for node ${node.data.configType as string}`
+      );
+      return source;
+    }
+    const inputs: string[] = [];
+    for (const id in node.data.inputs ?? {}) {
+      const input = node.data.inputs[id];
+      if (input.dataType === 'exec') inputs.push('');
+      else {
+        const { prerequisites, source: inputSource } =
+          getSourceCodeOfInputDataHandle(node.id, id, input, indentLevel);
+        if (prerequisites) source += prerequisites;
+        inputs.push(inputSource);
+      }
+    }
+    const outputs: string[] = [];
+    for (const id in node.data.outputs ?? {}) {
+      const output = node.data.outputs[id];
+      if (output.dataType === 'exec') {
+        const nextNode = graphState.getConnectedNodes(node.id, id).Nodes[0];
+        outputs.push(
+          sourceCodeStartFrom(nextNode, indentLevel + getIndentOfNode(node, id))
+        );
+      } else outputs.push(getUniqueNameOfHandle(node.id, id));
+    }
+    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+    source += Mustache.render(node.data.sourceCode, {
+      inputs,
+      outputs,
+      indent: '\t'.repeat(indentLevel),
+    }).trimEnd();
+    return source;
+  };
+
+  const getIndentOfNode = (
+    node: Node | undefined,
+    handleId: string
+  ): number => {
+    if (!node) return 0;
+    if (
+      node.data.configType.includes('If Else') ||
+      ((node.data.configType.includes('For Each Loop') ||
+        node.data.configType.includes('For Loop')) &&
+        handleId === 'loopBody')
+    )
+      return 1;
+    return 0;
+  };
+
+  const getUniqueNameOfHandle = (nodeId: string, handleId: string): string => {
+    return `Node_${nodeId}_${handleId}_Handle`;
+  };
+
   return {
     gui,
     varsNamePool,
@@ -723,6 +860,7 @@ export default function useScene(
       sortZIndexOfComments,
       autoLayout,
       deleteHandle,
+      sourceCode,
     },
   };
 }

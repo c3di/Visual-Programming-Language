@@ -187,6 +187,7 @@ export class Deserializer {
         outputs,
         configType: type,
         nodeRef,
+        sourceCode: config.sourceCode,
       },
     };
   };

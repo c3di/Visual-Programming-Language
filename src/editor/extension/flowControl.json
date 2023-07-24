@@ -7,6 +7,7 @@
       "category": "function",
       "title": "Execute Start",
       "tooltip": "The execute start point of the program",
+      "sourceCode": "{{{outputs.0}}}",
       "outputs": {
         "execOut": {
           "tooltip": "exec out",
@@ -41,7 +42,8 @@
           "dataType": "exec",
           "deletable": true
         }
-      }
+      },
+      "sourceCode": "{{#outputs}}{{{.}}}\n{{/outputs}}"
     },
     "If Else": {
       "type": "If Else",
@@ -78,7 +80,8 @@
           "showWidget": false,
           "showTitle": true
         }
-      }
+      },
+      "sourceCode": "{{indent}}if {{inputs.1}}:\n{{{outputs.0}}}\n{{indent}}else:\n{{{outputs.1}}}"
     },
     "For Each Loop": {
       "type": "For Each Loop",
@@ -129,7 +132,8 @@
           "showWidget": false,
           "showTitle": true
         }
-      }
+      },
+      "sourceCode": "{{indent}}for {{outputs.2}}, {{outputs.1}} in enumerate({{{inputs.1}}}):\n{{{outputs.0}}}\n{{{outputs.3}}}"
     },
     "For Loop": {
       "type": "For Loop",
@@ -176,7 +180,8 @@
           "showWidget": false,
           "showTitle": true
         }
-      }
+      },
+      "sourceCode": "{{indent}}for {{outputs.1}} in range(inputs.1, inputs.2):\n{{{outputs.0}}}\n{{{outputs.2}}}"
     },
     "For Loop with Break": {
       "type": "For Loop with Break",
