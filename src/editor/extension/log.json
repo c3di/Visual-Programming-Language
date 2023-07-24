@@ -1,0 +1,37 @@
+{
+  "description": "This library provides functions for printing string.",
+  "enable": true,
+  "nodes": {
+    "Print": {
+      "type": "Print",
+      "category": "function",
+      "title": "Print",
+      "tooltip": "Prints a string",
+      "sourceCode": "{{indent}}print({{{inputs.1}}})\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+
+        "input": {
+          "title": "In String",
+          "tooltip": "The string to print",
+          "dataType": "string",
+          "defaultValue": "Hello"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "tooltip": "exec out",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        }
+      }
+    }
+  }
+}

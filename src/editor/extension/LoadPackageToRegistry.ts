@@ -1,5 +1,6 @@
 import buildin from './buildin.json';
 import flowControl from './flowControl.json';
+import log from './log.json';
 import { nodeConfigRegistry } from './NodeConfigRegistry';
 import { addNewType, type NodePackage, type NodeConfig } from '../types';
 /*
@@ -138,4 +139,5 @@ export const LoadPackageToRegistry = (
 export const LoadDefaultModule = (): void => {
   LoadPackageToRegistry('', buildin);
   LoadPackageToRegistry('Flow Control', flowControl);
+  LoadPackageToRegistry('Log', log);
 };
