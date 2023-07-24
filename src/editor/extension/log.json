@@ -2,10 +2,10 @@
   "description": "This library provides functions for printing string.",
   "enable": true,
   "nodes": {
-    "Print": {
-      "type": "Print",
+    "Print String": {
+      "type": "Print String",
       "category": "function",
-      "title": "Print",
+      "title": "Print String",
       "tooltip": "Prints a string",
       "sourceCode": "{{indent}}print({{{inputs.1}}})\n{{{outputs.0}}}",
       "inputs": {
