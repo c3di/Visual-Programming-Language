@@ -343,7 +343,6 @@ const Scene = ({
             closeWidget(null, true);
           }}
           onConnectEnd={(e) => {
-            // // how to add useCallBack here?
             const targetIsPane = (
               event?.target as HTMLElement
             )?.classList.contains('react-flow__pane');

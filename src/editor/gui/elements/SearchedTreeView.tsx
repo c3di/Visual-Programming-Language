@@ -2,7 +2,11 @@ import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { TreeView } from '@mui/lab';
 import { type SvgIconProps } from '@mui/material';
 import { ExpandMore, ChevronRight } from '@mui/icons-material';
-import { type NodeConfig, type NodePackage } from '../../types';
+import {
+  type NodeConfig,
+  type NodePackage,
+  type HandleConfig,
+} from '../../types';
 import StyledTreeItem from './StyledTreeItem';
 import SearchInput from './SearchInput';
 
@@ -15,6 +19,8 @@ export interface TreeItemData {
   children?: TreeItemData[];
   tooltip?: string;
   labelIcon?: React.ElementType<SvgIconProps> | undefined;
+  inputs?: Record<string, HandleConfig>;
+  outputs?: Record<string, HandleConfig>;
   onClick?: (item: TreeItemData, e: React.MouseEvent<HTMLLIElement>) => void;
   rank?: number;
 }
@@ -36,6 +42,9 @@ const nodeConfigToTreeItemData = (
   name: string,
   nodeConfig: NodePackage | NodeConfig
 ): TreeItemData | undefined => {
+  if (!nodeConfig) {
+    return undefined;
+  }
   if (nodeConfig.notShowInMenu) return;
   const children = [];
   for (const name in nodeConfig.isPackage ? nodeConfig.nodes : {}) {
@@ -44,14 +53,21 @@ const nodeConfigToTreeItemData = (
     const itemData = nodeConfigToTreeItemData(name, config);
     if (itemData) children.push(itemData);
   }
-
-  return {
+  const data: TreeItemData = {
     id: String(itemId++),
     name,
     configType: 'type' in nodeConfig ? nodeConfig.type : undefined,
     children: children.length > 0 ? children : undefined,
     tooltip: nodeConfig.tooltip,
   };
+  if ('inputs' in nodeConfig) {
+    data.inputs = nodeConfig.inputs;
+  }
+
+  if ('outputs' in nodeConfig) {
+    data.outputs = nodeConfig.outputs;
+  }
+  return data;
 };
 
 function ControlledTreeView({
