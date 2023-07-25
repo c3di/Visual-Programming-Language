@@ -713,9 +713,11 @@ export default function useScene(
     indentLevel: number
   ): { prerequisites: string | null; source: string } => {
     if (!handle.connection) {
+      let value: string = handle.value ?? handle.defaultValue ?? '';
+      if (handle.dataType === 'string' && value !== null) value = `'${value}'`;
       return {
         prerequisites: null,
-        source: handle.value ?? handle.defaultValue ?? null,
+        source: value,
       };
     }
     const { Nodes: outputNodes } = graphState.getConnectedNodes(
