@@ -714,7 +714,7 @@ export default function useScene(
   ): { prerequisites: string | null; source: string } => {
     if (!handle.connection) {
       let value: string = handle.value ?? handle.defaultValue ?? '';
-      if (handle.dataType === 'string' && value !== null) value = `'${value}'`;
+      value = mapToLanguageDefinition(handle.dataType, value);
       return {
         prerequisites: null,
         source: value,
@@ -829,6 +829,16 @@ export default function useScene(
 
   const getUniqueNameOfHandle = (nodeId: string, handleId: string): string => {
     return `Node_${nodeId}_${handleId}_Handle`;
+  };
+
+  const mapToLanguageDefinition = (
+    dataType: string | undefined,
+    value: any
+  ): any => {
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    if (dataType === 'string' && value !== null) return `'${value}'`;
+    if (dataType === 'boolean') return value === 'true' ? 'True' : 'False';
+    else return value;
   };
 
   return {
