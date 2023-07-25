@@ -860,6 +860,7 @@ export default function useScene(
       ).trimEnd();
     if (node.data.externalImports)
       externalImports.add(node.data.externalImports);
+    console.log(createCodeTemplateFromFunctionName(node));
     return { hasError: false, result: source };
   };
 
@@ -880,6 +881,34 @@ export default function useScene(
 
   const getUniqueNameOfHandle = (nodeId: string, handleId: string): string => {
     return `Node_${nodeId}_${handleId}_Handle`;
+  };
+
+  const createCodeTemplateFromFunctionName = (
+    node: Node
+  ): string | undefined => {
+    if (!node.data.functionName) return undefined;
+    let outputsTemplate = '';
+    if (node.data.outputs && Object.keys(node.data.outputs).length > 1) {
+      outputsTemplate = Object.keys(node.data.outputs)
+        .slice(1)
+        .map((key, index) => {
+          return `{{{outputs.${index + 1}}}}`;
+        })
+        .join(', ');
+      outputsTemplate += ' = ';
+    }
+    let inputsTemplate = '';
+    if (node.data.inputs && Object.keys(node.data.inputs).length > 1) {
+      inputsTemplate = Object.keys(node.data.inputs)
+        .slice(1)
+        .map((key, index) => {
+          return `{{{inputs.${index + 1}}}}`;
+        })
+        .join(', ');
+    }
+    return `{{indent}}${outputsTemplate}${
+      node.data.functionName as string
+    }(${inputsTemplate})`;
   };
 
   const isAcyclic = (
