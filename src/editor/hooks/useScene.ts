@@ -691,17 +691,22 @@ export default function useScene(
     const startNode = graphState
       .getNodes()
       .find((n) => n.data.configType.includes('Start'));
-    const indentLevel = 0;
-    const execTrace: Array<{ nodeId: string; handleId: string }> = [];
     if (!startNode) {
       return { hasError: true, result: 'No "Execute Start" found' };
     }
+    const indentLevel = 0;
+    const execTrace: Array<{ nodeId: string; handleId: string }> = [];
+    const externalImports = new Set<string>();
     const result = sourceCodeWithStartNode(
       startNode,
       undefined,
       indentLevel,
-      execTrace
+      execTrace,
+      externalImports
     );
+    if (result.hasError) return result;
+    result.result =
+      Array.from(externalImports).join('\n') + '\n' + result.result;
     return result;
   };
 
@@ -786,7 +791,8 @@ export default function useScene(
     node: Node | undefined,
     execInId: string | undefined,
     indentLevel: number,
-    execTrace: Array<{ nodeId: string; handleId: string }>
+    execTrace: Array<{ nodeId: string; handleId: string }>,
+    externalImports: Set<string>
   ): { hasError: boolean; result: string } => {
     if (!node?.data) return { hasError: false, result: '' };
     let source = '';
@@ -819,7 +825,10 @@ export default function useScene(
             node.id,
             id
           );
-          if (nodes && isAcyclic(nodes[0].id, connectedHandlesId[0], execTrace))
+          if (
+            nodes?.length &&
+            isAcyclic(nodes[0].id, connectedHandlesId[0], execTrace)
+          )
             return {
               hasError: true,
               result: `An Infinite Loop when connecting '${
@@ -830,7 +839,8 @@ export default function useScene(
             nodes[0],
             connectedHandlesId[0],
             indentLevel + getIndentOfNode(node, id),
-            execTrace.slice()
+            execTrace.slice(),
+            externalImports
           );
           if (result.hasError) return result;
           outputs.push(result.result);
@@ -848,6 +858,8 @@ export default function useScene(
           indent: '\t'.repeat(indentLevel),
         }
       ).trimEnd();
+    if (node.data.externalImports)
+      externalImports.add(node.data.externalImports);
     return { hasError: false, result: source };
   };
 

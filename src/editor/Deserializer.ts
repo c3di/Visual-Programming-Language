@@ -192,6 +192,7 @@ export class Deserializer {
         nodeRef,
         sourceCode: config.sourceCode,
         breakExecution: config.breakExecution,
+        externalImports: config.externalImports,
       },
     };
   };
