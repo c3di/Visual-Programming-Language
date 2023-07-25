@@ -82,7 +82,7 @@ export interface ISceneActions {
   sortZIndexOfComments: (nodes: Node[]) => Node[];
   autoLayout: () => void;
   deleteHandle: (nodeId: string, nodeType: string, handleId: string) => void;
-  sourceCode: () => string;
+  sourceCode: () => { hasError: boolean; result: string };
 }
 export interface ISceneState {
   gui: IGui;
@@ -687,14 +687,22 @@ export default function useScene(
     );
   }, []);
 
-  const sourceCode = (): string => {
+  const sourceCode = (): { hasError: boolean; result: string } => {
     const startNode = graphState
       .getNodes()
       .find((n) => n.data.configType.includes('Start'));
     const indentLevel = 0;
-    return startNode
-      ? sourceCodeWithStartNode(startNode, undefined, indentLevel)
-      : '';
+    const execTrace: Array<{ nodeId: string; handleId: string }> = [];
+    if (!startNode) {
+      return { hasError: true, result: 'No "Execute Start" found' };
+    }
+    const result = sourceCodeWithStartNode(
+      startNode,
+      undefined,
+      indentLevel,
+      execTrace
+    );
+    return result;
   };
 
   const isExecNode = (node: Node): boolean => {
@@ -777,16 +785,18 @@ export default function useScene(
   const sourceCodeWithStartNode = (
     node: Node | undefined,
     execInId: string | undefined,
-    indentLevel: number
-  ): string => {
-    if (!node?.data) return '';
+    indentLevel: number,
+    execTrace: Array<{ nodeId: string; handleId: string }>
+  ): { hasError: boolean; result: string } => {
+    if (!node?.data) return { hasError: false, result: '' };
     let source = '';
+    execTrace.push({ nodeId: node.id, handleId: execInId ?? '' });
     const template = node.data.sourceCode;
     if (!template) {
-      console.error(
-        `no source code found for node ${node.data.configType as string}`
-      );
-      return source;
+      return {
+        hasError: true,
+        result: `No source code found for '${node.data.configType as string}'`,
+      };
     }
     const inputs: string[] = [];
     for (const id in node.data.inputs ?? {}) {
@@ -809,13 +819,21 @@ export default function useScene(
             node.id,
             id
           );
-          outputs.push(
-            sourceCodeWithStartNode(
-              nodes[0],
-              connectedHandlesId[0],
-              indentLevel + getIndentOfNode(node, id)
-            )
+          if (nodes && isAcyclic(nodes[0].id, connectedHandlesId[0], execTrace))
+            return {
+              hasError: true,
+              result: `An Infinite Loop when connecting '${
+                node.data.title as string
+              }' to '${nodes[0].data.title as string}'`,
+            };
+          const result = sourceCodeWithStartNode(
+            nodes[0],
+            connectedHandlesId[0],
+            indentLevel + getIndentOfNode(node, id),
+            execTrace.slice()
           );
+          if (result.hasError) return result;
+          outputs.push(result.result);
         } else outputs.push(getUniqueNameOfHandle(node.id, id));
       }
     }
@@ -830,7 +848,7 @@ export default function useScene(
           indent: '\t'.repeat(indentLevel),
         }
       ).trimEnd();
-    return source;
+    return { hasError: false, result: source };
   };
 
   const getIndentOfNode = (
@@ -852,6 +870,16 @@ export default function useScene(
     return `Node_${nodeId}_${handleId}_Handle`;
   };
 
+  const isAcyclic = (
+    nextNode: string,
+    nextHandle: string,
+    execTrace: Array<{ nodeId: string; handleId: string }>
+  ): boolean => {
+    const index = execTrace.findIndex(
+      (trace) => trace.nodeId === nextNode && trace.handleId === nextHandle
+    );
+    return index !== -1;
+  };
   const mapToLanguageDefinition = (
     dataType: string | undefined,
     value: any

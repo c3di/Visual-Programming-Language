@@ -9,6 +9,7 @@
     },
     "reroute": {
       "type": "reroute",
+      "title": "reroute",
       "category": "reroute",
       "tooltip": "Reroute node wires",
       "notShowInMenu": true,
