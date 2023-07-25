@@ -837,7 +837,7 @@ export default function useScene(
   ): any => {
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     if (dataType === 'string' && value !== null) return `'${value}'`;
-    if (dataType === 'boolean') return value === 'true' ? 'True' : 'False';
+    if (dataType === 'boolean') return value ? 'True' : 'False';
     else return value;
   };
 
