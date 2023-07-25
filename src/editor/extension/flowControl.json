@@ -115,7 +115,7 @@
         "ArrayElement": {
           "title": "Array Element",
           "tooltip": "Array Element",
-          "dataType": "any",
+          "dataType": "anyData",
           "showWidget": false,
           "showTitle": true
         },
