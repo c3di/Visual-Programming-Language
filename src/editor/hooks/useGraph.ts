@@ -86,7 +86,7 @@ export interface GraphState {
   getConnectedInfo: (
     nodeId: string,
     handleId: string
-  ) => { Nodes: Node[]; Edges: Edge[]; connectedHandlesId: string[] };
+  ) => { nodes: Node[]; edges: Edge[]; connectedHandlesId: string[] };
 }
 export default function useGraph(graph?: SerializedGraph | null): GraphState {
   const initGraph = deserializer.deserialize(graph);
@@ -684,7 +684,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
   const getConnectedInfo = (
     nodeId: string,
     handleId: string
-  ): { Nodes: Node[]; Edges: Edge[]; connectedHandlesId: string[] } => {
+  ): { nodes: Node[]; edges: Edge[]; connectedHandlesId: string[] } => {
     const connectedNodes: Node[] = [];
     const connectedEdges: Edge[] = [];
     const connectedHandlesId: string[] = [];
@@ -702,7 +702,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
         connectedHandlesId.push(edge.sourceHandle!);
       }
     }
-    return { Nodes: connectedNodes, Edges: connectedEdges, connectedHandlesId };
+    return { nodes: connectedNodes, edges: connectedEdges, connectedHandlesId };
   };
   return {
     initGraph,

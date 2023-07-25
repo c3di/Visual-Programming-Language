@@ -692,7 +692,9 @@ export default function useScene(
       .getNodes()
       .find((n) => n.data.configType.includes('Start'));
     const indentLevel = 0;
-    return startNode ? sourceCodeStartFrom(startNode, indentLevel) : '';
+    return startNode
+      ? sourceCodeStartFrom(startNode, undefined, indentLevel)
+      : '';
   };
 
   const isExecNode = (node: Node): boolean => {
@@ -720,7 +722,7 @@ export default function useScene(
         source: value,
       };
     }
-    const { Nodes: outputNodes, connectedHandlesId } =
+    const { nodes: outputNodes, connectedHandlesId } =
       graphState.getConnectedInfo(nodeId, handleId);
     const outputHandleName = getUniqueNameOfHandle(
       outputNodes[0].id,
@@ -751,29 +753,36 @@ export default function useScene(
     for (const id in connectedNode.data.outputs ?? {}) {
       outputs.push(getUniqueNameOfHandle(connectedNode.id, id));
     }
-    if (!connectedNode.data.sourceCode)
+    const template = connectedNode.data.sourceCode;
+    if (!template)
       console.error(
         `no source code found for node ${connectedNode.data.type as string}`
       );
     else {
-      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       prerequisites +=
         '\n'.repeat(Number(prerequisites !== '')) +
-        Mustache.render(connectedNode.data.sourceCode, {
-          inputs,
-          outputs,
-          indent: '\t'.repeat(indentLevel),
-        });
+        Mustache.render(
+          typeof template === 'string'
+            ? template
+            : template[connectedHandlesId[0]],
+          {
+            inputs,
+            outputs,
+            indent: '\t'.repeat(indentLevel),
+          }
+        );
     }
     return { prerequisites, source: outputHandleName };
   };
   const sourceCodeStartFrom = (
     node: Node | undefined,
+    execInId: string | undefined,
     indentLevel: number
   ): string => {
     if (!node?.data) return '';
     let source = '';
-    if (!node.data.sourceCode) {
+    const template = node.data.sourceCode;
+    if (!template) {
       console.error(
         `no source code found for node ${node.data.configType as string}`
       );
@@ -795,20 +804,30 @@ export default function useScene(
     for (const id in node.data.outputs ?? {}) {
       const output = node.data.outputs[id];
       if (output.dataType === 'exec') {
-        const nextNode = graphState.getConnectedInfo(node.id, id).Nodes[0];
+        const { nodes, connectedHandlesId } = graphState.getConnectedInfo(
+          node.id,
+          id
+        );
         outputs.push(
-          sourceCodeStartFrom(nextNode, indentLevel + getIndentOfNode(node, id))
+          sourceCodeStartFrom(
+            nodes[0],
+            connectedHandlesId[0],
+            indentLevel + getIndentOfNode(node, id)
+          )
         );
       } else outputs.push(getUniqueNameOfHandle(node.id, id));
     }
     // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
     source +=
       '\n'.repeat(Number(source !== '')) +
-      Mustache.render(node.data.sourceCode, {
-        inputs,
-        outputs,
-        indent: '\t'.repeat(indentLevel),
-      }).trimEnd();
+      Mustache.render(
+        typeof template === 'string' ? template : template[execInId!],
+        {
+          inputs,
+          outputs,
+          indent: '\t'.repeat(indentLevel),
+        }
+      ).trimEnd();
     return source;
   };
 
