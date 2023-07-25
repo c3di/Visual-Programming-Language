@@ -81,7 +81,7 @@
           "showTitle": true
         }
       },
-      "sourceCode": "{{indent}}if {{inputs.1}}:\n{{{outputs.0}}}\n{{indent}}else:\n{{{outputs.1}}}"
+      "sourceCode": "{{indent}}if {{inputs.1}}:\n{{{outputs.0}}}\n{{indent}}{{#outputs.1}}else:\n{{{outputs.1}}}{{/outputs.1}}"
     },
     "For Each Loop": {
       "type": "For Each Loop",
