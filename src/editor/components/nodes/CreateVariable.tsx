@@ -52,8 +52,8 @@ function CreateVariable({
                 },
               },
               outputs: {
-                'setter-out': {
-                  ...n.data.outputs['setter-out'],
+                setter_out: {
+                  ...n.data.outputs.setter_out,
                   title: newVa,
                 },
               },
@@ -98,8 +98,8 @@ function CreateVariable({
             };
             n.data.outputs = {
               ...n.data.outputs,
-              'setter-out': {
-                ...n.data.outputs['setter-out'],
+              setter_out: {
+                ...n.data.outputs.setter_out,
                 dataType: newVa,
                 value: DataTypes[newVa].defaultValue,
               },
@@ -137,8 +137,8 @@ function CreateVariable({
             };
             n.data.outputs = {
               ...n.data.outputs,
-              'setter-out': {
-                ...n.data.outputs['setter-out'],
+              setter_out: {
+                ...n.data.outputs.setter_out,
                 value: newVa,
               },
             };

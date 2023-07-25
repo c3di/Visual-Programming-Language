@@ -75,7 +75,7 @@ export class Deserializer {
     if (!inputs) return undefined;
     const outputs: Record<string, HandleData> = {};
     for (const key in inputs) {
-      outputs[`${key}-out`] = { ...inputs[key] };
+      outputs[`${key}_out`] = { ...inputs[key] };
     }
     return outputs;
   };
@@ -90,6 +90,9 @@ export class Deserializer {
     },
     literal: (config: GraphNodeConfig): Node => {
       config.outputs = this.copyInputsToOutputs(config.inputs);
+      Object.values(config.outputs ?? {}).forEach((output) => {
+        output.title = 'Return Value';
+      });
       return this.defaultConfigToNode(config);
     },
     createFunction: (config: GraphNodeConfig): Node => {

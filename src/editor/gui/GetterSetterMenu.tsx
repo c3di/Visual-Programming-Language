@@ -49,7 +49,7 @@ export default function GetterSetterMenu({
             setter: handleData,
           },
           outputs: {
-            'setter-out': handleData,
+            setter_out: handleData,
           },
         });
         onClose();

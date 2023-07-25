@@ -165,10 +165,10 @@ function CreateFunction({
   }
 
   const addNewHandle = useCallback(() => {
-    const title = `new-out-${handleCount.current++}`;
+    const title = `new_out_${handleCount.current++}`;
     const value = {
       dataType: 'boolean',
-      title: `new-out-${handleCount.current}`,
+      title: `new_out_${handleCount.current}`,
       showWidget: false,
       deletable: true,
     };

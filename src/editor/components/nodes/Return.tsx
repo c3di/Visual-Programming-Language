@@ -159,10 +159,10 @@ function Return({
   const handleCount = useRef<number>(0);
   const getNodeById = useSceneState()?.sceneActions.getNodeById;
   const addNewHandle = useCallback(() => {
-    const title = `new-in-${handleCount.current++}`;
+    const title = `new_in_${handleCount.current++}`;
     const value = {
       dataType: 'any',
-      title: `new-in-${handleCount.current}`,
+      title: `new_in_${handleCount.current}`,
       showWidget: false,
       deletable: true,
     };
