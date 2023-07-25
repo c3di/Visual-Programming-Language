@@ -693,7 +693,7 @@ export default function useScene(
       .find((n) => n.data.configType.includes('Start'));
     const indentLevel = 0;
     return startNode
-      ? sourceCodeStartFrom(startNode, undefined, indentLevel)
+      ? sourceCodeWithStartNode(startNode, undefined, indentLevel)
       : '';
   };
 
@@ -774,7 +774,7 @@ export default function useScene(
     }
     return { prerequisites, source: outputHandleName };
   };
-  const sourceCodeStartFrom = (
+  const sourceCodeWithStartNode = (
     node: Node | undefined,
     execInId: string | undefined,
     indentLevel: number
@@ -801,21 +801,23 @@ export default function useScene(
       }
     }
     const outputs: string[] = [];
-    for (const id in node.data.outputs ?? {}) {
-      const output = node.data.outputs[id];
-      if (output.dataType === 'exec') {
-        const { nodes, connectedHandlesId } = graphState.getConnectedInfo(
-          node.id,
-          id
-        );
-        outputs.push(
-          sourceCodeStartFrom(
-            nodes[0],
-            connectedHandlesId[0],
-            indentLevel + getIndentOfNode(node, id)
-          )
-        );
-      } else outputs.push(getUniqueNameOfHandle(node.id, id));
+    if (!node.data.breakExecution?.includes(execInId)) {
+      for (const id in node.data.outputs ?? {}) {
+        const output = node.data.outputs[id];
+        if (output.dataType === 'exec') {
+          const { nodes, connectedHandlesId } = graphState.getConnectedInfo(
+            node.id,
+            id
+          );
+          outputs.push(
+            sourceCodeWithStartNode(
+              nodes[0],
+              connectedHandlesId[0],
+              indentLevel + getIndentOfNode(node, id)
+            )
+          );
+        } else outputs.push(getUniqueNameOfHandle(node.id, id));
+      }
     }
     // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
     source +=

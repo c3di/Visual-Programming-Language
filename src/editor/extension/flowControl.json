@@ -181,12 +181,17 @@
           "showTitle": true
         }
       },
-      "sourceCode": "{{indent}}for {{outputs.1}} in range(inputs.1, inputs.2):\n{{{outputs.0}}}\n{{{outputs.2}}}"
+      "sourceCode": "{{indent}}for {{outputs.1}} in range({{inputs.1}}, {{inputs.2}}):\n{{{outputs.0}}}\n{{{outputs.2}}}"
     },
     "For Loop with Break": {
       "type": "For Loop with Break",
       "category": "function",
       "title": "For Loop with Break",
+      "breakExecution": ["break"],
+      "sourceCode": {
+        "execIn": "{{indent}}for {{outputs.1}} in range({{inputs.1}}, {{inputs.2}}):\n{{{outputs.0}}}\n{{{outputs.2}}}",
+        "break": "{{indent}}break"
+      },
       "tooltip": "Executes LoopBody for each index FirstIndex to lastIndex, inclusive. If execution goes in to break the loop will exit without executing the remaining indices",
       "inputs": {
         "execIn": {
