@@ -720,11 +720,12 @@ export default function useScene(
         source: value,
       };
     }
-    const { Nodes: outputNodes } = graphState.getConnectedNodes(
-      nodeId,
-      handleId
+    const { Nodes: outputNodes, connectedHandlesId } =
+      graphState.getConnectedInfo(nodeId, handleId);
+    const outputHandleName = getUniqueNameOfHandle(
+      outputNodes[0].id,
+      connectedHandlesId[0]
     );
-    const outputHandleName = getUniqueNameOfHandle(outputNodes[0].id, handleId);
     if (isExecNode(outputNodes[0]))
       return {
         prerequisites: null,
@@ -741,7 +742,9 @@ export default function useScene(
           connectedNode.data.inputs[id],
           indentLevel
         );
-      if (prerequisitesOfInput) prerequisites += prerequisitesOfInput;
+      if (prerequisitesOfInput)
+        prerequisites +=
+          '\n'.repeat(Number(prerequisites !== '')) + prerequisitesOfInput;
       inputs.push(source);
     }
     const outputs: string[] = [];
@@ -754,11 +757,13 @@ export default function useScene(
       );
     else {
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-      prerequisites += Mustache.render(connectedNode.data.sourceCode, {
-        inputs,
-        outputs,
-        indent: '\t'.repeat(indentLevel),
-      });
+      prerequisites +=
+        '\n'.repeat(Number(prerequisites !== '')) +
+        Mustache.render(connectedNode.data.sourceCode, {
+          inputs,
+          outputs,
+          indent: '\t'.repeat(indentLevel),
+        });
     }
     return { prerequisites, source: outputHandleName };
   };
@@ -781,7 +786,8 @@ export default function useScene(
       else {
         const { prerequisites, source: inputSource } =
           getSourceCodeOfInputDataHandle(node.id, id, input, indentLevel);
-        if (prerequisites) source += prerequisites;
+        if (prerequisites)
+          source += '\n'.repeat(Number(source !== '')) + prerequisites;
         inputs.push(inputSource);
       }
     }
@@ -789,18 +795,20 @@ export default function useScene(
     for (const id in node.data.outputs ?? {}) {
       const output = node.data.outputs[id];
       if (output.dataType === 'exec') {
-        const nextNode = graphState.getConnectedNodes(node.id, id).Nodes[0];
+        const nextNode = graphState.getConnectedInfo(node.id, id).Nodes[0];
         outputs.push(
           sourceCodeStartFrom(nextNode, indentLevel + getIndentOfNode(node, id))
         );
       } else outputs.push(getUniqueNameOfHandle(node.id, id));
     }
     // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-    source += Mustache.render(node.data.sourceCode, {
-      inputs,
-      outputs,
-      indent: '\t'.repeat(indentLevel),
-    }).trimEnd();
+    source +=
+      '\n'.repeat(Number(source !== '')) +
+      Mustache.render(node.data.sourceCode, {
+        inputs,
+        outputs,
+        indent: '\t'.repeat(indentLevel),
+      }).trimEnd();
     return source;
   };
 

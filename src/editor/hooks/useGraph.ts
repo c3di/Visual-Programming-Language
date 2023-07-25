@@ -83,10 +83,10 @@ export interface GraphState {
     nodes: Node[];
     edges: Edge[];
   };
-  getConnectedNodes: (
+  getConnectedInfo: (
     nodeId: string,
     handleId: string
-  ) => { Nodes: Node[]; Edges: Edge[] };
+  ) => { Nodes: Node[]; Edges: Edge[]; connectedHandlesId: string[] };
 }
 export default function useGraph(graph?: SerializedGraph | null): GraphState {
   const initGraph = deserializer.deserialize(graph);
@@ -681,25 +681,28 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     setNodes(allNodes);
   }, [edges]);
 
-  const getConnectedNodes = (
+  const getConnectedInfo = (
     nodeId: string,
     handleId: string
-  ): { Nodes: Node[]; Edges: Edge[] } => {
+  ): { Nodes: Node[]; Edges: Edge[]; connectedHandlesId: string[] } => {
     const connectedNodes: Node[] = [];
     const connectedEdges: Edge[] = [];
+    const connectedHandlesId: string[] = [];
     for (const edge of getEdges()) {
       if (edge.source === nodeId && edge.sourceHandle === handleId) {
         const node = getNodeById(edge.target);
         connectedNodes.push(node!);
         connectedEdges.push(edge);
+        connectedHandlesId.push(edge.targetHandle!);
       }
       if (edge.target === nodeId && edge.targetHandle === handleId) {
         const node = getNodeById(edge.source);
         connectedNodes.push(node!);
         connectedEdges.push(edge);
+        connectedHandlesId.push(edge.sourceHandle!);
       }
     }
-    return { Nodes: connectedNodes, Edges: connectedEdges };
+    return { Nodes: connectedNodes, Edges: connectedEdges, connectedHandlesId };
   };
   return {
     initGraph,
@@ -737,6 +740,6 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     anyConnectionToSelectedNode,
     toString,
     fromJSON,
-    getConnectedNodes,
+    getConnectedInfo,
   };
 }
