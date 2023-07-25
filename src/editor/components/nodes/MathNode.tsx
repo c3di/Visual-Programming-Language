@@ -17,7 +17,7 @@ function MathNode({
         id={inputId}
         nodeId={id}
         showWidget={true}
-        showTitle={false}
+        showTitle={!!data.inputs[inputId].showTitle}
         handleData={data.inputs[inputId]}
       />
     );
@@ -31,14 +31,19 @@ function MathNode({
         nodeId={id}
         handleData={data.outputs[outputId]}
         showWidget={false}
-        showTitle={false}
+        showTitle={!!data.outputs[outputId].showTitle}
       />
     );
   }
   return (
     <div title={data.tooltip} className="vp-node-container">
       <div className="node__body">
-        <div className="vp-node-handles-container">{inputHandles}</div>
+        <div
+          className="vp-node-handles-container"
+          style={{ justifyContent: 'center' }}
+        >
+          {inputHandles}
+        </div>
         <div
           className="vp-node-handles-container"
           style={{
