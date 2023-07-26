@@ -8,35 +8,33 @@
       "category": "function",
       "title": "function Node",
       "tooltip": "this is a function node",
+      "externalImports": "import numpy as np",
+      "functionName": "function13a",
+      "sourceCode": "{{indent}}obj = { 'a': 1, 'b': 2, 'c': 3 };\n{{indent}}print({{{inputs.1}}});\n{{indent}}print({{{inputs.2}}});\n{{indent}}print({{{inputs.3}}});\n{{indent}}{{#inputs}}print({{{.}}})\n{{indent}}{{/inputs}}{{outputs.1}}={{inputs.1}}\n{{indent}}{{outputs.2}}={{{inputs.2}}}\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
-          "tooltip": "execIn",
           "dataType": "exec",
           "showWidget": false,
           "showTitle": false
         },
         "input1": {
           "title": "input1",
-          "tooltip": "input 1",
           "dataType": "float",
           "defaultValue": 100
         },
         "input2": {
           "title": "input2 long name",
-          "tooltip": "input 2",
           "dataType": "boolean",
           "defaultValue": true
         },
         "input3": {
           "title": "input3",
-          "tooltip": "input 3",
           "dataType": "string",
           "defaultValue": "hello"
         },
         "input4": {
           "title": "long name",
-          "tooltip": "input 4",
           "dataType": "extension1.Level2.module2.EDataType",
           "defaultValue": "string"
         }
@@ -44,19 +42,16 @@
       "outputs": {
         "execOut": {
           "title": "execOut",
-          "tooltip": "execOut",
           "dataType": "exec",
           "showWidget": false,
           "showTitle": false
         },
         "output1": {
           "title": "output1",
-          "tooltip": "output 1",
           "dataType": "float"
         },
         "output2": {
           "title": "output2",
-          "tooltip": "output 2",
           "dataType": "float"
         }
       }

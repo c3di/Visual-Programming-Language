@@ -21,3 +21,4 @@ export { type ClipboardInfo } from './ClipboardInfo';
 export { type MousePos } from './MousePos';
 export { ConnectionAction, type ConnectionStatus } from './ConnectionStatus';
 export { type selectedElementsCounts } from './OnSelectionChange';
+export { type SourceCodeExec } from './SourceCodeExec';

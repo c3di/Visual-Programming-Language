@@ -13,6 +13,7 @@ import {
   type selectedElementsCounts,
   isCommentNode,
   type Graph,
+  type SourceCodeExec,
 } from '../types';
 import { type GraphState } from './useGraph';
 import { deserializer } from '../Deserializer';
@@ -28,6 +29,9 @@ import {
 } from 'reactflow';
 import { UniqueNamePool, type IUniqueNamePool } from '../utils';
 import { copy, deepCopy, fromClientCoordToScene } from '../util';
+import Mustache from 'mustache';
+import { type Handle } from '../types/Handle';
+import toposort from 'toposort';
 
 function nodeInsideOfNode(n: Node, containter: Node): boolean {
   return (
@@ -80,6 +84,7 @@ export interface ISceneActions {
   sortZIndexOfComments: (nodes: Node[]) => Node[];
   autoLayout: () => void;
   deleteHandle: (nodeId: string, nodeType: string, handleId: string) => void;
+  sourceCode: () => SourceCodeExec;
 }
 export interface ISceneState {
   gui: IGui;
@@ -521,7 +526,7 @@ export default function useScene(
                 }
               );
 
-              addNode('extension2.functionCall', undefined, {
+              addNode('Function & Variable Creation.functionCall', undefined, {
                 title: latest.data.title,
                 nodeRef: node.id,
                 inputs: latest.data.outputs,
@@ -684,6 +689,394 @@ export default function useScene(
     );
   }, []);
 
+  const sourceCode = (): SourceCodeExec => {
+    const startNode = graphState
+      .getNodes()
+      .find((n) => n.data.configType.includes('Start'));
+    if (!startNode) {
+      return { hasError: true, result: 'No "Execute Start" found' };
+    }
+
+    const sourceCodeFrom = topoSortOfFunctionDependencies([startNode]);
+    if (typeof sourceCodeFrom === 'string') {
+      return { hasError: true, result: sourceCodeFrom };
+    }
+
+    let sourceBody = '';
+    const imports = new Set<string>();
+    for (const node of sourceCodeFrom) {
+      if (node.id === startNode.id) {
+        const indentLevel = 0;
+        const execTrace: Array<{ nodeId: string; handleId: string }> = [];
+        const externalImports = new Set<string>();
+        const result = sourceCodeWithStartNode(
+          startNode,
+          undefined,
+          indentLevel,
+          execTrace,
+          externalImports
+        );
+        if (result.hasError) return result;
+        sourceBody += '\n'.repeat(Number(result.result !== '')) + result.result;
+        externalImports.forEach((externalImport) => {
+          imports.add(externalImport);
+        });
+      } else {
+        const externalImports = new Set<string>();
+        const sourceCodeExec = sourceCodeForFunction(node, externalImports);
+        if (sourceCodeExec.hasError) return sourceCodeExec;
+        sourceBody +=
+          '\n\n'.repeat(
+            Number(sourceCodeExec.result !== '' && sourceBody !== '')
+          ) + sourceCodeExec.result;
+        externalImports.forEach((externalImport) => {
+          imports.add(externalImport);
+        });
+      }
+    }
+
+    return {
+      hasError: false,
+      result:
+        Array.from(imports).join('\n') +
+        '\n'.repeat(Array.from(imports).length) +
+        sourceBody,
+    };
+  };
+
+  const isExecNode = (node: Node): boolean => {
+    return (
+      !!Object.values(node.data.inputs ?? {}).find(
+        (input: any) => input.dataType === 'exec'
+      ) ||
+      !!Object.values(node.data.outputs ?? {}).find(
+        (output: any) => output.dataType === 'exec'
+      )
+    );
+  };
+
+  const getSourceCodeOfInputDataHandle = (
+    nodeId: string,
+    handleId: string,
+    handle: Handle,
+    indentLevel: number
+  ): { prerequisites: string | null; source: string } => {
+    if (!handle.connection) {
+      let value: string = handle.value ?? handle.defaultValue ?? '';
+      value = mapToLanguageDefinition(handle.dataType, value);
+      return {
+        prerequisites: null,
+        source: value,
+      };
+    }
+    const { nodes: outputNodes, connectedHandlesId } =
+      graphState.getConnectedInfo(nodeId, handleId);
+    const outputHandleName = getUniqueNameOfHandle(
+      outputNodes[0],
+      connectedHandlesId[0]
+    );
+    if (isExecNode(outputNodes[0]))
+      return {
+        prerequisites: null,
+        source: outputHandleName,
+      };
+    let prerequisites = '';
+    const inputs: string[] = [];
+    const connectedNode = outputNodes[0];
+    for (const id in connectedNode.data.inputs ?? {}) {
+      const { prerequisites: prerequisitesOfInput, source } =
+        getSourceCodeOfInputDataHandle(
+          connectedNode.id,
+          id,
+          connectedNode.data.inputs[id],
+          indentLevel
+        );
+      if (prerequisitesOfInput)
+        prerequisites +=
+          '\n'.repeat(Number(prerequisites !== '')) + prerequisitesOfInput;
+      inputs.push(source);
+    }
+    const outputs: string[] = [];
+    for (const id in connectedNode.data.outputs ?? {}) {
+      outputs.push(getUniqueNameOfHandle(connectedNode, id));
+    }
+    const template = connectedNode.data.sourceCode;
+    if (template === undefined)
+      console.error(
+        `no source code found for node ${connectedNode.data.title as string}`
+      );
+    else {
+      prerequisites +=
+        '\n'.repeat(Number(prerequisites !== '')) +
+        Mustache.render(
+          typeof template === 'string'
+            ? template
+            : template[connectedHandlesId[0]],
+          {
+            inputs,
+            outputs,
+            indent: '\t'.repeat(indentLevel),
+          }
+        );
+    }
+    return { prerequisites, source: outputHandleName };
+  };
+  const sourceCodeWithStartNode = (
+    node: Node | undefined,
+    execInId: string | undefined,
+    indentLevel: number,
+    execTrace: Array<{ nodeId: string; handleId: string }>,
+    externalImports: Set<string>
+  ): SourceCodeExec => {
+    if (!node?.data) return { hasError: false, result: '' };
+    let source = '';
+    execTrace.push({ nodeId: node.id, handleId: execInId ?? '' });
+    const template = node.data.sourceCode;
+    if (
+      !template &&
+      !node.data.functionName &&
+      !node.data.configType.includes('functionCall')
+    ) {
+      return {
+        hasError: true,
+        result: `No source code found for '${node.data.configType as string}'`,
+      };
+    }
+    const inputs: string[] = [];
+    for (const id in node.data.inputs ?? {}) {
+      const input = node.data.inputs[id];
+      if (input.dataType === 'exec') inputs.push('');
+      else {
+        const { prerequisites, source: inputSource } =
+          getSourceCodeOfInputDataHandle(node.id, id, input, indentLevel);
+        if (prerequisites)
+          source += '\n'.repeat(Number(source !== '')) + prerequisites;
+        inputs.push(inputSource);
+      }
+    }
+    const outputs: string[] = [];
+    if (!node.data.breakExecution?.includes(execInId)) {
+      for (const id in node.data.outputs ?? {}) {
+        const output = node.data.outputs[id];
+        if (output.dataType === 'exec') {
+          const { nodes, connectedHandlesId } = graphState.getConnectedInfo(
+            node.id,
+            id
+          );
+          if (
+            nodes?.length &&
+            isAcyclic(nodes[0].id, connectedHandlesId[0], execTrace)
+          )
+            return {
+              hasError: true,
+              result: `An Infinite Loop when connecting '${
+                node.data.title as string
+              }' to '${nodes[0].data.title as string}'`,
+            };
+          const result = sourceCodeWithStartNode(
+            nodes[0],
+            connectedHandlesId[0],
+            indentLevel + getIndentOfNode(node, id),
+            execTrace.slice(),
+            externalImports
+          );
+          if (result.hasError) return result;
+          outputs.push(result.result);
+        } else outputs.push(getUniqueNameOfHandle(node, id));
+      }
+    }
+    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+    if (node.data.configType.includes('functionCall')) {
+      node.data.functionName = node.data.title;
+    }
+    const fromFunctionName = createCodeTemplateFromFunctionName(node);
+    // temp fix
+    if (node.data.configType.includes('Create Variable') && !fromFunctionName) {
+      // eslint-disable-next-line prettier/prettier
+      inputs[1] = inputs[1].replace(/'/g, '');
+    }
+    source +=
+      '\n'.repeat(Number(source !== '')) +
+      Mustache.render(
+        fromFunctionName ??
+          (typeof template === 'string' ? template : template[execInId!]),
+        {
+          inputs,
+          outputs,
+          indent: '\t'.repeat(indentLevel),
+          inputsTitle: Object.values(node.data.inputs ?? {}).map(
+            (handle: any) => {
+              return handle.title;
+            }
+          ),
+        }
+      )
+        .trimEnd()
+        .replace(/,\s*$/, '');
+    if (node.data.externalImports)
+      externalImports.add(node.data.externalImports);
+
+    return { hasError: false, result: source };
+  };
+
+  const getIndentOfNode = (
+    node: Node | undefined,
+    handleId: string
+  ): number => {
+    if (!node) return 0;
+    if (
+      node.data.configType.includes('If Else') ||
+      ((node.data.configType.includes('For Each Loop') ||
+        node.data.configType.includes('For Loop')) &&
+        handleId === 'loopBody')
+    )
+      return 1;
+    return 0;
+  };
+
+  const getUniqueNameOfHandle = (node: Node, handleId: string): string => {
+    if (node.type === 'setter' || node.type === 'getter')
+      return `${
+        (node.data.outputs.setter_out?.title ??
+          node.data.outputs.getter?.title) as string
+      }`;
+    return `Node_${node.id}_${handleId}_Handle`;
+  };
+
+  const createCodeTemplateFromFunctionName = (
+    node: Node
+  ): string | undefined => {
+    if (!node.data.functionName) return undefined;
+    let outputsTemplate = '';
+    if (node.data.outputs && Object.keys(node.data.outputs).length > 1) {
+      outputsTemplate = Object.keys(node.data.outputs)
+        .slice(1)
+        .map((key, index) => {
+          return `{{{outputs.${index + 1}}}}`;
+        })
+        .join(', ');
+      outputsTemplate += ' = ';
+    }
+    let inputsTemplate = '';
+    if (node.data.inputs && Object.keys(node.data.inputs).length > 1) {
+      inputsTemplate = Object.keys(node.data.inputs)
+        .slice(1)
+        .map((key, index) => {
+          return `{{{inputs.${index + 1}}}}`;
+        })
+        .join(', ');
+    }
+    return `{{indent}}${outputsTemplate}${
+      node.data.functionName as string
+    }(${inputsTemplate})\n{{{outputs.0}}}`;
+  };
+
+  const isAcyclic = (
+    nextNode: string,
+    nextHandle: string,
+    execTrace: Array<{ nodeId: string; handleId: string }>
+  ): boolean => {
+    const index = execTrace.findIndex(
+      (trace) => trace.nodeId === nextNode && trace.handleId === nextHandle
+    );
+    return index !== -1;
+  };
+
+  const topoSortOfFunctionDependencies = (
+    startNodes: Node[]
+  ): Node[] | string => {
+    const queue: string[] = startNodes.map((n) => n.id);
+    const visited: string[] = [];
+    const dependencies: Array<[string, string]> = [];
+    while (queue.length) {
+      const nodeId = queue.shift();
+      if (nodeId === undefined) continue;
+      visited.push(nodeId);
+      const functionCallNodes: Node[] = [];
+      graphState.findFunctionCallNodes(
+        graphState.getNodeById(nodeId)!,
+        functionCallNodes,
+        []
+      );
+      functionCallNodes.forEach((n) => {
+        const createFunctionNodeId = n.data.nodeRef as string;
+        dependencies.push([createFunctionNodeId, nodeId]);
+        if (
+          !visited.includes(createFunctionNodeId) &&
+          !queue.includes(createFunctionNodeId)
+        )
+          queue.push(createFunctionNodeId);
+      });
+    }
+    let sorted: string[] = [];
+    try {
+      sorted = toposort(dependencies);
+    } catch (e: any) {
+      if (e.message.includes('node was:')) {
+        const nodeId = e.message.match(/\d+/);
+        return e.message.replace(
+          `node was:"${nodeId[0] as string}"`,
+          `node was:"${
+            graphState.getNodeById(nodeId[0])!.data.title as string
+          }"`
+        );
+      }
+      return e.message;
+    }
+
+    if (!sorted || sorted.length === 0) sorted = startNodes.map((n) => n.id);
+    return sorted.map((id) => graphState.getNodeById(id)!);
+  };
+
+  const sourceCodeForFunction = (
+    createFunctionNode: Node,
+    externalImports: Set<string>
+  ): SourceCodeExec => {
+    const indentLevel = 1;
+    const execTrace: Array<{ nodeId: string; handleId: string }> = [];
+    const result = sourceCodeWithStartNode(
+      createFunctionNode,
+      undefined,
+      indentLevel,
+      execTrace,
+      externalImports
+    );
+    if (result.hasError) return result;
+    const dataArgs: string[] = [];
+    Object.entries(createFunctionNode.data.outputs ?? {}).forEach(
+      ([key, output]) => {
+        if ((output as any).dataType !== 'exec')
+          dataArgs.push(getUniqueNameOfHandle(createFunctionNode, key));
+      }
+    );
+    result.result = functionDefinition(
+      createFunctionNode.data.title as string,
+      dataArgs,
+      result.result
+    );
+    return result;
+  };
+
+  const mapToLanguageDefinition = (
+    dataType: string | undefined,
+    value: any
+  ): any => {
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    if (dataType === 'string' && value !== null) return `'${value}'`;
+    if (dataType === 'boolean') return value ? 'True' : 'False';
+    else return value;
+  };
+
+  const functionDefinition = (
+    title: string,
+    args: string[],
+    functionBody: string
+  ): string => {
+    return `def ${title}(${args.join(',')}):\n${
+      functionBody !== '' ? functionBody : '\tpass'
+    }`;
+  };
+
   return {
     gui,
     varsNamePool,
@@ -723,6 +1116,7 @@ export default function useScene(
       sortZIndexOfComments,
       autoLayout,
       deleteHandle,
+      sourceCode,
     },
   };
 }

@@ -30,7 +30,7 @@ export default function GetterSetterMenu({
     {
       title: 'Get',
       action: () => {
-        addNode?.('extension1.module1.getter', undefined, {
+        addNode?.('Function & Variable Creation.Getter', undefined, {
           nodeRef: createVarNodeRef,
           outputs: {
             getter: handleData,
@@ -42,14 +42,14 @@ export default function GetterSetterMenu({
     {
       title: 'Set',
       action: () => {
-        addNode?.('extension1.module1.setter', undefined, {
+        addNode?.('Function & Variable Creation.Setter', undefined, {
           nodeRef: createVarNodeRef,
           inputs: {
             execIn: { title: 'execIn', dataType: 'exec', tooltip: 'exec in' },
             setter: handleData,
           },
           outputs: {
-            'setter-out': handleData,
+            setter_out: handleData,
           },
         });
         onClose();

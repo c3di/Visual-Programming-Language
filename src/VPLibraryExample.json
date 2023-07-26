@@ -96,6 +96,7 @@
       "boolean": "boolean",
       "string": "string",
       "exec": "exec",
+      "anyData": "anyData",
       "any": "any"
     }
   }
