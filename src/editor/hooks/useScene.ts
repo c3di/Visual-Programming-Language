@@ -698,6 +698,9 @@ export default function useScene(
     }
 
     const sourceCodeFrom = topoSortOfFunctionDependencies([startNode]);
+    if (typeof sourceCodeFrom === 'string') {
+      return { hasError: true, result: sourceCodeFrom };
+    }
 
     let sourceBody = '';
     const imports = new Set<string>();
@@ -965,7 +968,9 @@ export default function useScene(
     return index !== -1;
   };
 
-  const topoSortOfFunctionDependencies = (startNodes: Node[]): Node[] => {
+  const topoSortOfFunctionDependencies = (
+    startNodes: Node[]
+  ): Node[] | string => {
     const queue: string[] = startNodes.map((n) => n.id);
     const visited: string[] = [];
     const dependencies: Array<[string, string]> = [];
@@ -989,8 +994,22 @@ export default function useScene(
           queue.push(createFunctionNodeId);
       });
     }
-    console.log(dependencies);
-    let sorted = toposort(dependencies);
+    let sorted: string[] = [];
+    try {
+      sorted = toposort(dependencies);
+    } catch (e: any) {
+      if (e.message.includes('node was:')) {
+        const nodeId = e.message.match(/\d+/);
+        return e.message.replace(
+          `node was:"${nodeId[0] as string}"`,
+          `node was:"${
+            graphState.getNodeById(nodeId[0])!.data.title as string
+          }"`
+        );
+      }
+      return e.message;
+    }
+
     if (!sorted || sorted.length === 0) sorted = startNodes.map((n) => n.id);
     return sorted.map((id) => graphState.getNodeById(id)!);
   };
