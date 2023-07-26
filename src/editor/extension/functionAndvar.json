@@ -7,6 +7,7 @@
       "category": "createVariable",
       "title": "New Variable",
       "tooltip": "Create a new variable",
+      "sourceCode": "{{indent}}{{{inputs.1}}}: {{{inputs.2}}} = {{{inputs.3}}}\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "dataType": "exec",
@@ -36,6 +37,25 @@
         }
       }
     },
+
+    "Setter": {
+      "notShowInMenu": true,
+      "type": "setter",
+      "category": "setter",
+      "sourceCode": "{{indent}}{{{inputsTitle.1}}} = {{{inputs.1}}}\n{{{outputs.0}}}"
+    },
+
+    "Getter": {
+      "notShowInMenu": true,
+      "type": "getter",
+      "category": "getter",
+      "tooltip": "Return the value",
+      "sourceCode": "",
+      "outputs": {
+        "getter": {}
+      }
+    },
+
     "Create Function": {
       "type": "Create Function",
       "category": "createFunction",

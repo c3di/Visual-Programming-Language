@@ -249,7 +249,7 @@
     },
     {
       "id": "2",
-      "type": "extension1.module1.getter",
+      "type": "Function & Variable Creation.getter",
       "position": {
         "x": 352,
         "y": 496
@@ -265,7 +265,7 @@
     },
     {
       "id": "3",
-      "type": "extension1.module1.setter",
+      "type": "Function & Variable Creation.setter",
       "position": {
         "x": 656,
         "y": 496

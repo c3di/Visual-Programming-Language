@@ -772,7 +772,7 @@ export default function useScene(
     const { nodes: outputNodes, connectedHandlesId } =
       graphState.getConnectedInfo(nodeId, handleId);
     const outputHandleName = getUniqueNameOfHandle(
-      outputNodes[0].id,
+      outputNodes[0],
       connectedHandlesId[0]
     );
     if (isExecNode(outputNodes[0]))
@@ -798,12 +798,12 @@ export default function useScene(
     }
     const outputs: string[] = [];
     for (const id in connectedNode.data.outputs ?? {}) {
-      outputs.push(getUniqueNameOfHandle(connectedNode.id, id));
+      outputs.push(getUniqueNameOfHandle(connectedNode, id));
     }
     const template = connectedNode.data.sourceCode;
-    if (!template)
+    if (template === undefined)
       console.error(
-        `no source code found for node ${connectedNode.data.type as string}`
+        `no source code found for node ${connectedNode.data.title as string}`
       );
     else {
       prerequisites +=
@@ -882,7 +882,7 @@ export default function useScene(
           );
           if (result.hasError) return result;
           outputs.push(result.result);
-        } else outputs.push(getUniqueNameOfHandle(node.id, id));
+        } else outputs.push(getUniqueNameOfHandle(node, id));
       }
     }
     // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
@@ -890,7 +890,11 @@ export default function useScene(
       node.data.functionName = node.data.title;
     }
     const fromFunctionName = createCodeTemplateFromFunctionName(node);
-
+    // temp fix
+    if (node.data.configType.includes('Create Variable') && !fromFunctionName) {
+      // eslint-disable-next-line prettier/prettier
+      inputs[1] = inputs[1].replace(/'/g, '');
+    }
     source +=
       '\n'.repeat(Number(source !== '')) +
       Mustache.render(
@@ -900,6 +904,11 @@ export default function useScene(
           inputs,
           outputs,
           indent: '\t'.repeat(indentLevel),
+          inputsTitle: Object.values(node.data.inputs ?? {}).map(
+            (handle: any) => {
+              return handle.title;
+            }
+          ),
         }
       )
         .trimEnd()
@@ -925,8 +934,13 @@ export default function useScene(
     return 0;
   };
 
-  const getUniqueNameOfHandle = (nodeId: string, handleId: string): string => {
-    return `Node_${nodeId}_${handleId}_Handle`;
+  const getUniqueNameOfHandle = (node: Node, handleId: string): string => {
+    if (node.type === 'setter' || node.type === 'getter')
+      return `${
+        (node.data.outputs.setter_out?.title ??
+          node.data.outputs.getter?.title) as string
+      }`;
+    return `Node_${node.id}_${handleId}_Handle`;
   };
 
   const createCodeTemplateFromFunctionName = (
@@ -1032,7 +1046,7 @@ export default function useScene(
     Object.entries(createFunctionNode.data.outputs ?? {}).forEach(
       ([key, output]) => {
         if ((output as any).dataType !== 'exec')
-          dataArgs.push(getUniqueNameOfHandle(createFunctionNode.id, key));
+          dataArgs.push(getUniqueNameOfHandle(createFunctionNode, key));
       }
     );
     result.result = functionDefinition(
