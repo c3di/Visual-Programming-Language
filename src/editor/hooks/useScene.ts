@@ -526,7 +526,7 @@ export default function useScene(
                 }
               );
 
-              addNode('extension2.functionCall', undefined, {
+              addNode('Function & Variable Creation.functionCall', undefined, {
                 title: latest.data.title,
                 nodeRef: node.id,
                 inputs: latest.data.outputs,

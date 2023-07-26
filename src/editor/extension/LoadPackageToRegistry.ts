@@ -4,6 +4,7 @@ import log from './log.json';
 import { nodeConfigRegistry } from './NodeConfigRegistry';
 import stringPkg from './string.json';
 import floatPkg from './float.json';
+import functionAndvar from './functionAndvar.json';
 
 import { addNewType, type NodePackage, type NodeConfig } from '../types';
 /*
@@ -141,8 +142,9 @@ export const LoadPackageToRegistry = (
 
 export const LoadDefaultModule = (): void => {
   LoadPackageToRegistry('', buildin);
-  LoadPackageToRegistry('Flow Control', flowControl);
-  LoadPackageToRegistry('Log', log);
-  LoadPackageToRegistry('String', stringPkg);
   LoadPackageToRegistry('Float', floatPkg);
+  LoadPackageToRegistry('String', stringPkg);
+  LoadPackageToRegistry('Flow Control', flowControl);
+  LoadPackageToRegistry('Function & Variable Creation', functionAndvar);
+  LoadPackageToRegistry('Log', log);
 };
