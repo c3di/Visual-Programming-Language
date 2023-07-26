@@ -13,6 +13,7 @@ import {
   type selectedElementsCounts,
   isCommentNode,
   type Graph,
+  type SourceCodeExec,
 } from '../types';
 import { type GraphState } from './useGraph';
 import { deserializer } from '../Deserializer';
@@ -30,6 +31,7 @@ import { UniqueNamePool, type IUniqueNamePool } from '../utils';
 import { copy, deepCopy, fromClientCoordToScene } from '../util';
 import Mustache from 'mustache';
 import { type Handle } from '../types/Handle';
+import toposort from 'toposort';
 
 function nodeInsideOfNode(n: Node, containter: Node): boolean {
   return (
@@ -82,7 +84,7 @@ export interface ISceneActions {
   sortZIndexOfComments: (nodes: Node[]) => Node[];
   autoLayout: () => void;
   deleteHandle: (nodeId: string, nodeType: string, handleId: string) => void;
-  sourceCode: () => { hasError: boolean; result: string };
+  sourceCode: () => SourceCodeExec;
 }
 export interface ISceneState {
   gui: IGui;
@@ -687,27 +689,56 @@ export default function useScene(
     );
   }, []);
 
-  const sourceCode = (): { hasError: boolean; result: string } => {
+  const sourceCode = (): SourceCodeExec => {
     const startNode = graphState
       .getNodes()
       .find((n) => n.data.configType.includes('Start'));
     if (!startNode) {
       return { hasError: true, result: 'No "Execute Start" found' };
     }
-    const indentLevel = 0;
-    const execTrace: Array<{ nodeId: string; handleId: string }> = [];
-    const externalImports = new Set<string>();
-    const result = sourceCodeWithStartNode(
-      startNode,
-      undefined,
-      indentLevel,
-      execTrace,
-      externalImports
-    );
-    if (result.hasError) return result;
-    result.result =
-      Array.from(externalImports).join('\n') + '\n' + result.result;
-    return result;
+
+    const sourceCodeFrom = topoSortOfFunctionDependencies([startNode]);
+
+    let sourceBody = '';
+    const imports = new Set<string>();
+    for (const node of sourceCodeFrom) {
+      if (node.id === startNode.id) {
+        const indentLevel = 0;
+        const execTrace: Array<{ nodeId: string; handleId: string }> = [];
+        const externalImports = new Set<string>();
+        const result = sourceCodeWithStartNode(
+          startNode,
+          undefined,
+          indentLevel,
+          execTrace,
+          externalImports
+        );
+        if (result.hasError) return result;
+        sourceBody += '\n'.repeat(Number(result.result !== '')) + result.result;
+        externalImports.forEach((externalImport) => {
+          imports.add(externalImport);
+        });
+      } else {
+        const externalImports = new Set<string>();
+        const sourceCodeExec = sourceCodeForFunction(node, externalImports);
+        if (sourceCodeExec.hasError) return sourceCodeExec;
+        sourceBody +=
+          '\n\n'.repeat(
+            Number(sourceCodeExec.result !== '' && sourceBody !== '')
+          ) + sourceCodeExec.result;
+        externalImports.forEach((externalImport) => {
+          imports.add(externalImport);
+        });
+      }
+    }
+
+    return {
+      hasError: false,
+      result:
+        Array.from(imports).join('\n') +
+        '\n'.repeat(Array.from(imports).length) +
+        sourceBody,
+    };
   };
 
   const isExecNode = (node: Node): boolean => {
@@ -793,12 +824,16 @@ export default function useScene(
     indentLevel: number,
     execTrace: Array<{ nodeId: string; handleId: string }>,
     externalImports: Set<string>
-  ): { hasError: boolean; result: string } => {
+  ): SourceCodeExec => {
     if (!node?.data) return { hasError: false, result: '' };
     let source = '';
     execTrace.push({ nodeId: node.id, handleId: execInId ?? '' });
     const template = node.data.sourceCode;
-    if (!template) {
+    if (
+      !template &&
+      !node.data.functionName &&
+      !node.data.configType.includes('functionCall')
+    ) {
       return {
         hasError: true,
         result: `No source code found for '${node.data.configType as string}'`,
@@ -848,19 +883,27 @@ export default function useScene(
       }
     }
     // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+    if (node.data.configType.includes('functionCall')) {
+      node.data.functionName = node.data.title;
+    }
+    const fromFunctionName = createCodeTemplateFromFunctionName(node);
+
     source +=
       '\n'.repeat(Number(source !== '')) +
       Mustache.render(
-        typeof template === 'string' ? template : template[execInId!],
+        fromFunctionName ??
+          (typeof template === 'string' ? template : template[execInId!]),
         {
           inputs,
           outputs,
           indent: '\t'.repeat(indentLevel),
         }
-      ).trimEnd();
+      )
+        .trimEnd()
+        .replace(/,\s*$/, '');
     if (node.data.externalImports)
       externalImports.add(node.data.externalImports);
-    console.log(createCodeTemplateFromFunctionName(node));
+
     return { hasError: false, result: source };
   };
 
@@ -908,7 +951,7 @@ export default function useScene(
     }
     return `{{indent}}${outputsTemplate}${
       node.data.functionName as string
-    }(${inputsTemplate})`;
+    }(${inputsTemplate})\n{{{outputs.0}}}`;
   };
 
   const isAcyclic = (
@@ -921,6 +964,66 @@ export default function useScene(
     );
     return index !== -1;
   };
+
+  const topoSortOfFunctionDependencies = (startNodes: Node[]): Node[] => {
+    const queue: string[] = startNodes.map((n) => n.id);
+    const visited: string[] = [];
+    const dependencies: Array<[string, string]> = [];
+    while (queue.length) {
+      const nodeId = queue.shift();
+      if (nodeId === undefined) continue;
+      visited.push(nodeId);
+      const functionCallNodes: Node[] = [];
+      graphState.findFunctionCallNodes(
+        graphState.getNodeById(nodeId)!,
+        functionCallNodes,
+        []
+      );
+      functionCallNodes.forEach((n) => {
+        const createFunctionNodeId = n.data.nodeRef as string;
+        dependencies.push([createFunctionNodeId, nodeId]);
+        if (
+          !visited.includes(createFunctionNodeId) &&
+          !queue.includes(createFunctionNodeId)
+        )
+          queue.push(createFunctionNodeId);
+      });
+    }
+    console.log(dependencies);
+    let sorted = toposort(dependencies);
+    if (!sorted || sorted.length === 0) sorted = startNodes.map((n) => n.id);
+    return sorted.map((id) => graphState.getNodeById(id)!);
+  };
+
+  const sourceCodeForFunction = (
+    createFunctionNode: Node,
+    externalImports: Set<string>
+  ): SourceCodeExec => {
+    const indentLevel = 1;
+    const execTrace: Array<{ nodeId: string; handleId: string }> = [];
+    const result = sourceCodeWithStartNode(
+      createFunctionNode,
+      undefined,
+      indentLevel,
+      execTrace,
+      externalImports
+    );
+    if (result.hasError) return result;
+    const dataArgs: string[] = [];
+    Object.entries(createFunctionNode.data.outputs ?? {}).forEach(
+      ([key, output]) => {
+        if ((output as any).dataType !== 'exec')
+          dataArgs.push(getUniqueNameOfHandle(createFunctionNode.id, key));
+      }
+    );
+    result.result = functionDefinition(
+      createFunctionNode.data.title as string,
+      dataArgs,
+      result.result
+    );
+    return result;
+  };
+
   const mapToLanguageDefinition = (
     dataType: string | undefined,
     value: any
@@ -929,6 +1032,16 @@ export default function useScene(
     if (dataType === 'string' && value !== null) return `'${value}'`;
     if (dataType === 'boolean') return value ? 'True' : 'False';
     else return value;
+  };
+
+  const functionDefinition = (
+    title: string,
+    args: string[],
+    functionBody: string
+  ): string => {
+    return `def ${title}(${args.join(',')}):\n${
+      functionBody !== '' ? functionBody : '\tpass'
+    }`;
   };
 
   return {

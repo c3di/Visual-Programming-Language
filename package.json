@@ -34,7 +34,8 @@
     "mustache": "^4.2.0",
     "react-filepond": "^7.1.2",
     "react-icons": "^4.8.0",
-    "reactflow": "^11.7.4"
+    "reactflow": "^11.7.4",
+    "toposort": "^2.0.2"
   },
   "peerDependencies": {
     "react": "^18.2.0",

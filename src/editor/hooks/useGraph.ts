@@ -67,6 +67,11 @@ export interface GraphState {
   deleteAllEdgesOfNode: (nodeId: string) => void;
   deleteAllEdgesOfSelectedNodes: () => void;
   deleteAllEdgesOfHandle: (nodeId: string, handleId: string) => void;
+  findFunctionCallNodes: (
+    startNode: Node,
+    functionCallNodes: Node[],
+    visitedNodeIds: string[]
+  ) => void;
   addElements: ({
     newNodes,
     newEdges,
@@ -704,6 +709,25 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     }
     return { nodes: connectedNodes, edges: connectedEdges, connectedHandlesId };
   };
+
+  const findFunctionCallNodes = (
+    startNode: Node,
+    functionCallNodes: Node[],
+    visitedNodeIds: string[] = []
+  ): void => {
+    if (visitedNodeIds.includes(startNode.id)) return;
+    visitedNodeIds.push(startNode.id);
+    Object.entries(startNode.data.outputs ?? {}).forEach(([name, output]) => {
+      if ((output as any).dataType === 'exec') {
+        getConnectedInfo(startNode.id, name).nodes.forEach((node) => {
+          if (node.type === 'functionCall') {
+            functionCallNodes.push(node);
+          }
+          findFunctionCallNodes(node, functionCallNodes, visitedNodeIds);
+        });
+      }
+    });
+  };
   return {
     initGraph,
     getFreeUniqueNodeIds,
@@ -741,5 +765,6 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     toString,
     fromJSON,
     getConnectedInfo,
+    findFunctionCallNodes,
   };
 }

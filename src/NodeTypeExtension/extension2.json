@@ -40,6 +40,7 @@
     "CreateFunction": {
       "type": "CreateFunction",
       "category": "createFunction",
+      "sourceCode": "{{{outputs.0}}}",
       "outputs": {
         "execOut": {
           "title": "execOut",
@@ -58,6 +59,7 @@
       "category": "return",
       "showLabel": true,
       "tooltip": "Return",
+      "sourceCode": "{{indent}}return {{#inputs}}{{#.}}{{{.}}}, {{/.}}{{/inputs}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
