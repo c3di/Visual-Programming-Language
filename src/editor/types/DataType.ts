@@ -46,8 +46,8 @@ export const DataTypes: Record<string, DataType> = {
     shownInColor: `${hsl(60)}`,
   },
   exec: { shownInColor: `${hsl(0, 0, 0)}` },
-  any: { shownInColor: `${hsl(0, 0, 20)}` },
-  anyDataType: { widget: 'TextInput', shownInColor: `${hsl(0, 0, 50)}` },
+  any: { shownInColor: `${hsl(0, 0, 50)}` },
+  anyDataType: { widget: 'TextInput', shownInColor: `${hsl(0, 0, 20)}` },
   ndarray: { widget: 'TextInput', shownInColor: `${hsl(300, 100, 25)}` },
 };
 
