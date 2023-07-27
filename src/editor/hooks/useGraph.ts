@@ -9,6 +9,7 @@ import {
   isDataTypeMatch,
   getMaxConnection,
   ConnectionAction,
+  DataTypes,
 } from '../types';
 import {
   useNodesState,
@@ -345,9 +346,9 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
           data: {
             dataType,
           },
-          className: dataType,
           style: {
             strokeWidth: 2,
+            stroke: `${DataTypes[dataType].shownInColor}`,
           },
         },
         eds
