@@ -6,6 +6,7 @@ import {
   nodeConfigsToTreeData,
   type TreeItemData,
 } from './elements';
+import { type OnConnectStartParams } from '../types';
 import { type Command } from '../hooks';
 import { nodeConfigRegistry } from '../extension';
 import { createSvgIcon } from '@mui/material/utils';
@@ -40,6 +41,7 @@ const SearchMenu = memo(function SearchMenu({
   autoLayout,
   moreCommands,
   toFilter,
+  startHandleInfo,
 }: {
   onClose: () => void;
   anchorPosition: { top: number; left: number };
@@ -57,6 +59,7 @@ const SearchMenu = memo(function SearchMenu({
   clear?: () => void;
   moreCommands?: Command[];
   toFilter?: boolean;
+  startHandleInfo?: OnConnectStartParams;
 }): JSX.Element {
   const [commands, setCommand] = useState<Command[]>([
     {
@@ -226,6 +229,7 @@ const SearchMenu = memo(function SearchMenu({
         onItemClick={onItemClick}
         onEnterKeyDown={onEnterKeyDown}
         toFilter={toFilter}
+        startHandleInfo={startHandleInfo}
       />
     </Menu>
   );

@@ -6,6 +6,7 @@ import {
   type NodeConfig,
   type NodePackage,
   type HandleConfig,
+  type OnConnectStartParams,
 } from '../../types';
 import StyledTreeItem from './StyledTreeItem';
 import SearchInput from './SearchInput';
@@ -240,6 +241,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
   onItemDelete,
   onEnterKeyDown,
   toFilter,
+  startHandleInfo,
 }: {
   treeData: TreeItemData[];
   onItemClick?: (item: TreeItemData) => void;
@@ -249,6 +251,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
     item: TreeItemData
   ) => void;
   toFilter?: boolean;
+  startHandleInfo?: OnConnectStartParams;
 }): JSX.Element {
   const [filteredTreeData, setFilteredTreeData] =
     useState<TreeItemData[]>(treeData);
@@ -261,7 +264,9 @@ export const SearchedTreeView = memo(function SearchedTreeView({
 
   useEffect(() => {
     if (toFilter) {
-      searchTreeDataWithHandleDataType('source', 'exec');
+      if (startHandleInfo?.handleType) {
+        searchTreeDataWithHandleDataType(startHandleInfo.handleType, 'exec');
+      }
     }
   }, [toFilter, treeData]);
 
@@ -323,7 +328,8 @@ export const SearchedTreeView = memo(function SearchedTreeView({
       hasMatchingHandleType(handleType, item) &&
       hasMatchingDataType(dataType, item)
     ) {
-      console.log('has inputs exec handle: ', item.name);
+      console.log('handle Type: ', handleType);
+      // console.log('has exec handle: ', item.name);
       return { ...item };
     }
     const children: TreeItemData[] = [];

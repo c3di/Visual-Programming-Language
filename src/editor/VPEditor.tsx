@@ -18,7 +18,11 @@ import {
 
 import Setting from './VPPanelSetting';
 import { WidgetFactoryProvider, SceneStateContext } from './Context';
-import type { SerializedGraph, selectedElementsCounts } from './types';
+import type {
+  SerializedGraph,
+  selectedElementsCounts,
+  OnConnectStartParams,
+} from './types';
 import componentType, { Background, ControlPanel, MiniMap } from './components';
 import 'reactflow/dist/style.css';
 import './VPEditor.css';
@@ -81,6 +85,8 @@ const Scene = ({
     controlPanel: cpSetting,
     minimap: minimpSetting,
   } = Setting;
+
+  const [startHandle, setStartHandle] = useState<OnConnectStartParams>();
 
   const closeWidget = useCallback(
     (e: React.MouseEvent | undefined | null, force: boolean = false): void => {
@@ -340,6 +346,11 @@ const Scene = ({
           }}
           onConnectStart={(evt, params) => {
             gui.connectionStartNodeId.current = params.nodeId;
+            setStartHandle({
+              nodeId: params.nodeId,
+              handleId: params.handleId,
+              handleType: params.handleType,
+            });
             console.log('handleType is ', params.handleType);
             console.log('handleId is ', params.handleId);
             closeWidget(null, true);
@@ -366,6 +377,7 @@ const Scene = ({
                   autoLayout: sceneActions?.autoLayout,
                   moreCommands: sceneState?.extraCommands,
                   toFilter: toFilterFlag,
+                  startHandleInfo: startHandle,
                 }
               );
             }
