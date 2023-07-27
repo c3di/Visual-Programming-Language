@@ -42,7 +42,9 @@
       "category": "math",
       "title": "+",
       "tooltip": "Addition of two floats",
-      "sourceCode": "{{indent}}{{{outputs.0}}}={{{inputs.0}}}+{{{inputs.1}}}",
+      "enableAddNewOne": true,
+      "dataType": "float",
+      "sourceCode": "{{indent}}{{{outputs.0}}}=sum([{{{inputs}}}])",
       "inputs": {
         "input1": {
           "dataType": "float",

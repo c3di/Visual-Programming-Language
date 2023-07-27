@@ -194,6 +194,7 @@ export class Deserializer {
         breakExecution: config.breakExecution,
         externalImports: config.externalImports,
         functionName: config.functionName,
+        enableAddNewOne: config.enableAddNewOne,
       },
     };
   };

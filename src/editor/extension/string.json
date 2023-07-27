@@ -41,8 +41,10 @@
       "type": "String + String",
       "category": "math",
       "title": "+",
-      "tooltip": "Concatenates two strings to make a new string",
-      "sourceCode": "{{indent}}{{{outputs.0}}}={{{inputs.0}}}+{{{inputs.1}}}",
+      "dataType": "string",
+      "tooltip": "Concatenates strings to make a new string",
+      "sourceCode": "{{indent}}{{{outputs.0}}}=''.join([{{{inputs}}}])",
+      "enableAddNewOne": true,
       "inputs": {
         "input1": {
           "dataType": "string",
