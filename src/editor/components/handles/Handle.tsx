@@ -107,6 +107,7 @@ export const HandleElement = ({
   handlePosition: any;
   handleData: HandleData;
 }): JSX.Element => {
+  const color = `${DataTypes[handleData.dataType!].shownInColor}`;
   return (
     <RCHandle
       className={`vp-rc-handle-${handleData.dataType ?? 'default'} ${
@@ -122,8 +123,8 @@ export const HandleElement = ({
         transform:
           handleType === 'target' ? 'translate(-50%, 0)' : 'translate(50%, 0)',
         position: 'relative',
-        backgroundColor: `var(--vp-${handleData.dataType ?? 'default'}-color)`,
-        borderColor: `var(--vp-${handleData.dataType ?? 'default'}-color)`,
+        backgroundColor: color,
+        borderColor: color,
         borderWidth: '--vp-handle-border-width',
         borderStyle: 'solid',
       }}

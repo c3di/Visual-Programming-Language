@@ -6,7 +6,7 @@ import {
   TextInput,
   IntegerInput,
 } from './Widgets';
-import { DataTypes } from '.././types';
+import { DataTypes, addNewType } from '.././types';
 import { stringArrayToObject } from '.././util';
 import { type WidgetProps } from './WidgetProps';
 
@@ -56,18 +56,18 @@ export class WidgetFactory {
       Object.keys(DataTypes).forEach((key) => {
         opts[key] = key;
       });
-      DataTypes.DataType = {
+      addNewType('DataType', {
         options: opts,
         default: 'float',
         widget: 'EnumSelect',
-      };
+      });
     }
     if (!DataTypes[type]) {
       console.warn(`Invalid data type ${type}, return <></> element.`);
       return <></>;
     }
-    const widgetTypeToUse = DataTypes[type].widget || type;
-    const options = DataTypes[type].options || {};
+    const widgetTypeToUse = DataTypes[type].widget ?? type;
+    const options = DataTypes[type].options ?? {};
     const widget = this._availableWidgets[widgetTypeToUse];
 
     if (widget) {
