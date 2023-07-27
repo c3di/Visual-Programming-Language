@@ -54,7 +54,7 @@ export class WidgetFactory {
     if (type === 'DataType') {
       const opts: Record<string, string> = {};
       Object.keys(DataTypes).forEach((key) => {
-        opts[key] = key;
+        if (key !== 'any') opts[key] = key;
       });
       addNewType('DataType', {
         options: opts,
