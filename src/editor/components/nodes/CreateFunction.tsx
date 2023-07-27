@@ -1,11 +1,11 @@
 import React, { memo, useCallback, useRef, useState } from 'react';
 import { IconButton } from '@mui/material';
 import { AddCircle } from '@mui/icons-material';
-import { SourceHandle, TargetHandle } from '../handles';
+import { SourceHandle, TargetHandle, HandleElement } from '../handles';
 import { type HandleData, type ConnectableData, DataTypes } from '../../types';
 import { InplaceInput } from '../../widgets';
 import { useSceneState, useWidgetFactory } from '../../Context';
-import { Handle as RCHandle, Position } from 'reactflow';
+import { Position } from 'reactflow';
 
 export function ParameterHandle({
   id,
@@ -119,23 +119,11 @@ export function ParameterHandle({
           })}
         </label>
       </div>
-      <RCHandle
-        className={`vp-rc-handle-${handleData.dataType ?? 'default'} ${
-          handleData.connection ? 'handle_connected' : 'handle_not_connected'
-        }`}
+      <HandleElement
         id={id}
-        type={handleType}
-        position={handlePosition}
-        isConnectable={true}
-        style={{
-          top: 0,
-          left: 0,
-          transform:
-            handleType === 'target'
-              ? 'translate(-50%, 0)'
-              : 'translate(50%, 0)',
-          position: 'relative',
-        }}
+        handleType={handleType}
+        handlePosition={handlePosition}
+        handleData={handleData}
       />
     </div>
   );

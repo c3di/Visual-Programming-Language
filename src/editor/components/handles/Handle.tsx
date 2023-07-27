@@ -86,30 +86,47 @@ export default function Handle({
   return (
     <div className={className} title={handleData.tooltip}>
       {label}
-      <RCHandle
-        className={`vp-rc-handle-${handleData.dataType ?? 'default'} ${
-          handleData.connection ? 'handle_connected' : 'handle_not_connected'
-        }`}
+      <HandleElement
         id={id}
-        type={handleType}
-        position={handlePosition}
-        isConnectable={true}
-        style={{
-          top: 0,
-          left: 0,
-          transform:
-            handleType === 'target'
-              ? 'translate(-50%, 0)'
-              : 'translate(50%, 0)',
-          position: 'relative',
-          backgroundColor: `var(--vp-${
-            handleData.dataType ?? 'default'
-          }-color)`,
-          borderColor: `var(--vp-${handleData.dataType ?? 'default'}-color)`,
-          borderWidth: '--vp-handle-border-width',
-          borderStyle: 'solid',
-        }}
+        handleType={handleType}
+        handlePosition={handlePosition}
+        handleData={handleData}
       />
     </div>
   );
 }
+
+export const HandleElement = ({
+  id,
+  handleType,
+  handlePosition,
+  handleData,
+}: {
+  id: string;
+  handleType: any;
+  handlePosition: any;
+  handleData: HandleData;
+}): JSX.Element => {
+  return (
+    <RCHandle
+      className={`vp-rc-handle-${handleData.dataType ?? 'default'} ${
+        handleData.connection ? 'handle_connected' : 'handle_not_connected'
+      }`}
+      id={id}
+      type={handleType}
+      position={handlePosition}
+      isConnectable={true}
+      style={{
+        top: 0,
+        left: 0,
+        transform:
+          handleType === 'target' ? 'translate(-50%, 0)' : 'translate(50%, 0)',
+        position: 'relative',
+        backgroundColor: `var(--vp-${handleData.dataType ?? 'default'}-color)`,
+        borderColor: `var(--vp-${handleData.dataType ?? 'default'}-color)`,
+        borderWidth: '--vp-handle-border-width',
+        borderStyle: 'solid',
+      }}
+    />
+  );
+};
