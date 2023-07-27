@@ -1,11 +1,9 @@
 import { type HandleType } from 'reactflow';
 
 const getNewColor = (noIncludes: string[]): string => {
-  let hue = 0;
   let color = '';
   do {
-    hue = Math.random() * 360;
-    color = hsl(hue);
+    color = hsl(Math.random() * 360, Math.random() * 100, Math.random() * 100);
   } while (noIncludes.includes(color));
   return color;
 };
@@ -58,8 +56,8 @@ export default DataTypes;
 
 export function addNewType(type: string, options: any): void {
   DataTypes[type] = { ...DataTypes[type], ...options };
-  options.shownInColor =
-    options.shownInColor ||
+  DataTypes[type].shownInColor =
+    DataTypes[type].shownInColor ||
     getNewColor(Object.values(DataTypes).map((dt) => dt.shownInColor));
 }
 
