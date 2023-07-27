@@ -13,6 +13,7 @@
   justify-content: flex-end;
   align-items: center;
   height: var(--vp-handle-panel-height);
+  padding-right: 10px;
 }
 
 .target-handle {
@@ -21,6 +22,7 @@
   justify-content: flex-end;
   align-items: center;
   height: var(--vp-handle-panel-height);
+  padding-left: 10px;
 }
 
 .target-handle .react-flow__handle,

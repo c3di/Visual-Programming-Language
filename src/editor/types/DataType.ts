@@ -1,19 +1,64 @@
 import { type HandleType } from 'reactflow';
 
-export const DataTypes: Record<string, any> = {
-  float: { defaultValue: 0.0, widget: 'NumberInput' },
-  integer: { defaultValue: 0, widget: 'IntegerInput' },
-  boolean: { defaultValue: false, widget: 'BooleanInput' },
-  string: { defaultValue: '', widget: 'TextInput' },
-  exec: {},
-  anyDataType: { widget: 'TextInput' },
-  ndarray: { widget: 'TextInput' },
+const getNewColor = (noIncludes: string[]): string => {
+  let color = '';
+  do {
+    color = hsl(Math.random() * 360, Math.random() * 100, Math.random() * 100);
+  } while (noIncludes.includes(color));
+  return color;
+};
+
+const hsl = (
+  hue: number,
+  saturation: number = 80,
+  lightness: number = 40
+): string => {
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+};
+export interface DataType {
+  defaultValue?: any;
+  shownInColor: string;
+  widget?: string;
+  options?: any;
+}
+
+export const DataTypes: Record<string, DataType> = {
+  DataType: {
+    shownInColor: `${hsl(154, 26, 44)}`,
+  },
+  float: {
+    defaultValue: 0.0,
+    widget: 'NumberInput',
+    shownInColor: `${hsl(240)}`,
+  },
+  integer: {
+    defaultValue: 0,
+    widget: 'IntegerInput',
+    shownInColor: `${hsl(120)}`,
+  },
+  boolean: {
+    defaultValue: false,
+    widget: 'BooleanInput',
+    shownInColor: `${hsl(0)}`,
+  },
+  string: {
+    defaultValue: '',
+    widget: 'TextInput',
+    shownInColor: `${hsl(60)}`,
+  },
+  exec: { shownInColor: `${hsl(0, 0, 0)}` },
+  any: { shownInColor: `${hsl(0, 0, 50)}` },
+  anyDataType: { widget: 'TextInput', shownInColor: `${hsl(0, 0, 20)}` },
+  ndarray: { widget: 'TextInput', shownInColor: `${hsl(300, 100, 25)}` },
 };
 
 export default DataTypes;
 
 export function addNewType(type: string, options: any): void {
-  DataTypes[type] = options;
+  DataTypes[type] = { ...DataTypes[type], ...options };
+  DataTypes[type].shownInColor =
+    DataTypes[type].shownInColor ||
+    getNewColor(Object.values(DataTypes).map((dt) => dt.shownInColor));
 }
 
 export function isDataTypeMatch(type1: string, type2: string): boolean {
