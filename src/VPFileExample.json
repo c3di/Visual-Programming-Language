@@ -28,7 +28,7 @@
         },
         "input4": {
           "title": "long name",
-          "dataType": "extension1.Level2.module2.EDataType"
+          "dataType": "extension1.Level2.module2.EFruit"
         }
       },
       "outputs": {
@@ -142,7 +142,7 @@
         },
         "type": {
           "title": "type",
-          "dataType": "extension1.Level2.module2.EDataType"
+          "dataType": "extension1.Level2.module2.EFruit"
         },
         "value": {
           "title": "value",
