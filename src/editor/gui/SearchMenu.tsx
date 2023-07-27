@@ -1,6 +1,12 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { Menu } from '@mui/material';
-import { Comment, Route, DoNotDisturb, FitScreen } from '@mui/icons-material';
+import {
+  Comment,
+  Route,
+  DoNotDisturb,
+  FitScreen,
+  Notes,
+} from '@mui/icons-material';
 import {
   SearchedTreeView,
   nodeConfigsToTreeData,
@@ -9,7 +15,7 @@ import {
 import { type Command } from '../hooks';
 import { nodeConfigRegistry } from '../extension';
 import { createSvgIcon } from '@mui/material/utils';
-import { type XYPosition } from 'reactflow';
+import { type SourceCodeExec } from '../types';
 
 const StickyNoteIcon = createSvgIcon(
   <svg
@@ -34,7 +40,7 @@ const StickyNoteIcon = createSvgIcon(
 const SearchMenu = memo(function SearchMenu({
   onClose,
   anchorPosition,
-  addNode,
+  getSourceCode,
   addNodeWithSceneCoord,
   clear,
   autoLayout,
@@ -42,12 +48,7 @@ const SearchMenu = memo(function SearchMenu({
 }: {
   onClose: () => void;
   anchorPosition: { top: number; left: number };
-  addNode?: (
-    configType: string,
-    thisPosition?: XYPosition,
-    data?: any,
-    positionOffset?: XYPosition
-  ) => void;
+  getSourceCode?: () => SourceCodeExec;
   addNodeWithSceneCoord?: (
     configType: string,
     anchorPosition: { top: number; left: number }
@@ -94,6 +95,19 @@ const SearchMenu = memo(function SearchMenu({
         autoLayout?.();
       },
       labelIcon: FitScreen,
+    },
+    {
+      name: 'Copy Textual Code',
+      action: () => {
+        const code = getSourceCode?.();
+        const clipboardStr = code?.result ?? '';
+        navigator.clipboard.writeText(clipboardStr).catch((err) => {
+          console.error('Could not copy text: ', err);
+        });
+      },
+      labelIcon: Notes,
+      tooltip:
+        'Copy executable (linked to "Execution Start") text code to clipboard',
     },
   ]);
 

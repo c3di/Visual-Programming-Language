@@ -719,7 +719,9 @@ export default function useScene(
         );
         if (result.hasError) return result;
         // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-        sourceBody += '\n'.repeat(Number(result.result !== '')) + result.result;
+        sourceBody +=
+          '\n'.repeat(Number(result.result !== '' && sourceBody !== '')) +
+          result.result;
         externalImports.forEach((externalImport) => {
           imports.add(externalImport);
         });
