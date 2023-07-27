@@ -205,7 +205,8 @@ export default function useScene(
           };
           const index = commands.findIndex((cmd) => cmd.name === 'Paste');
           if (index !== -1) {
-            return commands.splice(index, 1, newCmd);
+            commands[index] = newCmd;
+            return commands;
           } else return [...commands, newCmd];
         });
       })
@@ -717,6 +718,7 @@ export default function useScene(
           externalImports
         );
         if (result.hasError) return result;
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         sourceBody += '\n'.repeat(Number(result.result !== '')) + result.result;
         externalImports.forEach((externalImport) => {
           imports.add(externalImport);
@@ -726,6 +728,7 @@ export default function useScene(
         const sourceCodeExec = sourceCodeForFunction(node, externalImports);
         if (sourceCodeExec.hasError) return sourceCodeExec;
         sourceBody +=
+          // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
           '\n\n'.repeat(
             Number(sourceCodeExec.result !== '' && sourceBody !== '')
           ) + sourceCodeExec.result;
