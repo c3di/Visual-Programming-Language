@@ -21,7 +21,7 @@
         "type": {
           "title": "type",
           "tooltip": "type of the variable",
-          "dataType": "extension1.Level2.module2.EDataType",
+          "dataType": "DataType",
           "defaultValue": "string"
         },
         "value": {

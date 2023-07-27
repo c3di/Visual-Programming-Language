@@ -6,8 +6,8 @@ export const DataTypes: Record<string, any> = {
   boolean: { defaultValue: false, widget: 'BooleanInput' },
   string: { defaultValue: '', widget: 'TextInput' },
   exec: {},
-  any: {},
-  ndarray: {},
+  anyDataType: { widget: 'TextInput' },
+  ndarray: { widget: 'TextInput' },
 };
 
 export default DataTypes;

@@ -51,6 +51,17 @@ export class WidgetFactory {
   }
 
   public createWidget(type: string, widgetOptions: any): JSX.Element {
+    if (type === 'DataType') {
+      const opts: Record<string, string> = {};
+      Object.keys(DataTypes).forEach((key) => {
+        opts[key] = key;
+      });
+      DataTypes.DataType = {
+        options: opts,
+        default: 'float',
+        widget: 'EnumSelect',
+      };
+    }
     if (!DataTypes[type]) {
       console.warn(`Invalid data type ${type}, return <></> element.`);
       return <></>;
@@ -58,6 +69,7 @@ export class WidgetFactory {
     const widgetTypeToUse = DataTypes[type].widget || type;
     const options = DataTypes[type].options || {};
     const widget = this._availableWidgets[widgetTypeToUse];
+
     if (widget) {
       return React.cloneElement(widget, { ...widgetOptions, options });
     } else {
