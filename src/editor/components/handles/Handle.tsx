@@ -76,7 +76,15 @@ export default function Handle({
     if (showTitle)
       title = <span className="handle-title">{handleData.title} </span>;
     setLabel(
-      <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+      <label
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '5px',
+          paddingLeft: '5px',
+          paddingRight: '5px',
+        }}
+      >
         {title}
         {(!toHideWidgetWhenConnected || !isConnected) && widget.current}
       </label>
@@ -120,8 +128,7 @@ export const HandleElement = ({
       style={{
         top: 0,
         left: 0,
-        transform:
-          handleType === 'target' ? 'translate(-50%, 0)' : 'translate(50%, 0)',
+        transform: 'translate(0%, 0)',
         position: 'relative',
         backgroundColor: color,
         borderColor: color,
