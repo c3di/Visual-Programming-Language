@@ -273,6 +273,63 @@ export const SearchedTreeView = memo(function SearchedTreeView({
     return null;
   };
 
+  const hasMatchingHandleType = (
+    handleType: string,
+    item: TreeItemData
+  ): boolean => {
+    switch (handleType) {
+      case 'source':
+        return Object.prototype.hasOwnProperty.call(item, 'inputs');
+      case 'target':
+        return Object.prototype.hasOwnProperty.call(item, 'outputs');
+      default:
+        return false;
+    }
+  };
+
+  const hasMatchingDataType = (
+    dataType: string,
+    item: TreeItemData
+  ): boolean => {
+    if (
+      Object.values(item.inputs ?? {}).find(
+        (child) => child.dataType === dataType
+      )
+    ) {
+      // here is the handle we find, if we need to use it
+      // for connection in the future
+      // we could modify the return value to return the handle
+      return true;
+    }
+
+    return false;
+  };
+
+  const filteredTreeDataWithHandleDataType = (
+    item: TreeItemData,
+    handleType: string,
+    dataType: string
+  ): TreeItemData | null => {
+    if (
+      hasMatchingHandleType(handleType, item) &&
+      hasMatchingDataType(dataType, item)
+    ) {
+      console.log('has inputs exec handle: ', item.name);
+      return { ...item };
+    }
+    const children: TreeItemData[] = [];
+    for (const child of item.children ?? []) {
+      const fItem = filteredTreeDataWithHandleDataType(
+        child,
+        handleType,
+        dataType
+      );
+      if (fItem) children.push(fItem);
+    }
+    if (children?.length) return { ...item, children };
+    return null;
+  };
+
   const search = useCallback(
     (searchKeyword: string) => {
       if (searchKeyword === '') {
@@ -287,6 +344,27 @@ export const SearchedTreeView = memo(function SearchedTreeView({
         setFilteredTreeData(filteredTreeData);
         setToExpand(true);
       }
+    },
+    [treeData]
+  );
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const searchTreeDataWithHandleDataType = useCallback(
+    (item: TreeItemData, handleType: string, dataType: string) => {
+      const filteredTreeData: TreeItemData[] = [];
+      for (const item of treeData) {
+        const fItem = filteredTreeDataWithHandleDataType(
+          // item,
+          // 'source',
+          // 'exec'
+          item,
+          handleType,
+          dataType
+        );
+        if (fItem) filteredTreeData.push(fItem);
+      }
+      setFilteredTreeData(filteredTreeData);
+      setToExpand(true);
     },
     [treeData]
   );
