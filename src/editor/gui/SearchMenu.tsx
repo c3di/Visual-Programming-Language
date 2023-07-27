@@ -39,6 +39,7 @@ const SearchMenu = memo(function SearchMenu({
   clear,
   autoLayout,
   moreCommands,
+  toFilter,
 }: {
   onClose: () => void;
   anchorPosition: { top: number; left: number };
@@ -55,6 +56,7 @@ const SearchMenu = memo(function SearchMenu({
   autoLayout?: () => void;
   clear?: () => void;
   moreCommands?: Command[];
+  toFilter?: boolean;
 }): JSX.Element {
   const [commands, setCommand] = useState<Command[]>([
     {
@@ -223,6 +225,7 @@ const SearchMenu = memo(function SearchMenu({
         treeData={treeData}
         onItemClick={onItemClick}
         onEnterKeyDown={onEnterKeyDown}
+        toFilter={toFilter}
       />
     </Menu>
   );

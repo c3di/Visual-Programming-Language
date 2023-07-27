@@ -107,7 +107,7 @@ function ControlledTreeView({
   useEffect(() => {
     if (toExpand) setExpanded(treeDataIds);
     else setExpanded([]);
-  }, [toExpand]);
+  }, [toExpand, treeData]);
 
   const renderTreeItem = useCallback((item: TreeItemData): JSX.Element => {
     return (
@@ -221,6 +221,7 @@ function ControlledTreeView({
       onNodeToggle={handleToggle}
       sx={{
         width: '100%',
+        minWidth: '200px',
         height: 'auto',
         flexGrow: 1,
         overflowY: 'auto',
@@ -238,6 +239,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
   onItemClick,
   onItemDelete,
   onEnterKeyDown,
+  toFilter,
 }: {
   treeData: TreeItemData[];
   onItemClick?: (item: TreeItemData) => void;
@@ -246,6 +248,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
     event: React.KeyboardEvent<HTMLElement>,
     item: TreeItemData
   ) => void;
+  toFilter?: boolean;
 }): JSX.Element {
   const [filteredTreeData, setFilteredTreeData] =
     useState<TreeItemData[]>(treeData);
@@ -255,6 +258,12 @@ export const SearchedTreeView = memo(function SearchedTreeView({
   }, [treeData]);
 
   const [toExpand, setToExpand] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (toFilter) {
+      searchTreeDataWithHandleDataType('source', 'exec');
+    }
+  }, [toFilter, treeData]);
 
   const filteredTreeItemData = (
     item: TreeItemData,
@@ -348,9 +357,8 @@ export const SearchedTreeView = memo(function SearchedTreeView({
     [treeData]
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const searchTreeDataWithHandleDataType = useCallback(
-    (item: TreeItemData, handleType: string, dataType: string) => {
+    (handleType: string, dataType: string) => {
       const filteredTreeData: TreeItemData[] = [];
       for (const item of treeData) {
         const fItem = filteredTreeDataWithHandleDataType(
@@ -364,7 +372,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
         if (fItem) filteredTreeData.push(fItem);
       }
       setFilteredTreeData(filteredTreeData);
-      setToExpand(true);
+      setToExpand((prevToExpand) => true);
     },
     [treeData]
   );
@@ -427,7 +435,9 @@ export const SearchedTreeView = memo(function SearchedTreeView({
       }}
       ref={searchTreeViewRef}
     >
-      <SearchInput onChange={search} onArrowDownKeyDown={focusOnTreeView} />
+      {toFilter ? null : (
+        <SearchInput onChange={search} onArrowDownKeyDown={focusOnTreeView} />
+      )}
       <ControlledTreeView
         toExpand={toExpand}
         treeData={filteredTreeData}

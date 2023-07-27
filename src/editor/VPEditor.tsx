@@ -340,6 +340,8 @@ const Scene = ({
           }}
           onConnectStart={(evt, params) => {
             gui.connectionStartNodeId.current = params.nodeId;
+            console.log('handleType is ', params.handleType);
+            console.log('handleId is ', params.handleId);
             closeWidget(null, true);
           }}
           onConnectEnd={(e) => {
@@ -350,6 +352,7 @@ const Scene = ({
               e.preventDefault();
               sceneActions?.selectAll(false);
               const { clientX, clientY } = event as MouseEvent;
+              const toFilterFlag = true;
               gui.openWidget(
                 'search',
                 {
@@ -362,6 +365,7 @@ const Scene = ({
                   clear: sceneActions?.clear,
                   autoLayout: sceneActions?.autoLayout,
                   moreCommands: sceneState?.extraCommands,
+                  toFilter: toFilterFlag,
                 }
               );
             }
