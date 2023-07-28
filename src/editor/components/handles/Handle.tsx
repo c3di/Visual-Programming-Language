@@ -68,7 +68,8 @@ export default function Handle({
         value:
           handleData.value ??
           handleData.defaultValue ??
-          DataTypes[handleData.dataType]?.defaultValue,
+          DataTypes[handleData.dataType]?.defaultValue ??
+          '',
         className: `nodrag handle-widget ${handleData.dataType}`,
         onChange: changeValue,
       });
