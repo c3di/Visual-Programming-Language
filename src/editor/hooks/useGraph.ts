@@ -359,16 +359,16 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
   }, []);
 
   const deleteEdges = useCallback(
-    (delEdgeSelctor: (e: Edge) => boolean): void => {
-      const toBeDel = getEdges().filter((e) => delEdgeSelctor(e));
-      if (!toBeDel) {
+    (delEdgeSelector: (e: Edge) => boolean): void => {
+      const toBeDel = getEdges().filter((e) => delEdgeSelector(e));
+      if (toBeDel.length === 0) {
         return;
       }
       toBeDel.forEach((e) => {
         updateHandleConnection(e.source, e.sourceHandle, false, true);
         updateHandleConnection(e.target, e.targetHandle, false, false);
       });
-      setEdges((eds) => eds.filter((e) => !delEdgeSelctor(e)));
+      setEdges((eds) => eds.filter((e) => !delEdgeSelector(e)));
       shouldUpdateDataTypeOfRerouteNode.current = true;
     },
     []
@@ -439,6 +439,11 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
   }, []);
 
   const deleteNodes = useCallback((nodesId: string[]): void => {
+    const edgesId = getConnectedEdges(
+      nodesId.map((id) => getNodeById(id)!),
+      getEdges()
+    ).map((e) => e.id);
+    deleteEdges((e) => edgesId.includes(e.id));
     setNodes((nds) => nds.filter((n) => !nodesId.includes(n.id)));
     shouldUpdateDataTypeOfRerouteNode.current = true;
   }, []);
