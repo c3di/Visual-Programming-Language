@@ -71,7 +71,6 @@ export class WidgetFactory {
     const widget = this._availableWidgets[widgetTypeToUse];
 
     if (widget) {
-      console.log('WidgetFactory.createWidget', widgetTypeToUse, widgetOptions);
       return React.cloneElement(widget, { ...widgetOptions, options });
     } else {
       console.warn(`Invalid widget type, return <></> element.`);
