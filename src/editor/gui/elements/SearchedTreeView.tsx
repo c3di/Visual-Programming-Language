@@ -264,8 +264,11 @@ export const SearchedTreeView = memo(function SearchedTreeView({
 
   useEffect(() => {
     if (toFilter) {
-      if (startHandleInfo?.handleType) {
-        searchTreeDataWithHandleDataType(startHandleInfo.handleType, 'exec');
+      if (startHandleInfo?.handleType && startHandleInfo?.handleDataType) {
+        searchTreeDataWithHandleDataType(
+          startHandleInfo.handleType,
+          startHandleInfo?.handleDataType
+        );
       }
     }
   }, [toFilter, treeData]);
@@ -328,8 +331,6 @@ export const SearchedTreeView = memo(function SearchedTreeView({
       hasMatchingHandleType(handleType, item) &&
       hasMatchingDataType(dataType, item)
     ) {
-      console.log('handle Type: ', handleType);
-      // console.log('has exec handle: ', item.name);
       return { ...item };
     }
     const children: TreeItemData[] = [];

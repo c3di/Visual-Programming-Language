@@ -346,13 +346,37 @@ const Scene = ({
           }}
           onConnectStart={(evt, params) => {
             gui.connectionStartNodeId.current = params.nodeId;
+
+            const getHandleDataType = (
+              nodeId: string | null,
+              handleId: string | null,
+              handleType: string | null
+            ): string | null => {
+              if (nodeId === null) return null;
+              const nodeInfo = graphState.getNodeById(nodeId);
+              if (!nodeInfo || handleId === null) return null;
+              if (handleType === 'source') {
+                return nodeInfo.data.outputs[handleId].dataType;
+              } else if (handleType === 'target') {
+                return nodeInfo.data.inputs[handleId].dataType;
+              } else {
+                return null;
+              }
+            };
+            const startDataType = getHandleDataType(
+              params.nodeId,
+              params.handleId,
+              params.handleType
+            );
+            // console.log('handleType is ', params.handleType);
+            // console.log('handleId is ', params.handleId);
+            // console.log('startDataType is ', startDataType);
             setStartHandle({
               nodeId: params.nodeId,
               handleId: params.handleId,
               handleType: params.handleType,
+              handleDataType: startDataType,
             });
-            console.log('handleType is ', params.handleType);
-            console.log('handleId is ', params.handleId);
             closeWidget(null, true);
           }}
           onConnectEnd={(e) => {

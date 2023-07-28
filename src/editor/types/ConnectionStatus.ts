@@ -15,4 +15,5 @@ export interface OnConnectStartParams {
   nodeId: string | null;
   handleId: string | null;
   handleType: HandleType | null;
+  handleDataType: string | null;
 }
