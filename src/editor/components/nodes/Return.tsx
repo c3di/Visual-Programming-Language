@@ -32,6 +32,8 @@ export function ParameterHandle({
       return nds.map((nd) => {
         if (nd.id === nodeId) {
           nd.data.inputs[id].dataType = value;
+          nd.data.outputs[id].defaultValue = DataTypes[value].defaultValue;
+          nd.data.outputs[id].value = DataTypes[value].defaultValue;
         }
         const ref = getNodeById?.(nd.data.nodeRef);
         if (ref?.data.nodeRef === nodeId) {
@@ -143,7 +145,7 @@ function Return({
   const addNewHandle = useCallback(() => {
     const title = `new_in_${handleCount.current++}`;
     const value = {
-      dataType: 'any',
+      dataType: 'boolean',
       title: `new_in_${handleCount.current}`,
       showWidget: false,
       deletable: true,

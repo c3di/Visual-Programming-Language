@@ -25,6 +25,7 @@ export interface DataType {
 export const DataTypes: Record<string, DataType> = {
   DataType: {
     shownInColor: `${hsl(154, 26, 44)}`,
+    defaultValue: 'boolean',
   },
   float: {
     defaultValue: 0.0,
@@ -49,7 +50,11 @@ export const DataTypes: Record<string, DataType> = {
   exec: { shownInColor: `${hsl(0, 0, 0)}` },
   any: { shownInColor: `${hsl(0, 0, 50)}` },
   anyDataType: { widget: 'TextInput', shownInColor: `${hsl(0, 0, 20)}` },
-  ndarray: { widget: 'TextInput', shownInColor: `${hsl(300, 100, 25)}` },
+  ndarray: {
+    defaultValue: '[]',
+    widget: 'TextInput',
+    shownInColor: `${hsl(300, 100, 25)}`,
+  },
 };
 
 export default DataTypes;
