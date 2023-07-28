@@ -54,7 +54,7 @@ export class WidgetFactory {
     if (type === 'DataType') {
       const opts: Record<string, string> = {};
       Object.keys(DataTypes).forEach((key) => {
-        if (key !== 'any') opts[key] = key;
+        if (key !== 'any' && key !== 'exec') opts[key] = key;
       });
       addNewType('DataType', {
         options: opts,
@@ -71,6 +71,7 @@ export class WidgetFactory {
     const widget = this._availableWidgets[widgetTypeToUse];
 
     if (widget) {
+      console.log('WidgetFactory.createWidget', widgetTypeToUse, widgetOptions);
       return React.cloneElement(widget, { ...widgetOptions, options });
     } else {
       console.warn(`Invalid widget type, return <></> element.`);
