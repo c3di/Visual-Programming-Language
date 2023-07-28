@@ -10,7 +10,7 @@ import { type OnConnectStartParams } from '../types';
 import { type Command } from '../hooks';
 import { nodeConfigRegistry } from '../extension';
 import { createSvgIcon } from '@mui/material/utils';
-import { type XYPosition } from 'reactflow';
+import { type XYPosition, type Connection } from 'reactflow';
 
 const StickyNoteIcon = createSvgIcon(
   <svg
@@ -42,6 +42,7 @@ const SearchMenu = memo(function SearchMenu({
   moreCommands,
   toFilter,
   startHandleInfo,
+  addEdge,
 }: {
   onClose: () => void;
   anchorPosition: { top: number; left: number };
@@ -60,6 +61,7 @@ const SearchMenu = memo(function SearchMenu({
   moreCommands?: Command[];
   toFilter?: boolean;
   startHandleInfo?: OnConnectStartParams;
+  addEdge?: (params: Connection) => void;
 }): JSX.Element {
   const [commands, setCommand] = useState<Command[]>([
     {
@@ -146,11 +148,63 @@ const SearchMenu = memo(function SearchMenu({
       command.action();
     }
   }
+  const findHandleWithMatchingDataType = (
+    node: Node,
+    handleType: string | null,
+    dataType: string | null
+  ): string | undefined => {
+    const handles =
+      handleType === 'source'
+        ? Object(node).data.inputs
+        : Object(node).data.outputs;
+    const matchingHandle = Object.keys(handles).find(
+      (key) => handles[key].dataType === dataType
+    );
+    return matchingHandle;
+  };
+
+  const connectWithNewNode = (
+    node: Node,
+    matchingHandle: string | undefined
+  ): void => {
+    if (startHandleInfo) {
+      setTimeout(() => {
+        let newConnection: Connection;
+        if (startHandleInfo.handleType === 'source' && matchingHandle) {
+          newConnection = {
+            source: startHandleInfo.nodeId,
+            target: Object(node).id,
+            sourceHandle: startHandleInfo.handleId,
+            targetHandle: matchingHandle,
+          };
+          addEdge?.(newConnection);
+        } else if (startHandleInfo.handleType === 'target' && matchingHandle) {
+          newConnection = {
+            source: Object(node).id,
+            target: startHandleInfo.nodeId,
+            sourceHandle: matchingHandle,
+            targetHandle: startHandleInfo.handleId,
+          };
+          addEdge?.(newConnection);
+        }
+      }, 0);
+    }
+  };
+
   const onItemClick = useCallback((item: TreeItemData): void => {
     if (!item) return;
     if (Array.isArray(item.children)) return;
     if (item.configType) {
-      addNodeWithSceneCoord?.(item.configType, anchorPosition);
+      const node = addNodeWithSceneCoord?.(item.configType, anchorPosition);
+      if (toFilter && startHandleInfo && node) {
+        const matchingHandle = findHandleWithMatchingDataType(
+          node,
+          startHandleInfo.handleType,
+          startHandleInfo.handleDataType
+        );
+        connectWithNewNode(node, matchingHandle);
+      }
+
       onClose();
     }
   }, []);
@@ -160,7 +214,15 @@ const SearchMenu = memo(function SearchMenu({
       if (!item) return;
       if (Array.isArray(item.children)) return;
       if (event.key === 'Enter' && item.configType) {
-        addNodeWithSceneCoord?.(item.configType, anchorPosition);
+        const node = addNodeWithSceneCoord?.(item.configType, anchorPosition);
+        if (toFilter && startHandleInfo && node) {
+          const matchingHandle = findHandleWithMatchingDataType(
+            node,
+            startHandleInfo.handleType,
+            startHandleInfo.handleDataType
+          );
+          connectWithNewNode(node, matchingHandle);
+        }
         onClose();
       } else {
         executeCommandByName(commands, item.name);

@@ -290,35 +290,34 @@ export const SearchedTreeView = memo(function SearchedTreeView({
     return null;
   };
 
-  const hasMatchingHandleType = (
-    handleType: string,
-    item: TreeItemData
-  ): boolean => {
-    switch (handleType) {
-      case 'source':
-        return Object.prototype.hasOwnProperty.call(item, 'inputs');
-      case 'target':
-        return Object.prototype.hasOwnProperty.call(item, 'outputs');
-      default:
-        return false;
-    }
-  };
-
   const hasMatchingDataType = (
+    handleType: string,
     dataType: string,
     item: TreeItemData
   ): boolean => {
     if (
-      Object.values(item.inputs ?? {}).find(
-        (child) => child.dataType === dataType
-      )
+      handleType === 'source' &&
+      Object.prototype.hasOwnProperty.call(item, 'inputs')
     ) {
-      // here is the handle we find, if we need to use it
-      // for connection in the future
-      // we could modify the return value to return the handle
-      return true;
+      if (
+        Object.values(item.inputs ?? {}).find(
+          (child) => child.dataType === dataType
+        )
+      ) {
+        return true;
+      }
+    } else if (
+      handleType === 'target' &&
+      Object.prototype.hasOwnProperty.call(item, 'outputs')
+    ) {
+      if (
+        Object.values(item.outputs ?? {}).find(
+          (child) => child.dataType === dataType
+        )
+      ) {
+        return true;
+      }
     }
-
     return false;
   };
 
@@ -327,10 +326,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
     handleType: string,
     dataType: string
   ): TreeItemData | null => {
-    if (
-      hasMatchingHandleType(handleType, item) &&
-      hasMatchingDataType(dataType, item)
-    ) {
+    if (hasMatchingDataType(handleType, dataType, item)) {
       return { ...item };
     }
     const children: TreeItemData[] = [];

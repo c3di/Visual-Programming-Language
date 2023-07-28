@@ -74,6 +74,7 @@ export interface GraphState {
     newNodes?: Node[];
     newEdges?: Edge[];
   }) => void;
+  addEdge: (params: Connection) => void;
   getHandle: (nodeId: string, handleId: string) => HandleData | undefined;
   getHandleConnectionCounts: (nodeId: string, handleId: string) => number;
   anyConnectableNodeSelected: boolean;
@@ -707,6 +708,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     deleteAllEdgesOfNode,
     deleteAllEdgesOfHandle,
     addElements,
+    addEdge,
     getHandle,
     getHandleConnectionCounts,
     anyConnectableNodeSelected,

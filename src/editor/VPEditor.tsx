@@ -368,9 +368,6 @@ const Scene = ({
               params.handleId,
               params.handleType
             );
-            // console.log('handleType is ', params.handleType);
-            // console.log('handleId is ', params.handleId);
-            // console.log('startDataType is ', startDataType);
             setStartHandle({
               nodeId: params.nodeId,
               handleId: params.handleId,
@@ -402,6 +399,7 @@ const Scene = ({
                   moreCommands: sceneState?.extraCommands,
                   toFilter: toFilterFlag,
                   startHandleInfo: startHandle,
+                  addEdge: sceneActions?.addEdge,
                 }
               );
             }

@@ -22,6 +22,7 @@ import ELK from 'elkjs/lib/elk.bundled.js';
 import {
   useReactFlow,
   getRectOfNodes,
+  type Connection,
   type XYPosition,
   type Node as RcNode,
   type ReactFlowInstance,
@@ -57,6 +58,7 @@ export interface ISceneActions {
     configType: string,
     anchorPosition: { top: number; left: number }
   ) => Node;
+  addEdge: (params: Connection) => void;
   setNodes: Dispatch<SetStateAction<Array<RcNode<any, string | undefined>>>>;
   setExtraCommands: Dispatch<SetStateAction<Command[]>>;
   clearEdgeSelection: () => void;
@@ -699,6 +701,7 @@ export default function useScene(
       selectEdge: graphState.selectEdge,
       addNode,
       addNodeWithSceneCoord,
+      addEdge: graphState.addEdge,
       setNodes: graphState.setNodes,
       setExtraCommands,
       selectAll: graphState.selectAll,
