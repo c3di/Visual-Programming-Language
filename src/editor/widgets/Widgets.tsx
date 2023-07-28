@@ -43,6 +43,7 @@ export function TextInput(props: WidgetProps): JSX.Element {
       className={className}
       type={'text'}
       defaultValue={value}
+      value={value}
       style={inputStyles}
       onChange={(e) => {
         onChange(e.target.value);
