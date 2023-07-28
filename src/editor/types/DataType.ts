@@ -25,6 +25,7 @@ export interface DataType {
 export const DataTypes: Record<string, DataType> = {
   DataType: {
     shownInColor: `${hsl(154, 26, 44)}`,
+    defaultValue: 'boolean',
   },
   float: {
     defaultValue: 0.0,

@@ -81,7 +81,9 @@ export class WidgetFactory {
 
   public createSelectorWidget(widgetOptions: any): JSX.Element {
     const widget = this._availableWidgets.EnumSelect;
-    const options = stringArrayToObject(Object.keys(DataTypes));
+    const options = stringArrayToObject(
+      Object.keys(DataTypes).filter((k) => k !== 'any' && k !== 'exec')
+    );
     return React.cloneElement(widget, { ...widgetOptions, options });
   }
 }
