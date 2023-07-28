@@ -899,6 +899,7 @@ export default function useScene(
     if (node.data.configType.includes('Create Variable') && !fromFunctionName) {
       // eslint-disable-next-line prettier/prettier
       inputs[1] = inputs[1].replace(/'/g, '');
+      inputs[2] = mapToLanguageTypeKeyword(inputs[2]);
     }
     source +=
       '\n'.repeat(Number(source !== '')) +
@@ -1047,11 +1048,22 @@ export default function useScene(
       externalImports
     );
     if (result.hasError) return result;
-    const dataArgs: string[] = [];
+    const dataArgs: Array<{
+      name: string;
+      dataType: string | undefined;
+      defaultValue: string | undefined;
+    }> = [];
     Object.entries(createFunctionNode.data.outputs ?? {}).forEach(
       ([key, output]) => {
         if ((output as any).dataType !== 'exec')
-          dataArgs.push(getUniqueNameOfHandle(createFunctionNode, key));
+          dataArgs.push({
+            name: getUniqueNameOfHandle(createFunctionNode, key),
+            dataType: (output as Handle).dataType,
+            defaultValue: mapToLanguageDefinition(
+              (output as Handle).dataType,
+              (output as Handle).value ?? (output as Handle).defaultValue
+            ),
+          });
       }
     );
     result.result = functionDefinition(
@@ -1072,12 +1084,33 @@ export default function useScene(
     else return value;
   };
 
+  const mapToLanguageTypeKeyword = (dataType: string): string => {
+    if (dataType === 'string') return 'str';
+    if (dataType === 'boolean') return 'bool';
+    if (dataType === 'number') return 'int';
+    if (dataType === 'integer') return 'int';
+    else return dataType;
+  };
+
   const functionDefinition = (
     title: string,
-    args: string[],
+    args: Array<{
+      name: string;
+      dataType: string | undefined;
+      defaultValue: string | undefined;
+    }>,
     functionBody: string
   ): string => {
-    return `def ${title}(${args.join(',')}):\n${
+    const argsStr = args
+      .map(
+        (arg) =>
+          `${arg.name}${
+            arg.dataType ? ' :' + mapToLanguageTypeKeyword(arg.dataType) : ''
+          }${arg.defaultValue ? ' =' + arg.defaultValue : ''}`
+      )
+      .join(',');
+
+    return `def ${title}(${argsStr}):\n${
       functionBody !== '' ? functionBody : '\tpass'
     }`;
   };
