@@ -143,7 +143,7 @@ function Return({
   const addNewHandle = useCallback(() => {
     const title = `new_in_${handleCount.current++}`;
     const value = {
-      dataType: 'any',
+      dataType: 'boolean',
       title: `new_in_${handleCount.current}`,
       showWidget: false,
       deletable: true,
