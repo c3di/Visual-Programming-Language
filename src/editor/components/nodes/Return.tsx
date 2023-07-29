@@ -32,8 +32,8 @@ export function ParameterHandle({
       return nds.map((nd) => {
         if (nd.id === nodeId) {
           nd.data.inputs[id].dataType = value;
-          nd.data.outputs[id].defaultValue = DataTypes[value].defaultValue;
-          nd.data.outputs[id].value = DataTypes[value].defaultValue;
+          nd.data.inputs[id].defaultValue = DataTypes[value].defaultValue;
+          nd.data.inputs[id].value = DataTypes[value].defaultValue;
         }
         const ref = getNodeById?.(nd.data.nodeRef);
         if (ref?.data.nodeRef === nodeId) {
