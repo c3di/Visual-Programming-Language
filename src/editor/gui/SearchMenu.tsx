@@ -139,15 +139,15 @@ const SearchMenu = memo(function SearchMenu({
     );
   }, [commands]);
 
-  function executeCommandByName(
+  const executeCommandByName = (
     commands: Command[],
     commandName: string
-  ): void {
+  ): void => {
     const command = commands.find((c) => c.name === commandName);
     if (command) {
       command.action();
     }
-  }
+  };
   const findHandleWithMatchingDataType = (
     node: Node,
     handleType: string | null,
@@ -158,7 +158,8 @@ const SearchMenu = memo(function SearchMenu({
         ? Object(node).data.inputs
         : Object(node).data.outputs;
     const matchingHandle = Object.keys(handles).find(
-      (key) => handles[key].dataType === dataType
+      (key) =>
+        handles[key].dataType === dataType || handles[key].dataType === 'any'
     );
     return matchingHandle;
   };

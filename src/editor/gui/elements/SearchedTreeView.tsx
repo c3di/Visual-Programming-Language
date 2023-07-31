@@ -301,7 +301,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
     ) {
       if (
         Object.values(item.inputs ?? {}).find(
-          (child) => child.dataType === dataType
+          (child) => child.dataType === dataType || child.dataType === 'any'
         )
       ) {
         return true;
@@ -312,7 +312,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
     ) {
       if (
         Object.values(item.outputs ?? {}).find(
-          (child) => child.dataType === dataType
+          (child) => child.dataType === dataType || child.dataType === 'any'
         )
       ) {
         return true;
@@ -365,9 +365,6 @@ export const SearchedTreeView = memo(function SearchedTreeView({
       const filteredTreeData: TreeItemData[] = [];
       for (const item of treeData) {
         const fItem = filteredTreeDataWithHandleDataType(
-          // item,
-          // 'source',
-          // 'exec'
           item,
           handleType,
           dataType
