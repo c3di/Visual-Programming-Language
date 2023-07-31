@@ -130,6 +130,9 @@ const SearchMenu = memo(function SearchMenu({
     nodeConfigsToTreeData(nodeConfigRegistry.getAllNodeConfigs())
   );
 
+  const [filteredTreeData, setFilteredTreeData] =
+    useState<TreeItemData[]>(treeData);
+
   useEffect(() => {
     if (toFilter) {
       if (startHandleInfo?.handleType && startHandleInfo?.handleDataType) {
@@ -204,7 +207,7 @@ const SearchMenu = memo(function SearchMenu({
         );
         if (fItem) filteredTreeData.push(fItem);
       }
-      setTreeData(filteredTreeData);
+      setFilteredTreeData(filteredTreeData);
     },
     [treeData]
   );
@@ -367,7 +370,7 @@ const SearchMenu = memo(function SearchMenu({
       }}
     >
       <SearchedTreeView
-        treeData={treeData}
+        treeData={filteredTreeData}
         onItemClick={onItemClick}
         onEnterKeyDown={onEnterKeyDown}
         toFilter={toFilter}
