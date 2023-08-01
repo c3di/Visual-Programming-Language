@@ -382,7 +382,6 @@ const SearchMenu = memo(function SearchMenu({
         onItemClick={onItemClick}
         onEnterKeyDown={onEnterKeyDown}
         toFilter={toFilter}
-        startHandleInfo={startHandleInfo}
       />
     </Menu>
   );

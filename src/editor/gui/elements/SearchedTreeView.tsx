@@ -6,7 +6,6 @@ import {
   type NodeConfig,
   type NodePackage,
   type HandleConfig,
-  type OnConnectStartParams,
 } from '../../types';
 import StyledTreeItem from './StyledTreeItem';
 import SearchInput from './SearchInput';
@@ -241,7 +240,6 @@ export const SearchedTreeView = memo(function SearchedTreeView({
   onItemDelete,
   onEnterKeyDown,
   toFilter,
-  startHandleInfo,
 }: {
   treeData: TreeItemData[];
   onItemClick?: (item: TreeItemData) => void;
@@ -251,7 +249,6 @@ export const SearchedTreeView = memo(function SearchedTreeView({
     item: TreeItemData
   ) => void;
   toFilter?: boolean;
-  startHandleInfo?: OnConnectStartParams;
 }): JSX.Element {
   const [filteredTreeData, setFilteredTreeData] =
     useState<TreeItemData[]>(treeData);
@@ -267,18 +264,6 @@ export const SearchedTreeView = memo(function SearchedTreeView({
       setToExpand((prevToExpand) => true);
     }
   }, [toFilter, treeData]);
-
-  // useEffect(() => {
-  // }, []);
-  //   if (toFilter) {
-  //     if (startHandleInfo?.handleType && startHandleInfo?.handleDataType) {
-  //       searchTreeDataWithHandleDataType(
-  //         startHandleInfo.handleType,
-  //         startHandleInfo?.handleDataType
-  //       );
-  //     }
-  //   }
-  // }, [toFilter, treeData]);
 
   const filteredTreeItemData = (
     item: TreeItemData,
@@ -297,58 +282,6 @@ export const SearchedTreeView = memo(function SearchedTreeView({
     return null;
   };
 
-  // const hasMatchingDataType = (
-  //   handleType: string,
-  //   dataType: string,
-  //   item: TreeItemData
-  // ): boolean => {
-  //   if (
-  //     handleType === 'source' &&
-  //     Object.prototype.hasOwnProperty.call(item, 'inputs')
-  //   ) {
-  //     if (
-  //       Object.values(item.inputs ?? {}).find(
-  //         (child) => child.dataType === dataType || child.dataType === 'any'
-  //       )
-  //     ) {
-  //       return true;
-  //     }
-  //   } else if (
-  //     handleType === 'target' &&
-  //     Object.prototype.hasOwnProperty.call(item, 'outputs')
-  //   ) {
-  //     if (
-  //       Object.values(item.outputs ?? {}).find(
-  //         (child) => child.dataType === dataType || child.dataType === 'any'
-  //       )
-  //     ) {
-  //       return true;
-  //     }
-  //   }
-  //   return false;
-  // };
-
-  // const filteredTreeDataWithHandleDataType = (
-  //   item: TreeItemData,
-  //   handleType: string,
-  //   dataType: string
-  // ): TreeItemData | null => {
-  //   if (hasMatchingDataType(handleType, dataType, item)) {
-  //     return { ...item };
-  //   }
-  //   const children: TreeItemData[] = [];
-  //   for (const child of item.children ?? []) {
-  //     const fItem = filteredTreeDataWithHandleDataType(
-  //       child,
-  //       handleType,
-  //       dataType
-  //     );
-  //     if (fItem) children.push(fItem);
-  //   }
-  //   if (children?.length) return { ...item, children };
-  //   return null;
-  // };
-
   const search = useCallback(
     (searchKeyword: string) => {
       if (searchKeyword === '') {
@@ -366,23 +299,6 @@ export const SearchedTreeView = memo(function SearchedTreeView({
     },
     [treeData]
   );
-
-  // const searchTreeDataWithHandleDataType = useCallback(
-  //   (handleType: string, dataType: string) => {
-  //     const filteredTreeData: TreeItemData[] = [];
-  //     for (const item of treeData) {
-  //       const fItem = filteredTreeDataWithHandleDataType(
-  //         item,
-  //         handleType,
-  //         dataType
-  //       );
-  //       if (fItem) filteredTreeData.push(fItem);
-  //     }
-  //     setFilteredTreeData(filteredTreeData);
-  //     setToExpand((prevToExpand) => true);
-  //   },
-  //   [treeData]
-  // );
 
   const deleteItemInItemData = useCallback(
     (item: TreeItemData, type: string): null | TreeItemData => {
