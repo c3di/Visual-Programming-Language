@@ -130,8 +130,25 @@ const SearchMenu = memo(function SearchMenu({
     nodeConfigsToTreeData(nodeConfigRegistry.getAllNodeConfigs())
   );
 
+  useEffect(() => {
+    setTreeData(
+      [
+        ...nodeConfigsToTreeData(nodeConfigRegistry.getAllNodeConfigs()),
+        ...commandsToTreeData(commands),
+      ].sort((a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity))
+    );
+  }, [commands]);
+
   const [filteredTreeData, setFilteredTreeData] =
     useState<TreeItemData[]>(treeData);
+
+  useEffect(() => {
+    setFilteredTreeData(
+      [...filteredTreeData, ...commandsToTreeData(commands)].sort(
+        (a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity)
+      )
+    );
+  }, []);
 
   useEffect(() => {
     if (toFilter) {
@@ -211,15 +228,6 @@ const SearchMenu = memo(function SearchMenu({
     },
     [treeData]
   );
-
-  useEffect(() => {
-    setTreeData(
-      [
-        ...nodeConfigsToTreeData(nodeConfigRegistry.getAllNodeConfigs()),
-        ...commandsToTreeData(commands),
-      ].sort((a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity))
-    );
-  }, [commands]);
 
   const executeCommandByName = (
     commands: Command[],
