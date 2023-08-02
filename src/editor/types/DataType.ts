@@ -50,7 +50,7 @@ export const DataTypes: Record<string, DataType> = {
   exec: { shownInColor: `${hsl(0, 0, 0)}` },
   any: { shownInColor: `${hsl(0, 0, 50)}` },
   anyDataType: { widget: 'TextInput', shownInColor: `${hsl(0, 0, 20)}` },
-  ndarray: {
+  list: {
     defaultValue: '[]',
     widget: 'TextInput',
     shownInColor: `${hsl(300, 100, 25)}`,
