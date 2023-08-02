@@ -2,32 +2,6 @@
   "description": "This library provides connection datatypes.",
   "enable": true,
   "nodes": {
-    "Make List": {
-      "type": "Make List",
-      "category": "math",
-      "title": "->",
-      "dataType": "anyDataType",
-      "tooltip": "Lists are used to store multiple items in a single variable.",
-      "sourceCode": "{{indent}}{{{outputs}}}=[{{#inputs}}{{{.}}},{{/inputs}}]",
-      "enableAddNewOne": true,
-      "inputs": {
-        "input": {
-          "dataType": "anyDataType",
-          "defaultValue": "",
-          "title": "item",
-          "showTitle": true,
-          "deletable": true
-        }
-      },
-      "outputs": {
-        "string": {
-          "dataType": "list",
-          "defaultValue": "[]",
-          "title": "list",
-          "showTitle": true
-        }
-      }
-    },
     "Make Tuple": {
       "type": "Make Tuple",
       "category": "math",

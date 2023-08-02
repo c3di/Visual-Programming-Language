@@ -955,7 +955,8 @@ export default function useScene(
     if (
       node.data.configType.includes('If Else') ||
       ((node.data.configType.includes('For Each Loop') ||
-        node.data.configType.includes('For Loop')) &&
+        node.data.configType.includes('For Loop') ||
+        node.data.configType.includes('For Iterator Loop')) &&
         handleId === 'loopBody')
     )
       return 1;

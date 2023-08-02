@@ -1,8 +1,46 @@
 {
   "description": "The torch tensor type definition",
   "enable": true,
-  "notShowInMenu": true,
-  "nodes": {},
+  "nodes": {
+    "Stack": {
+      "type": "Stack",
+      "category": "function",
+      "title": "Stack",
+      "tooltip": "Concatenates a sequence of tensors along a new dimension.",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = torch.stack({{{inputs.1}}})\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "input1": {
+          "title": "list or tensor",
+          "dataType": "list",
+          "defaultValue": "[]"
+        },
+        "input2": {
+          "title": "dim",
+          "dataType": "integer",
+          "defaultValue": "0"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "stacked tensor": {
+          "title": "tensor",
+          "dataType": "torch.tensor",
+          "defaultValue": "[]"
+        }
+      }
+    }
+  },
   "types": {
     "tuple": {
       "default": "",

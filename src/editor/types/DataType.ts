@@ -49,8 +49,13 @@ export const DataTypes: Record<string, DataType> = {
   },
   exec: { shownInColor: `${hsl(0, 0, 0)}` },
   any: { shownInColor: `${hsl(0, 0, 50)}` },
-  anyDataType: { widget: 'TextInput', shownInColor: `${hsl(0, 0, 10)}` },
+  anyDataType: { widget: 'TextInput', shownInColor: `${hsl(0, 0, 86)}` },
   list: {
+    defaultValue: '[]',
+    widget: 'TextInput',
+    shownInColor: `${hsl(300, 100, 25)}`,
+  },
+  iterator: {
     defaultValue: '[]',
     widget: 'TextInput',
     shownInColor: `${hsl(300, 100, 25)}`,

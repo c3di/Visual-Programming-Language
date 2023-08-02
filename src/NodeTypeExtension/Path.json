@@ -1,0 +1,91 @@
+{
+  "description": "Pathlib",
+  "enable": true,
+  "types": {
+    "Path": {
+      "default": "",
+      "widget": "TextInput",
+      "shownInColor": "hsl(30, 50%, 60%)"
+    }
+  },
+  "nodes": {
+    "Create Path": {
+      "type": "Create Path",
+      "category": "function",
+      "title": "New Path",
+      "tooltip": "create a Path object",
+      "externalImports": "from pathlib import Path",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = Path({{{inputs.1}}})\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "exec in",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "input": {
+          "title": "string",
+          "dataType": "string",
+          "tooltip": "the path string to create"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "tooltip": "exec out",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "path": {
+          "title": "Path",
+          "dataType": "Path.Path",
+          "tooltip": "the Path object"
+        }
+      }
+    },
+    "iterdir": {
+      "type": "iterdir",
+      "category": "math",
+      "title": "iterdir",
+      "sourceCode": "{{indent}}{{{outputs.0}}} = {{{inputs.0}}}.iterdir()",
+      "tooltip": "When the path points to a directory, yield path objects of the directory contents.",
+      "inputs": {
+        "path": {
+          "title": "dir",
+          "dataType": "Path.Path",
+          "tooltip": "the path to the directory"
+        }
+      },
+      "outputs": {
+        "entries": {
+          "title": "entries ",
+          "dataType": "iterator",
+          "tooltip": "the iterator of the path objects of the directory contents"
+        }
+      }
+    },
+    "is_file": {
+      "type": "is_file",
+      "category": "math",
+      "title": "is_file",
+      "sourceCode": "{{indent}}{{{outputs.0}}} = {{{inputs.0}}}.is_file()",
+      "tooltip": "Check whether the path is a regular file.",
+      "inputs": {
+        "path": {
+          "title": "Path",
+          "dataType": "Path.Path",
+          "tooltip": "the path to the directory"
+        }
+      },
+      "outputs": {
+        "sure": {
+          "title": "sure",
+          "dataType": "boolean",
+          "tooltip": "whether the path is a regular file"
+        }
+      }
+    }
+  }
+}
