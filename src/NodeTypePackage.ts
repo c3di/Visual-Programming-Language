@@ -6,7 +6,8 @@ import module from './NodeTypeExtension/extension2.json';
 import filters from './NodeTypeExtension/filters.json';
 import os from './NodeTypeExtension/os.json';
 import imageio from './NodeTypeExtension/imageio.json';
-import matplotlib from './NodeTypeExtension/matplotlib.json';
+import imagevisualization from './NodeTypeExtension/image visualization.json';
+import torch from './NodeTypeExtension/torch.json';
 
 export const extension1 = {
   isPackage: true,
@@ -36,5 +37,6 @@ export const extensions = {
   filters,
   os,
   imageio,
-  matplotlib,
+  'image visualization': imagevisualization,
+  torch,
 };

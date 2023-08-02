@@ -1,0 +1,55 @@
+{
+  "description": "os",
+  "enable": true,
+  "nodes": {
+    "show_image": {
+      "type": "show_image",
+      "category": "function",
+      "title": "show_image",
+      "tooltip": "Takes an input tensor in CHW layout and display it as an image",
+      "externalImports": "from matplotlib import pyplot as plt",
+      "sourceCode": "fix, axs = plt.subplots(ncols=len({{{outputs.1}}}), squeeze=False, figsize={{{outputs.4}}})\nfor i, img in enumerate({{{outputs.1}}}):\n\timg = T.ToPILImage()(img.to('cpu'))\n\taxs[0, i].imshow(np.asarray(img), {{{outputs.3}}})\n\taxs[0, i].axis('off')\n\tif {{{outputs.2}}} and {{{outputs.2}}}[i]:\n\t\taxs[0, i].set_title({{{outputs.2}}}[i])\n\taxs[0, i].set(xticklabels=[], yticklabels=[], xticks=[], yticks=[])",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image(s)",
+          "dataType": "anyDataType",
+          "tooltip": "input (Tensor[channels, image_height, image_width] | list[Tensor[channels, image_height, image_width]])."
+        },
+        "titles": {
+          "title": "titles",
+          "dataType": "string",
+          "defaultValue": "None",
+          "tooltip": "titles (list[str], optional) - A list of titles to be set for each image. Default: None."
+        },
+        "cmap": {
+          "title": "cmap",
+          "dataType": "string",
+          "defaultValue": "None",
+          "tooltip": "cmap(str, optional) - The registered colormap name in matplotlib used to map scalar data to colors."
+        },
+        "figSize": {
+          "title": "figSize",
+          "dataType": "torch.tuple",
+          "defaultValue": "(9, 5)",
+          "tooltip": "figSize 2-tuple of floats, default: (9, 5) - Figure dimension (width, height) in inches"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "tooltip": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        }
+      }
+    }
+  }
+}

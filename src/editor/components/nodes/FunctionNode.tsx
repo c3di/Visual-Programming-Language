@@ -24,7 +24,7 @@ function FunctionNode({
           tooltip:
             handle.dataType === 'exec'
               ? 'exec in'
-              : `input parameter of ${handle.title ?? ''}`,
+              : handle.tooltip ?? `input parameter of ${handle.title ?? ''}`,
         }}
       />
     );
@@ -42,7 +42,7 @@ function FunctionNode({
           tooltip:
             handle.dataType === 'exec'
               ? 'exec out'
-              : `return value of ${handle.title ?? ''}`,
+              : handle.tooltip ?? `return value of ${handle.title ?? ''}`,
         }}
         showWidget={!!handle.showWidget && handle.dataType !== 'exec'}
         showTitle={!!handle.showTitle || handle.showTitle === undefined}

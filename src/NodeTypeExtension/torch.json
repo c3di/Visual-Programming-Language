@@ -1,0 +1,16 @@
+{
+  "description": "The torch tensor type definition",
+  "enable": true,
+  "notShowInMenu": true,
+  "nodes": {},
+  "types": {
+    "tuple": {
+      "default": "",
+      "widget": "TextInput"
+    },
+    "tensor": {
+      "default": "",
+      "widget": "TextInput"
+    }
+  }
+}

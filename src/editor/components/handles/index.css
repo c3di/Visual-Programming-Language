@@ -58,7 +58,7 @@
 }
 
 .handle-widget {
-  max-width: 80px;
+  max-width: 100px;
 }
 
 input.float[type='number']::-webkit-outer-spin-button,
