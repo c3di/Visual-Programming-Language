@@ -18,7 +18,11 @@ import {
 
 import Setting from './VPPanelSetting';
 import { WidgetFactoryProvider, SceneStateContext } from './Context';
-import type { SerializedGraph, selectedElementsCounts } from './types';
+import type {
+  SerializedGraph,
+  selectedElementsCounts,
+  OnConnectStartParams,
+} from './types';
 import componentType, { Background, ControlPanel, MiniMap } from './components';
 import 'reactflow/dist/style.css';
 import './VPEditor.css';
@@ -81,6 +85,8 @@ const Scene = ({
     controlPanel: cpSetting,
     minimap: minimpSetting,
   } = Setting;
+
+  const [startHandle, setStartHandle] = useState<OnConnectStartParams>();
 
   const closeWidget = useCallback(
     (e: React.MouseEvent | undefined | null, force: boolean = false): void => {
@@ -340,11 +346,63 @@ const Scene = ({
           }}
           onConnectStart={(evt, params) => {
             gui.connectionStartNodeId.current = params.nodeId;
+
+            const getHandleDataType = (
+              nodeId: string | null,
+              handleId: string | null,
+              handleType: string | null
+            ): string | null => {
+              if (nodeId === null) return null;
+              const nodeInfo = graphState.getNodeById(nodeId);
+              if (!nodeInfo || handleId === null) return null;
+              if (handleType === 'source') {
+                return nodeInfo.data.outputs[handleId].dataType;
+              } else if (handleType === 'target') {
+                return nodeInfo.data.inputs[handleId].dataType;
+              } else {
+                return null;
+              }
+            };
+            const startDataType = getHandleDataType(
+              params.nodeId,
+              params.handleId,
+              params.handleType
+            );
+            setStartHandle({
+              nodeId: params.nodeId,
+              handleId: params.handleId,
+              handleType: params.handleType,
+              handleDataType: startDataType,
+            });
             closeWidget(null, true);
           }}
-          onConnectEnd={() => {
+          onConnectEnd={(e) => {
+            const targetIsPane = (
+              event?.target as HTMLElement
+            )?.classList.contains('react-flow__pane');
+            if (targetIsPane) {
+              e.preventDefault();
+              sceneActions?.selectAll(false);
+              const { clientX, clientY } = event as MouseEvent;
+              const toFilterFlag = true;
+              gui.openWidget(
+                'search',
+                {
+                  left: clientX,
+                  top: clientY,
+                },
+                {
+                  addNodeWithSceneCoord: sceneActions?.addNodeWithSceneCoord,
+                  clear: sceneActions?.clear,
+                  autoLayout: sceneActions?.autoLayout,
+                  moreCommands: sceneState?.extraCommands,
+                  toFilter: toFilterFlag,
+                  startHandleInfo: startHandle,
+                  addEdge: sceneActions?.addEdge,
+                }
+              );
+            }
             gui.connectionStartNodeId.current = null;
-            gui.closeWidget();
           }}
           attributionPosition="top-right"
           nodeTypes={componentType.nodeTypes}

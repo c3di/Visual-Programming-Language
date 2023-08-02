@@ -72,7 +72,12 @@ export function ParameterHandle({
   return (
     <div
       className={'parameter-handle'}
-      style={{ display: 'flex', alignItems: 'center', gap: '5px' }}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '5px',
+        paddingRight: '10px',
+      }}
       title={handleData.tooltip}
     >
       <div

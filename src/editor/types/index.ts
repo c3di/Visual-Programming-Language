@@ -4,6 +4,7 @@ export type {
   GraphNodeConfig,
   GraphEdgeConfig,
   NodeConfig,
+  HandleConfig,
   SerializedHandle,
   SerializedGraphNode,
   SerializedGraphEdge,
@@ -19,6 +20,10 @@ export { type Comment, isCommentNode } from './Comment';
 export { type StickyNote } from './StickyNote';
 export { type ClipboardInfo } from './ClipboardInfo';
 export { type MousePos } from './MousePos';
-export { ConnectionAction, type ConnectionStatus } from './ConnectionStatus';
+export {
+  ConnectionAction,
+  type ConnectionStatus,
+  type OnConnectStartParams,
+} from './ConnectionStatus';
 export { type selectedElementsCounts } from './OnSelectionChange';
 export { type SourceCodeExec } from './SourceCodeExec';
