@@ -401,9 +401,8 @@ const Scene = ({
                   addEdge: sceneActions?.addEdge,
                 }
               );
-            }
+            } else gui.closeWidget();
             gui.connectionStartNodeId.current = null;
-            gui.closeWidget();
           }}
           attributionPosition="top-right"
           nodeTypes={componentType.nodeTypes}
