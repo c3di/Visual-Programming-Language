@@ -1,17 +1,15 @@
 {
   "nodes": {},
   "types": {
-    "EDataType": {
+    "EFruit": {
       "options": {
-        "float": "float",
-        "integer": "integer",
-        "boolean": "boolean",
-        "string": "string",
-        "exec": "exec",
-        "any": "any",
-        "ndarray": "ndarray"
+        "apple": "apple",
+        "banana": "banana",
+        "kiwi": "kiwi",
+        "orange": "orange",
+        "pear": "pear"
       },
-      "default": "float",
+      "default": "apple",
       "widget": "EnumSelect"
     }
   }

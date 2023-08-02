@@ -88,6 +88,14 @@ function MainArea({ id }: { id: string }): JSX.Element {
       >
         auto layout
       </button>
+      <button
+        onClick={() => {
+          const sourceCode = sceneActions?.sourceCode();
+          console.log(sourceCode);
+        }}
+      >
+        source code
+      </button>
       <textarea value={JSON.stringify(changedCount)} onChange={() => {}} />
       <VPEditor
         id={id}

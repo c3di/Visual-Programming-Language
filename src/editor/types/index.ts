@@ -26,3 +26,4 @@ export {
   type OnConnectStartParams,
 } from './ConnectionStatus';
 export { type selectedElementsCounts } from './OnSelectionChange';
+export { type SourceCodeExec } from './SourceCodeExec';

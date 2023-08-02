@@ -9,6 +9,7 @@ import {
   isDataTypeMatch,
   getMaxConnection,
   ConnectionAction,
+  DataTypes,
 } from '../types';
 import {
   useNodesState,
@@ -67,6 +68,11 @@ export interface GraphState {
   deleteAllEdgesOfNode: (nodeId: string) => void;
   deleteAllEdgesOfSelectedNodes: () => void;
   deleteAllEdgesOfHandle: (nodeId: string, handleId: string) => void;
+  findFunctionCallNodes: (
+    startNode: Node,
+    functionCallNodes: Node[],
+    visitedNodeIds: string[]
+  ) => void;
   addElements: ({
     newNodes,
     newEdges,
@@ -84,6 +90,10 @@ export interface GraphState {
     nodes: Node[];
     edges: Edge[];
   };
+  getConnectedInfo: (
+    nodeId: string,
+    handleId: string
+  ) => { nodes: Node[]; edges: Edge[]; connectedHandlesId: string[] };
 }
 export default function useGraph(graph?: SerializedGraph | null): GraphState {
   const initGraph = deserializer.deserialize(graph);
@@ -337,9 +347,9 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
           data: {
             dataType,
           },
-          className: dataType,
           style: {
             strokeWidth: 2,
+            stroke: `${DataTypes[dataType].shownInColor}`,
           },
         },
         eds
@@ -350,16 +360,16 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
   }, []);
 
   const deleteEdges = useCallback(
-    (delEdgeSelctor: (e: Edge) => boolean): void => {
-      const toBeDel = getEdges().filter((e) => delEdgeSelctor(e));
-      if (!toBeDel) {
+    (delEdgeSelector: (e: Edge) => boolean): void => {
+      const toBeDel = getEdges().filter((e) => delEdgeSelector(e));
+      if (toBeDel.length === 0) {
         return;
       }
       toBeDel.forEach((e) => {
         updateHandleConnection(e.source, e.sourceHandle, false, true);
         updateHandleConnection(e.target, e.targetHandle, false, false);
       });
-      setEdges((eds) => eds.filter((e) => !delEdgeSelctor(e)));
+      setEdges((eds) => eds.filter((e) => !delEdgeSelector(e)));
       shouldUpdateDataTypeOfRerouteNode.current = true;
     },
     []
@@ -430,6 +440,11 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
   }, []);
 
   const deleteNodes = useCallback((nodesId: string[]): void => {
+    const edgesId = getConnectedEdges(
+      nodesId.map((id) => getNodeById(id)!),
+      getEdges()
+    ).map((e) => e.id);
+    deleteEdges((e) => edgesId.includes(e.id));
     setNodes((nds) => nds.filter((n) => !nodesId.includes(n.id)));
     shouldUpdateDataTypeOfRerouteNode.current = true;
   }, []);
@@ -678,6 +693,48 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     setNodes(allNodes);
   }, [edges]);
 
+  const getConnectedInfo = (
+    nodeId: string,
+    handleId: string
+  ): { nodes: Node[]; edges: Edge[]; connectedHandlesId: string[] } => {
+    const connectedNodes: Node[] = [];
+    const connectedEdges: Edge[] = [];
+    const connectedHandlesId: string[] = [];
+    for (const edge of getEdges()) {
+      if (edge.source === nodeId && edge.sourceHandle === handleId) {
+        const node = getNodeById(edge.target);
+        connectedNodes.push(node!);
+        connectedEdges.push(edge);
+        connectedHandlesId.push(edge.targetHandle!);
+      }
+      if (edge.target === nodeId && edge.targetHandle === handleId) {
+        const node = getNodeById(edge.source);
+        connectedNodes.push(node!);
+        connectedEdges.push(edge);
+        connectedHandlesId.push(edge.sourceHandle!);
+      }
+    }
+    return { nodes: connectedNodes, edges: connectedEdges, connectedHandlesId };
+  };
+
+  const findFunctionCallNodes = (
+    startNode: Node,
+    functionCallNodes: Node[],
+    visitedNodeIds: string[] = []
+  ): void => {
+    if (visitedNodeIds.includes(startNode.id)) return;
+    visitedNodeIds.push(startNode.id);
+    Object.entries(startNode.data.outputs ?? {}).forEach(([name, output]) => {
+      if ((output as any).dataType === 'exec') {
+        getConnectedInfo(startNode.id, name).nodes.forEach((node) => {
+          if (node.type === 'functionCall') {
+            functionCallNodes.push(node);
+          }
+          findFunctionCallNodes(node, functionCallNodes, visitedNodeIds);
+        });
+      }
+    });
+  };
   return {
     initGraph,
     getFreeUniqueNodeIds,
@@ -715,5 +772,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     anyConnectionToSelectedNode,
     toString,
     fromJSON,
+    getConnectedInfo,
+    findFunctionCallNodes,
   };
 }

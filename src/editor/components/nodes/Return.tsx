@@ -1,10 +1,10 @@
 import React, { memo, useCallback, useRef } from 'react';
 import { IconButton } from '@mui/material';
 import { AddCircle } from '@mui/icons-material';
-import { SourceHandle, TargetHandle } from '../handles';
+import { SourceHandle, TargetHandle, HandleElement } from '../handles';
 import { type HandleData, type ConnectableData, DataTypes } from '../../types';
 import { useSceneState, useWidgetFactory } from '../../Context';
-import { Handle as RCHandle, Position } from 'reactflow';
+import { Position } from 'reactflow';
 
 export function ParameterHandle({
   id,
@@ -32,6 +32,8 @@ export function ParameterHandle({
       return nds.map((nd) => {
         if (nd.id === nodeId) {
           nd.data.inputs[id].dataType = value;
+          nd.data.inputs[id].defaultValue = DataTypes[value].defaultValue;
+          nd.data.inputs[id].value = DataTypes[value].defaultValue;
         }
         const ref = getNodeById?.(nd.data.nodeRef);
         if (ref?.data.nodeRef === nodeId) {
@@ -74,29 +76,11 @@ export function ParameterHandle({
       style={{ display: 'flex', alignItems: 'center', gap: '5px' }}
       title={handleData.tooltip}
     >
-      <RCHandle
-        className={`vp-rc-handle-${handleData.dataType ?? 'default'} ${
-          handleData.connection ? 'handle_connected' : 'handle_not_connected'
-        }`}
+      <HandleElement
         id={id}
-        type={handleType}
-        position={handlePosition}
-        isConnectable={true}
-        style={{
-          top: 0,
-          left: 0,
-          transform:
-            handleType === 'target'
-              ? 'translate(-50%, 0)'
-              : 'translate(50%, 0)',
-          position: 'relative',
-          backgroundColor: `var(--vp-${
-            handleData.dataType ?? 'default'
-          }-color)`,
-          borderColor: `var(--vp-${handleData.dataType ?? 'default'}-color)`,
-          borderWidth: '--vp-handle-border-width',
-          borderStyle: 'solid',
-        }}
+        handleType={handleType}
+        handlePosition={handlePosition}
+        handleData={handleData}
       />
       {showLabel && (
         <div
@@ -159,10 +143,10 @@ function Return({
   const handleCount = useRef<number>(0);
   const getNodeById = useSceneState()?.sceneActions.getNodeById;
   const addNewHandle = useCallback(() => {
-    const title = `new-in-${handleCount.current++}`;
+    const title = `new_in_${handleCount.current++}`;
     const value = {
-      dataType: 'any',
-      title: `new-in-${handleCount.current}`,
+      dataType: 'boolean',
+      title: `new_in_${handleCount.current}`,
       showWidget: false,
       deletable: true,
     };

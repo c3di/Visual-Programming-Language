@@ -3,68 +3,6 @@
   "description": "this is a module",
   "enable": true,
   "nodes": {
-    "CreateVariable": {
-      "type": "CreateVariable",
-      "category": "createVariable",
-      "title": "New Variable",
-      "tooltip": "Create a new variable",
-      "inputs": {
-        "execIn": {
-          "dataType": "exec",
-          "tooltip": "exec in"
-        },
-        "name": {
-          "title": "name",
-          "tooltip": "name of the variable",
-          "dataType": "string"
-        },
-        "type": {
-          "title": "type",
-          "tooltip": "type of the variable",
-          "dataType": "extension1.Level2.module2.EDataType",
-          "defaultValue": "string"
-        },
-        "value": {
-          "title": "value",
-          "tooltip": "value of the variable",
-          "dataType": "string",
-          "defaultValue": "string"
-        }
-      },
-      "outputs": {
-        "execOut": {
-          "dataType": "exec"
-        }
-      }
-    },
-    "CreateFunction": {
-      "type": "CreateFunction",
-      "category": "createFunction",
-      "outputs": {
-        "execOut": {
-          "title": "execOut",
-          "dataType": "exec"
-        }
-      }
-    },
-    "functionCall": {
-      "notShowInMenu": true,
-      "type": "functionCall",
-      "category": "functionCall"
-    },
-    "Return": {
-      "title": "Return",
-      "type": "Return",
-      "category": "return",
-      "showLabel": true,
-      "tooltip": "Return",
-      "inputs": {
-        "execIn": {
-          "title": "execIn",
-          "dataType": "exec"
-        }
-      }
-    },
     "MakeArray": {
       "title": "Make Array",
       "type": "MakeArray",

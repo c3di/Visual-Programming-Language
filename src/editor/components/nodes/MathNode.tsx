@@ -1,6 +1,9 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback, useRef } from 'react';
 import { type ConnectableData } from '../../types';
 import { TargetHandle, SourceHandle } from '../handles';
+import { IconButton } from '@mui/material';
+import { AddCircle } from '@mui/icons-material';
+import { useSceneState } from '../../Context';
 
 function MathNode({
   id,
@@ -17,7 +20,7 @@ function MathNode({
         id={inputId}
         nodeId={id}
         showWidget={true}
-        showTitle={false}
+        showTitle={!!data.inputs[inputId].showTitle}
         handleData={data.inputs[inputId]}
       />
     );
@@ -31,14 +34,67 @@ function MathNode({
         nodeId={id}
         handleData={data.outputs[outputId]}
         showWidget={false}
-        showTitle={false}
+        showTitle={!!data.outputs[outputId].showTitle}
       />
     );
   }
+  const handleCount = useRef<number>(0);
+  const { setNodes, getNodeById } = useSceneState()?.sceneActions ?? {};
+  const addNewHandle = useCallback(() => {
+    const title = `in_${handleCount.current++}`;
+    const value = {
+      title: `${Object.values(data.inputs!)[0].title ?? 'input'}`,
+      dataType: data.dataType,
+      showTitle: true,
+      showWidget: true,
+      deletable: true,
+    };
+    setNodes?.((nds) => {
+      return nds.map((nd) => {
+        if (nd.id === id) {
+          nd.data.inputs = {
+            ...nd.data.inputs,
+            [title]: value,
+          };
+        }
+        const ref = getNodeById?.(nd.data.nodeRef);
+        if (ref?.data.nodeRef === id) {
+          nd = {
+            ...nd,
+            data: {
+              ...nd.data,
+              outputs: {
+                ...nd.data.outputs,
+                [title]: value,
+              },
+            },
+          };
+        }
+        return nd;
+      });
+    });
+  }, []);
+  if (data.enableAddNewOne)
+    inputHandles.push(
+      <div
+        className="target-handle"
+        title="add a new return value"
+        key={'create-new-button'}
+      >
+        <IconButton style={{ padding: 1 }} onClick={addNewHandle}>
+          <AddCircle style={{ width: '20px', height: '20px' }} />
+        </IconButton>
+      </div>
+    );
   return (
     <div title={data.tooltip} className="vp-node-container">
       <div className="node__body">
-        <div className="vp-node-handles-container">{inputHandles}</div>
+        <div
+          className="vp-node-handles-container"
+          style={{ justifyContent: 'center' }}
+        >
+          {inputHandles}
+        </div>
         <div
           className="vp-node-handles-container"
           style={{

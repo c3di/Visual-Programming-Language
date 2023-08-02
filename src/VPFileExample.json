@@ -28,7 +28,7 @@
         },
         "input4": {
           "title": "long name",
-          "dataType": "extension1.Level2.module2.EDataType"
+          "dataType": "extension1.Level2.module2.EFruit"
         }
       },
       "outputs": {
@@ -126,7 +126,7 @@
     },
     {
       "id": "9",
-      "type": "extension2.CreateVariable",
+      "type": "Function & Variable Creation.Create Variable",
       "position": {
         "x": 64,
         "y": 496
@@ -142,7 +142,7 @@
         },
         "type": {
           "title": "type",
-          "dataType": "extension1.Level2.module2.EDataType"
+          "dataType": "extension1.Level2.module2.EFruit"
         },
         "value": {
           "title": "value",
@@ -158,7 +158,7 @@
     },
     {
       "id": "10",
-      "type": "extension2.CreateFunction",
+      "type": "Function & Variable Creation.Create Function",
       "position": {
         "x": 64,
         "y": 704
@@ -168,13 +168,13 @@
           "title": "execOut",
           "dataType": "exec"
         },
-        "new-out-0": {
-          "title": "new-out-1",
+        "new_out_0": {
+          "title": "new_out_1",
           "value": 4,
           "dataType": "float"
         },
-        "new-out-1": {
-          "title": "new-out-2",
+        "new_out_1": {
+          "title": "new_out_2",
           "value": true,
           "dataType": "boolean"
         }
@@ -184,7 +184,7 @@
     },
     {
       "id": "11",
-      "type": "extension2.Return",
+      "type": "Function & Variable Creation.Return",
       "position": {
         "x": 464,
         "y": 704
@@ -194,12 +194,12 @@
           "title": "execIn",
           "dataType": "exec"
         },
-        "new-in-0": {
-          "title": "new-in-1222",
+        "new_in_0": {
+          "title": "new_in_1222",
           "dataType": "integer"
         },
-        "new-in-1": {
-          "title": "new-in-2",
+        "new_in_1": {
+          "title": "new_in_2",
           "value": 9,
           "dataType": "float"
         }
@@ -208,7 +208,7 @@
     },
     {
       "id": "0",
-      "type": "extension2.functionCall",
+      "type": "Function & Variable Creation.functionCall",
       "position": {
         "x": 864,
         "y": 704
@@ -218,13 +218,13 @@
           "title": "execOut",
           "dataType": "exec"
         },
-        "new-out-0": {
-          "title": "new-out-1",
+        "new_out_0": {
+          "title": "new_out_1",
           "value": 4,
           "dataType": "float"
         },
-        "new-out-1": {
-          "title": "new-out-2",
+        "new_out_1": {
+          "title": "new_out_2",
           "value": true,
           "dataType": "boolean"
         }
@@ -234,12 +234,12 @@
           "title": "functionCallExecOut",
           "dataType": "exec"
         },
-        "new-in-0": {
-          "title": "new-in-1222",
+        "new_in_0": {
+          "title": "new_in_1222",
           "dataType": "integer"
         },
-        "new-in-1": {
-          "title": "new-in-2",
+        "new_in_1": {
+          "title": "new_in_2",
           "value": 9,
           "dataType": "float"
         }
@@ -249,7 +249,7 @@
     },
     {
       "id": "2",
-      "type": "extension1.module1.getter",
+      "type": "Function & Variable Creation.Getter",
       "position": {
         "x": 352,
         "y": 496
@@ -265,7 +265,7 @@
     },
     {
       "id": "3",
-      "type": "extension1.module1.setter",
+      "type": "Function & Variable Creation.Setter",
       "position": {
         "x": 656,
         "y": 496
@@ -330,8 +330,8 @@
       "id": "reactflow__edge-10new-arg-0-11new-arg-1",
       "output": "10",
       "input": "11",
-      "outputHandle": "new-out-0",
-      "inputHandle": "new-in-1",
+      "outputHandle": "new_out_0",
+      "inputHandle": "new_in_1",
       "dataType": "float"
     }
   ]

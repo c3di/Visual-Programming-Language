@@ -6,7 +6,7 @@ import {
   TextInput,
   IntegerInput,
 } from './Widgets';
-import { DataTypes } from '.././types';
+import { DataTypes, addNewType } from '.././types';
 import { stringArrayToObject } from '.././util';
 import { type WidgetProps } from './WidgetProps';
 
@@ -51,13 +51,25 @@ export class WidgetFactory {
   }
 
   public createWidget(type: string, widgetOptions: any): JSX.Element {
+    if (type === 'DataType') {
+      const opts: Record<string, string> = {};
+      Object.keys(DataTypes).forEach((key) => {
+        if (key !== 'any' && key !== 'exec') opts[key] = key;
+      });
+      addNewType('DataType', {
+        options: opts,
+        default: 'float',
+        widget: 'EnumSelect',
+      });
+    }
     if (!DataTypes[type]) {
       console.warn(`Invalid data type ${type}, return <></> element.`);
       return <></>;
     }
     const widgetTypeToUse = DataTypes[type].widget ?? type;
-    const options = DataTypes[type].options || {};
+    const options = DataTypes[type].options ?? {};
     const widget = this._availableWidgets[widgetTypeToUse];
+
     if (widget) {
       return React.cloneElement(widget, { ...widgetOptions, options });
     } else {
@@ -68,7 +80,9 @@ export class WidgetFactory {
 
   public createSelectorWidget(widgetOptions: any): JSX.Element {
     const widget = this._availableWidgets.EnumSelect;
-    const options = stringArrayToObject(Object.keys(DataTypes));
+    const options = stringArrayToObject(
+      Object.keys(DataTypes).filter((k) => k !== 'any' && k !== 'exec')
+    );
     return React.cloneElement(widget, { ...widgetOptions, options });
   }
 }

@@ -1,0 +1,72 @@
+{
+  "description": "A library provides the float literal, manipulation functions and conversions",
+  "enable": true,
+  "nodes": {
+    "Make Literal Float": {
+      "type": "Make Literal Float",
+      "category": "literal",
+      "sourceCode": "{{indent}}{{{outputs.0}}}={{{inputs.0}}}",
+      "inputs": {
+        "input": {
+          "title": "Value",
+          "dataType": "float"
+        }
+      },
+      "dataType": "float"
+    },
+    "String To Float": {
+      "type": "String To Float",
+      "category": "math",
+      "title": "->",
+      "tooltip": "Converts a string to a float",
+      "sourceCode": "{{indent}}{{{outputs.0}}}=float({{{inputs.0}}})",
+      "inputs": {
+        "string": {
+          "dataType": "string",
+          "defaultValue": "",
+          "title": "String",
+          "showTitle": true
+        }
+      },
+      "outputs": {
+        "string": {
+          "dataType": "float",
+          "defaultValue": 0,
+          "title": "Float",
+          "showTitle": true
+        }
+      }
+    },
+    "Float + Float": {
+      "type": "Float + Float",
+      "category": "math",
+      "title": "+",
+      "tooltip": "Addition of two floats",
+      "enableAddNewOne": true,
+      "dataType": "float",
+      "sourceCode": "{{indent}}{{{outputs.0}}}=sum([{{{inputs}}}])",
+      "inputs": {
+        "input1": {
+          "dataType": "float",
+          "defaultValue": 0,
+          "title": "Float",
+          "showTitle": true
+        },
+        "input2": {
+          "dataType": "float",
+          "defaultValue": 0,
+          "title": "Float",
+          "showTitle": true
+        }
+      },
+      "outputs": {
+        "string": {
+          "dataType": "float",
+          "defaultValue": 0,
+          "title": "Float",
+          "showTitle": true
+        }
+      }
+    }
+  }
+}

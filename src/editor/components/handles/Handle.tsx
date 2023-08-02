@@ -68,7 +68,8 @@ export default function Handle({
         value:
           handleData.value ??
           handleData.defaultValue ??
-          DataTypes[handleData.dataType]?.defaultValue,
+          DataTypes[handleData.dataType]?.defaultValue ??
+          '',
         className: `nodrag handle-widget ${handleData.dataType}`,
         onChange: changeValue,
       });
@@ -76,7 +77,15 @@ export default function Handle({
     if (showTitle)
       title = <span className="handle-title">{handleData.title} </span>;
     setLabel(
-      <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+      <label
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '5px',
+          paddingLeft: '5px',
+          paddingRight: '5px',
+        }}
+      >
         {title}
         {(!toHideWidgetWhenConnected || !isConnected) && widget.current}
       </label>
@@ -86,30 +95,48 @@ export default function Handle({
   return (
     <div className={className} title={handleData.tooltip}>
       {label}
-      <RCHandle
-        className={`vp-rc-handle-${handleData.dataType ?? 'default'} ${
-          handleData.connection ? 'handle_connected' : 'handle_not_connected'
-        }`}
+      <HandleElement
         id={id}
-        type={handleType}
-        position={handlePosition}
-        isConnectable={true}
-        style={{
-          top: 0,
-          left: 0,
-          transform:
-            handleType === 'target'
-              ? 'translate(-50%, 0)'
-              : 'translate(50%, 0)',
-          position: 'relative',
-          backgroundColor: `var(--vp-${
-            handleData.dataType ?? 'default'
-          }-color)`,
-          borderColor: `var(--vp-${handleData.dataType ?? 'default'}-color)`,
-          borderWidth: '--vp-handle-border-width',
-          borderStyle: 'solid',
-        }}
+        handleType={handleType}
+        handlePosition={handlePosition}
+        handleData={handleData}
       />
     </div>
   );
 }
+
+export const HandleElement = ({
+  id,
+  handleType,
+  handlePosition,
+  handleData,
+}: {
+  id: string;
+  handleType: any;
+  handlePosition: any;
+  handleData: HandleData;
+}): JSX.Element => {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+  const color = `${DataTypes[handleData.dataType!].shownInColor as string}`;
+  return (
+    <RCHandle
+      className={`vp-rc-handle-${handleData.dataType ?? 'default'} ${
+        handleData.connection ? 'handle_connected' : 'handle_not_connected'
+      }`}
+      id={id}
+      type={handleType}
+      position={handlePosition}
+      isConnectable={true}
+      style={{
+        top: 0,
+        left: 0,
+        transform: 'translate(0%, 0)',
+        position: 'relative',
+        backgroundColor: color,
+        borderColor: color,
+        borderWidth: '--vp-handle-border-width',
+        borderStyle: 'solid',
+      }}
+    />
+  );
+};

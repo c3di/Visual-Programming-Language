@@ -222,6 +222,7 @@ const Scene = ({
                 top: e.clientY,
               },
               {
+                getSourceCode: sceneActions?.sourceCode,
                 addNodeWithSceneCoord: sceneActions?.addNodeWithSceneCoord,
                 clear: sceneActions?.clear,
                 autoLayout: sceneActions?.autoLayout,
