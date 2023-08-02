@@ -607,19 +607,22 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
   useEffect(() => {
     const createFunNodeWithRef: Record<string, string> = {};
     const createFunNodeWithoutRef: string[] = [];
-    // the connection will affect the whole grapp, so we need to update the whole graph
+    // the connection will affect the whole graph, so we need to update the whole graph
     let allNodes = getNodes();
+    let found = false;
     allNodes = allNodes.map((n) => {
       if (n.type === 'createFunction') {
         let thisNode = n;
-        while (true) {
+        const queue: Node[] = [thisNode];
+        while (queue.length > 0 && !found) {
+          thisNode = queue.shift()!;
           const edges = getConnectedEdges([thisNode], getEdges());
-          const execEdge = edges.find(
+          const execEdges = edges.filter(
             (e) =>
               e.source === thisNode.id &&
               thisNode.data.outputs[e.sourceHandle!].dataType === 'exec'
           );
-          if (!execEdge) {
+          if (execEdges.length === 0) {
             n = {
               ...n,
               data: {
@@ -628,32 +631,33 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
               },
             };
             createFunNodeWithoutRef.push(n.id);
-            break;
+          } else {
+            for (const execEdge of execEdges) {
+              const nextNode = getNode(execEdge.target);
+              if (!nextNode) {
+                n = {
+                  ...n,
+                  data: {
+                    ...n.data,
+                    nodeRef: null,
+                  },
+                };
+                createFunNodeWithoutRef.push(n.id);
+              } else if (nextNode.type === 'return') {
+                n = {
+                  ...n,
+                  data: {
+                    ...n.data,
+                    nodeRef: nextNode.id,
+                  },
+                };
+                createFunNodeWithRef[n.id] = nextNode.id;
+                found = true;
+              } else {
+                queue.push(nextNode);
+              }
+            }
           }
-          const nextNode = getNode(execEdge.target);
-          if (!nextNode) {
-            n = {
-              ...n,
-              data: {
-                ...n.data,
-                nodeRef: null,
-              },
-            };
-            createFunNodeWithoutRef.push(n.id);
-            break;
-          }
-          if (nextNode.type === 'return') {
-            n = {
-              ...n,
-              data: {
-                ...n.data,
-                nodeRef: nextNode.id,
-              },
-            };
-            createFunNodeWithRef[n.id] = nextNode.id;
-            break;
-          }
-          thisNode = nextNode;
         }
       }
       return n;
