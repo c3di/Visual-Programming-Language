@@ -5,6 +5,7 @@ import { nodeConfigRegistry } from './NodeConfigRegistry';
 import stringPkg from './string.json';
 import floatPkg from './float.json';
 import functionAndvar from './functionAndvar.json';
+import collections from './collections.json';
 
 import { addNewType, type NodePackage, type NodeConfig } from '../types';
 /*
@@ -145,6 +146,7 @@ export const LoadDefaultModule = (): void => {
   LoadPackageToRegistry('Float', floatPkg);
   LoadPackageToRegistry('String', stringPkg);
   LoadPackageToRegistry('Flow Control', flowControl);
+  LoadPackageToRegistry('Collections', collections);
   LoadPackageToRegistry('Function & Variable Creation', functionAndvar);
   LoadPackageToRegistry('Log', log);
 };
