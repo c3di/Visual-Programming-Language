@@ -239,7 +239,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
   onItemClick,
   onItemDelete,
   onEnterKeyDown,
-  toFilter,
+  triggerExpand,
 }: {
   treeData: TreeItemData[];
   onItemClick?: (item: TreeItemData) => void;
@@ -248,7 +248,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
     event: React.KeyboardEvent<HTMLElement>,
     item: TreeItemData
   ) => void;
-  toFilter?: boolean;
+  triggerExpand?: boolean;
 }): JSX.Element {
   const [filteredTreeData, setFilteredTreeData] =
     useState<TreeItemData[]>(treeData);
@@ -260,10 +260,10 @@ export const SearchedTreeView = memo(function SearchedTreeView({
   const [toExpand, setToExpand] = useState<boolean>(false);
 
   useEffect(() => {
-    if (toFilter) {
+    if (triggerExpand) {
       setToExpand((prevToExpand) => true);
     }
-  }, [toFilter, treeData]);
+  }, [triggerExpand, treeData]);
 
   const filteredTreeItemData = (
     item: TreeItemData,

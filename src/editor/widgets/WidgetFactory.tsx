@@ -55,7 +55,7 @@ export class WidgetFactory {
       console.warn(`Invalid data type ${type}, return <></> element.`);
       return <></>;
     }
-    const widgetTypeToUse = DataTypes[type].widget || type;
+    const widgetTypeToUse = DataTypes[type].widget ?? type;
     const options = DataTypes[type].options || {};
     const widget = this._availableWidgets[widgetTypeToUse];
     if (widget) {

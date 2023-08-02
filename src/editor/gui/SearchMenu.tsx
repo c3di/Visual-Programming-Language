@@ -10,7 +10,7 @@ import { type OnConnectStartParams } from '../types';
 import { type Command } from '../hooks';
 import { nodeConfigRegistry } from '../extension';
 import { createSvgIcon } from '@mui/material/utils';
-import { type XYPosition, type Connection } from 'reactflow';
+import { type Connection } from 'reactflow';
 
 const StickyNoteIcon = createSvgIcon(
   <svg
@@ -35,23 +35,15 @@ const StickyNoteIcon = createSvgIcon(
 const SearchMenu = memo(function SearchMenu({
   onClose,
   anchorPosition,
-  addNode,
   addNodeWithSceneCoord,
   clear,
   autoLayout,
   moreCommands,
-  toFilter,
   startHandleInfo,
   addEdge,
 }: {
   onClose: () => void;
   anchorPosition: { top: number; left: number };
-  addNode?: (
-    configType: string,
-    thisPosition?: XYPosition,
-    data?: any,
-    positionOffset?: XYPosition
-  ) => void;
   addNodeWithSceneCoord?: (
     configType: string,
     anchorPosition: { top: number; left: number }
@@ -59,7 +51,6 @@ const SearchMenu = memo(function SearchMenu({
   autoLayout?: () => void;
   clear?: () => void;
   moreCommands?: Command[];
-  toFilter?: boolean;
   startHandleInfo?: OnConnectStartParams;
   addEdge?: (params: Connection) => void;
 }): JSX.Element {
@@ -104,6 +95,10 @@ const SearchMenu = memo(function SearchMenu({
     },
   ]);
 
+  const toFilter = useCallback((): boolean => {
+    return !!(startHandleInfo?.handleType && startHandleInfo?.handleDataType);
+  }, [startHandleInfo]);
+
   useEffect(() => {
     if (!moreCommands || moreCommands.length === 0) return;
     const newNames = moreCommands.map((item) => item.name);
@@ -131,35 +126,22 @@ const SearchMenu = memo(function SearchMenu({
   );
 
   useEffect(() => {
-    setTreeData(
-      [
-        ...nodeConfigsToTreeData(nodeConfigRegistry.getAllNodeConfigs()),
-        ...commandsToTreeData(commands),
-      ].sort((a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity))
+    let treeData = nodeConfigsToTreeData(
+      nodeConfigRegistry.getAllNodeConfigs()
     );
-  }, [commands]);
-
-  const [filteredTreeData, setFilteredTreeData] =
-    useState<TreeItemData[]>(treeData);
-
-  useEffect(() => {
-    setFilteredTreeData(
-      [...filteredTreeData, ...commandsToTreeData(commands)].sort(
+    if (startHandleInfo?.handleType && startHandleInfo?.handleDataType) {
+      treeData = searchTreeDataWithHandleDataType(
+        startHandleInfo.handleType,
+        startHandleInfo?.handleDataType,
+        treeData
+      );
+    }
+    setTreeData(
+      [...treeData, ...commandsToTreeData(commands)].sort(
         (a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity)
       )
     );
-  }, []);
-
-  useEffect(() => {
-    if (toFilter) {
-      if (startHandleInfo?.handleType && startHandleInfo?.handleDataType) {
-        searchTreeDataWithHandleDataType(
-          startHandleInfo.handleType,
-          startHandleInfo?.handleDataType
-        );
-      }
-    }
-  }, [toFilter, treeData]);
+  }, [commands]);
 
   const hasMatchingDataType = (
     handleType: string,
@@ -214,7 +196,11 @@ const SearchMenu = memo(function SearchMenu({
   };
 
   const searchTreeDataWithHandleDataType = useCallback(
-    (handleType: string, dataType: string) => {
+    (
+      handleType: string,
+      dataType: string,
+      treeData: TreeItemData[]
+    ): TreeItemData[] => {
       const filteredTreeData: TreeItemData[] = [];
       for (const item of treeData) {
         const fItem = filteredTreeDataWithHandleDataType(
@@ -224,9 +210,9 @@ const SearchMenu = memo(function SearchMenu({
         );
         if (fItem) filteredTreeData.push(fItem);
       }
-      setFilteredTreeData(filteredTreeData);
+      return filteredTreeData;
     },
-    [treeData]
+    []
   );
 
   const executeCommandByName = (
@@ -287,11 +273,13 @@ const SearchMenu = memo(function SearchMenu({
     if (Array.isArray(item.children)) return;
     if (item.configType) {
       const node = addNodeWithSceneCoord?.(item.configType, anchorPosition);
-      if (toFilter && startHandleInfo && node) {
+      if (toFilter() && node) {
         const matchingHandle = findHandleWithMatchingDataType(
           node,
-          startHandleInfo.handleType,
-          startHandleInfo.handleDataType
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+          startHandleInfo!.handleType,
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+          startHandleInfo!.handleDataType
         );
         connectWithNewNode(node, matchingHandle);
       }
@@ -306,11 +294,13 @@ const SearchMenu = memo(function SearchMenu({
       if (Array.isArray(item.children)) return;
       if (event.key === 'Enter' && item.configType) {
         const node = addNodeWithSceneCoord?.(item.configType, anchorPosition);
-        if (toFilter && startHandleInfo && node) {
+        if (toFilter() && node) {
           const matchingHandle = findHandleWithMatchingDataType(
             node,
-            startHandleInfo.handleType,
-            startHandleInfo.handleDataType
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+            startHandleInfo!.handleType,
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+            startHandleInfo!.handleDataType
           );
           connectWithNewNode(node, matchingHandle);
         }
@@ -378,10 +368,10 @@ const SearchMenu = memo(function SearchMenu({
       }}
     >
       <SearchedTreeView
-        treeData={filteredTreeData}
+        treeData={treeData}
         onItemClick={onItemClick}
         onEnterKeyDown={onEnterKeyDown}
-        toFilter={toFilter}
+        triggerExpand={startHandleInfo !== undefined}
       />
     </Menu>
   );

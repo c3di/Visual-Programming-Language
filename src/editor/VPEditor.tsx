@@ -222,7 +222,6 @@ const Scene = ({
                 top: e.clientY,
               },
               {
-                addNode: sceneActions?.addNode,
                 addNodeWithSceneCoord: sceneActions?.addNodeWithSceneCoord,
                 clear: sceneActions?.clear,
                 autoLayout: sceneActions?.autoLayout,
@@ -392,7 +391,6 @@ const Scene = ({
                   top: clientY,
                 },
                 {
-                  addNode: sceneActions?.addNode,
                   addNodeWithSceneCoord: sceneActions?.addNodeWithSceneCoord,
                   clear: sceneActions?.clear,
                   autoLayout: sceneActions?.autoLayout,
