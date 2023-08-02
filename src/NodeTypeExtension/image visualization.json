@@ -7,8 +7,8 @@
       "category": "function",
       "title": "show_image",
       "tooltip": "Takes an input tensor in CHW layout and display it as an image",
-      "externalImports": "from matplotlib import pyplot as plt",
-      "sourceCode": "fix, axs = plt.subplots(ncols=len({{{outputs.1}}}), squeeze=False, figsize={{{outputs.4}}})\nfor i, img in enumerate({{{outputs.1}}}):\n\timg = T.ToPILImage()(img.to('cpu'))\n\taxs[0, i].imshow(np.asarray(img), {{{outputs.3}}})\n\taxs[0, i].axis('off')\n\tif {{{outputs.2}}} and {{{outputs.2}}}[i]:\n\t\taxs[0, i].set_title({{{outputs.2}}}[i])\n\taxs[0, i].set(xticklabels=[], yticklabels=[], xticks=[], yticks=[])",
+      "externalImports": "from matplotlib import pyplot as plt\nimport torchvision.transforms as T\nimport numpy as np",
+      "sourceCode": "{{indent}}def show_image(imgs, titles=None, cmap=None, figSize=(9, 5)):\n{{indent}}\tfix, axs = plt.subplots(ncols=len(imgs), squeeze=False, figsize=figSize)\n{{indent}}\tfor i, img in enumerate(imgs):\n{{indent}}\t\timg = T.ToPILImage()(img.to('cpu'))\n{{indent}}\t\taxs[0, i].imshow(np.asarray(img), cmap)\n{{indent}}\t\taxs[0, i].axis('off')\n{{indent}}\t\tif titles and titles[i]:\n{{indent}}\t\t\taxs[0, i].set_title(titles[i])\n{{indent}}\t\taxs[0, i].set(xticklabels=[], yticklabels=[], xticks=[], yticks=[])\n{{indent}}show_image({{{inputs.1}}}, {{{inputs.2}}}, {{{inputs.3}}}, {{{inputs.4}}})\n{{{outputs.1}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -24,7 +24,7 @@
         },
         "titles": {
           "title": "titles",
-          "dataType": "string",
+          "dataType": "anyDataType",
           "defaultValue": "None",
           "tooltip": "titles (list[str], optional) - A list of titles to be set for each image. Default: None."
         },
