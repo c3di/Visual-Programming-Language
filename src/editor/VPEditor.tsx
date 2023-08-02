@@ -403,6 +403,7 @@ const Scene = ({
               );
             }
             gui.connectionStartNodeId.current = null;
+            gui.closeWidget();
           }}
           attributionPosition="top-right"
           nodeTypes={componentType.nodeTypes}
