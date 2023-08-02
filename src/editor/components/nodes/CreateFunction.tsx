@@ -211,7 +211,7 @@ function CreateFunction({
           nodeId={id}
           handleData={{
             ...handle,
-            tooltip: `parameter ${String(handle.title)}`,
+            tooltip: `${String(handle.title)}\n${handle.dataType ?? ''}`,
           }}
           showWidget={true}
           showTitle={!!handle.showTitle || handle.showTitle === undefined}
