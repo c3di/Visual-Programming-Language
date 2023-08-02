@@ -67,7 +67,13 @@ export function addNewType(type: string, options: any): void {
 }
 
 export function isDataTypeMatch(type1: string, type2: string): boolean {
-  return type1 === type2 || type1 === 'any' || type2 === 'any';
+  return (
+    type1 === type2 ||
+    type1 === 'any' ||
+    type2 === 'any' ||
+    type1 === 'anyDataType' ||
+    type2 === 'anyDataType'
+  );
 }
 
 export const getMaxConnection = (
