@@ -179,7 +179,7 @@
           "showTitle": true
         }
       },
-      "sourceCode": "{{indent}}for {{outputs.1}} in {{{inputs.1}}}:\n{{{outputs.0}}}\n{{{outputs.3}}}"
+      "sourceCode": "{{indent}}for {{outputs.1}} in {{{inputs.1}}}:\n{{{outputs.0}}}\n{{{outputs.2}}}"
     },
     "For Loop": {
       "type": "For Loop",

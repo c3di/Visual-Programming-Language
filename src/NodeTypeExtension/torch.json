@@ -7,6 +7,7 @@
       "category": "function",
       "title": "Stack",
       "tooltip": "Concatenates a sequence of tensors along a new dimension.",
+      "externalImports": "import torch",
       "sourceCode": "{{indent}}{{{outputs.1}}} = torch.stack({{{inputs.1}}})\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
@@ -33,8 +34,8 @@
           "showWidget": false,
           "showTitle": false
         },
-        "stacked tensor": {
-          "title": "tensor",
+        "stackedtensor": {
+          "title": "stacked tensor",
           "dataType": "torch.tensor",
           "defaultValue": "[]"
         }
