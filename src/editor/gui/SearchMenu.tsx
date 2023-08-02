@@ -12,10 +12,15 @@ import {
   nodeConfigsToTreeData,
   type TreeItemData,
 } from './elements';
+import {
+  isDataTypeMatch,
+  type OnConnectStartParams,
+  type SourceCodeExec,
+} from '../types';
 import { type Command } from '../hooks';
 import { nodeConfigRegistry } from '../extension';
 import { createSvgIcon } from '@mui/material/utils';
-import { type SourceCodeExec } from '../types';
+import { type Connection } from 'reactflow';
 
 const StickyNoteIcon = createSvgIcon(
   <svg
@@ -45,6 +50,8 @@ const SearchMenu = memo(function SearchMenu({
   clear,
   autoLayout,
   moreCommands,
+  startHandleInfo,
+  addEdge,
 }: {
   onClose: () => void;
   anchorPosition: { top: number; left: number };
@@ -56,6 +63,8 @@ const SearchMenu = memo(function SearchMenu({
   autoLayout?: () => void;
   clear?: () => void;
   moreCommands?: Command[];
+  startHandleInfo?: OnConnectStartParams;
+  addEdge?: (params: Connection) => void;
 }): JSX.Element {
   const [commands, setCommand] = useState<Command[]>([
     {
@@ -77,7 +86,17 @@ const SearchMenu = memo(function SearchMenu({
     {
       name: 'Add Reroute...',
       action: () => {
-        addNodeWithSceneCoord?.('reroute', anchorPosition);
+        const node = addNodeWithSceneCoord?.('reroute', anchorPosition);
+        if (toFilter() && node) {
+          const matchingHandle = findHandleWithMatchingDataType(
+            node,
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+            startHandleInfo!.handleType,
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+            startHandleInfo!.handleDataType
+          );
+          connectWithNewNode(node, matchingHandle);
+        }
       },
       tooltip: 'Add a reroute node',
       labelIcon: Route,
@@ -111,6 +130,10 @@ const SearchMenu = memo(function SearchMenu({
     },
   ]);
 
+  const toFilter = useCallback((): boolean => {
+    return !!(startHandleInfo?.handleType && startHandleInfo?.handleDataType);
+  }, [startHandleInfo]);
+
   useEffect(() => {
     if (!moreCommands || moreCommands.length === 0) return;
     const newNames = moreCommands.map((item) => item.name);
@@ -138,28 +161,168 @@ const SearchMenu = memo(function SearchMenu({
   );
 
   useEffect(() => {
+    let treeData = nodeConfigsToTreeData(
+      nodeConfigRegistry.getAllNodeConfigs()
+    );
+    if (startHandleInfo?.handleType && startHandleInfo?.handleDataType) {
+      treeData = searchTreeDataWithHandleDataType(
+        startHandleInfo.handleType,
+        startHandleInfo?.handleDataType,
+        treeData
+      );
+    }
     setTreeData(
-      [
-        ...nodeConfigsToTreeData(nodeConfigRegistry.getAllNodeConfigs()),
-        ...commandsToTreeData(commands),
-      ].sort((a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity))
+      [...treeData, ...commandsToTreeData(commands)].sort(
+        (a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity)
+      )
     );
   }, [commands]);
 
-  function executeCommandByName(
+  const hasMatchingDataType = (
+    handleType: string,
+    dataType: string,
+    item: TreeItemData
+  ): boolean => {
+    if (dataType === 'any' || dataType === 'anyDataType') return true;
+    if (
+      handleType === 'source' &&
+      Object.prototype.hasOwnProperty.call(item, 'inputs')
+    ) {
+      if (
+        Object.values(item.inputs ?? {}).find(
+          (child) => child.dataType && isDataTypeMatch(child.dataType, dataType)
+        )
+      ) {
+        return true;
+      }
+    } else if (
+      handleType === 'target' &&
+      Object.prototype.hasOwnProperty.call(item, 'outputs')
+    ) {
+      if (
+        Object.values(item.outputs ?? {}).find(
+          (child) => child.dataType && isDataTypeMatch(child.dataType, dataType)
+        )
+      ) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const filteredTreeDataWithHandleDataType = (
+    item: TreeItemData,
+    handleType: string,
+    dataType: string
+  ): TreeItemData | null => {
+    if (hasMatchingDataType(handleType, dataType, item)) {
+      return { ...item };
+    }
+    const children: TreeItemData[] = [];
+    for (const child of item.children ?? []) {
+      const fItem = filteredTreeDataWithHandleDataType(
+        child,
+        handleType,
+        dataType
+      );
+      if (fItem) children.push(fItem);
+    }
+    if (children?.length) return { ...item, children };
+    return null;
+  };
+
+  const searchTreeDataWithHandleDataType = useCallback(
+    (
+      handleType: string,
+      dataType: string,
+      treeData: TreeItemData[]
+    ): TreeItemData[] => {
+      const filteredTreeData: TreeItemData[] = [];
+      for (const item of treeData) {
+        const fItem = filteredTreeDataWithHandleDataType(
+          item,
+          handleType,
+          dataType
+        );
+        if (fItem) filteredTreeData.push(fItem);
+      }
+      return filteredTreeData;
+    },
+    []
+  );
+
+  const executeCommandByName = (
     commands: Command[],
     commandName: string
-  ): void {
+  ): void => {
     const command = commands.find((c) => c.name === commandName);
     if (command) {
       command.action();
     }
-  }
+  };
+  const findHandleWithMatchingDataType = (
+    node: Node,
+    handleType: string | null,
+    dataType: string | null
+  ): string | undefined => {
+    const handles =
+      handleType === 'source'
+        ? Object(node).data.inputs
+        : Object(node).data.outputs;
+
+    const matchingHandle = Object.keys(handles).find(
+      (key) =>
+        handles[key].dataType &&
+        dataType &&
+        isDataTypeMatch(handles[key].dataType, dataType)
+    );
+    return matchingHandle;
+  };
+
+  const connectWithNewNode = (
+    node: Node,
+    matchingHandle: string | undefined
+  ): void => {
+    if (startHandleInfo) {
+      window.requestAnimationFrame(() => {
+        let newConnection: Connection;
+        if (startHandleInfo.handleType === 'source' && matchingHandle) {
+          newConnection = {
+            source: startHandleInfo.nodeId,
+            target: Object(node).id,
+            sourceHandle: startHandleInfo.handleId,
+            targetHandle: matchingHandle,
+          };
+          addEdge?.(newConnection);
+        } else if (startHandleInfo.handleType === 'target' && matchingHandle) {
+          newConnection = {
+            source: Object(node).id,
+            target: startHandleInfo.nodeId,
+            sourceHandle: matchingHandle,
+            targetHandle: startHandleInfo.handleId,
+          };
+          addEdge?.(newConnection);
+        }
+      });
+    }
+  };
+
   const onItemClick = useCallback((item: TreeItemData): void => {
     if (!item) return;
     if (Array.isArray(item.children)) return;
     if (item.configType) {
-      addNodeWithSceneCoord?.(item.configType, anchorPosition);
+      const node = addNodeWithSceneCoord?.(item.configType, anchorPosition);
+      if (toFilter() && node) {
+        const matchingHandle = findHandleWithMatchingDataType(
+          node,
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+          startHandleInfo!.handleType,
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+          startHandleInfo!.handleDataType
+        );
+        connectWithNewNode(node, matchingHandle);
+      }
+
       onClose();
     }
   }, []);
@@ -169,7 +332,17 @@ const SearchMenu = memo(function SearchMenu({
       if (!item) return;
       if (Array.isArray(item.children)) return;
       if (event.key === 'Enter' && item.configType) {
-        addNodeWithSceneCoord?.(item.configType, anchorPosition);
+        const node = addNodeWithSceneCoord?.(item.configType, anchorPosition);
+        if (toFilter() && node) {
+          const matchingHandle = findHandleWithMatchingDataType(
+            node,
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+            startHandleInfo!.handleType,
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+            startHandleInfo!.handleDataType
+          );
+          connectWithNewNode(node, matchingHandle);
+        }
         onClose();
       } else {
         executeCommandByName(commands, item.name);
@@ -237,6 +410,7 @@ const SearchMenu = memo(function SearchMenu({
         treeData={treeData}
         onItemClick={onItemClick}
         onEnterKeyDown={onEnterKeyDown}
+        triggerExpand={startHandleInfo !== undefined}
       />
     </Menu>
   );

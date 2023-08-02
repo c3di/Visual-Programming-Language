@@ -1,3 +1,5 @@
+import { type HandleType } from 'reactflow';
+
 export enum ConnectionAction {
   Reject = 'reject',
   Allowed = 'allowed',
@@ -7,4 +9,11 @@ export enum ConnectionAction {
 export interface ConnectionStatus {
   action: ConnectionAction;
   message?: string;
+}
+
+export interface OnConnectStartParams {
+  nodeId: string | null;
+  handleId: string | null;
+  handleType: HandleType | null;
+  handleDataType: string | null;
 }
