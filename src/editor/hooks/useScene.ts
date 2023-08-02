@@ -373,7 +373,26 @@ export default function useScene(
       deleteInputHandleOfReturnNode(nodeId, handleId);
     } else if (configType.includes('Sequence')) {
       deleteHandleOfSequenceNode(nodeId, handleId);
+    } else {
+      deleteHandleOfNormalNode(nodeId, handleId);
     }
+  };
+
+  const deleteHandleOfNormalNode = (nodeId: string, handleId: string): void => {
+    graphState.setNodes((nds) => {
+      return nds.map((nd) => {
+        if (nd.id === nodeId) {
+          if (Object.keys(nd.data.inputs ?? {}).includes(handleId)) {
+            const { [handleId]: _, ...remained } = nd.data.inputs;
+            nd.data.inputs = remained;
+          } else {
+            const { [handleId]: _, ...remained } = nd.data.outputs;
+            nd.data.outputs = remained;
+          }
+        }
+        return nd;
+      });
+    });
   };
 
   const deleteHandleOfSequenceNode = (

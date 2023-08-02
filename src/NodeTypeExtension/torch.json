@@ -10,7 +10,8 @@
     },
     "tensor": {
       "default": "",
-      "widget": "TextInput"
+      "widget": "TextInput",
+      "shownInColor": "hsl(10, 50%, 60%)"
     }
   }
 }

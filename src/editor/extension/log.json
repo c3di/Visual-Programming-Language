@@ -47,9 +47,8 @@
           "showWidget": false,
           "showTitle": false
         },
-
         "input": {
-          "title": "In",
+          "title": "Any in",
           "tooltip": "The content to print",
           "dataType": "anyDataType",
           "defaultValue": "Hello"

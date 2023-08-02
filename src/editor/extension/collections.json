@@ -8,13 +8,13 @@
       "title": "->",
       "dataType": "anyDataType",
       "tooltip": "Lists are used to store multiple items in a single variable.",
-      "sourceCode": "[{{#outputs}}{{{.}}},{{/outputs}}]",
+      "sourceCode": "{{indent}}{{{outputs}}}=[{{#inputs}}{{{.}}},{{/inputs}}]",
       "enableAddNewOne": true,
       "inputs": {
-        "input1": {
+        "input": {
           "dataType": "anyDataType",
           "defaultValue": "",
-          "title": "item1",
+          "title": "item",
           "showTitle": true,
           "deletable": true
         }

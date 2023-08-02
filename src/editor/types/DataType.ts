@@ -49,7 +49,7 @@ export const DataTypes: Record<string, DataType> = {
   },
   exec: { shownInColor: `${hsl(0, 0, 0)}` },
   any: { shownInColor: `${hsl(0, 0, 50)}` },
-  anyDataType: { widget: 'TextInput', shownInColor: `${hsl(0, 0, 20)}` },
+  anyDataType: { widget: 'TextInput', shownInColor: `${hsl(0, 0, 10)}` },
   list: {
     defaultValue: '[]',
     widget: 'TextInput',
