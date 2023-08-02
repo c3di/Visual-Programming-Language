@@ -12,7 +12,11 @@ import {
   nodeConfigsToTreeData,
   type TreeItemData,
 } from './elements';
-import { type OnConnectStartParams, type SourceCodeExec } from '../types';
+import {
+  isDataTypeMatch,
+  type OnConnectStartParams,
+  type SourceCodeExec,
+} from '../types';
 import { type Command } from '../hooks';
 import { nodeConfigRegistry } from '../extension';
 import { createSvgIcon } from '@mui/material/utils';
@@ -82,7 +86,17 @@ const SearchMenu = memo(function SearchMenu({
     {
       name: 'Add Reroute...',
       action: () => {
-        addNodeWithSceneCoord?.('reroute', anchorPosition);
+        const node = addNodeWithSceneCoord?.('reroute', anchorPosition);
+        if (toFilter() && node) {
+          const matchingHandle = findHandleWithMatchingDataType(
+            node,
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+            startHandleInfo!.handleType,
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+            startHandleInfo!.handleDataType
+          );
+          connectWithNewNode(node, matchingHandle);
+        }
       },
       tooltip: 'Add a reroute node',
       labelIcon: Route,
@@ -169,14 +183,14 @@ const SearchMenu = memo(function SearchMenu({
     dataType: string,
     item: TreeItemData
   ): boolean => {
+    if (dataType === 'any' || dataType === 'anyDataType') return true;
     if (
       handleType === 'source' &&
       Object.prototype.hasOwnProperty.call(item, 'inputs')
     ) {
       if (
         Object.values(item.inputs ?? {}).find(
-          (child) =>
-            child.dataType === dataType || child.dataType === 'anyDataType'
+          (child) => child.dataType && isDataTypeMatch(child.dataType, dataType)
         )
       ) {
         return true;
@@ -187,8 +201,7 @@ const SearchMenu = memo(function SearchMenu({
     ) {
       if (
         Object.values(item.outputs ?? {}).find(
-          (child) =>
-            child.dataType === dataType || child.dataType === 'anyDataType'
+          (child) => child.dataType && isDataTypeMatch(child.dataType, dataType)
         )
       ) {
         return true;
@@ -256,10 +269,12 @@ const SearchMenu = memo(function SearchMenu({
       handleType === 'source'
         ? Object(node).data.inputs
         : Object(node).data.outputs;
+
     const matchingHandle = Object.keys(handles).find(
       (key) =>
-        handles[key].dataType === dataType ||
-        handles[key].dataType === 'anyDataType'
+        handles[key].dataType &&
+        dataType &&
+        isDataTypeMatch(handles[key].dataType, dataType)
     );
     return matchingHandle;
   };
@@ -269,7 +284,7 @@ const SearchMenu = memo(function SearchMenu({
     matchingHandle: string | undefined
   ): void => {
     if (startHandleInfo) {
-      setTimeout(() => {
+      window.requestAnimationFrame(() => {
         let newConnection: Connection;
         if (startHandleInfo.handleType === 'source' && matchingHandle) {
           newConnection = {
@@ -288,7 +303,7 @@ const SearchMenu = memo(function SearchMenu({
           };
           addEdge?.(newConnection);
         }
-      }, 0);
+      });
     }
   };
 
