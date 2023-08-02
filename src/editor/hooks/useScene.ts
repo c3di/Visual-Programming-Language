@@ -718,8 +718,8 @@ export default function useScene(
           externalImports
         );
         if (result.hasError) return result;
-        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         sourceBody +=
+          // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
           '\n'.repeat(Number(result.result !== '' && sourceBody !== '')) +
           result.result;
         externalImports.forEach((externalImport) => {
@@ -920,7 +920,8 @@ export default function useScene(
         .trimEnd()
         .replace(/,\s*$/, '');
     if (node.data.externalImports)
-      externalImports.add(node.data.externalImports);
+      for (const externalImport of node.data.externalImports.split('\n'))
+        externalImports.add(externalImport);
 
     return { hasError: false, result: source };
   };
