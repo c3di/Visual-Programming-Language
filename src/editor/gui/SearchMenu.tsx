@@ -154,7 +154,8 @@ const SearchMenu = memo(function SearchMenu({
     ) {
       if (
         Object.values(item.inputs ?? {}).find(
-          (child) => child.dataType === dataType || child.dataType === 'any'
+          (child) =>
+            child.dataType === dataType || child.dataType === 'anyDataType'
         )
       ) {
         return true;
@@ -165,7 +166,8 @@ const SearchMenu = memo(function SearchMenu({
     ) {
       if (
         Object.values(item.outputs ?? {}).find(
-          (child) => child.dataType === dataType || child.dataType === 'any'
+          (child) =>
+            child.dataType === dataType || child.dataType === 'anyDataType'
         )
       ) {
         return true;
@@ -235,7 +237,8 @@ const SearchMenu = memo(function SearchMenu({
         : Object(node).data.outputs;
     const matchingHandle = Object.keys(handles).find(
       (key) =>
-        handles[key].dataType === dataType || handles[key].dataType === 'any'
+        handles[key].dataType === dataType ||
+        handles[key].dataType === 'anyDataType'
     );
     return matchingHandle;
   };
