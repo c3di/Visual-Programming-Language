@@ -1,7 +1,7 @@
 {
   "name": "visual-programming-editor",
-  "version": "8.1.4",
-  "description": "General Node-based Visual Programing editor",
+  "version": "8.4.0",
+  "description": "General Node-based Visual Programming editor",
   "private": false,
   "repository": {
     "type": "git",

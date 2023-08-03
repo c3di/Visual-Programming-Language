@@ -1,0 +1,76 @@
+{
+  "enable": true,
+  "nodes": {
+    "Canny": {
+      "type": "Canny",
+      "category": "function",
+      "title": "Canny Edge Detection",
+      "tooltip": "Find edges of the input image and filters them using the Canny algorithm.",
+      "externalImports": "import kornia as K",
+      "functionName": "K.filters.canny",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "input": {
+          "title": "input",
+          "dataType": "torch.tensor",
+          "tooltip": "input image tensor with shape (B, C, H, W) and intensity from (0, 1]."
+        },
+        "low_threshold": {
+          "title": "low_threshold",
+          "dataType": "float",
+          "defaultValue": "0.1",
+          "tooltip": "lower threshold for the hysteresis procedure."
+        },
+        "high_threshold": {
+          "title": "high_threshold",
+          "dataType": "float",
+          "defaultValue": "0.2",
+          "tooltip": "upper threshold for the hysteresis procedure."
+        },
+        "kernel_size": {
+          "title": "kernel_size",
+          "dataType": "tuple",
+          "defaultValue": "(5, 5)",
+          "tooltip": "the size of the kernel for the gaussian blur."
+        },
+        "sigma": {
+          "title": "sigma",
+          "dataType": "tuple",
+          "defaultValue": "(1, 1)",
+          "tooltip": "the standard deviation of the kernel for the gaussian blur."
+        },
+        "hysteresis": {
+          "title": "hysteresis",
+          "dataType": "boolean",
+          "defaultValue": "true",
+          "tooltip": "if True, applies the hysteresis edge tracking. Otherwise, the edges are divided between weak (0.5) and strong (1) edges. Default: True"
+        },
+        "eps": {
+          "title": "eps",
+          "dataType": "float",
+          "defaultValue": "1e-6",
+          "tooltip": "regularization number to avoid NaN during backprop."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "output": {
+          "title": "output",
+          "dataType": "tuple",
+          "defaultValue": "()",
+          "tooltip": "tuple(the canny edge magnitudes map, the canny edge magnitudes map, shape of (B, 1, H, W))"
+        }
+      }
+    }
+  }
+}

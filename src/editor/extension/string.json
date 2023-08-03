@@ -37,6 +37,29 @@
         }
       }
     },
+    "To String": {
+      "type": "To String",
+      "category": "math",
+      "title": "->",
+      "tooltip": "Converts a object to a string",
+      "sourceCode": "{{indent}}{{{outputs.0}}}=str({{{inputs.0}}})",
+      "inputs": {
+        "float": {
+          "dataType": "anyDataType",
+          "defaultValue": "",
+          "title": "input",
+          "showTitle": true
+        }
+      },
+      "outputs": {
+        "string": {
+          "dataType": "string",
+          "defaultValue": "",
+          "title": "String",
+          "showTitle": true
+        }
+      }
+    },
     "String + String": {
       "type": "String + String",
       "category": "math",

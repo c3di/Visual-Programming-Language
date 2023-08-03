@@ -1,6 +1,6 @@
 const PanelSetting = {
   view: {
-    zoomSize: [0.5, 2.0],
+    zoomSize: [0.1, 2.0],
     snapToGrid: false,
     snapGridSize: [16, 16],
     onlyRenderVisibleElements: true,

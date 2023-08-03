@@ -1,0 +1,4 @@
+{
+  "description": "Kornia is a differentiable library that allows classical computer vision to be integrated into deep learning models.",
+  "enable": true
+}

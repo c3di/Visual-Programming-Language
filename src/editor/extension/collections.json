@@ -1,0 +1,32 @@
+{
+  "description": "This library provides connection datatypes.",
+  "enable": true,
+  "nodes": {
+    "Make Tuple": {
+      "type": "Make Tuple",
+      "category": "math",
+      "title": "->",
+      "dataType": "anyDataType",
+      "tooltip": "A tuple is a collection which is ordered and unchangeable.",
+      "sourceCode": "({{#outputs}}{{{.}}},{{/outputs}})",
+      "enableAddNewOne": true,
+      "inputs": {
+        "input1": {
+          "dataType": "anyDataType",
+          "defaultValue": "",
+          "title": "item1",
+          "showTitle": true,
+          "deletable": true
+        }
+      },
+      "outputs": {
+        "string": {
+          "dataType": "tuple",
+          "defaultValue": "()",
+          "title": "tuple",
+          "showTitle": true
+        }
+      }
+    }
+  }
+}

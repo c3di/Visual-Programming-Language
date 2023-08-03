@@ -1,0 +1,55 @@
+{
+  "description": "os",
+  "enable": true,
+  "nodes": {
+    "show_image": {
+      "type": "show_image",
+      "category": "function",
+      "title": "show_image",
+      "tooltip": "Takes an input tensor in CHW layout and display it as an image",
+      "externalImports": "from matplotlib import pyplot as plt\nimport torchvision.transforms as T\nimport numpy as np",
+      "sourceCode": "{{indent}}def show_image(imgs, titles=None, cmap=None, figSize=(9, 5)):\n{{indent}}\tfix, axs = plt.subplots(ncols=len(imgs), squeeze=False, figsize=figSize)\n{{indent}}\tfor i, img in enumerate(imgs):\n{{indent}}\t\timg = T.ToPILImage()(img.to('cpu'))\n{{indent}}\t\taxs[0, i].imshow(np.asarray(img), cmap)\n{{indent}}\t\taxs[0, i].axis('off')\n{{indent}}\t\tif titles and i<len(titles):\n{{indent}}\t\t\taxs[0, i].set_title(titles[i])\n{{indent}}\t\taxs[0, i].set(xticklabels=[], yticklabels=[], xticks=[], yticks=[])\n{{indent}}show_image({{{inputs.1}}}, {{{inputs.2}}}, {{{inputs.3}}}, {{{inputs.4}}})\n{{{outputs.1}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image(s)",
+          "dataType": "anyDataType",
+          "tooltip": "input (Tensor[channels, image_height, image_width] | list[Tensor[channels, image_height, image_width]])."
+        },
+        "titles": {
+          "title": "titles",
+          "dataType": "anyDataType",
+          "defaultValue": "None",
+          "tooltip": "titles (list[str], optional) - A list of titles to be set for each image. Default: None."
+        },
+        "cmap": {
+          "title": "cmap",
+          "dataType": "string",
+          "defaultValue": "viridis",
+          "tooltip": "cmap(str, optional) - The registered colormap name in matplotlib used to map scalar data to colors. This parameter is ignored if X is RGB(A)."
+        },
+        "figSize": {
+          "title": "figSize",
+          "dataType": "tuple",
+          "defaultValue": "(9, 5)",
+          "tooltip": "figSize 2-tuple of floats, default: (9, 5) - Figure dimension (width, height) in inches"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "tooltip": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        }
+      }
+    }
+  }
+}

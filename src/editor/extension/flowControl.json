@@ -97,8 +97,8 @@
           "showTitle": false
         },
         "Array": {
-          "title": "Array",
-          "tooltip": "Array",
+          "title": "List",
+          "tooltip": "List",
           "dataType": "list",
           "showWidget": false,
           "showTitle": true
@@ -115,7 +115,7 @@
         "ArrayElement": {
           "title": "Array Element",
           "tooltip": "Array Element",
-          "dataType": "anyData",
+          "dataType": "anyDataType",
           "showWidget": false,
           "showTitle": true
         },
@@ -127,13 +127,59 @@
         },
         "complete": {
           "title": "Completed",
-          "tooltip": "Exec Out",
+          "tooltip": "exec out",
           "dataType": "exec",
           "showWidget": false,
           "showTitle": true
         }
       },
       "sourceCode": "{{indent}}for {{outputs.2}}, {{outputs.1}} in enumerate({{{inputs.1}}}):\n{{{outputs.0}}}\n{{{outputs.3}}}"
+    },
+    "For Iterator Loop": {
+      "type": "For Iterator Loop",
+      "category": "function",
+      "title": "For Iterator Loop",
+      "tooltip": "Executes LoopBody for each element in an iterator",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "Iterator": {
+          "title": "Iterator",
+          "tooltip": "Iterator",
+          "dataType": "iterator",
+          "showWidget": false,
+          "showTitle": true
+        }
+      },
+      "outputs": {
+        "loopBody": {
+          "title": "Loop Body",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": true,
+          "tooltip": "Exec Out"
+        },
+        "ArrayElement": {
+          "title": "Element",
+          "tooltip": "Element",
+          "dataType": "anyDataType",
+          "showWidget": false,
+          "showTitle": true
+        },
+        "complete": {
+          "title": "Completed",
+          "tooltip": "exec out",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": true
+        }
+      },
+      "sourceCode": "{{indent}}for {{outputs.1}} in {{{inputs.1}}}:\n{{{outputs.0}}}\n{{{outputs.2}}}"
     },
     "For Loop": {
       "type": "For Loop",

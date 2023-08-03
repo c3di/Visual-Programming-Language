@@ -22,13 +22,13 @@
           "title": "type",
           "tooltip": "type of the variable",
           "dataType": "DataType",
-          "defaultValue": "string"
+          "defaultValue": "boolean"
         },
         "value": {
           "title": "value",
           "tooltip": "value of the variable",
-          "dataType": "string",
-          "defaultValue": "string"
+          "dataType": "boolean",
+          "defaultValue": "false"
         }
       },
       "outputs": {

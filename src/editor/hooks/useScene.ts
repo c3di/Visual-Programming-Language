@@ -373,7 +373,26 @@ export default function useScene(
       deleteInputHandleOfReturnNode(nodeId, handleId);
     } else if (configType.includes('Sequence')) {
       deleteHandleOfSequenceNode(nodeId, handleId);
+    } else {
+      deleteHandleOfNormalNode(nodeId, handleId);
     }
+  };
+
+  const deleteHandleOfNormalNode = (nodeId: string, handleId: string): void => {
+    graphState.setNodes((nds) => {
+      return nds.map((nd) => {
+        if (nd.id === nodeId) {
+          if (Object.keys(nd.data.inputs ?? {}).includes(handleId)) {
+            const { [handleId]: _, ...remained } = nd.data.inputs;
+            nd.data.inputs = remained;
+          } else {
+            const { [handleId]: _, ...remained } = nd.data.outputs;
+            nd.data.outputs = remained;
+          }
+        }
+        return nd;
+      });
+    });
   };
 
   const deleteHandleOfSequenceNode = (
@@ -720,8 +739,8 @@ export default function useScene(
           externalImports
         );
         if (result.hasError) return result;
-        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
         sourceBody +=
+          // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
           '\n'.repeat(Number(result.result !== '' && sourceBody !== '')) +
           result.result;
         externalImports.forEach((externalImport) => {
@@ -746,7 +765,7 @@ export default function useScene(
       hasError: false,
       result:
         Array.from(imports).join('\n') +
-        '\n'.repeat(Array.from(imports).length) +
+        '\n\n'.repeat(Number(Array.from(imports).length !== 0)) +
         sourceBody,
     };
   };
@@ -922,7 +941,8 @@ export default function useScene(
         .trimEnd()
         .replace(/,\s*$/, '');
     if (node.data.externalImports)
-      externalImports.add(node.data.externalImports);
+      for (const externalImport of node.data.externalImports.split('\n'))
+        externalImports.add(externalImport);
 
     return { hasError: false, result: source };
   };
@@ -935,7 +955,8 @@ export default function useScene(
     if (
       node.data.configType.includes('If Else') ||
       ((node.data.configType.includes('For Each Loop') ||
-        node.data.configType.includes('For Loop')) &&
+        node.data.configType.includes('For Loop') ||
+        node.data.configType.includes('For Iterator Loop')) &&
         handleId === 'loopBody')
     )
       return 1;

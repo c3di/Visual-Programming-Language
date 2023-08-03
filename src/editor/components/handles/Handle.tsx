@@ -93,7 +93,10 @@ export default function Handle({
   }, [handleData.connection, handleData.dataType, handleData.title]);
 
   return (
-    <div className={className} title={handleData.tooltip}>
+    <div
+      className={className}
+      title={`${handleData.dataType ?? ''}\n${handleData.tooltip ?? ''}`}
+    >
       {label}
       <HandleElement
         id={id}

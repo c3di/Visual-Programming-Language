@@ -7,6 +7,7 @@ import ReactFlow, {
   getRectOfNodes,
   type ReactFlowInstance,
   type PanelPosition,
+  type Connection,
 } from 'reactflow';
 import {
   useGraph,
@@ -308,7 +309,11 @@ const Scene = ({
           connectionMode={ConnectionMode.Loose}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
+          onConnect={(p: Connection) => {
+            onConnect(p);
+            gui.connectionStartNodeId.current = null;
+            gui.closeWidget();
+          }}
           isValidConnection={(connection) => {
             const status = sceneActions?.isValidConnection(connection);
             if (!status) return false;
@@ -377,10 +382,7 @@ const Scene = ({
             closeWidget(null, true);
           }}
           onConnectEnd={(e) => {
-            const targetIsPane = (
-              event?.target as HTMLElement
-            )?.classList.contains('react-flow__pane');
-            if (targetIsPane) {
+            if (gui.connectionStartNodeId.current) {
               e.preventDefault();
               sceneActions?.selectAll(false);
               const { clientX, clientY } = event as MouseEvent;
@@ -401,8 +403,8 @@ const Scene = ({
                   addEdge: sceneActions?.addEdge,
                 }
               );
+              gui.connectionStartNodeId.current = null;
             }
-            gui.connectionStartNodeId.current = null;
           }}
           attributionPosition="top-right"
           nodeTypes={componentType.nodeTypes}
