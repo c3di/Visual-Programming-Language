@@ -40,13 +40,119 @@
           "defaultValue": "[]"
         }
       }
+    },
+    "Slice": {
+      "type": "Slice",
+      "category": "math",
+      "title": "Get",
+      "tooltip": "Tensor slicing",
+      "sourceCode": "{{indent}}{{{outputs.0}}} = {{{inputs.0}}}{{{inputs.1}}}",
+      "inputs": {
+        "input": {
+          "title": "input",
+          "dataType": "torch.tensor"
+        },
+        "slice": {
+          "title": "slice",
+          "dataType": "list",
+          "defaultValue": "[:]"
+        }
+      },
+      "outputs": {
+        "output": {
+          "title": "output",
+          "dataType": "torch.tensor",
+          "defaultValue": "[]"
+        }
+      }
+    },
+    "Tensor / Float": {
+      "type": "Tensor / Float",
+      "category": "math",
+      "title": "/",
+      "tooltip": "Tensor Divide by a scalar",
+      "sourceCode": "{{indent}}{{{outputs.0}}} = {{{inputs.0}}}/{{{inputs.1}}}",
+      "inputs": {
+        "tensor": {
+          "title": "tensor",
+          "dataType": "torch.tensor"
+        },
+        "float": {
+          "title": "float",
+          "dataType": "float",
+          "defaultValue": "1.0"
+        }
+      },
+      "outputs": {
+        "output": {
+          "title": "tensor",
+          "dataType": "torch.tensor"
+        }
+      }
+    },
+    "Float - Tensor": {
+      "type": "Float - Tensor",
+      "category": "math",
+      "title": "-",
+      "tooltip": "A scalar minus a Tensor",
+      "sourceCode": "{{indent}}{{{outputs.0}}} = {{{inputs.0}}} - {{{inputs.1}}}",
+      "inputs": {
+        "float": {
+          "title": "float",
+          "dataType": "float",
+          "defaultValue": "1.0"
+        },
+        "input": {
+          "title": "tensor",
+          "dataType": "torch.tensor"
+        }
+      },
+      "outputs": {
+        "output": {
+          "title": "tensor",
+          "dataType": "torch.tensor"
+        }
+      }
+    },
+    "Unsqueeze": {
+      "type": "Unsqueeze",
+      "category": "function",
+      "title": "Unsqueeze",
+      "tooltip": "Returns a new tensor with a dimension of size one inserted at the specified position.",
+      "externalImports": "import torch",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = torch.unsqueeze({{{inputs.1}}}, {{{inputs.2}}})\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "input": {
+          "title": "input",
+          "dataType": "torch.tensor"
+        },
+        "dim": {
+          "title": "dim",
+          "dataType": "integer",
+          "defaultValue": "0"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "output": {
+          "title": "output",
+          "dataType": "torch.tensor"
+        }
+      }
     }
   },
   "types": {
-    "tuple": {
-      "default": "",
-      "widget": "TextInput"
-    },
     "tensor": {
       "default": "",
       "widget": "TextInput",

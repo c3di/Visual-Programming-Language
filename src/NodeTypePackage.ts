@@ -3,11 +3,12 @@ import level2 from './NodeTypeExtension/extension1/Level2/__init__.json';
 import module2 from './NodeTypeExtension/extension1/Level2/module2.json';
 import module3 from './NodeTypeExtension/extension1/Level2/Level3/module3.json';
 import module from './NodeTypeExtension/extension2.json';
-import filters from './NodeTypeExtension/filters.json';
 import imageio from './NodeTypeExtension/imageio.json';
 import imagevisualization from './NodeTypeExtension/image visualization.json';
 import torch from './NodeTypeExtension/torch.json';
 import Path from './NodeTypeExtension/Path.json';
+import init from './NodeTypeExtension/Kornia/__init__.json';
+import filters from './NodeTypeExtension/Kornia/filters.json';
 
 export const extension1 = {
   isPackage: true,
@@ -29,14 +30,22 @@ export const extension1 = {
   },
 };
 
+export const Kornia = {
+  isPackage: true,
+  subpackages: {
+    __init__: init,
+    filters,
+  },
+};
+
 export const extension2 = module;
 
 export const extensions = {
   extension1,
   extension2,
-  filters,
   imageio,
   'image visualization': imagevisualization,
   torch,
   Path,
+  Kornia,
 };

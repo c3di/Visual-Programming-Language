@@ -40,7 +40,7 @@
         "image": {
           "title": "image",
           "dataType": "torch.tensor",
-          "tooltip": "image (Tensor[image_channels, image_height, image_width])."
+          "tooltip": "image (Tensor[image_channels, image_height, image_width]) uint8 in [0, 255]"
         }
       }
     },
@@ -62,7 +62,7 @@
         "input": {
           "title": "input",
           "dataType": "torch.tensor",
-          "tooltip": "input (Tensor[channels, image_height, image_width]) – int8 image tensor of c channels, where c must be 1 or 3."
+          "tooltip": "input (Tensor[channels, image_height, image_width]) - int8 image tensor of c channels, where c must be 1 or 3."
         },
         "filename": {
           "title": "filename",

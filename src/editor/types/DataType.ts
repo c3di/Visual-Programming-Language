@@ -55,6 +55,11 @@ export const DataTypes: Record<string, DataType> = {
     widget: 'TextInput',
     shownInColor: `${hsl(300, 100, 25)}`,
   },
+  tuple: {
+    defaultValue: '()',
+    widget: 'TextInput',
+    shownInColor: `${hsl(200, 200, 25)}`,
+  },
   iterator: {
     defaultValue: '[]',
     widget: 'TextInput',

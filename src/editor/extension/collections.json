@@ -21,9 +21,9 @@
       },
       "outputs": {
         "string": {
-          "dataType": "list",
-          "defaultValue": "[]",
-          "title": "list",
+          "dataType": "tuple",
+          "defaultValue": "()",
+          "title": "tuple",
           "showTitle": true
         }
       }

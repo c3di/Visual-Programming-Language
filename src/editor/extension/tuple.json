@@ -1,0 +1,62 @@
+{
+  "description": "A library provides the tuple operations",
+  "enable": true,
+  "nodes": {
+    "Make Tuple": {
+      "type": "Make Tuple",
+      "category": "math",
+      "title": "->",
+      "dataType": "anyDataType",
+      "tooltip": "Tuple are used to store multiple items in a single variable and cannot changed.",
+      "sourceCode": "{{indent}}{{{outputs}}}=({{#inputs}}{{{.}}},{{/inputs}})",
+      "enableAddNewOne": true,
+      "inputs": {
+        "input": {
+          "dataType": "anyDataType",
+          "defaultValue": "",
+          "title": "item",
+          "showTitle": true,
+          "deletable": true
+        }
+      },
+      "outputs": {
+        "string": {
+          "dataType": "tuple",
+          "defaultValue": "()",
+          "title": "tuple",
+          "showTitle": true
+        }
+      }
+    },
+    "Get": {
+      "type": "Get",
+      "category": "math",
+      "title": "Get",
+      "dataType": "anyDataType",
+      "tooltip": "Get one element in the tuple.",
+      "sourceCode": "{{indent}}{{{outputs.0}}}={{{inputs.0}}}[{{{inputs.1}}}]",
+      "inputs": {
+        "input": {
+          "dataType": "list",
+          "defaultValue": "()",
+          "title": "tuple",
+          "showTitle": true
+        },
+        "index": {
+          "dataType": "integer",
+          "defaultValue": "0",
+          "title": "index",
+          "showTitle": true
+        }
+      },
+      "outputs": {
+        "element": {
+          "dataType": "anyDataType",
+          "defaultValue": "",
+          "title": "element",
+          "showTitle": true
+        }
+      }
+    }
+  }
+}
