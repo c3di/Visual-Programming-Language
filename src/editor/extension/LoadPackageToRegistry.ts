@@ -7,6 +7,7 @@ import floatPkg from './float.json';
 import functionAndvar from './functionAndvar.json';
 import collections from './collections.json';
 import list from './list.json';
+import tuple from './tuple.json';
 
 import { addNewType, type NodePackage, type NodeConfig } from '../types';
 /*
@@ -149,6 +150,7 @@ export const LoadDefaultModule = (): void => {
   LoadPackageToRegistry('Flow Control', flowControl);
   LoadPackageToRegistry('Collections', collections);
   LoadPackageToRegistry('List', list);
+  LoadPackageToRegistry('Tuple', tuple);
   LoadPackageToRegistry('Function & Variable Creation', functionAndvar);
   LoadPackageToRegistry('Log', log);
 };

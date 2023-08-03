@@ -37,7 +37,7 @@
       "sourceCode": "{{indent}}{{{outputs.0}}}={{{inputs.0}}}[{{{inputs.1}}}]",
       "inputs": {
         "input": {
-          "dataType": "list",
+          "dataType": "tuple",
           "defaultValue": "()",
           "title": "tuple",
           "showTitle": true
