@@ -31,8 +31,8 @@
         "cmap": {
           "title": "cmap",
           "dataType": "string",
-          "defaultValue": "None",
-          "tooltip": "cmap(str, optional) - The registered colormap name in matplotlib used to map scalar data to colors."
+          "defaultValue": "viridis",
+          "tooltip": "cmap(str, optional) - The registered colormap name in matplotlib used to map scalar data to colors. This parameter is ignored if X is RGB(A)."
         },
         "figSize": {
           "title": "figSize",
