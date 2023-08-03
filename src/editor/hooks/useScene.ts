@@ -765,7 +765,7 @@ export default function useScene(
       hasError: false,
       result:
         Array.from(imports).join('\n') +
-        '\n'.repeat(Array.from(imports).length) +
+        '\n\n'.repeat(Number(Array.from(imports).length !== 0)) +
         sourceBody,
     };
   };
