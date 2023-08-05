@@ -22,7 +22,6 @@ export default function InPlaceInput({
     if (editable) {
       inputRef.current?.focus({ preventScroll: true });
       onStartEdit?.();
-      document.body.style.cursor = 'text';
     } else {
       inputRef.current?.blur();
       onStopEdit?.();

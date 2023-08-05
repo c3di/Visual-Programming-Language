@@ -24,7 +24,6 @@ export default function InPlaceTextArea({
     if (editable) {
       inputAreaRef.current?.focus();
       onStartEdit?.();
-      document.body.style.cursor = 'text';
     } else {
       inputAreaRef.current?.blur();
       onStopEdit?.();
@@ -56,7 +55,6 @@ export default function InPlaceTextArea({
       }}
       onDoubleClick={(e) => {
         setEditable(true);
-        document.body.style.cursor = 'text';
       }}
     >
       {!editable && (
