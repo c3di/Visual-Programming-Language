@@ -423,8 +423,15 @@ const SearchMenu = memo(function SearchMenu({
       }}
     >
       {toFilter() ? (
-        <Box sx={{ flexGrow: 1 }}>
-          <Grid container spacing={1}>
+        <Box
+          sx={{
+            flexGrow: 1,
+            minWidth: '250px',
+            padding: '4px 0px 0px 8px',
+            marginBottom: '-4px',
+          }}
+        >
+          <Grid container justifyContent="space-between">
             <Grid item xs={7}>
               {filter ? (
                 <Typography display="block">Available Actions </Typography>
@@ -440,9 +447,13 @@ const SearchMenu = memo(function SearchMenu({
                     onChange={handleChange}
                     inputProps={{ 'aria-label': 'controlled' }}
                     disableRipple={true}
+                    sx={{
+                      padding: '0px',
+                      '& .MuiSvgIcon-root': { fontSize: 18 },
+                    }}
                   />
                 }
-                sx={{ right: 0, position: 'absolute', top: 0 }}
+                sx={{ right: '-6px', position: 'absolute' }}
                 label="Context"
               />
             </Grid>
