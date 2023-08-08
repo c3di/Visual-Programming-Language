@@ -1,5 +1,14 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
-import { Menu } from '@mui/material';
+import { type Connection } from 'reactflow';
+import {
+  Menu,
+  Checkbox,
+  FormControlLabel,
+  Typography,
+  Box,
+  Grid,
+} from '@mui/material';
+import { createSvgIcon } from '@mui/material/utils';
 import {
   Comment,
   Route,
@@ -19,8 +28,6 @@ import {
 } from '../types';
 import { type Command } from '../hooks';
 import { nodeConfigRegistry } from '../extension';
-import { createSvgIcon } from '@mui/material/utils';
-import { type Connection } from 'reactflow';
 
 const StickyNoteIcon = createSvgIcon(
   <svg
@@ -87,7 +94,7 @@ const SearchMenu = memo(function SearchMenu({
       name: 'Add Reroute...',
       action: () => {
         const node = addNodeWithSceneCoord?.('reroute', anchorPosition);
-        if (toFilter() && node) {
+        if (filter && node) {
           const matchingHandle = findHandleWithMatchingDataType(
             node,
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
@@ -129,10 +136,15 @@ const SearchMenu = memo(function SearchMenu({
         'Copy executable (linked to "Execution Start") text code to clipboard',
     },
   ]);
-
   const toFilter = useCallback((): boolean => {
     return !!(startHandleInfo?.handleType && startHandleInfo?.handleDataType);
   }, [startHandleInfo]);
+  const [checked, setChecked] = React.useState(true);
+  const [filter, setFilter] = React.useState(toFilter());
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setChecked(event.target.checked);
+    setFilter(event.target.checked);
+  };
 
   useEffect(() => {
     if (!moreCommands || moreCommands.length === 0) return;
@@ -164,10 +176,14 @@ const SearchMenu = memo(function SearchMenu({
     let treeData = nodeConfigsToTreeData(
       nodeConfigRegistry.getAllNodeConfigs()
     );
-    if (startHandleInfo?.handleType && startHandleInfo?.handleDataType) {
+    if (
+      filter &&
+      startHandleInfo?.handleType &&
+      startHandleInfo?.handleDataType
+    ) {
       treeData = searchTreeDataWithHandleDataType(
         startHandleInfo.handleType,
-        startHandleInfo?.handleDataType,
+        startHandleInfo.handleDataType,
         treeData
       );
     }
@@ -176,7 +192,7 @@ const SearchMenu = memo(function SearchMenu({
         (a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity)
       )
     );
-  }, [commands]);
+  }, [commands, checked]);
 
   const hasMatchingDataType = (
     handleType: string,
@@ -406,11 +422,38 @@ const SearchMenu = memo(function SearchMenu({
         left: anchorPosition.left - 20,
       }}
     >
+      {toFilter() ? (
+        <Box sx={{ flexGrow: 1 }}>
+          <Grid container spacing={1}>
+            <Grid item xs={7}>
+              {filter ? (
+                <Typography display="block">Available Actions </Typography>
+              ) : (
+                <Typography display="block">All Actions </Typography>
+              )}
+            </Grid>
+            <Grid item xs={5}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={checked}
+                    onChange={handleChange}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                    disableRipple={true}
+                  />
+                }
+                sx={{ right: 0, position: 'absolute', top: 0 }}
+                label="Context"
+              />
+            </Grid>
+          </Grid>
+        </Box>
+      ) : null}
       <SearchedTreeView
         treeData={treeData}
         onItemClick={onItemClick}
         onEnterKeyDown={onEnterKeyDown}
-        triggerExpand={startHandleInfo !== undefined}
+        triggerExpand={filter}
       />
     </Menu>
   );
