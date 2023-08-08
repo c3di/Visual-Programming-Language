@@ -434,9 +434,23 @@ const SearchMenu = memo(function SearchMenu({
           <Grid container justifyContent="space-between">
             <Grid item xs={7}>
               {filter ? (
-                <Typography display="block">Available Actions </Typography>
+                <Typography
+                  display="block"
+                  sx={{
+                    fontFamily: 'var(--vp-menuitem-font-family)',
+                  }}
+                >
+                  Available Actions{' '}
+                </Typography>
               ) : (
-                <Typography display="block">All Actions </Typography>
+                <Typography
+                  display="block"
+                  sx={{
+                    fontFamily: 'var(--vp-menuitem-font-family)',
+                  }}
+                >
+                  All Actions{' '}
+                </Typography>
               )}
             </Grid>
             <Grid item xs={5}>
@@ -453,7 +467,11 @@ const SearchMenu = memo(function SearchMenu({
                     }}
                   />
                 }
-                sx={{ right: '-6px', position: 'absolute' }}
+                sx={{
+                  right: '-6px',
+                  position: 'absolute',
+                  fontFamily: 'var(--vp-menuitem-font-family)',
+                }}
                 label="Context"
               />
             </Grid>
