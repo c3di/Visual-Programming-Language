@@ -1,13 +1,6 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { type Connection } from 'reactflow';
-import {
-  Menu,
-  Checkbox,
-  FormControlLabel,
-  Typography,
-  Box,
-  Grid,
-} from '@mui/material';
+import { Menu } from '@mui/material';
 import { createSvgIcon } from '@mui/material/utils';
 import {
   Comment,
@@ -94,7 +87,7 @@ const SearchMenu = memo(function SearchMenu({
       name: 'Add Reroute...',
       action: () => {
         const node = addNodeWithSceneCoord?.('reroute', anchorPosition);
-        if (filter && node) {
+        if (toFilter() && node) {
           const matchingHandle = findHandleWithMatchingDataType(
             node,
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
@@ -139,11 +132,9 @@ const SearchMenu = memo(function SearchMenu({
   const toFilter = useCallback((): boolean => {
     return !!(startHandleInfo?.handleType && startHandleInfo?.handleDataType);
   }, [startHandleInfo]);
-  const [checked, setChecked] = React.useState(true);
-  const [filter, setFilter] = React.useState(toFilter());
+  const [contextSensitive, setContextSensitive] = React.useState(toFilter());
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setChecked(event.target.checked);
-    setFilter(event.target.checked);
+    setContextSensitive(event.target.checked);
   };
 
   useEffect(() => {
@@ -177,7 +168,7 @@ const SearchMenu = memo(function SearchMenu({
       nodeConfigRegistry.getAllNodeConfigs()
     );
     if (
-      filter &&
+      contextSensitive &&
       startHandleInfo?.handleType &&
       startHandleInfo?.handleDataType
     ) {
@@ -192,7 +183,7 @@ const SearchMenu = memo(function SearchMenu({
         (a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity)
       )
     );
-  }, [commands, checked]);
+  }, [commands, contextSensitive]);
 
   const hasMatchingDataType = (
     handleType: string,
@@ -422,67 +413,46 @@ const SearchMenu = memo(function SearchMenu({
         left: anchorPosition.left - 20,
       }}
     >
-      {toFilter() ? (
-        <Box
-          sx={{
-            flexGrow: 1,
-            minWidth: '250px',
-            padding: '4px 0px 0px 8px',
-            marginBottom: '-4px',
+      {toFilter() && (
+        <div
+          style={{
+            fontFamily: 'var(--vp-menuitem-font-family)',
+            fontSize: '14px',
+            display: 'flex',
+            flexDirection: 'row',
+            gap: '8px',
+            margin: '6px 8px -4px 8px',
+            width: '245px',
           }}
         >
-          <Grid container justifyContent="space-between">
-            <Grid item xs={7}>
-              {filter ? (
-                <Typography
-                  display="block"
-                  sx={{
-                    fontFamily: 'var(--vp-menuitem-font-family)',
-                  }}
-                >
-                  Available Actions{' '}
-                </Typography>
-              ) : (
-                <Typography
-                  display="block"
-                  sx={{
-                    fontFamily: 'var(--vp-menuitem-font-family)',
-                  }}
-                >
-                  All Actions{' '}
-                </Typography>
-              )}
-            </Grid>
-            <Grid item xs={5}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={checked}
-                    onChange={handleChange}
-                    inputProps={{ 'aria-label': 'controlled' }}
-                    disableRipple={true}
-                    sx={{
-                      padding: '0px',
-                      '& .MuiSvgIcon-root': { fontSize: 18 },
-                    }}
-                  />
-                }
-                sx={{
-                  right: '-6px',
-                  position: 'absolute',
-                  fontFamily: 'var(--vp-menuitem-font-family)',
-                }}
-                label="Context"
-              />
-            </Grid>
-          </Grid>
-        </Box>
-      ) : null}
+          <div style={{ flexGrow: 1 }}>
+            {contextSensitive ? 'Available Actions' : 'All Actions'}
+          </div>
+
+          <label
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '2px',
+              fontSize: '14px',
+              float: 'right',
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={contextSensitive}
+              onChange={handleChange}
+            />
+            Context Sensitive
+          </label>
+        </div>
+      )}
+
       <SearchedTreeView
         treeData={treeData}
         onItemClick={onItemClick}
         onEnterKeyDown={onEnterKeyDown}
-        triggerExpand={filter}
+        triggerExpand={toFilter()}
       />
     </Menu>
   );
