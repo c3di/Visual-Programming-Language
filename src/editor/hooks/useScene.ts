@@ -87,6 +87,7 @@ export interface ISceneActions {
   autoLayout: () => void;
   deleteHandle: (nodeId: string, nodeType: string, handleId: string) => void;
   sourceCode: () => SourceCodeExec;
+  closeMenu?: () => void;
 }
 export interface ISceneState {
   gui: IGui;
@@ -1157,6 +1158,10 @@ export default function useScene(
     }`;
   };
 
+  const closeMenu = (): void => {
+    gui.closeWidget();
+  };
+
   return {
     gui,
     varsNamePool,
@@ -1198,6 +1203,7 @@ export default function useScene(
       autoLayout,
       deleteHandle,
       sourceCode,
+      closeMenu,
     },
   };
 }
