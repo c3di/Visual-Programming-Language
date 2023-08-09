@@ -264,7 +264,7 @@ const SearchMenu = memo(function SearchMenu({
   ): void => {
     const command = commands.find((c) => c.name === commandName);
     if (command) {
-      command.action();
+      command.action(undefined, undefined, anchorPosition);
     }
   };
   const findHandleWithMatchingDataType = (
@@ -338,25 +338,27 @@ const SearchMenu = memo(function SearchMenu({
     (event: React.KeyboardEvent<HTMLElement>, item: TreeItemData) => {
       if (!item) return;
       if (Array.isArray(item.children)) return;
-      if (event.key === 'Enter' && item.configType) {
-        const node = addNodeWithSceneCoord?.(item.configType, anchorPosition);
-        if (toFilter() && node) {
-          const matchingHandle = findHandleWithMatchingDataType(
-            node,
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-            startHandleInfo!.handleType,
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-            startHandleInfo!.handleDataType
-          );
-          connectWithNewNode(node, matchingHandle);
+      if (event.key === 'Enter') {
+        if (item.configType) {
+          const node = addNodeWithSceneCoord?.(item.configType, anchorPosition);
+          if (toFilter() && node) {
+            const matchingHandle = findHandleWithMatchingDataType(
+              node,
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+              startHandleInfo!.handleType,
+              // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+              startHandleInfo!.handleDataType
+            );
+            connectWithNewNode(node, matchingHandle);
+          }
+        } else {
+          executeCommandByName(commands, item.name);
         }
         onClose();
-      } else {
-        executeCommandByName(commands, item.name);
-        onClose();
       }
+      if (event.key === 'Escape') onClose();
     },
-    []
+    [commands]
   );
 
   const commandsToTreeData = useCallback(
@@ -370,7 +372,7 @@ const SearchMenu = memo(function SearchMenu({
           labelIcon: command.labelIcon,
           onClick: (item: TreeItemData, e: React.MouseEvent<HTMLLIElement>) => {
             onClose();
-            command.action(item, e);
+            command.action(item, e, anchorPosition);
           },
           rank: command.rank,
         };

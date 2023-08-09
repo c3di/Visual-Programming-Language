@@ -17,18 +17,33 @@ function CommentNode({ id, data }: { id: string; data: Comment }): JSX.Element {
   const [commentHeight, setCommentHeight] = useState<number>();
   const [enableDrag, setEnableDrag] = useState<boolean>(false);
   const [comment, setComment] = useState<string>(data.comment);
+  const { setNodes, sortZIndexOfComments } =
+    useSceneState()?.sceneActions ?? {};
   const onStartEdit = useCallback(() => {
     setEnableDrag(false);
   }, []);
   const onStopEdit = useCallback(() => {
     setEnableDrag(true);
+    if (data.defaultEditable) {
+      setNodes?.((nds) => {
+        const nodes = nds.map((n) => {
+          if (n.id === id) {
+            n.data = {
+              ...n.data,
+              defaultEditable: false,
+            };
+          }
+          return n;
+        });
+        return nodes;
+      });
+    }
   }, []);
+
   const onEditChange = useCallback((text: string) => {
     setComment(text);
     data.comment = text;
   }, []);
-  const { setNodes, sortZIndexOfComments } =
-    useSceneState()?.sceneActions ?? {};
 
   if (data.width !== commentWidth || data.height !== commentHeight) {
     const w = data.width ?? 250;

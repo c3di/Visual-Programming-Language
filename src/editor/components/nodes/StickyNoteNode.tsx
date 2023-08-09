@@ -33,6 +33,20 @@ function StickyNoteNode({
 
   const onStopEdit = useCallback(() => {
     pinned ? setDragged(false) : setDragged(true);
+    if (data.defaultEditable) {
+      setNodes?.((nds) => {
+        const nodes = nds.map((n) => {
+          if (n.id === id) {
+            n.data = {
+              ...n.data,
+              defaultEditable: false,
+            };
+          }
+          return n;
+        });
+        return nodes;
+      });
+    }
   }, [pinned]);
 
   const onEditChange = useCallback((text: string) => {

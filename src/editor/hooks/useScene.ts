@@ -70,7 +70,7 @@ export interface ISceneActions {
   onNodeDragStart: (evt: any, node: Node) => void;
   onNodeDragStop: (evt: any, node: Node) => void;
   copySelectedNodeToClipboard: () => void;
-  pasteFromClipboard: () => void;
+  pasteFromClipboard: (pos?: XYPosition) => void;
   deleteSelectedElements: () => void;
   duplicateSelectedNodes: () => void;
   cutSelectedNodesToClipboard: () => void;
@@ -87,6 +87,7 @@ export interface ISceneActions {
   autoLayout: () => void;
   deleteHandle: (nodeId: string, nodeType: string, handleId: string) => void;
   sourceCode: () => SourceCodeExec;
+  closeMenu?: () => void;
 }
 export interface ISceneState {
   gui: IGui;
@@ -200,7 +201,24 @@ export default function useScene(
         setExtraCommands((commands) => {
           const newCmd = {
             name: 'Paste',
-            action: pasteFromClipboard,
+            action: (
+              item?: any,
+              e?: React.MouseEvent<HTMLLIElement>,
+              menuClientPos?: { top: number; left: number }
+            ) => {
+              pasteFromClipboard(
+                menuClientPos
+                  ? fromClientCoordToScene(
+                      {
+                        clientX: menuClientPos.left,
+                        clientY: menuClientPos.top,
+                      },
+                      domReference,
+                      project
+                    )
+                  : undefined
+              );
+            },
             labelIcon: ContentPaste,
             labelInfo: 'Ctrl+V',
             tooltip: 'Paste from the clipboard',
@@ -217,7 +235,7 @@ export default function useScene(
       });
   };
 
-  const pasteFromClipboard = (): void => {
+  const pasteFromClipboard = (pos?: XYPosition): void => {
     navigator.clipboard
       .readText()
       .then((text) => {
@@ -227,6 +245,8 @@ export default function useScene(
         const newIds = getFreeUniqueNodeIds(
           Object.keys(clipboard.nodes).length
         );
+        const originX = pos?.x ?? mousePos.current.mouseX;
+        const originY = pos?.y ?? mousePos.current.mouseY;
         Object.keys(clipboard.nodes).forEach((id) => {
           const node = clipboard.nodes[id];
           const newId = newIds.shift();
@@ -235,8 +255,8 @@ export default function useScene(
             id: newId,
             selected: true,
             position: {
-              x: node.position.x - (clipboard.minX - mousePos.current.mouseX),
-              y: node.position.y - (clipboard.minY - mousePos.current.mouseY),
+              x: node.position.x - (clipboard.minX - originX),
+              y: node.position.y - (clipboard.minY - originY),
             },
           };
           newNodes[id] = newNode as Node;
@@ -1138,6 +1158,10 @@ export default function useScene(
     }`;
   };
 
+  const closeMenu = (): void => {
+    gui.closeWidget();
+  };
+
   return {
     gui,
     varsNamePool,
@@ -1179,6 +1203,7 @@ export default function useScene(
       autoLayout,
       deleteHandle,
       sourceCode,
+      closeMenu,
     },
   };
 }
