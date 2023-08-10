@@ -32,6 +32,10 @@ export interface IVPEditorOption {
   controller?: {
     hidden?: boolean;
   };
+  minimap?: {
+    hidden?: boolean;
+    collapsed?: boolean;
+  };
 }
 
 const Scene = ({
@@ -443,12 +447,13 @@ const Scene = ({
           }}
           proOptions={proOptions}
         >
-          <MiniMap
-            width={minimpSetting.width}
-            height={minimpSetting.height}
-            zoomable={minimpSetting.zoomable}
-            pannable={minimpSetting.pannable}
-          />
+          {!option?.minimap?.hidden && (
+            <MiniMap
+              zoomable={minimpSetting.zoomable}
+              pannable={minimpSetting.pannable}
+              collapsed={option?.minimap?.collapsed}
+            />
+          )}
           {!option?.controller?.hidden && (
             <ControlPanel
               className={cpSetting.className}
