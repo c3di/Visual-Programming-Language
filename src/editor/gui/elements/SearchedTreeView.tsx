@@ -260,9 +260,7 @@ export const SearchedTreeView = memo(function SearchedTreeView({
   const [toExpand, setToExpand] = useState<boolean>(false);
 
   useEffect(() => {
-    if (triggerExpand) {
-      setToExpand((prevToExpand) => true);
-    }
+    setToExpand(!!triggerExpand);
   }, [triggerExpand, treeData]);
 
   const filteredTreeItemData = (

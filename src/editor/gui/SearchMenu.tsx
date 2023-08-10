@@ -1,5 +1,7 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
+import { type Connection } from 'reactflow';
 import { Menu } from '@mui/material';
+import { createSvgIcon } from '@mui/material/utils';
 import {
   Comment,
   Route,
@@ -19,8 +21,6 @@ import {
 } from '../types';
 import { type Command } from '../hooks';
 import { nodeConfigRegistry } from '../extension';
-import { createSvgIcon } from '@mui/material/utils';
-import { type Connection } from 'reactflow';
 
 const StickyNoteIcon = createSvgIcon(
   <svg
@@ -129,10 +129,13 @@ const SearchMenu = memo(function SearchMenu({
         'Copy executable (linked to "Execution Start") text code to clipboard',
     },
   ]);
-
   const toFilter = useCallback((): boolean => {
     return !!(startHandleInfo?.handleType && startHandleInfo?.handleDataType);
   }, [startHandleInfo]);
+  const [contextSensitive, setContextSensitive] = React.useState(toFilter());
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    setContextSensitive(event.target.checked);
+  };
 
   useEffect(() => {
     if (!moreCommands || moreCommands.length === 0) return;
@@ -164,10 +167,14 @@ const SearchMenu = memo(function SearchMenu({
     let treeData = nodeConfigsToTreeData(
       nodeConfigRegistry.getAllNodeConfigs()
     );
-    if (startHandleInfo?.handleType && startHandleInfo?.handleDataType) {
+    if (
+      contextSensitive &&
+      startHandleInfo?.handleType &&
+      startHandleInfo?.handleDataType
+    ) {
       treeData = searchTreeDataWithHandleDataType(
         startHandleInfo.handleType,
-        startHandleInfo?.handleDataType,
+        startHandleInfo.handleDataType,
         treeData
       );
     }
@@ -176,7 +183,7 @@ const SearchMenu = memo(function SearchMenu({
         (a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity)
       )
     );
-  }, [commands]);
+  }, [commands, contextSensitive]);
 
   const hasMatchingDataType = (
     handleType: string,
@@ -408,11 +415,46 @@ const SearchMenu = memo(function SearchMenu({
         left: anchorPosition.left - 20,
       }}
     >
+      {toFilter() && (
+        <div
+          style={{
+            fontFamily: 'var(--vp-menuitem-font-family)',
+            fontSize: '14px',
+            display: 'flex',
+            flexDirection: 'row',
+            gap: '8px',
+            margin: '6px 8px -4px 8px',
+            width: '245px',
+          }}
+        >
+          <div style={{ flexGrow: 1 }}>
+            {contextSensitive ? 'Available Actions' : 'All Actions'}
+          </div>
+
+          <label
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '2px',
+              fontSize: '14px',
+              float: 'right',
+            }}
+          >
+            <input
+              type="checkbox"
+              checked={contextSensitive}
+              onChange={handleChange}
+            />
+            Context Sensitive
+          </label>
+        </div>
+      )}
+
       <SearchedTreeView
         treeData={treeData}
         onItemClick={onItemClick}
         onEnterKeyDown={onEnterKeyDown}
-        triggerExpand={startHandleInfo !== undefined}
+        triggerExpand={toFilter()}
       />
     </Menu>
   );
