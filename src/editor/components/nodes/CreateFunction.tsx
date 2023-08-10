@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useRef, useState } from 'react';
+import React, { memo, useCallback, useRef, useState, useEffect } from 'react';
 import { IconButton } from '@mui/material';
 import { AddCircle } from '@mui/icons-material';
 import { SourceHandle, TargetHandle, HandleElement } from '../handles';
@@ -13,6 +13,7 @@ export function ParameterHandle({
   handleData,
   handlePosition,
   handleType,
+  updateHandleNamePool,
 }: {
   id: string;
   nodeId: string;
@@ -21,6 +22,7 @@ export function ParameterHandle({
   showTitle: boolean;
   handleType: 'source' | 'target';
   handlePosition: Position;
+  updateHandleNamePool?: (oldValue: string, newValue: string) => string[];
 }): JSX.Element {
   const widgetFactory = useWidgetFactory();
   if (!handleData) {
@@ -46,19 +48,34 @@ export function ParameterHandle({
     deleteAllEdgesOfHandle?.(nodeId, id);
   }, []);
 
-  const onParaNameChange = useCallback((value: string) => {
-    setNodes?.((nds) => {
-      return nds.map((nd) => {
-        if (nd.id === nodeId) {
-          nd.data.outputs[id].title = value;
-        }
-        if (nd.data.nodeRef === nodeId) {
-          nd.data.inputs[id].title = value;
-        }
-        return nd;
-      });
-    });
+  const [tempValue, setTempValue] = useState('');
+  const handleBlur = useCallback(
+    (value: string): void => {
+      const HandleNamePool = updateHandleNamePool?.(value, tempValue);
+      if (HandleNamePool?.includes(tempValue)) {
+        console.log('CreateFuncHandleBlur ', tempValue);
+        setNodes?.((nds) => {
+          return nds.map((nd) => {
+            if (nd.id === nodeId) {
+              // console.log('original: ', nd.data.outputs[id].title);
+              nd.data.outputs[id].title = tempValue;
+            }
+            if (nd.data.nodeRef === nodeId) {
+              nd.data.inputs[id].title = tempValue;
+            }
+            // console.log('nd: ', nd);
+            return nd;
+          });
+        });
+      }
+    },
+    [tempValue, updateHandleNamePool]
+  );
+
+  const handleChange = useCallback((value: string) => {
+    setTempValue(value);
   }, []);
+
   const onValueChange = useCallback((value: string) => {
     setNodes?.((nds) => {
       return nds.map((nd) => {
@@ -93,7 +110,9 @@ export function ParameterHandle({
           {widgetFactory.createWidget('string', {
             value: handleData.title,
             className: `nodrag handle-widget`,
-            onChange: onParaNameChange,
+            onChange: handleChange,
+            onBlur: handleBlur,
+            onKeyDown: handleBlur,
           })}
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
@@ -141,6 +160,7 @@ function CreateFunction({
   data: ConnectableData;
 }): JSX.Element {
   const handleCount = useRef<number>(0);
+  const [handleNamePool, setHandleNamePool] = useState<string[]>([]);
   const inputhandles = [];
   for (const inputId in data.inputs) {
     const handle = data.inputs[inputId];
@@ -164,6 +184,9 @@ function CreateFunction({
       showWidget: false,
       deletable: true,
     };
+    setHandleNamePool((pool) => [...pool, value.title]);
+    console.log('addNewHandle ', title);
+
     setNodes?.((nds) => {
       return nds.map((nd) => {
         if (nd.id === id) {
@@ -188,6 +211,27 @@ function CreateFunction({
       });
     });
   }, []);
+
+  useEffect(() => {
+    console.log('HandlePool ', handleNamePool);
+  }, [handleNamePool]);
+
+  const updateHandleNamePool = useCallback(
+    (oldName: string, newName: string) => {
+      const newPool = handleNamePool.filter((name) => name !== oldName);
+      if (!newPool.includes(newName)) {
+        newPool.push(newName);
+      } else {
+        console.log('Duplicate handle name: ', newName);
+        // if (!newPool.includes(oldName)) {
+        //   newPool.push(oldName);
+        // }
+      }
+      setHandleNamePool(newPool);
+      return newPool;
+    },
+    [handleNamePool, setHandleNamePool]
+  );
 
   const outputHandles = [];
   for (const outputId in data.outputs) {
@@ -217,6 +261,7 @@ function CreateFunction({
           showTitle={!!handle.showTitle || handle.showTitle === undefined}
           handleType="source"
           handlePosition={Position.Right}
+          updateHandleNamePool={updateHandleNamePool}
         />
       );
   }
