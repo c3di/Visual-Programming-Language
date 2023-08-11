@@ -135,7 +135,7 @@ export const LoadPackageToRegistry = (
     nodeConfigRegistry.registerNodeConfig(name, {
       ...p,
       enable: !!((pkg as INodePackageDir).subpackages?.__init__ as INodeModule)
-        .enable,
+        ?.enable,
     });
   else
     Object.entries(p).forEach(([name, node]: [string, any]) => {
