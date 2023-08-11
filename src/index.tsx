@@ -111,7 +111,12 @@ function MainArea({ id }: { id: string }): JSX.Element {
         onSelectionChange={(selection) => {
           // console.log('selection changed', selection);
         }}
-        option={{ controller: { hidden: false } }}
+        option={{
+          controller: { hidden: false },
+          minimap: {
+            collapsed: true,
+          },
+        }}
       />
     </>
   );

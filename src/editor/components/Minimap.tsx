@@ -5,19 +5,17 @@ import { Button } from '@mui/material';
 import './Minimap.css';
 
 interface IMiniMapProps {
-  height: number;
-  width: number;
   zoomable: boolean;
   pannable: boolean;
+  collapsed?: boolean;
 }
 
 export default function MiniMap({
-  height = 120,
-  width = 200,
   zoomable = true,
   pannable = true,
+  collapsed = false,
 }: IMiniMapProps): JSX.Element {
-  const [hidden, setHidden] = useState<boolean>(false);
+  const [hidden, setHidden] = useState<boolean>(collapsed);
 
   const handleMinimapToggle = useCallback(() => {
     setHidden((hidden) => !hidden);
