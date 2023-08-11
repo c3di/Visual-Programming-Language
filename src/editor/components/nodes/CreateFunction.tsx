@@ -22,7 +22,7 @@ export function ParameterHandle({
   showTitle: boolean;
   handleType: 'source' | 'target';
   handlePosition: Position;
-  updateHandleNamePool?: (oldValue: string, newValue: string) => string[];
+  updateHandleNamePool?: (oldValue: string, newValue: string) => boolean;
 }): JSX.Element {
   const widgetFactory = useWidgetFactory();
   if (!handleData) {
@@ -48,32 +48,49 @@ export function ParameterHandle({
     deleteAllEdgesOfHandle?.(nodeId, id);
   }, []);
 
-  const [tempValue, setTempValue] = useState('');
+  const [newHandleName, setNewHandleName] = useState('');
+
   const handleBlur = useCallback(
     (value: string): void => {
-      const HandleNamePool = updateHandleNamePool?.(value, tempValue);
-      if (HandleNamePool?.includes(tempValue)) {
-        console.log('CreateFuncHandleBlur ', tempValue);
+      if (updateHandleNamePool?.(value, newHandleName)) {
         setNodes?.((nds) => {
           return nds.map((nd) => {
             if (nd.id === nodeId) {
-              // console.log('original: ', nd.data.outputs[id].title);
-              nd.data.outputs[id].title = tempValue;
+              nd.data.outputs[id].title = newHandleName;
             }
             if (nd.data.nodeRef === nodeId) {
-              nd.data.inputs[id].title = tempValue;
+              nd.data.inputs[id].title = newHandleName;
             }
-            // console.log('nd: ', nd);
+            console.log('nd: ', nd);
             return nd;
           });
         });
+        // setNewHandleName(newHandleName);
+      } else {
+        console.log('we have duplicate: ', newHandleName);
+        console.log('we set back: ', value);
+        // setNewHandleName(value);
+        // setNodes?.((nds) => {
+        //   return nds.map((nd) => {
+        //     if (nd.id === nodeId) {
+        //       nd.data.outputs[id].title = value;
+        //     }
+        //     if (nd.data.nodeRef === nodeId) {
+        //       nd.data.inputs[id].title = value;
+        //     }
+        //     console.log('nd: ', nd);
+        //     return nd;
+        //   });
+        // });
       }
     },
-    [tempValue, updateHandleNamePool]
+    [newHandleName, updateHandleNamePool]
   );
 
   const handleChange = useCallback((value: string) => {
-    setTempValue(value);
+    setNewHandleName(value);
+
+    console.log('value: ', value);
   }, []);
 
   const onValueChange = useCallback((value: string) => {
@@ -108,7 +125,7 @@ export function ParameterHandle({
         <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
           name
           {widgetFactory.createWidget('string', {
-            value: handleData.title,
+            value: newHandleName || handleData.title,
             className: `nodrag handle-widget`,
             onChange: handleChange,
             onBlur: handleBlur,
@@ -185,7 +202,7 @@ function CreateFunction({
       deletable: true,
     };
     setHandleNamePool((pool) => [...pool, value.title]);
-    console.log('addNewHandle ', title);
+    console.log('addNewHandle ', value.title);
 
     setNodes?.((nds) => {
       return nds.map((nd) => {
@@ -216,21 +233,30 @@ function CreateFunction({
     console.log('HandlePool ', handleNamePool);
   }, [handleNamePool]);
 
+  const IsNameDuplicated = useCallback(
+    (newName: string, namePool: string[]) => {
+      return namePool.includes(newName);
+    },
+    [handleNamePool]
+  );
+
   const updateHandleNamePool = useCallback(
-    (oldName: string, newName: string) => {
-      const newPool = handleNamePool.filter((name) => name !== oldName);
-      if (!newPool.includes(newName)) {
+    (oldName: string, newName: string): boolean => {
+      if (newName === '') return false;
+      if (!IsNameDuplicated(newName, handleNamePool)) {
+        const newPool = handleNamePool.filter((name) => name !== oldName);
         newPool.push(newName);
+        setHandleNamePool(newPool);
+        return true;
       } else {
         console.log('Duplicate handle name: ', newName);
-        // if (!newPool.includes(oldName)) {
-        //   newPool.push(oldName);
-        // }
+        // setNewHandleName(oldName);
+        // how can I set the value of the input box to oldName?
+        // I tried to use useRef, but it doesn't work
+        return false;
       }
-      setHandleNamePool(newPool);
-      return newPool;
     },
-    [handleNamePool, setHandleNamePool]
+    [handleNamePool]
   );
 
   const outputHandles = [];
