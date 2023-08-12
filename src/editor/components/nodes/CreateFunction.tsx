@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useRef, useState, useEffect } from 'react';
+import React, { memo, useCallback, useRef, useState } from 'react';
 import { IconButton } from '@mui/material';
 import { AddCircle } from '@mui/icons-material';
 import { SourceHandle, TargetHandle, HandleElement } from '../handles';
@@ -13,7 +13,7 @@ export function ParameterHandle({
   handleData,
   handlePosition,
   handleType,
-  updateHandleNamePool,
+  updateHandleName,
 }: {
   id: string;
   nodeId: string;
@@ -22,7 +22,7 @@ export function ParameterHandle({
   showTitle: boolean;
   handleType: 'source' | 'target';
   handlePosition: Position;
-  updateHandleNamePool?: (oldValue: string, newValue: string) => boolean;
+  updateHandleName?: (newName: string) => void;
 }): JSX.Element {
   const widgetFactory = useWidgetFactory();
   if (!handleData) {
@@ -48,49 +48,25 @@ export function ParameterHandle({
     deleteAllEdgesOfHandle?.(nodeId, id);
   }, []);
 
-  const [newHandleName, setNewHandleName] = useState('');
+  const [newHandleName, setNewHandleName] = useState(handleData.title);
 
-  const handleBlur = useCallback(
-    (value: string): void => {
-      if (updateHandleNamePool?.(value, newHandleName)) {
-        setNodes?.((nds) => {
-          return nds.map((nd) => {
-            if (nd.id === nodeId) {
-              nd.data.outputs[id].title = newHandleName;
-            }
-            if (nd.data.nodeRef === nodeId) {
-              nd.data.inputs[id].title = newHandleName;
-            }
-            console.log('nd: ', nd);
-            return nd;
-          });
-        });
-        // setNewHandleName(newHandleName);
-      } else {
-        console.log('we have duplicate: ', newHandleName);
-        console.log('we set back: ', value);
-        // setNewHandleName(value);
-        // setNodes?.((nds) => {
-        //   return nds.map((nd) => {
-        //     if (nd.id === nodeId) {
-        //       nd.data.outputs[id].title = value;
-        //     }
-        //     if (nd.data.nodeRef === nodeId) {
-        //       nd.data.inputs[id].title = value;
-        //     }
-        //     console.log('nd: ', nd);
-        //     return nd;
-        //   });
-        // });
-      }
-    },
-    [newHandleName, updateHandleNamePool]
-  );
+  const handleBlur = useCallback((value: string): void => {
+    setNewHandleName(value);
+    setNodes?.((nds) => {
+      return nds.map((nd) => {
+        if (nd.id === nodeId) {
+          nd.data.outputs[id].title = value;
+        }
+        if (nd.data.nodeRef === nodeId) {
+          nd.data.inputs[id].title = value;
+        }
+        return nd;
+      });
+    });
+  }, []);
 
   const handleChange = useCallback((value: string) => {
-    setNewHandleName(value);
-
-    console.log('value: ', value);
+    console.log('change value: ', value);
   }, []);
 
   const onValueChange = useCallback((value: string) => {
@@ -103,6 +79,7 @@ export function ParameterHandle({
       });
     });
   }, []);
+
   return (
     <div
       className={'parameter-handle'}
@@ -125,7 +102,7 @@ export function ParameterHandle({
         <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
           name
           {widgetFactory.createWidget('string', {
-            value: newHandleName || handleData.title,
+            value: newHandleName,
             className: `nodrag handle-widget`,
             onChange: handleChange,
             onBlur: handleBlur,
@@ -177,7 +154,6 @@ function CreateFunction({
   data: ConnectableData;
 }): JSX.Element {
   const handleCount = useRef<number>(0);
-  const [handleNamePool, setHandleNamePool] = useState<string[]>([]);
   const inputhandles = [];
   for (const inputId in data.inputs) {
     const handle = data.inputs[inputId];
@@ -201,8 +177,6 @@ function CreateFunction({
       showWidget: false,
       deletable: true,
     };
-    setHandleNamePool((pool) => [...pool, value.title]);
-    console.log('addNewHandle ', value.title);
 
     setNodes?.((nds) => {
       return nds.map((nd) => {
@@ -229,39 +203,25 @@ function CreateFunction({
     });
   }, []);
 
-  useEffect(() => {
-    console.log('HandlePool ', handleNamePool);
-  }, [handleNamePool]);
-
   const IsNameDuplicated = useCallback(
-    (newName: string, namePool: string[]) => {
-      return namePool.includes(newName);
+    (newName: string, data: ConnectableData) => {
+      const names = Object.values(data).map((handle) => handle.title);
+      return names.includes(newName);
     },
-    [handleNamePool]
+    []
   );
 
-  const updateHandleNamePool = useCallback(
-    (oldName: string, newName: string): boolean => {
-      if (newName === '') return false;
-      if (!IsNameDuplicated(newName, handleNamePool)) {
-        const newPool = handleNamePool.filter((name) => name !== oldName);
-        newPool.push(newName);
-        setHandleNamePool(newPool);
-        return true;
-      } else {
-        console.log('Duplicate handle name: ', newName);
-        // setNewHandleName(oldName);
-        // how can I set the value of the input box to oldName?
-        // I tried to use useRef, but it doesn't work
-        return false;
-      }
-    },
-    [handleNamePool]
-  );
+  const updateHandleName = useCallback((newName: string) => {
+    if (!IsNameDuplicated(newName, data)) {
+      // setHandleName(newName);
+      console.log('newName: ', newName);
+    }
+  }, []);
 
   const outputHandles = [];
   for (const outputId in data.outputs) {
     const handle = data.outputs[outputId];
+    console.log('In Creation:handleName: ', handle.title);
     if (handle.title === 'execOut')
       outputHandles.push(
         <SourceHandle
@@ -287,7 +247,7 @@ function CreateFunction({
           showTitle={!!handle.showTitle || handle.showTitle === undefined}
           handleType="source"
           handlePosition={Position.Right}
-          updateHandleNamePool={updateHandleNamePool}
+          updateHandleName={updateHandleName}
         />
       );
   }
