@@ -13,7 +13,7 @@ export function ParameterHandle({
   handleData,
   handlePosition,
   handleType,
-  updateHandleName,
+  IsNameDuplicated,
 }: {
   id: string;
   nodeId: string;
@@ -22,7 +22,7 @@ export function ParameterHandle({
   showTitle: boolean;
   handleType: 'source' | 'target';
   handlePosition: Position;
-  updateHandleName?: (newName: string) => void;
+  IsNameDuplicated?: (newName: string) => boolean;
 }): JSX.Element {
   const widgetFactory = useWidgetFactory();
   if (!handleData) {
@@ -48,26 +48,27 @@ export function ParameterHandle({
     deleteAllEdgesOfHandle?.(nodeId, id);
   }, []);
 
-  const [newHandleName, setNewHandleName] = useState(handleData.title);
+  const handleBlur = useCallback(
+    (handleName: string): void => {
+      let newName = handleName;
 
-  const handleBlur = useCallback((value: string): void => {
-    setNewHandleName(value);
-    setNodes?.((nds) => {
-      return nds.map((nd) => {
-        if (nd.id === nodeId) {
-          nd.data.outputs[id].title = value;
-        }
-        if (nd.data.nodeRef === nodeId) {
-          nd.data.inputs[id].title = value;
-        }
-        return nd;
+      if (IsNameDuplicated?.(newName)) {
+        newName = handleData.title!;
+      }
+      setNodes?.((nds) => {
+        return nds.map((nd) => {
+          if (nd.id === nodeId) {
+            nd.data.outputs[id].title = newName;
+          }
+          if (nd.data.nodeRef === nodeId) {
+            nd.data.inputs[id].title = newName;
+          }
+          return nd;
+        });
       });
-    });
-  }, []);
-
-  const handleChange = useCallback((value: string) => {
-    console.log('change value: ', value);
-  }, []);
+    },
+    [IsNameDuplicated, handleData.title, id, nodeId, setNodes]
+  );
 
   const onValueChange = useCallback((value: string) => {
     setNodes?.((nds) => {
@@ -102,9 +103,8 @@ export function ParameterHandle({
         <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
           name
           {widgetFactory.createWidget('string', {
-            value: newHandleName,
+            value: handleData.title,
             className: `nodrag handle-widget`,
-            onChange: handleChange,
             onBlur: handleBlur,
             onKeyDown: handleBlur,
           })}
@@ -204,24 +204,22 @@ function CreateFunction({
   }, []);
 
   const IsNameDuplicated = useCallback(
-    (newName: string, data: ConnectableData) => {
-      const names = Object.values(data).map((handle) => handle.title);
-      return names.includes(newName);
+    (newName: string) => {
+      const inputsName = data?.inputs
+        ? Object.values(data.inputs).map((input) => input.title)
+        : [];
+      const outputsName = data?.outputs
+        ? Object.values(data.outputs).map((output) => output.title)
+        : [];
+      const allNames = [...inputsName, ...outputsName];
+      return allNames.includes(newName);
     },
-    []
+    [data]
   );
-
-  const updateHandleName = useCallback((newName: string) => {
-    if (!IsNameDuplicated(newName, data)) {
-      // setHandleName(newName);
-      console.log('newName: ', newName);
-    }
-  }, []);
 
   const outputHandles = [];
   for (const outputId in data.outputs) {
     const handle = data.outputs[outputId];
-    console.log('In Creation:handleName: ', handle.title);
     if (handle.title === 'execOut')
       outputHandles.push(
         <SourceHandle
@@ -247,7 +245,7 @@ function CreateFunction({
           showTitle={!!handle.showTitle || handle.showTitle === undefined}
           handleType="source"
           handlePosition={Position.Right}
-          updateHandleName={updateHandleName}
+          IsNameDuplicated={IsNameDuplicated}
         />
       );
   }

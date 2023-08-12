@@ -38,6 +38,7 @@ export function NumberInput(props: WidgetProps): JSX.Element {
 
 export function TextInput(props: WidgetProps): JSX.Element {
   const { value, className, onChange, onBlur, onKeyDown } = props;
+  // const [inputValue, setInputValue] = React.useState(value);
   return (
     <input
       className={className}
@@ -46,16 +47,23 @@ export function TextInput(props: WidgetProps): JSX.Element {
       style={inputStyles}
       onChange={(e) => {
         onChange(e.target.value);
+        // setInputValue(e.target.value);
+        // onChange(e.target.value);
       }}
-      onBlur={() => {
-        onBlur?.(value);
-        // console.log('TextInputonBlur ', value);
+      onBlur={(e) => {
+        onBlur?.(e.target.value);
+        e.target.value = value;
+        // onBlur?.(inputValue);
+        // setInputValue(value);
       }}
       onKeyDown={(e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
-          // console.log('Enter ', value);
           onKeyDown?.(value);
+          // e.target.value = value;
+
+          // onKeyDown?.(inputValue);
+          // setInputValue(value);
         }
       }}
     />
