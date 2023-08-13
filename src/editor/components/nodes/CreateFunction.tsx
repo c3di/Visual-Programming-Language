@@ -47,28 +47,41 @@ export function ParameterHandle({
     });
     deleteAllEdgesOfHandle?.(nodeId, id);
   }, []);
+  const [handleName, setHandleName] = React.useState(handleData.title);
 
   const handleBlur = useCallback(
-    (handleName: string): void => {
-      let newName = handleName;
-
+    (inputValue: string): void => {
+      let newName = inputValue;
       if (IsNameDuplicated?.(newName)) {
         newName = handleData.title!;
+        setHandleName(handleData.title);
+        console.log('duplicated, now handleTile = ', handleName);
+      } else {
+        setHandleName(newName);
       }
       setNodes?.((nds) => {
         return nds.map((nd) => {
           if (nd.id === nodeId) {
             nd.data.outputs[id].title = newName;
+            console.log(
+              'updated, now handleTile = ',
+              nd.data.outputs[id].title
+            );
           }
           if (nd.data.nodeRef === nodeId) {
             nd.data.inputs[id].title = newName;
+            console.log('updated, now handleTile = ', nd.data.inputs[id].title);
           }
           return nd;
         });
       });
     },
-    [IsNameDuplicated, handleData.title, id, nodeId, setNodes]
+    [handleData.title, id, nodeId, setHandleName, setNodes]
   );
+
+  React.useEffect(() => {
+    setHandleName(handleData.title);
+  }, [handleData.title, setNodes]);
 
   const onValueChange = useCallback((value: string) => {
     setNodes?.((nds) => {
@@ -103,10 +116,11 @@ export function ParameterHandle({
         <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
           name
           {widgetFactory.createWidget('string', {
-            value: handleData.title,
+            value: handleName,
             className: `nodrag handle-widget`,
             onBlur: handleBlur,
             onKeyDown: handleBlur,
+            isDuplicated: IsNameDuplicated,
           })}
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
