@@ -22,7 +22,7 @@ export function ParameterHandle({
   showTitle: boolean;
   handleType: 'source' | 'target';
   handlePosition: Position;
-  IsNameDuplicated?: (newName: string) => boolean;
+  IsNameDuplicated?: (newName: string, oldName: string) => boolean;
 }): JSX.Element {
   const widgetFactory = useWidgetFactory();
   if (!handleData) {
@@ -52,13 +52,10 @@ export function ParameterHandle({
   const handleBlur = useCallback(
     (inputValue: string): void => {
       let newName = inputValue;
-      if (IsNameDuplicated?.(newName)) {
+      if (IsNameDuplicated?.(newName, handleData?.title ?? '')) {
         newName = handleData.title!;
-        setHandleName(handleData.title);
-        console.log('duplicated, now handleTile = ', handleName);
-      } else {
-        setHandleName(newName);
       }
+      setHandleName(newName);
       setNodes?.((nds) => {
         return nds.map((nd) => {
           if (nd.id === nodeId) {
@@ -78,10 +75,6 @@ export function ParameterHandle({
     },
     [handleData.title, id, nodeId, setHandleName, setNodes]
   );
-
-  React.useEffect(() => {
-    setHandleName(handleData.title);
-  }, [handleData.title, setNodes]);
 
   const onValueChange = useCallback((value: string) => {
     setNodes?.((nds) => {
@@ -218,7 +211,8 @@ function CreateFunction({
   }, []);
 
   const IsNameDuplicated = useCallback(
-    (newName: string) => {
+    (newName: string, oldName: string) => {
+      if (newName === oldName) return false;
       const inputsName = data?.inputs
         ? Object.values(data.inputs).map((input) => input.title)
         : [];
