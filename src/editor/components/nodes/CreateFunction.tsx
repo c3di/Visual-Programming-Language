@@ -178,9 +178,14 @@ function CreateFunction({
 
   const addNewHandle = useCallback(() => {
     const title = `new_out_${handleCount.current++}`;
+    let handleTitle = `new_out_${handleCount.current}`;
+    while (IsNameDuplicated?.(handleTitle)) {
+      handleCount.current++;
+      handleTitle = `new_out_${handleCount.current}`;
+    }
     const value = {
       dataType: 'boolean',
-      title: `new_out_${handleCount.current}`,
+      title: handleTitle,
       showWidget: false,
       deletable: true,
     };
@@ -211,7 +216,7 @@ function CreateFunction({
   }, []);
 
   const IsNameDuplicated = useCallback(
-    (newName: string, oldName: string) => {
+    (newName: string, oldName?: string) => {
       if (newName === oldName) return false;
       const inputsName = data?.inputs
         ? Object.values(data.inputs).map((input) => input.title)
