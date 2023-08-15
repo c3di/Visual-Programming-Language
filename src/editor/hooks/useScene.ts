@@ -313,8 +313,10 @@ export default function useScene(
         });
 
         Object.values(newNodes).forEach((node) => {
-          node.data.title = funNamePool.current.createNew('newFun');
-          funNamePool.current.add(node.data.title);
+          if (node.type === 'createFunction') {
+            node.data.title = funNamePool.current.createNew('newFun');
+            funNamePool.current.add(node.data.title);
+          }
         });
 
         graphState.selectAll(false);
