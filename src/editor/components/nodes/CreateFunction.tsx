@@ -13,6 +13,7 @@ export function ParameterHandle({
   handleData,
   handlePosition,
   handleType,
+  IsNameDuplicated,
 }: {
   id: string;
   nodeId: string;
@@ -21,6 +22,7 @@ export function ParameterHandle({
   showTitle: boolean;
   handleType: 'source' | 'target';
   handlePosition: Position;
+  IsNameDuplicated?: (newName: string, oldName?: string) => boolean;
 }): JSX.Element {
   const widgetFactory = useWidgetFactory();
   if (!handleData) {
@@ -45,20 +47,30 @@ export function ParameterHandle({
     });
     deleteAllEdgesOfHandle?.(nodeId, id);
   }, []);
+  const [handleName, setHandleName] = React.useState(handleData.title);
 
-  const onParaNameChange = useCallback((value: string) => {
-    setNodes?.((nds) => {
-      return nds.map((nd) => {
-        if (nd.id === nodeId) {
-          nd.data.outputs[id].title = value;
-        }
-        if (nd.data.nodeRef === nodeId) {
-          nd.data.inputs[id].title = value;
-        }
-        return nd;
+  const handleBlur = useCallback(
+    (inputValue: string): void => {
+      let newName = inputValue;
+      if (IsNameDuplicated?.(newName, handleData?.title ?? '')) {
+        newName = handleData.title!;
+      }
+      setHandleName(newName);
+      setNodes?.((nds) => {
+        return nds.map((nd) => {
+          if (nd.id === nodeId) {
+            nd.data.outputs[id].title = newName;
+          }
+          if (nd.data.nodeRef === nodeId) {
+            nd.data.inputs[id].title = newName;
+          }
+          return nd;
+        });
       });
-    });
-  }, []);
+    },
+    [handleData.title, setNodes]
+  );
+
   const onValueChange = useCallback((value: string) => {
     setNodes?.((nds) => {
       return nds.map((nd) => {
@@ -69,6 +81,7 @@ export function ParameterHandle({
       });
     });
   }, []);
+
   return (
     <div
       className={'parameter-handle'}
@@ -91,9 +104,11 @@ export function ParameterHandle({
         <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
           name
           {widgetFactory.createWidget('string', {
-            value: handleData.title,
+            value: handleName,
             className: `nodrag handle-widget`,
-            onChange: onParaNameChange,
+            onBlur: handleBlur,
+            onKeyDown: handleBlur,
+            isDuplicated: IsNameDuplicated,
           })}
         </label>
         <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
@@ -158,12 +173,18 @@ function CreateFunction({
 
   const addNewHandle = useCallback(() => {
     const title = `new_out_${handleCount.current++}`;
+    let handleTitle = `new_out_${handleCount.current}`;
+    while (IsNameDuplicated?.(handleTitle)) {
+      handleCount.current++;
+      handleTitle = `new_out_${handleCount.current}`;
+    }
     const value = {
       dataType: 'boolean',
-      title: `new_out_${handleCount.current}`,
+      title: handleTitle,
       showWidget: false,
       deletable: true,
     };
+
     setNodes?.((nds) => {
       return nds.map((nd) => {
         if (nd.id === id) {
@@ -188,6 +209,21 @@ function CreateFunction({
       });
     });
   }, []);
+
+  const IsNameDuplicated = useCallback(
+    (newName: string, oldName?: string) => {
+      if (newName === oldName) return false;
+      const inputsName = data?.inputs
+        ? Object.values(data.inputs).map((input) => input.title)
+        : [];
+      const outputsName = data?.outputs
+        ? Object.values(data.outputs).map((output) => output.title)
+        : [];
+      const allNames = [...inputsName, ...outputsName];
+      return allNames.includes(newName);
+    },
+    [data]
+  );
 
   const outputHandles = [];
   for (const outputId in data.outputs) {
@@ -217,6 +253,7 @@ function CreateFunction({
           showTitle={!!handle.showTitle || handle.showTitle === undefined}
           handleType="source"
           handlePosition={Position.Right}
+          IsNameDuplicated={IsNameDuplicated}
         />
       );
   }
