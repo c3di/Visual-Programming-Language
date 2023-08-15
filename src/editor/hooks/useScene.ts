@@ -313,9 +313,8 @@ export default function useScene(
         });
 
         Object.values(newNodes).forEach((node) => {
-          if (node.data && typeof node.data.title === 'string') {
-            node.data.title = `${node.data.title as string} (copy)`;
-          }
+          node.data.title = funNamePool.current.createNew('newFun');
+          funNamePool.current.add(node.data.title);
         });
 
         graphState.selectAll(false);
