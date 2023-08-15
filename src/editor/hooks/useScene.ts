@@ -312,6 +312,12 @@ export default function useScene(
           }
         });
 
+        Object.values(newNodes).forEach((node) => {
+          if (node.data && typeof node.data.title === 'string') {
+            node.data.title = `${node.data.title as string} (copy)`;
+          }
+        });
+
         graphState.selectAll(false);
         graphState.addElements({
           newNodes: Object.values(newNodes),
