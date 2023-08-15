@@ -5,8 +5,51 @@ export type config = NodeConfig | NodePackage;
 export class NodeConfigRegistry {
   private static instance: NodeConfigRegistry;
   private readonly registry: Record<string, config> = {};
+  private readonly _imageTypeConversion: Record<
+    string,
+    Record<string, string>
+  > = {};
 
   private constructor() {}
+
+  get imageTypeConversion(): Record<string, Record<string, string>> {
+    return this._imageTypeConversion;
+  }
+
+  public registerImageTypeConversion(
+    name: string,
+    conversion: Record<string, string>
+  ): void {
+    if (!this._imageTypeConversion[name])
+      this._imageTypeConversion[name] = conversion;
+    else {
+      for (const key in conversion) {
+        this._imageTypeConversion[name][key] = conversion[key];
+      }
+    }
+  }
+
+  public findConversionPath(from: string, to: string): string[] {
+    if (!this._imageTypeConversion[from]) return [];
+    const path: string[] = [];
+    const visited: Record<string, boolean> = {};
+    const queue: string[] = [from];
+    while (queue.length > 0) {
+      const node = queue.shift();
+      if (!node) continue;
+      if (node === to) return path;
+      if (visited[node]) continue;
+      visited[node] = true;
+      path.push(node);
+      const next = this._imageTypeConversion[node];
+      if (!next) continue;
+      for (const key in next) {
+        if (key in visited) continue;
+        queue.push(key);
+      }
+    }
+    return path;
+  }
 
   public static getInstance(): NodeConfigRegistry {
     if (!NodeConfigRegistry.instance) {

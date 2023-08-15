@@ -101,5 +101,15 @@
       "default": "UNCHANGED",
       "widget": "EnumSelect"
     }
+  },
+  "imageTypeConversion": {
+    "tensor": {
+      "tensor": "print('from tensor')",
+      "numpy": "print('from numpy')"
+    },
+    "numpy": {
+      "numpy": "print('from numpy')",
+      "tensor": "print('from tensor')"
+    }
   }
 }

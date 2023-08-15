@@ -22,6 +22,7 @@ export interface INodeModule {
   href?: string;
   description?: string;
   enable?: boolean;
+  imageTypeConversion?: Record<string, Record<string, string>>;
 }
 
 /*
@@ -57,6 +58,13 @@ export const ParseModule = (m: INodeModule, relativePath: string): any => {
         const path =
           name !== '' && name !== '__init__' ? `${relativePath}.${name}` : name;
         addNewType(path, type);
+      }
+    );
+  }
+  if (m.imageTypeConversion) {
+    Object.entries(m.imageTypeConversion).forEach(
+      ([name, rules]: [name: string, rules: Record<string, string>]) => {
+        nodeConfigRegistry.registerImageTypeConversion(name, rules);
       }
     );
   }
