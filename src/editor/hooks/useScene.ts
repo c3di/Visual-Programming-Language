@@ -316,6 +316,8 @@ export default function useScene(
           if (node.type === 'createFunction') {
             node.data.title = funNamePool.current.createNew('newFun');
             funNamePool.current.add(node.data.title);
+          } else {
+            node.data.title = `${node.data.title as string} (copy)`;
           }
         });
 
