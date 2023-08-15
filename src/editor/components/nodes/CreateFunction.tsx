@@ -22,7 +22,7 @@ export function ParameterHandle({
   showTitle: boolean;
   handleType: 'source' | 'target';
   handlePosition: Position;
-  IsNameDuplicated?: (newName: string, oldName: string) => boolean;
+  IsNameDuplicated?: (newName: string, oldName?: string) => boolean;
 }): JSX.Element {
   const widgetFactory = useWidgetFactory();
   if (!handleData) {
@@ -60,20 +60,15 @@ export function ParameterHandle({
         return nds.map((nd) => {
           if (nd.id === nodeId) {
             nd.data.outputs[id].title = newName;
-            console.log(
-              'updated, now handleTile = ',
-              nd.data.outputs[id].title
-            );
           }
           if (nd.data.nodeRef === nodeId) {
             nd.data.inputs[id].title = newName;
-            console.log('updated, now handleTile = ', nd.data.inputs[id].title);
           }
           return nd;
         });
       });
     },
-    [handleData.title, id, nodeId, setHandleName, setNodes]
+    [handleData.title, setNodes]
   );
 
   const onValueChange = useCallback((value: string) => {
