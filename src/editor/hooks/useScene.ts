@@ -14,6 +14,8 @@ import {
   isCommentNode,
   type Graph,
   type SourceCodeExec,
+  type IImageOptions,
+  defaultImageOptions,
 } from '../types';
 import { type GraphState } from './useGraph';
 import { deserializer } from '../Deserializer';
@@ -33,6 +35,8 @@ import { copy, deepCopy, fromClientCoordToScene } from '../util';
 import Mustache from 'mustache';
 import { type Handle } from '../types/Handle';
 import toposort from 'toposort';
+import { nodeConfigRegistry } from '../extension';
+import { type TypeConversionRule } from '../extension/NodeConfigRegistry';
 
 function nodeInsideOfNode(n: Node, containter: Node): boolean {
   return (
@@ -731,6 +735,128 @@ export default function useScene(
     );
   }, []);
 
+  const object2PythonDict = (source: object): string => {
+    return `{
+      ${Object.entries(source)
+        .map(([key, value]) => {
+          return `'${key}': ${
+            // use variable name directly for value property
+            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands, @typescript-eslint/restrict-template-expressions
+            key !== 'value'
+              ? mapToLanguageDefinition(typeof value, value)
+              : value === ''
+              ? 'None'
+              : value
+          }`;
+        })
+        .join(', ')}
+    }`;
+  };
+  const indentFunStr = (indentLevel: number, fun: string): string => {
+    return (
+      '\t'.repeat(indentLevel) +
+      fun.replaceAll('\n', '\n' + '\t'.repeat(indentLevel))
+    );
+  };
+  /**
+   * @returns {string} python function of conversion rules
+   * @example
+   * ```
+   *  def convert_tensor_to_numpy(source, target, defaultImageOptions):
+   *    def tensor2tensor(source, target, defaultImageOptions):
+   *        return source
+   *    def tensor2numpy(source, target, defaultImageOptions):
+   *       return source.numpy()
+   *    def numpy2numpy(source, target, defaultImageOptions):
+   *      return source
+   *    return numpy2numpy(tensor2numpy(tensor2tensor(source, None, defaultImageOptions), None, defaultImageOptions), target, defaultImageOptions)
+   * ```
+   */
+  const createImageConversionFunction = (
+    functionName: string,
+    sourceDataType: string,
+    targetDataType: string
+  ): string => {
+    const path = nodeConfigRegistry.findConversionPath(
+      sourceDataType,
+      targetDataType
+    );
+
+    if (path == null || path.length === 0) return 'return None';
+    let conversionRules: string = '';
+    let rule: TypeConversionRule | null = nodeConfigRegistry.getConversionRule(
+      path[0],
+      path[0]
+    );
+    let callStack = rule
+      ? `${rule.function_name}(source, None, defaultImageOptions)`
+      : '';
+    conversionRules += rule ? `${rule.function_definition}` : '';
+
+    for (let i = 0; i < path.length - 1; i++) {
+      const rule: TypeConversionRule | null =
+        nodeConfigRegistry.getConversionRule(path[i], path[i + 1]);
+      conversionRules += rule ? `\n${rule.function_definition}` : '';
+      callStack = rule
+        ? `${rule.function_name}(${callStack}, None, defaultImageOptions)`
+        : '';
+    }
+    rule = nodeConfigRegistry.getConversionRule(
+      path[path.length - 1],
+      path[path.length - 1]
+    );
+    conversionRules += rule ? `\n${rule.function_definition}` : '';
+    callStack = rule
+      ? `${rule.function_name}(${callStack}, target, defaultImageOptions)`
+      : '';
+    const functionBody = conversionRules + `\nreturn ${callStack}`;
+    return `def ${functionName}(source, target, defaultImageOptions):\n${indentFunStr(
+      1,
+      functionBody
+    )}`;
+  };
+
+  /*
+   * @example
+   * ```
+   * def convert_a_to_b(a, b):
+   *   pass
+   * convert_a_to_b(source, target)['value']
+   * ```
+   */
+  const imageTypeConversionCode = (
+    sourceName: string,
+    source: IImageOptions,
+    target: IImageOptions
+  ): { fun: string; targetValue: string } => {
+    const functionName = `convert_${sourceName}_to_${target.dataType.replace(
+      /\./g,
+      ''
+    )}`;
+    const fun = createImageConversionFunction(
+      functionName,
+      source.dataType,
+      target.dataType
+    );
+    const targetDict = object2PythonDict(target);
+    const defaultDict = object2PythonDict(defaultImageOptions);
+    return {
+      fun,
+      targetValue: `${functionName}(${sourceName}, ${targetDict}, ${defaultDict})['value']`,
+    };
+  };
+
+  const addImageMapping = (
+    varName: string,
+    defaultOptions?: IImageOptions
+  ): string => {
+    const image = {
+      ...(defaultOptions ?? defaultImageOptions),
+      value: varName,
+    };
+    return `${varName} = ` + object2PythonDict(image);
+  };
+
   const sourceCode = (): SourceCodeExec => {
     const startNode = graphState
       .getNodes()
@@ -817,16 +943,30 @@ export default function useScene(
     }
     const { nodes: outputNodes, connectedHandlesId } =
       graphState.getConnectedInfo(nodeId, handleId);
-    const outputHandleName = getUniqueNameOfHandle(
+    let outputHandleName = getUniqueNameOfHandle(
       outputNodes[0],
       connectedHandlesId[0]
     );
+    let prerequisites = '';
+    if (handle.dataType?.includes('image')) {
+      const outputHandle = outputNodes[0].data.outputs[connectedHandlesId[0]];
+      const input = { ...defaultImageOptions, ...handle.defaultValue };
+      const convert = imageTypeConversionCode(
+        outputHandleName,
+        { ...defaultImageOptions, ...outputHandle.defaultValue },
+        input
+      );
+      prerequisites +=
+        '\n'.repeat(Number(prerequisites !== '')) +
+        indentFunStr(indentLevel, convert.fun);
+      outputHandleName = convert.targetValue;
+    }
     if (isExecNode(outputNodes[0]))
       return {
-        prerequisites: null,
+        prerequisites,
         source: outputHandleName,
       };
-    let prerequisites = '';
+
     const inputs: string[] = [];
     const connectedNode = outputNodes[0];
     for (const id in connectedNode.data.inputs ?? {}) {
@@ -867,6 +1007,7 @@ export default function useScene(
     }
     return { prerequisites, source: outputHandleName };
   };
+
   const sourceCodeWithStartNode = (
     node: Node | undefined,
     execInId: string | undefined,
@@ -935,7 +1076,22 @@ export default function useScene(
     if (node.data.configType.includes('functionCall')) {
       node.data.functionName = node.data.title;
     }
-    const fromFunctionName = createCodeTemplateFromFunctionName(node);
+    // type conversion wrapper for output
+    let postProcessing: string = '';
+    for (const id in node.data.outputs ?? {}) {
+      const output = node.data.outputs[id];
+      if (output.dataType === 'image') {
+        postProcessing +=
+          '\n'.repeat(Number(postProcessing !== '')) +
+          '\t'.repeat(indentLevel) +
+          addImageMapping(getUniqueNameOfHandle(node, id), output.defaultValue);
+      }
+    }
+
+    const fromFunctionName = createCodeTemplateFromFunctionName(
+      node,
+      postProcessing
+    );
     // temp fix
     if (node.data.configType.includes('Create Variable') && !fromFunctionName) {
       // eslint-disable-next-line prettier/prettier
@@ -950,6 +1106,7 @@ export default function useScene(
         {
           inputs,
           outputs,
+          postProcessing,
           indent: '\t'.repeat(indentLevel),
           inputsTitle: Object.values(node.data.inputs ?? {}).map(
             (handle: any) => {
@@ -993,7 +1150,8 @@ export default function useScene(
   };
 
   const createCodeTemplateFromFunctionName = (
-    node: Node
+    node: Node,
+    postProcessing?: string
   ): string | undefined => {
     if (!node.data.functionName) return undefined;
     let outputsTemplate = '';
@@ -1017,7 +1175,7 @@ export default function useScene(
     }
     return `{{indent}}${outputsTemplate}${
       node.data.functionName as string
-    }(${inputsTemplate})\n{{{outputs.0}}}`;
+    }(${inputsTemplate})\n${postProcessing ?? ''}\n{{{outputs.0}}}`;
   };
 
   const isAcyclic = (
@@ -1121,9 +1279,15 @@ export default function useScene(
     dataType: string | undefined,
     value: any
   ): any => {
+    if (value === undefined || value === null) return `None`;
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    if (dataType === 'string' && value !== null) return `'${value}'`;
+    if (dataType === 'string') return `'${value}'`;
     if (dataType === 'boolean') return value ? 'True' : 'False';
+    if (dataType === 'image') return object2PythonDict(value);
+    if (Array.isArray(value))
+      return `[${value
+        .map((v: any) => mapToLanguageDefinition(typeof v, v))
+        .join(', ')}]`;
     else return value;
   };
 

@@ -1,24 +1,31 @@
 import { type NodePackage, type NodeConfig } from '../types';
 
 export type config = NodeConfig | NodePackage;
+export interface TypeConversionRule {
+  function_definition: string;
+  function_name: string;
+}
 
 export class NodeConfigRegistry {
   private static instance: NodeConfigRegistry;
   private readonly registry: Record<string, config> = {};
   private readonly _imageTypeConversion: Record<
     string,
-    Record<string, string>
+    Record<string, TypeConversionRule>
   > = {};
 
   private constructor() {}
 
-  get imageTypeConversion(): Record<string, Record<string, string>> {
+  get imageTypeConversion(): Record<
+    string,
+    Record<string, TypeConversionRule>
+  > {
     return this._imageTypeConversion;
   }
 
   public registerImageTypeConversion(
     name: string,
-    conversion: Record<string, string>
+    conversion: Record<string, TypeConversionRule>
   ): void {
     if (!this._imageTypeConversion[name])
       this._imageTypeConversion[name] = conversion;
@@ -29,26 +36,50 @@ export class NodeConfigRegistry {
     }
   }
 
-  public findConversionPath(from: string, to: string): string[] {
-    if (!this._imageTypeConversion[from]) return [];
-    const path: string[] = [];
-    const visited: Record<string, boolean> = {};
-    const queue: string[] = [from];
+  public getConversionRule(
+    source: string,
+    target: string
+  ): TypeConversionRule | null {
+    return this._imageTypeConversion[source]?.[target];
+  }
+
+  public bfsShortestPath(
+    graph: Record<string, Record<string, TypeConversionRule>>,
+    start: string,
+    goal: string
+  ): string[] | null {
+    const explored = new Set<string>();
+    const queue: string[][] = [[start]];
+
+    if (start === goal) {
+      return [start];
+    }
+
     while (queue.length > 0) {
-      const node = queue.shift();
-      if (!node) continue;
-      if (node === to) return path;
-      if (visited[node]) continue;
-      visited[node] = true;
-      path.push(node);
-      const next = this._imageTypeConversion[node];
-      if (!next) continue;
-      for (const key in next) {
-        if (key in visited) continue;
-        queue.push(key);
+      const path = queue.shift()!;
+      const node = path[path.length - 1];
+
+      if (!explored.has(node)) {
+        const neighbors = Object.keys(graph[node]);
+
+        for (const neighbor of neighbors) {
+          const newPath = [...path, neighbor];
+          queue.push(newPath);
+
+          if (neighbor === goal) {
+            return newPath;
+          }
+        }
+
+        explored.add(node);
       }
     }
-    return path;
+
+    return null;
+  }
+
+  public findConversionPath(from: string, to: string): string[] | null {
+    return this.bfsShortestPath(this._imageTypeConversion, from, to);
   }
 
   public static getInstance(): NodeConfigRegistry {

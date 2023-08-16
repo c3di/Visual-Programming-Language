@@ -1,7 +1,10 @@
 import buildin from './buildin.json';
 import flowControl from './flowControl.json';
 import log from './log.json';
-import { nodeConfigRegistry } from './NodeConfigRegistry';
+import {
+  type TypeConversionRule,
+  nodeConfigRegistry,
+} from './NodeConfigRegistry';
 import stringPkg from './string.json';
 import floatPkg from './float.json';
 import functionAndvar from './functionAndvar.json';
@@ -22,7 +25,7 @@ export interface INodeModule {
   href?: string;
   description?: string;
   enable?: boolean;
-  imageTypeConversion?: Record<string, Record<string, string>>;
+  imageTypeConversion?: Record<string, Record<string, TypeConversionRule>>;
 }
 
 /*
@@ -63,7 +66,10 @@ export const ParseModule = (m: INodeModule, relativePath: string): any => {
   }
   if (m.imageTypeConversion) {
     Object.entries(m.imageTypeConversion).forEach(
-      ([name, rules]: [name: string, rules: Record<string, string>]) => {
+      ([name, rules]: [
+        name: string,
+        rules: Record<string, TypeConversionRule>
+      ]) => {
         nodeConfigRegistry.registerImageTypeConversion(name, rules);
       }
     );

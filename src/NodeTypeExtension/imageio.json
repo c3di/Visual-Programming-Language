@@ -39,8 +39,15 @@
         },
         "image": {
           "title": "image",
-          "dataType": "torch.tensor",
-          "tooltip": "image (Tensor[image_channels, image_height, image_width]) uint8 in [0, 255]"
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "layout": ["chw"],
+            "colorMode": ["rgb"],
+            "intensityRange": "0-255",
+            "device": "cpu"
+          },
+          "tooltip": "{dataType: torch.tensor, value, layout: [chw], colorMode: [rgb, grayscale], intensityRange: 0-255' device: cpu}"
         }
       }
     },
@@ -103,13 +110,15 @@
     }
   },
   "imageTypeConversion": {
-    "tensor": {
-      "tensor": "print('from tensor')",
-      "numpy": "print('from numpy')"
-    },
-    "numpy": {
-      "numpy": "print('from numpy')",
-      "tensor": "print('from tensor')"
+    "torch.tensor": {
+      "torch.tensor": {
+        "function_definition": "def tensor2tensor():\n\tprint('tensor2tensor')",
+        "function_name": "tensor2tensor"
+      },
+      "numpy.ndarray": {
+        "function_definition": "def tensor2ndarray():\n\tprint('tensor2ndarray')",
+        "function_name": "tensor2ndarray"
+      }
     }
   }
 }
