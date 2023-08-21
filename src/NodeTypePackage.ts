@@ -8,6 +8,7 @@ import imagevisualization from './NodeTypeExtension/image visualization.json';
 import torch from './NodeTypeExtension/torch.json';
 import Path from './NodeTypeExtension/Path.json';
 import init from './NodeTypeExtension/Kornia/__init__.json';
+import numpy from './NodeTypeExtension/numpy.json';
 import filters from './NodeTypeExtension/Kornia/filters.json';
 
 export const extension1 = {
@@ -45,6 +46,7 @@ export const extensions = {
   extension2,
   imageio,
   'image visualization': imagevisualization,
+  numpy,
   torch,
   Path,
   Kornia,

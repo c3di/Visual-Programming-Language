@@ -1,5 +1,5 @@
 {
-  "description": "The torch tensor type definition",
+  "description": "The torch tensor definition and operations",
   "enable": true,
   "nodes": {
     "Stack": {
@@ -66,6 +66,27 @@
         }
       }
     },
+    "to numpy": {
+      "type": "to numpy",
+      "category": "math",
+      "title": "->",
+      "tooltip": "to numpy",
+      "sourceCode": "{{indent}}{{{outputs.0}}} = {{{inputs.0}}}.numpy()",
+      "inputs": {
+        "tensor": {
+          "title": "tensor",
+          "dataType": "torch.tensor",
+          "showTitle": true
+        }
+      },
+      "outputs": {
+        "ndarray": {
+          "title": "ndarray",
+          "dataType": "numpy.ndarray",
+          "showTitle": true
+        }
+      }
+    },
     "Tensor / Float": {
       "type": "Tensor / Float",
       "category": "math",
@@ -114,10 +135,10 @@
         }
       }
     },
-    "Unsqueeze": {
-      "type": "Unsqueeze",
+    "unsqueeze": {
+      "type": "unsqueeze",
       "category": "function",
-      "title": "Unsqueeze",
+      "title": "unsqueeze",
       "tooltip": "Returns a new tensor with a dimension of size one inserted at the specified position.",
       "externalImports": "import torch",
       "sourceCode": "{{indent}}{{{outputs.1}}} = torch.unsqueeze({{{inputs.1}}}, {{{inputs.2}}})\n{{{outputs.0}}}",

@@ -4,10 +4,10 @@
     "Canny": {
       "type": "Canny",
       "category": "function",
-      "title": "Canny Edge Detection",
+      "title": "canny edge detection",
       "tooltip": "Find edges of the input image and filters them using the Canny algorithm.",
       "externalImports": "import kornia as K",
-      "functionName": "K.filters.canny",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.canny({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}},{{{inputs.7}}})\n{{indent}}{{{outputs.1}}} = {{{outputs.1}}}[0]\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -66,9 +66,9 @@
         },
         "output": {
           "title": "output",
-          "dataType": "tuple",
-          "defaultValue": "()",
-          "tooltip": "tuple(the canny edge magnitudes map, the canny edge magnitudes map, shape of (B, 1, H, W))"
+          "dataType": "torch.tensor",
+          "defaultValue": "",
+          "tooltip": "torch tensor (the canny edge magnitudes map with shape of (B, 1, H, W))"
         }
       }
     }
