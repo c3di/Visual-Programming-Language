@@ -5,18 +5,18 @@ import {
   useRef,
   useState,
 } from 'react';
-import {
-  type Node,
-  type ClipboardInfo,
-  type ConnectionStatus,
-  type Edge,
-  type selectedElementsCounts,
-  isCommentNode,
-  type Graph,
-  type SourceCodeExec,
-  type IImageOptions,
-  defaultImageOptions,
+import type {
+  Node,
+  ClipboardInfo,
+  ConnectionStatus,
+  Edge,
+  selectedElementsCounts,
+  Graph,
+  SourceCodeExec,
+  ISourceImage,
+  ITargetImage,
 } from '../types';
+import { isCommentNode } from '../types';
 import { type GraphState } from './useGraph';
 import { deserializer } from '../Deserializer';
 import useGui, { type IGui, type Command } from './useGui';
@@ -754,22 +754,20 @@ export default function useScene(
   };
   const indentFunStr = (indentLevel: number, fun: string): string => {
     return (
-      '\t'.repeat(indentLevel) +
-      fun.replaceAll('\n', '\n' + '\t'.repeat(indentLevel))
+      '  '.repeat(indentLevel) +
+      fun.replaceAll('\n', '\n' + '  '.repeat(indentLevel))
     );
   };
   /**
    * @returns {string} python function of conversion rules
    * @example
    * ```
-   *  def convert_tensor_to_numpy(source, target, defaultImageOptions):
-   *    def tensor2tensor(source, target, defaultImageOptions):
-   *        return source
-   *    def tensor2numpy(source, target, defaultImageOptions):
-   *       return source.numpy()
-   *    def numpy2numpy(source, target, defaultImageOptions):
-   *      return source
-   *    return numpy2numpy(tensor2numpy(tensor2tensor(source, None, defaultImageOptions), None, defaultImageOptions), target, defaultImageOptions)
+   *  def convert_tensor_to_ndarray(source, target):
+   *    def tensor2ndarray(source):
+   *        ...
+   *    def ndarray2ndarray(source, target):
+   *        ...
+   *    return ndarray2ndarray(tensor2numpy(source), target)
    * ```
    */
   const createImageConversionFunction = (
@@ -784,33 +782,24 @@ export default function useScene(
 
     if (path == null || path.length === 0) return 'return None';
     let conversionRules: string = '';
-    let rule: TypeConversionRule | null = nodeConfigRegistry.getConversionRule(
-      path[0],
-      path[0]
-    );
-    let callStack = rule
-      ? `${rule.function_name}(source, None, defaultImageOptions)`
-      : '';
-    conversionRules += rule ? `${rule.function_definition}` : '';
+    let rule: TypeConversionRule | null = null;
+    let callStack = 'source';
 
     for (let i = 0; i < path.length - 1; i++) {
       const rule: TypeConversionRule | null =
         nodeConfigRegistry.getConversionRule(path[i], path[i + 1]);
       conversionRules += rule ? `\n${rule.function_definition}` : '';
-      callStack = rule
-        ? `${rule.function_name}(${callStack}, None, defaultImageOptions)`
-        : '';
+      callStack = rule ? `${rule.function_name}(${callStack})` : '';
     }
     rule = nodeConfigRegistry.getConversionRule(
       path[path.length - 1],
       path[path.length - 1]
     );
     conversionRules += rule ? `\n${rule.function_definition}` : '';
-    callStack = rule
-      ? `${rule.function_name}(${callStack}, target, defaultImageOptions)`
-      : '';
+    callStack = rule ? `${rule.function_name}(${callStack}, target)` : '';
+
     const functionBody = conversionRules + `\nreturn ${callStack}`;
-    return `def ${functionName}(source, target, defaultImageOptions):\n${indentFunStr(
+    return `def ${functionName}(source, target):\n${indentFunStr(
       1,
       functionBody
     )}`;
@@ -819,15 +808,15 @@ export default function useScene(
   /*
    * @example
    * ```
-   * def convert_a_to_b(a, b):
-   *   pass
-   * convert_a_to_b(source, target)['value']
+   * def convert_source_to_target(source, target):
+   *   ...
+   * convert_source_to_target(source, target)['value']
    * ```
    */
   const imageTypeConversionCode = (
     sourceName: string,
-    source: IImageOptions,
-    target: IImageOptions
+    source: ISourceImage,
+    target: ITargetImage
   ): { fun: string; targetValue: string } => {
     const functionName = `convert_${sourceName}_to_${target.dataType.replace(
       /\./g,
@@ -838,23 +827,16 @@ export default function useScene(
       source.dataType,
       target.dataType
     );
-    const targetDict = object2PythonDict(target);
-    const defaultDict = object2PythonDict(defaultImageOptions);
+    const targetDict = mapToLanguageDefinition(
+      typeof target.metadata,
+      target.metadata
+    );
     return {
       fun,
-      targetValue: `${functionName}(${sourceName}, ${targetDict}, ${defaultDict})['value']`,
+      targetValue: `${functionName}(${sourceName}, ${
+        targetDict as string
+      })['value']`,
     };
-  };
-
-  const addImageMapping = (
-    varName: string,
-    defaultOptions?: IImageOptions
-  ): string => {
-    const image = {
-      ...(defaultOptions ?? defaultImageOptions),
-      value: varName,
-    };
-    return `${varName} = ` + object2PythonDict(image);
   };
 
   const sourceCode = (): SourceCodeExec => {
@@ -950,10 +932,10 @@ export default function useScene(
     let prerequisites = '';
     if (handle.dataType?.includes('image')) {
       const outputHandle = outputNodes[0].data.outputs[connectedHandlesId[0]];
-      const input = { ...defaultImageOptions, ...handle.defaultValue };
+      const input = handle.defaultValue;
       const convert = imageTypeConversionCode(
         outputHandleName,
-        { ...defaultImageOptions, ...outputHandle.defaultValue },
+        outputHandle.defaultValue,
         input
       );
       prerequisites +=
@@ -1001,7 +983,7 @@ export default function useScene(
           {
             inputs,
             outputs,
-            indent: '\t'.repeat(indentLevel),
+            indent: '  '.repeat(indentLevel),
           }
         );
     }
@@ -1076,22 +1058,8 @@ export default function useScene(
     if (node.data.configType.includes('functionCall')) {
       node.data.functionName = node.data.title;
     }
-    // type conversion wrapper for output
-    let postProcessing: string = '';
-    for (const id in node.data.outputs ?? {}) {
-      const output = node.data.outputs[id];
-      if (output.dataType === 'image') {
-        postProcessing +=
-          '\n'.repeat(Number(postProcessing !== '')) +
-          '\t'.repeat(indentLevel) +
-          addImageMapping(getUniqueNameOfHandle(node, id), output.defaultValue);
-      }
-    }
 
-    const fromFunctionName = createCodeTemplateFromFunctionName(
-      node,
-      postProcessing
-    );
+    const fromFunctionName = createCodeTemplateFromFunctionName(node);
     // temp fix
     if (node.data.configType.includes('Create Variable') && !fromFunctionName) {
       // eslint-disable-next-line prettier/prettier
@@ -1106,8 +1074,7 @@ export default function useScene(
         {
           inputs,
           outputs,
-          postProcessing,
-          indent: '\t'.repeat(indentLevel),
+          indent: '  '.repeat(indentLevel),
           inputsTitle: Object.values(node.data.inputs ?? {}).map(
             (handle: any) => {
               return handle.title;
@@ -1150,8 +1117,7 @@ export default function useScene(
   };
 
   const createCodeTemplateFromFunctionName = (
-    node: Node,
-    postProcessing?: string
+    node: Node
   ): string | undefined => {
     if (!node.data.functionName) return undefined;
     let outputsTemplate = '';
@@ -1175,7 +1141,7 @@ export default function useScene(
     }
     return `{{indent}}${outputsTemplate}${
       node.data.functionName as string
-    }(${inputsTemplate})\n${postProcessing ?? ''}\n{{{outputs.0}}}`;
+    }(${inputsTemplate})\n{{{outputs.0}}}`;
   };
 
   const isAcyclic = (
@@ -1288,7 +1254,9 @@ export default function useScene(
       return `[${value
         .map((v: any) => mapToLanguageDefinition(typeof v, v))
         .join(', ')}]`;
-    else return value;
+    if (dataType === 'object' && !Array.isArray(value))
+      return object2PythonDict(value);
+    return value;
   };
 
   const mapToLanguageTypeKeyword = (dataType: string): string => {
@@ -1318,7 +1286,7 @@ export default function useScene(
       .join(',');
 
     return `def ${title}(${argsStr}):\n${
-      functionBody !== '' ? functionBody : '\tpass'
+      functionBody !== '' ? functionBody : '  pass'
     }`;
   };
 

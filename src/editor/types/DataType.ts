@@ -1,22 +1,26 @@
 import { type HandleType } from 'reactflow';
 
-export interface IImageOptions {
-  dataType: string;
-  value: any;
-  layout: string[];
-  colorMode: string[];
+interface ImageMetadata {
+  colorSpace: 'rgb' | 'gbr' | 'grayscale';
+  channelOrder: 'none' | 'first' | 'last';
+  isBatched: boolean;
   intensityRange: '0-255' | '0-1';
-  device: 'cpu' | 'cuda';
+  device: 'cpu' | 'gpu';
 }
 
-export const defaultImageOptions: IImageOptions = {
-  dataType: '',
-  value: '',
-  layout: ['bchw'],
-  colorMode: ['rgb'],
-  intensityRange: '0-255',
-  device: 'cpu',
-};
+export interface ISourceImage {
+  dataType: string;
+  value: any;
+  metadata: ImageMetadata;
+}
+
+export interface ITargetImage {
+  dataType: string;
+  value: any;
+  metadata: ImageMetadata[];
+}
+
+export type IImage = ISourceImage | ITargetImage;
 
 const getNewColor = (noIncludes: string[]): string => {
   let color = '';

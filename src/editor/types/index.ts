@@ -12,8 +12,9 @@ export type {
 } from './ConfigTypes';
 export {
   addNewType,
-  type IImageOptions,
-  defaultImageOptions,
+  type IImage as Image,
+  type ISourceImage,
+  type ITargetImage,
 } from './DataType';
 export { type Handle as HandleData } from './Handle';
 export { type ConnectableData } from './Connectable';
