@@ -4,7 +4,7 @@
     "Canny": {
       "type": "Canny",
       "category": "function",
-      "title": "Canny Edge Detection",
+      "title": "canny edge detection",
       "tooltip": "Find edges of the input image and filters them using the Canny algorithm.",
       "externalImports": "import kornia as K",
       "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.canny({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}},{{{inputs.7}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorSpace': 'grayscale', 'channelOrder': 'first', 'isBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
