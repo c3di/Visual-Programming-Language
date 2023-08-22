@@ -197,12 +197,14 @@
         "First Index": {
           "title": "First Index",
           "tooltip": "First Index",
-          "dataType": "integer"
+          "dataType": "integer",
+          "defaultValue": 0
         },
         "Last Index": {
           "title": "Last Index",
           "tooltip": "Last Index",
-          "dataType": "integer"
+          "dataType": "integer",
+          "defaultValue": 0
         }
       },
       "outputs": {

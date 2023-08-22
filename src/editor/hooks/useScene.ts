@@ -5,16 +5,18 @@ import {
   useRef,
   useState,
 } from 'react';
-import {
-  type Node,
-  type ClipboardInfo,
-  type ConnectionStatus,
-  type Edge,
-  type selectedElementsCounts,
-  isCommentNode,
-  type Graph,
-  type SourceCodeExec,
+import type {
+  Node,
+  ClipboardInfo,
+  ConnectionStatus,
+  Edge,
+  selectedElementsCounts,
+  Graph,
+  SourceCodeExec,
+  ISourceImage,
+  ITargetImage,
 } from '../types';
+import { isCommentNode } from '../types';
 import { type GraphState } from './useGraph';
 import { deserializer } from '../Deserializer';
 import useGui, { type IGui, type Command } from './useGui';
@@ -33,6 +35,8 @@ import { copy, deepCopy, fromClientCoordToScene } from '../util';
 import Mustache from 'mustache';
 import { type Handle } from '../types/Handle';
 import toposort from 'toposort';
+import { nodeConfigRegistry } from '../extension';
+import { type TypeConversionRule } from '../extension/NodeConfigRegistry';
 
 function nodeInsideOfNode(n: Node, containter: Node): boolean {
   return (
@@ -731,6 +735,108 @@ export default function useScene(
     );
   }, []);
 
+  const object2PythonDict = (source: object): string => {
+    return `{
+      ${Object.entries(source)
+        .map(([key, value]) => {
+          return `'${key}': ${
+            // use variable name directly for value property
+            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands, @typescript-eslint/restrict-template-expressions
+            key !== 'value'
+              ? mapToLanguageDefinition(typeof value, value)
+              : value === ''
+              ? 'None'
+              : value
+          }`;
+        })
+        .join(', ')}
+    }`;
+  };
+  const indentFunStr = (indentLevel: number, fun: string): string => {
+    return (
+      '  '.repeat(indentLevel) +
+      fun.replaceAll('\n', '\n' + '  '.repeat(indentLevel))
+    );
+  };
+  /**
+   * @returns {string} python function of conversion rules
+   * @example
+   * ```
+   *  def convert_tensor_to_ndarray(source, target):
+   *    def tensor2ndarray(source):
+   *        ...
+   *    def ndarray2ndarray(source, target):
+   *        ...
+   *    return ndarray2ndarray(tensor2numpy(source), target)
+   * ```
+   */
+  const createImageConversionFunction = (
+    functionName: string,
+    sourceDataType: string,
+    targetDataType: string
+  ): string => {
+    const path = nodeConfigRegistry.findConversionPath(
+      sourceDataType,
+      targetDataType
+    );
+
+    if (path == null || path.length === 0) return 'return None';
+    let conversionRules: string = '';
+    let rule: TypeConversionRule | null = null;
+    let callStack = 'source';
+
+    for (let i = 0; i < path.length - 1; i++) {
+      const rule: TypeConversionRule | null =
+        nodeConfigRegistry.getConversionRule(path[i], path[i + 1]);
+      conversionRules += rule ? `\n${rule.function_definition}` : '';
+      callStack = rule ? `${rule.function_name}(${callStack})` : '';
+    }
+    rule = nodeConfigRegistry.getConversionRule(
+      path[path.length - 1],
+      path[path.length - 1]
+    );
+    conversionRules += rule ? `\n${rule.function_definition}` : '';
+    callStack = rule ? `${rule.function_name}(${callStack}, target)` : '';
+
+    const functionBody = conversionRules + `\nreturn ${callStack}`;
+    return `def ${functionName}(source, target):\n${indentFunStr(
+      1,
+      functionBody
+    )}`;
+  };
+
+  /*
+   * @example
+   * ```
+   * def convert_source_to_target(source, target):
+   *   ...
+   * convert_source_to_target(source, target)['value']
+   * ```
+   */
+  const imageTypeConversionCode = (
+    sourceName: string,
+    source: ISourceImage,
+    target: ITargetImage
+  ): { fun: string; targetValue: string } => {
+    const functionName = `convert_${sourceName}_to_${target.dataType.replace(
+      /\./g,
+      ''
+    )}`;
+    const fun = createImageConversionFunction(
+      functionName,
+      source.dataType,
+      target.dataType
+    );
+    const targetDict = mapToLanguageDefinition(
+      typeof target.metadata,
+      target.metadata
+    );
+    return {
+      fun,
+      targetValue: `${functionName}(${sourceName}, ${targetDict as string})`,
+    };
+  };
+
   const sourceCode = (): SourceCodeExec => {
     const startNode = graphState
       .getNodes()
@@ -802,6 +908,7 @@ export default function useScene(
   };
 
   const getSourceCodeOfInputDataHandle = (
+    node: Node,
     nodeId: string,
     handleId: string,
     handle: Handle,
@@ -817,21 +924,39 @@ export default function useScene(
     }
     const { nodes: outputNodes, connectedHandlesId } =
       graphState.getConnectedInfo(nodeId, handleId);
-    const outputHandleName = getUniqueNameOfHandle(
+    let outputHandleName = getUniqueNameOfHandle(
       outputNodes[0],
       connectedHandlesId[0]
     );
+    let prerequisites = '';
+    if (handle.dataType?.includes('image')) {
+      const outputHandle = outputNodes[0].data.outputs[connectedHandlesId[0]];
+      const input = handle.defaultValue;
+      const convert = imageTypeConversionCode(
+        outputHandleName,
+        outputHandle.defaultValue,
+        input
+      );
+      if (node.type !== 'reroute')
+        convert.targetValue = `${convert.targetValue}['value']`;
+
+      prerequisites +=
+        '\n'.repeat(Number(prerequisites !== '')) +
+        indentFunStr(indentLevel, convert.fun);
+      outputHandleName = convert.targetValue;
+    }
     if (isExecNode(outputNodes[0]))
       return {
-        prerequisites: null,
+        prerequisites,
         source: outputHandleName,
       };
-    let prerequisites = '';
+
     const inputs: string[] = [];
     const connectedNode = outputNodes[0];
     for (const id in connectedNode.data.inputs ?? {}) {
       const { prerequisites: prerequisitesOfInput, source } =
         getSourceCodeOfInputDataHandle(
+          connectedNode,
           connectedNode.id,
           id,
           connectedNode.data.inputs[id],
@@ -861,12 +986,13 @@ export default function useScene(
           {
             inputs,
             outputs,
-            indent: '\t'.repeat(indentLevel),
+            indent: '  '.repeat(indentLevel),
           }
         );
     }
     return { prerequisites, source: outputHandleName };
   };
+
   const sourceCodeWithStartNode = (
     node: Node | undefined,
     execInId: string | undefined,
@@ -894,7 +1020,7 @@ export default function useScene(
       if (input.dataType === 'exec') inputs.push('');
       else {
         const { prerequisites, source: inputSource } =
-          getSourceCodeOfInputDataHandle(node.id, id, input, indentLevel);
+          getSourceCodeOfInputDataHandle(node, node.id, id, input, indentLevel);
         if (prerequisites)
           source += '\n'.repeat(Number(source !== '')) + prerequisites;
         inputs.push(inputSource);
@@ -935,6 +1061,7 @@ export default function useScene(
     if (node.data.configType.includes('functionCall')) {
       node.data.functionName = node.data.title;
     }
+
     const fromFunctionName = createCodeTemplateFromFunctionName(node);
     // temp fix
     if (node.data.configType.includes('Create Variable') && !fromFunctionName) {
@@ -950,7 +1077,7 @@ export default function useScene(
         {
           inputs,
           outputs,
-          indent: '\t'.repeat(indentLevel),
+          indent: '  '.repeat(indentLevel),
           inputsTitle: Object.values(node.data.inputs ?? {}).map(
             (handle: any) => {
               return handle.title;
@@ -1121,10 +1248,18 @@ export default function useScene(
     dataType: string | undefined,
     value: any
   ): any => {
+    if (value === undefined || value === null) return `None`;
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    if (dataType === 'string' && value !== null) return `'${value}'`;
+    if (dataType === 'string') return `'${value}'`;
     if (dataType === 'boolean') return value ? 'True' : 'False';
-    else return value;
+    if (dataType === 'image') return object2PythonDict(value);
+    if (Array.isArray(value))
+      return `[${value
+        .map((v: any) => mapToLanguageDefinition(typeof v, v))
+        .join(', ')}]`;
+    if (dataType === 'object' && !Array.isArray(value))
+      return object2PythonDict(value);
+    return value;
   };
 
   const mapToLanguageTypeKeyword = (dataType: string): string => {
@@ -1154,7 +1289,7 @@ export default function useScene(
       .join(',');
 
     return `def ${title}(${argsStr}):\n${
-      functionBody !== '' ? functionBody : '\tpass'
+      functionBody !== '' ? functionBody : '  pass'
     }`;
   };
 

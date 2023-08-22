@@ -171,7 +171,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
   );
 
   const setDataTypeOfGraph = useCallback(
-    (nodeIds: string[], dataType: string) => {
+    (nodeIds: string[], dataType: string, defaultValue?: any) => {
       const edgeIds: string[] = [];
       setNodes((nds) => {
         const newNodes = nds.map((n) => {
@@ -184,11 +184,15 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
             if (inputs) {
               Object.values(inputs).forEach((input) => {
                 (input as HandleData).dataType = dataType;
+                if (defaultValue)
+                  (input as HandleData).defaultValue = defaultValue;
               });
             }
             if (outputs) {
               Object.values(outputs).forEach((output) => {
                 (output as HandleData).dataType = dataType;
+                if (defaultValue)
+                  (output as HandleData).defaultValue = defaultValue;
               });
             }
             n = {
@@ -246,11 +250,11 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
   );
 
   const setDataTypeInGraphWithRerouteNode = useCallback(
-    (node: Node, dataType: string): void => {
+    (node: Node, dataType: string, defaultValue?: any): void => {
       const visitedNode: string[] = [];
       graphIncludeNodeWithType(node, 'reroute', 'any', visitedNode);
       if (visitedNode.length === 0) return;
-      setDataTypeOfGraph(visitedNode, dataType);
+      setDataTypeOfGraph(visitedNode, dataType, defaultValue);
     },
     []
   );
@@ -268,12 +272,26 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
         dataType = targetHandle.dataType;
       else {
         dataType = sourceHandle.dataType;
-        setDataTypeInGraphWithRerouteNode(getNode(params.target!)!, dataType);
+        const defaultValue = dataType.includes('image')
+          ? sourceHandle.defaultValue
+          : undefined;
+        setDataTypeInGraphWithRerouteNode(
+          getNode(params.target!)!,
+          dataType,
+          defaultValue
+        );
       }
     else {
       if (targetHandle.dataType && targetHandle.dataType !== 'any') {
         dataType = targetHandle.dataType;
-        setDataTypeInGraphWithRerouteNode(getNode(params.source!)!, dataType);
+        const defaultValue = dataType.includes('image')
+          ? sourceHandle.defaultValue
+          : undefined;
+        setDataTypeInGraphWithRerouteNode(
+          getNode(params.source!)!,
+          dataType,
+          defaultValue
+        );
       }
     }
     return dataType;
@@ -319,7 +337,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {
         subGraphs.forEach((nodeIds) => {
-          setDataTypeOfGraph(nodeIds, 'any');
+          setDataTypeOfGraph(nodeIds, 'any', '');
         });
       });
     });
