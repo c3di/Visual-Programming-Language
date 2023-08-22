@@ -316,7 +316,22 @@ export default function useScene(
           }
         });
 
+        Object.values(newNodes).forEach((node) => {
+          if (node.type === 'createFunction') {
+            node.data.title = funNamePool.current.createNew('newFun');
+            funNamePool.current.add(node.data.title);
+
+            const returnNode = newNodes[node.data.nodeRef];
+            if (returnNode && returnNode.type === 'return')
+              node.data.nodeRef = returnNode.id;
+            else node.data.nodeRef = null;
+          }
+        });
+
         graphState.selectAll(false);
+        for (const node of Object.values(newNodes)) {
+          onNodeAdd(node);
+        }
         graphState.addElements({
           newNodes: Object.values(newNodes),
           newEdges,
