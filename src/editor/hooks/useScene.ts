@@ -316,22 +316,11 @@ export default function useScene(
           if (node.type === 'createFunction') {
             node.data.title = funNamePool.current.createNew('newFun');
             funNamePool.current.add(node.data.title);
+
             const returnNode = newNodes[node.data.nodeRef];
-            if (returnNode && returnNode.type === 'return') {
+            if (returnNode && returnNode.type === 'return')
               node.data.nodeRef = returnNode.id;
-              returnNode.data.nodeRef = node.id;
-              console.log(
-                'Paste CreateFunctionNode nodeRef is updated to :',
-                node.data.nodeRef
-              );
-              console.log(
-                'Paste ReturnNode nodeRef is updated to :',
-                returnNode.data.nodeRef
-              );
-              console.log('newNodes :', newNodes);
-            }
-          } else {
-            node.data.title = `${node.data.title as string} (copy)`;
+            else node.data.nodeRef = null;
           }
         });
 
