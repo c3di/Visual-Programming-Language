@@ -24,6 +24,7 @@ import {
   getOutgoers,
   getIncomers,
   useReactFlow,
+  getRectOfNodes,
 } from 'reactflow';
 import {
   type Dispatch,
@@ -105,7 +106,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     edgesCount: 0,
   });
   // the nodes will added more properties by reactflow, so we need to get the nodes from reactflow
-  const { getNodes, getNode, getEdges } = useReactFlow();
+  const { getNodes, getNode, getEdges, setCenter, getZoom } = useReactFlow();
 
   const getNodeById = useCallback((id: string): Node | undefined => {
     return getNodes().find((n) => n.id === id);
@@ -696,6 +697,33 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     }
     setNodes(allNodes);
   }, [edges]);
+
+  useEffect(() => {
+    const allNodes = getNodes();
+    const hasExecuteStart = allNodes.some(
+      (node) => node.type === 'Execute Start'
+    );
+    if (!hasExecuteStart) {
+      console.log('no execute start, we create one');
+      // addElements({
+      //   id: 'executeStart',
+      //   type: 'Execute Start',
+      //   position: [0, 0],
+      //   data: {},
+      // });
+      // addElements({ newNodes: [node] });
+    }
+    if (hasExecuteStart) {
+      const ExecuteStartNode = allNodes.filter(
+        (node) => node.type === 'Execute Start'
+      );
+      const { x, y, width, height } = getRectOfNodes(ExecuteStartNode);
+      setCenter(x + width / 2.0, y + height / 2.0, {
+        duration: 200,
+        zoom: getZoom(),
+      });
+    }
+  }, [nodes]);
 
   const getConnectedInfo = (
     nodeId: string,
