@@ -325,6 +325,9 @@ export default function useScene(
         });
 
         graphState.selectAll(false);
+        for (const node of Object.values(newNodes)) {
+          onNodeAdd(node);
+        }
         graphState.addElements({
           newNodes: Object.values(newNodes),
           newEdges,
