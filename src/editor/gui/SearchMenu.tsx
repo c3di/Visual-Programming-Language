@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { type Connection } from 'reactflow';
-import { Menu } from '@mui/material';
+import { Popover } from '@mui/material';
 import { createSvgIcon } from '@mui/material/utils';
 import {
   Comment,
@@ -431,7 +431,7 @@ const SearchMenu = memo(function SearchMenu({
   );
 
   return (
-    <Menu
+    <Popover
       transitionDuration={0}
       onContextMenu={(e) => {
         e.preventDefault();
@@ -485,7 +485,7 @@ const SearchMenu = memo(function SearchMenu({
         onEnterKeyDown={onEnterKeyDown}
         triggerExpand={toFilter()}
       />
-    </Menu>
+    </Popover>
   );
 });
 
