@@ -833,9 +833,7 @@ export default function useScene(
     );
     return {
       fun,
-      targetValue: `${functionName}(${sourceName}, ${
-        targetDict as string
-      })['value']`,
+      targetValue: `${functionName}(${sourceName}, ${targetDict as string})`,
     };
   };
 
@@ -910,6 +908,7 @@ export default function useScene(
   };
 
   const getSourceCodeOfInputDataHandle = (
+    node: Node,
     nodeId: string,
     handleId: string,
     handle: Handle,
@@ -938,6 +937,9 @@ export default function useScene(
         outputHandle.defaultValue,
         input
       );
+      if (node.type !== 'reroute')
+        convert.targetValue = `${convert.targetValue}['value']`;
+
       prerequisites +=
         '\n'.repeat(Number(prerequisites !== '')) +
         indentFunStr(indentLevel, convert.fun);
@@ -954,6 +956,7 @@ export default function useScene(
     for (const id in connectedNode.data.inputs ?? {}) {
       const { prerequisites: prerequisitesOfInput, source } =
         getSourceCodeOfInputDataHandle(
+          connectedNode,
           connectedNode.id,
           id,
           connectedNode.data.inputs[id],
@@ -1017,7 +1020,7 @@ export default function useScene(
       if (input.dataType === 'exec') inputs.push('');
       else {
         const { prerequisites, source: inputSource } =
-          getSourceCodeOfInputDataHandle(node.id, id, input, indentLevel);
+          getSourceCodeOfInputDataHandle(node, node.id, id, input, indentLevel);
         if (prerequisites)
           source += '\n'.repeat(Number(source !== '')) + prerequisites;
         inputs.push(inputSource);
