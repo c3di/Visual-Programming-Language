@@ -47,29 +47,28 @@ export function ParameterHandle({
     });
     deleteAllEdgesOfHandle?.(nodeId, id);
   }, []);
-  const [handleName, setHandleName] = React.useState(handleData.title);
 
-  const handleBlur = useCallback(
-    (inputValue: string): void => {
-      let newName = inputValue;
-      if (IsNameDuplicated?.(newName, handleData?.title ?? '')) {
-        newName = handleData.title!;
-      }
-      setHandleName(newName);
-      setNodes?.((nds) => {
-        return nds.map((nd) => {
-          if (nd.id === nodeId) {
-            nd.data.inputs[id].title = newName;
-          }
-          const ref = getNodeById?.(nd.data.nodeRef);
-          if (ref?.data.nodeRef === nodeId) {
-            nd.data.outputs[id].title = newName;
-          }
-          return nd;
+  const onFinishInput = useCallback(
+    (element: HTMLElement | EventTarget): void => {
+      const inputValue = (element as HTMLInputElement).value;
+      if (IsNameDuplicated?.(inputValue, handleData?.title ?? '')) {
+        (element as HTMLInputElement).value = handleData.title ?? '';
+      } else {
+        setNodes?.((nds) => {
+          return nds.map((nd) => {
+            if (nd.id === nodeId) {
+              nd.data.inputs[id].title = inputValue;
+            }
+            const ref = getNodeById?.(nd.data.nodeRef);
+            if (ref?.data.nodeRef === nodeId) {
+              nd.data.outputs[id].title = inputValue;
+            }
+            return nd;
+          });
         });
-      });
+      }
     },
-    [handleData.title, setNodes]
+    [handleData.title]
   );
 
   const onValueChange = useCallback((value: string) => {
@@ -112,11 +111,10 @@ export function ParameterHandle({
           <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
             name
             {widgetFactory.createWidget('string', {
-              value: handleName,
+              value: handleData.title,
               className: `nodrag handle-widget`,
-              onBlur: handleBlur,
-              onKeyDown: handleBlur,
-              isDuplicated: IsNameDuplicated,
+              onBlur: onFinishInput,
+              onEnterKeyDown: onFinishInput,
             })}
           </label>
           <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
