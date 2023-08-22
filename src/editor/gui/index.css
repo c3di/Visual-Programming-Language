@@ -56,7 +56,7 @@
   );
 
   /* Menu */
-  --vp-universal-menu-font-size: 16px;
+  --vp-universal-menu-font-size: 14px;
 
   --vp-menu-panel-border-radius: var(--vp-gui-border-radius);
   --vp-menu-panel-background-color: var(--vp-gui-background-color-white);
@@ -94,7 +94,7 @@
 
   --vp-treeview-font-family: var(--vp-menuitem-font-family);
   --vp-treeview-font-color: var(--vp-gui-font-item-color);
-  --vp-treeview-font-size: var(var(--vp-universal-menu-font-size));
+  --vp-treeview-font-size: var(--vp-universal-menu-font-size);
   --vp-treeview-item-hover-bg-color: var(--vp-gui-hover-background-color);
 
   /*FilePond*/
