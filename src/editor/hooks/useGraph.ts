@@ -37,6 +37,7 @@ import {
 import { serializer } from '../Serializer';
 import { deserializer } from '../Deserializer';
 import { deepCopy } from '../util';
+// import { useSceneState } from '../Context';
 
 type OnChange<ChangesType> = (changes: ChangesType[]) => void;
 
@@ -74,6 +75,7 @@ export interface GraphState {
     functionCallNodes: Node[],
     visitedNodeIds: string[]
   ) => void;
+  findExecStartNode: (nodes: Node[]) => Node[] | undefined;
   addElements: ({
     newNodes,
     newEdges,
@@ -107,6 +109,8 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
   });
   // the nodes will added more properties by reactflow, so we need to get the nodes from reactflow
   const { getNodes, getNode, getEdges, setCenter, getZoom } = useReactFlow();
+
+  // const { addNode } = useSceneState()?.sceneActions ?? {};
 
   const getNodeById = useCallback((id: string): Node | undefined => {
     return getNodes().find((n) => n.id === id);
@@ -279,6 +283,48 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     }
     return dataType;
   }, []);
+
+  const keepOneExecStartNodeInGraph = useCallback((): void => {
+    const allNodes = getNodes();
+    const execStartNode = findExecStartNode(allNodes);
+    if (execStartNode) {
+      console.log('we already have execute start node');
+      const { x, y, width, height } = getRectOfNodes(execStartNode);
+      setCenter(x + width / 2, y + height / 2, {
+        duration: 200,
+        zoom: getZoom(),
+      });
+    } else {
+      console.log('no execute start, we create one');
+      // if (addNode) {
+      //   addNode('Flow Control.Execute Start');
+      // }
+      addElements({
+        newNodes: [
+          {
+            id: '0',
+            type: 'Execute Start',
+            position: { x: 0, y: 0 },
+            data: {
+              configType: 'Flow Control.Execute Start',
+              category: 'function',
+              title: 'Execute Start',
+              tooltip: 'The execute start point of the program',
+              sourceCode: '{{{outputs.0}}}',
+              outputs: {
+                execOut: {
+                  tooltip: 'exec out',
+                  dataType: 'exec',
+                  showWidget: false,
+                  showTitle: false,
+                },
+              },
+            },
+          },
+        ],
+      });
+    }
+  }, [nodes]);
 
   const isConnectToNonRerouteNodes = useCallback(
     (node: Node, visited: string[] = []): boolean => {
@@ -699,30 +745,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
   }, [edges]);
 
   useEffect(() => {
-    const allNodes = getNodes();
-    const hasExecuteStart = allNodes.some(
-      (node) => node.type === 'Execute Start'
-    );
-    if (!hasExecuteStart) {
-      console.log('no execute start, we create one');
-      // addElements({
-      //   id: 'executeStart',
-      //   type: 'Execute Start',
-      //   position: [0, 0],
-      //   data: {},
-      // });
-      // addElements({ newNodes: [node] });
-    }
-    if (hasExecuteStart) {
-      const ExecuteStartNode = allNodes.filter(
-        (node) => node.type === 'Execute Start'
-      );
-      const { x, y, width, height } = getRectOfNodes(ExecuteStartNode);
-      setCenter(x + width / 2.0, y + height / 2.0, {
-        duration: 200,
-        zoom: getZoom(),
-      });
-    }
+    keepOneExecStartNodeInGraph();
   }, [nodes]);
 
   const getConnectedInfo = (
@@ -767,6 +790,13 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
       }
     });
   };
+
+  const findExecStartNode = (nodes: Node[]): Node[] | undefined => {
+    const ExecuteStartNode = nodes.filter(
+      (node) => node.data.configType === 'Flow Control.Execute Start'
+    );
+    return ExecuteStartNode.length > 0 ? ExecuteStartNode : undefined;
+  };
   return {
     initGraph,
     getFreeUniqueNodeIds,
@@ -806,5 +836,6 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     fromJSON,
     getConnectedInfo,
     findFunctionCallNodes,
+    findExecStartNode,
   };
 }

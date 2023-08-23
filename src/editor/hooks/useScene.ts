@@ -108,7 +108,8 @@ export default function useScene(
   reactflowInstance: React.MutableRefObject<ReactFlowInstance | undefined>,
   domReference: React.RefObject<HTMLDivElement>
 ): ISceneState {
-  const { selectedNodes, edges, getFreeUniqueNodeIds } = graphState;
+  const { selectedNodes, edges, getFreeUniqueNodeIds, findExecStartNode } =
+    graphState;
   const [extraCommands, setExtraCommands] = useState<Command[]>([]);
   const { setCenter, getZoom, project } = useReactFlow();
 
@@ -487,6 +488,8 @@ export default function useScene(
   );
 
   const onNodeAdd = (node: Node): void => {
+    const nds = graphState.getNodes();
+    const hasExecStartNode = findExecStartNode(nds);
     if (node.type === 'createVariable') {
       setExtraCommands((commands) => {
         if (
@@ -525,7 +528,7 @@ export default function useScene(
           },
         ];
       });
-    } else if (node.type === 'createFunction') {
+    } else if (node.type === 'createFunction' || hasExecStartNode) {
       setExtraCommands((commands) => {
         if (!node.data.title) {
           node.data.title = funNamePool.current.createNew('newFun');
