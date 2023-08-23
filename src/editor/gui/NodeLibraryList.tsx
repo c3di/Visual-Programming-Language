@@ -80,6 +80,21 @@ export default function NodeLibraryList({
     [nodeExtensions]
   );
   const [files, setFiles] = useState<ActualFileObject[]>([]);
+  const [showClearButton, setShowClearButton] = useState<boolean>(false);
+  const handleFileProcess = (
+    error: FilePondErrorDescription | null,
+    fileItem: FilePondFile
+  ): void => {
+    if (!error) {
+      setShowClearButton(true);
+    }
+    setShowClearButton(true);
+  };
+
+  const handleClear = (): void => {
+    setFiles([]);
+    setShowClearButton(false);
+  };
 
   return (
     <div
@@ -89,6 +104,7 @@ export default function NodeLibraryList({
       <FilePond
         credits={false}
         files={files}
+        onprocessfile={handleFileProcess}
         onupdatefiles={(fileItems) => {
           setFiles(fileItems.map((fileItem) => fileItem.file));
         }}
@@ -123,6 +139,11 @@ export default function NodeLibraryList({
           console.log(error);
         }}
       />
+      {showClearButton && (
+        <button className="clear-button" onClick={handleClear}>
+          Clear
+        </button>
+      )}
 
       <div
         style={{
