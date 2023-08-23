@@ -714,40 +714,42 @@ export default function useScene(
   const autoLayout = useCallback(() => {
     const ns = graphState.getNodes();
     const es = graphState.getEdges();
-    getLayoutedElements(ns, es).then(
-      ({ nodes, edges }: { nodes: any[]; edges: Edge[] }) => {
-        const flattenNds: any[] = [];
-        nodes.forEach((node) => {
-          flattenNode(node, flattenNds);
-        });
-
-        flattenNds.forEach((node) => {
-          delete node.ports;
-          delete node.x;
-          delete node.y;
-          delete node.edges;
-          delete node.layoutOptions;
-        });
-        graphState.setNodes((nodes) => {
-          const newNodes = nodes.map((node) => {
-            const n = flattenNds.find((n) => n.id === node.id);
-            if (n) {
-              return { ...node, position: n.position };
-            }
-            return node;
+    window.requestAnimationFrame(() => {
+      getAlignedElements(ns, es).then(
+        ({ nodes, edges }: { nodes: any[]; edges: Edge[] }) => {
+          const flattenNds: any[] = [];
+          nodes.forEach((node) => {
+            flattenNode(node, flattenNds);
           });
-          return newNodes;
-        });
-        graphState.setNodes(flattenNds);
-        window.requestAnimationFrame(() => {
+
+          flattenNds.forEach((node) => {
+            delete node.ports;
+            delete node.x;
+            delete node.y;
+            delete node.edges;
+            delete node.layoutOptions;
+          });
+          graphState.setNodes((nodes) => {
+            const newNodes = nodes.map((node) => {
+              const n = flattenNds.find((n) => n.id === node.id);
+              if (n) {
+                return { ...node, position: n.position };
+              }
+              return node;
+            });
+            return newNodes;
+          });
+          graphState.setNodes(flattenNds);
           window.requestAnimationFrame(() => {
             window.requestAnimationFrame(() => {
-              reactflowInstance.current?.fitView();
+              window.requestAnimationFrame(() => {
+                reactflowInstance.current?.fitView();
+              });
             });
           });
-        });
-      }
-    );
+        }
+      );
+    });
   }, []);
 
   const object2PythonDict = (source: object): string => {
@@ -1368,7 +1370,7 @@ const layoutOptions = {
   hierarchyHandling: 'INCLUDE_CHILDREN',
 };
 
-const getLayoutedElements = (nodes: any, edges: any): any => {
+const getAlignedElements = (nodes: any, edges: any): any => {
   const elkNodes = nodes.map((node: any) => {
     const nodeRect = document
       .querySelector(`[data-id="${String(node.id)}"]`)
