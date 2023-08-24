@@ -37,7 +37,6 @@ import {
 import { serializer } from '../Serializer';
 import { deserializer } from '../Deserializer';
 import { deepCopy } from '../util';
-// import { useSceneState } from '../Context';
 
 type OnChange<ChangesType> = (changes: ChangesType[]) => void;
 
@@ -109,8 +108,6 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
   });
   // the nodes will added more properties by reactflow, so we need to get the nodes from reactflow
   const { getNodes, getNode, getEdges, setCenter, getZoom } = useReactFlow();
-
-  // const { addNode } = useSceneState()?.sceneActions ?? {};
 
   const getNodeById = useCallback((id: string): Node | undefined => {
     return getNodes().find((n) => n.id === id);
@@ -296,14 +293,12 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
       });
     } else {
       console.log('no execute start, we create one');
-      // if (addNode) {
-      //   addNode('Flow Control.Execute Start');
-      // }
+      const nodeId = getFreeUniqueNodeIds(1)[0];
       addElements({
         newNodes: [
           {
-            id: '0',
-            type: 'Execute Start',
+            id: nodeId,
+            type: 'function',
             position: { x: 0, y: 0 },
             data: {
               configType: 'Flow Control.Execute Start',
@@ -324,7 +319,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
         ],
       });
     }
-  }, [nodes]);
+  }, []);
 
   const isConnectToNonRerouteNodes = useCallback(
     (node: Node, visited: string[] = []): boolean => {
