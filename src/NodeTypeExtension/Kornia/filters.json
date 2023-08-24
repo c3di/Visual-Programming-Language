@@ -4,10 +4,10 @@
     "Canny": {
       "type": "Canny",
       "category": "function",
-      "title": "Canny Edge Detection",
+      "title": "canny edge detection",
       "tooltip": "Find edges of the input image and filters them using the Canny algorithm.",
       "externalImports": "import kornia as K",
-      "functionName": "K.filters.canny",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.canny({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}},{{{inputs.7}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorSpace': 'grayscale', 'channelOrder': 'first', 'isBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -15,10 +15,22 @@
           "showWidget": false,
           "showTitle": false
         },
-        "input": {
-          "title": "input",
-          "dataType": "torch.tensor",
-          "tooltip": "input image tensor with shape (B, C, H, W) and intensity from (0, 1]."
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorSpace": "rgb",
+                "isBatched": true,
+                "channelOrder": "first",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+
+          "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
         },
         "low_threshold": {
           "title": "low_threshold",
@@ -64,11 +76,13 @@
           "showWidget": false,
           "showTitle": false
         },
-        "output": {
-          "title": "output",
-          "dataType": "tuple",
-          "defaultValue": "()",
-          "tooltip": "tuple(the canny edge magnitudes map, the canny edge magnitudes map, shape of (B, 1, H, W))"
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "image: the canny edge magnitudes map, shape of (B, 1, H, W)."
         }
       }
     }

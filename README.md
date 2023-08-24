@@ -1,59 +1,53 @@
-# Visual Programming Editors
-[![build](https://github.com/Max-ChenFei/VisualProgrammingEditor/actions/workflows/build.yml/badge.svg)](https://github.com/Max-ChenFei/VisualProgrammingEditor/actions/workflows/build.yml)
+# VPRCS: Visual Programming React Component Suite
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[![build](https://github.com/Max-ChenFei/Visual-Programming-React-Component-Suite/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Max-ChenFei/Visual-Programming-React-Component-Suite/actions/workflows/build.yml)
 
-## Available Scripts
+VPRCS (Visual Programming React Component Suite) includes React components—namely `VPEditor` and `NodelibraryPanel`—tailored for node-based visual programming. It's built for users to interactively construct visual workflows and experimental prototypes rapidly.
 
-In the project directory, you can run:
+![image-20230823172210509](./doc/screenshots/VPRCS.jpg)
 
-### `npm start`
+## Features
 
-Runs the app in the development mode.
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-## Interaction
-
-### View
-
-* pan: right mouse button holding
-* zoom: wheel mouse buttion
-* focus change by tab press
-* node move by arrow keys or drag by left mouse button
-
-### Selection
-
-* select element by left mouse click or Enter key press
-* multiple selection by left mouse button click + shift key press
-* marquee selecton by left mouse buttion hold and drag
-* selection all by Ctrl+A
-* cancel all selection by click the background or press Escape
-
-### Connection
-
-* drag the line for one handle to the other one by holding the left button
-
-### Delete
-
-- Delete key press
+* **Node-based Visual Programming Editor:** A user-friendly interactive canvas offering seamless zoom, pan, and node manipulation capabilities, articulately representing a range of operations.
+* **Rich Built-in Nodes:** Enhance your designs with our diverse integrated nodes, covering control flow, mathematical operations, variables, function interactions, reroute, and annotation nodes.
+* **Advanced User Tools:** Access convenient features like copy, paste, duplicate, and delete, intuitive menus, a detailed minimap, and shortcut keys for faster navigation and operations.
+* **Auto Layout:** Employ automated layout adjustments for optimal node alignment and view fitting.
+* **Highly Customizable:** Craft unique nodes using a JSON-based specification, tailoring them to your precise needs.
+* **Automatic Image Data Transitions via a Configurable State Machine:** **Semantic Interoperability in Action.** Achieve fluid transitions of image data through a user-configurable state machine, eliminating the need for manual data conversion.
+* **Textual Code Generation:** Facilitate source code generation directly from your visual design.
+* **Node-Library Panel:** A sophisticated panel displays and manages all installed node libraries, featuring easy installation, uninstallation, activation, and deactivation processes.
+* **Integration Ready:** Designed for seamless integration into existing React environments
 
 
-- [X] Node Move         left mouse button drag
+## Installation
+
+```python
+npm i vprcs
+```
+
+
+
+## Example
+
+An example is [here](https://github.com/Max-ChenFei/Visual-Programming-React-Component-Suite/blob/main/src/index.tsx)
+
+The test example app was bootstrapped using [Create React App](https://github.com/facebook/create-react-app). After cloning the project, execute `npm start` in the console to run the app. You can then view the example in your browser at [http://localhost:3000](http://localhost:3000/).
+
+
+
+## Document
+
+For a comprehensive guide and detailed documentation including basic view and navigation, node operations, JSON-based specification for Node Library, code generation, and so on, please visit our [Document](./doc/Document.md).
+
+
+
+## Support & Contribution
+
+- Issues: For bug reports and feature requests, please open the GitHub issue.
+- Contributing: Pull requests are welcome. For major changes, please open an issue first to discuss the proposed change.
+
+
+
+## License
+
+This project is licensed under the GNU General Public License v3.0 license.

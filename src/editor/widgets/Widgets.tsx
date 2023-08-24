@@ -19,11 +19,11 @@ export function NumberInput(props: WidgetProps): JSX.Element {
       style={inputStyles}
       onChange={(e) => {
         if (e.target.value === '') {
-          onChange(0.0);
+          onChange?.(0.0);
         } else {
           // avoid start with 0
           const val = Number(e.target.value);
-          onChange(val);
+          onChange?.(val);
           e.target.value = val.toString();
         }
       }}
@@ -37,31 +37,23 @@ export function NumberInput(props: WidgetProps): JSX.Element {
 }
 
 export function TextInput(props: WidgetProps): JSX.Element {
-  const { value, className, onChange, onBlur, onKeyDown } = props;
-  const [inputValue, setInputValue] = React.useState(value);
-  React.useEffect(() => {
-    setInputValue(value);
-  }, [value]);
+  const { value, className, onChange, onBlur, onEnterKeyDown } = props;
   return (
     <input
       className={className}
       type={'text'}
       defaultValue={value}
       style={inputStyles}
-      value={inputValue}
       onChange={(e) => {
-        onChange(e.target.value);
-        setInputValue(e.target.value);
+        onChange?.(e.target.value);
       }}
       onBlur={(e) => {
-        onBlur?.(inputValue);
-        setInputValue(value);
+        onBlur?.(e.target);
       }}
       onKeyDown={(e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
-          onKeyDown?.(inputValue);
-          setInputValue(value);
+          onEnterKeyDown?.(e.target);
         }
       }}
     />
@@ -77,7 +69,7 @@ export function BooleanInput(props: WidgetProps): JSX.Element {
       defaultChecked={value}
       style={inputStyles}
       onChange={(e) => {
-        onChange(e.target.checked);
+        onChange?.(e.target.checked);
       }}
     />
   );
@@ -92,7 +84,7 @@ export function EnumSelect(props: WidgetProps): JSX.Element {
       defaultValue={defaultValue}
       style={inputStyles}
       onChange={(e) => {
-        onChange(e.target.value);
+        onChange?.(e.target.value);
       }}
     >
       {options &&
@@ -114,11 +106,11 @@ export const IntegerInput = (props: WidgetProps): JSX.Element => {
       defaultValue={defaultVal}
       style={inputStyles}
       onChange={(e) => {
-        if (e.target.value === '') onChange(0);
+        if (e.target.value === '') onChange?.(0);
         else {
           // avoid start with 0
           const val = Number(e.target.value);
-          onChange(val);
+          onChange?.(val);
           e.target.value = val.toString();
         }
       }}

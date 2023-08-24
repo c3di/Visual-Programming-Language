@@ -8,7 +8,7 @@
       "title": "read_image",
       "tooltip": "Reads a JPEG or PNG image into a 3 dimensional RGB or grayscale Tensor. Optionally converts the image to the desired format. The values of the output tensor are uint8 in [0, 255].",
       "externalImports": "from torchvision import io\nfrom torchvision.io import ImageReadMode",
-      "functionName": "io.read_image",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = io.read_image({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}, 'dataType': 'torch.tensor', 'metadata': {'colorSpace': 'rgb', 'channelOrder': 'first', 'isBatched': False, 'intensityRange': '0-255', 'device': 'cpu'}}\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -39,8 +39,11 @@
         },
         "image": {
           "title": "image",
-          "dataType": "torch.tensor",
-          "tooltip": "image (Tensor[image_channels, image_height, image_width]) uint8 in [0, 255]"
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "{dataType: torch.tensor, value, layout: [chw], colorMode: [rgb, grayscale], intensityRange: 0-255' device: cpu}"
         }
       }
     },

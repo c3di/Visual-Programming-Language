@@ -6,3 +6,22 @@
   font-size: var(--vp-filepond-font-size) !important;
   font-family: var(--vp-filepond-font-family);
 }
+
+.filepond--root {
+  margin-bottom: 3px !important;
+}
+
+.clear-button {
+  margin-bottom: 8px;
+  width: 30%;
+  cursor: 'pointer';
+  border: none;
+  outline: none;
+  transition: background-color 0.3s ease;
+  align-self: center;
+}
+
+.clear-button:hover {
+  background-color: #ddddddbe; /* or any other hover effect you want */
+  cursor: pointer;
+}

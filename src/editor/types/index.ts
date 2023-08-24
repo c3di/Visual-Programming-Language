@@ -10,7 +10,12 @@ export type {
   SerializedGraphEdge,
   NodePackage,
 } from './ConfigTypes';
-export { addNewType } from './DataType';
+export {
+  addNewType,
+  type IImage as Image,
+  type ISourceImage,
+  type ITargetImage,
+} from './DataType';
 export { type Handle as HandleData } from './Handle';
 export { type ConnectableData } from './Connectable';
 export { type VariableNodeData } from './Variable';

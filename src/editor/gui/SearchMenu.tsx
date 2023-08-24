@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { type Connection } from 'reactflow';
-import { Menu } from '@mui/material';
+import { Popover } from '@mui/material';
 import { createSvgIcon } from '@mui/material/utils';
 import {
   Comment,
@@ -18,6 +18,7 @@ import {
   isDataTypeMatch,
   type OnConnectStartParams,
   type SourceCodeExec,
+  type Node,
 } from '../types';
 import { type Command } from '../hooks';
 import { nodeConfigRegistry } from '../extension';
@@ -52,6 +53,7 @@ const SearchMenu = memo(function SearchMenu({
   moreCommands,
   startHandleInfo,
   addEdge,
+  getNodById,
 }: {
   onClose: () => void;
   anchorPosition: { top: number; left: number };
@@ -65,6 +67,7 @@ const SearchMenu = memo(function SearchMenu({
   moreCommands?: Command[];
   startHandleInfo?: OnConnectStartParams;
   addEdge?: (params: Connection) => void;
+  getNodById: (id: string) => Node | undefined;
 }): JSX.Element {
   const [commands, setCommand] = useState<Command[]>([
     {
@@ -314,24 +317,60 @@ const SearchMenu = memo(function SearchMenu({
     }
   };
 
+  const addNode = useCallback(
+    (configType: string) => {
+      const node = addNodeWithSceneCoord?.(configType, anchorPosition);
+      if (toFilter() && node) {
+        const dragFromNode = getNodById(startHandleInfo!.nodeId!);
+        for (const [id, handle] of Object.entries(
+          startHandleInfo!.handleType === 'source'
+            ? dragFromNode?.data.outputs ?? {}
+            : dragFromNode?.data.inputs ?? {}
+        )) {
+          const matchingHandle = findHandleWithMatchingDataType(
+            node,
+            startHandleInfo!.handleType,
+            (handle as any).dataType
+          );
+
+          let newConnection: Connection;
+          if (startHandleInfo!.handleType === 'source' && matchingHandle) {
+            newConnection = {
+              source: startHandleInfo!.nodeId,
+              target: Object(node).id,
+              sourceHandle: id,
+              targetHandle: matchingHandle,
+            };
+            window.requestAnimationFrame(() => {
+              addEdge?.(newConnection);
+            });
+          } else if (
+            startHandleInfo!.handleType === 'target' &&
+            matchingHandle
+          ) {
+            newConnection = {
+              source: Object(node).id,
+              target: startHandleInfo!.nodeId,
+              sourceHandle: matchingHandle,
+              targetHandle: id,
+            };
+            window.requestAnimationFrame(() => {
+              addEdge?.(newConnection);
+            });
+          }
+        }
+      }
+    },
+    [startHandleInfo]
+  );
+
   const onItemClick = useCallback((item: TreeItemData): void => {
     if (!item) return;
     if (Array.isArray(item.children)) return;
     if (item.configType) {
-      const node = addNodeWithSceneCoord?.(item.configType, anchorPosition);
-      if (toFilter() && node) {
-        const matchingHandle = findHandleWithMatchingDataType(
-          node,
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-          startHandleInfo!.handleType,
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-          startHandleInfo!.handleDataType
-        );
-        connectWithNewNode(node, matchingHandle);
-      }
-
-      onClose();
+      addNode(item.configType);
     }
+    onClose();
   }, []);
 
   const onEnterKeyDown = useCallback(
@@ -340,17 +379,7 @@ const SearchMenu = memo(function SearchMenu({
       if (Array.isArray(item.children)) return;
       if (event.key === 'Enter') {
         if (item.configType) {
-          const node = addNodeWithSceneCoord?.(item.configType, anchorPosition);
-          if (toFilter() && node) {
-            const matchingHandle = findHandleWithMatchingDataType(
-              node,
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-              startHandleInfo!.handleType,
-              // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-              startHandleInfo!.handleDataType
-            );
-            connectWithNewNode(node, matchingHandle);
-          }
+          addNode(item.configType);
         } else {
           executeCommandByName(commands, item.name);
         }
@@ -402,7 +431,7 @@ const SearchMenu = memo(function SearchMenu({
   );
 
   return (
-    <Menu
+    <Popover
       transitionDuration={0}
       onContextMenu={(e) => {
         e.preventDefault();
@@ -456,7 +485,7 @@ const SearchMenu = memo(function SearchMenu({
         onEnterKeyDown={onEnterKeyDown}
         triggerExpand={toFilter()}
       />
-    </Menu>
+    </Popover>
   );
 });
 

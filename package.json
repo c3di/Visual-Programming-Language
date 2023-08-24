@@ -1,11 +1,11 @@
 {
-  "name": "visual-programming-editor",
-  "version": "8.5.1",
-  "description": "General Node-based Visual Programming editor",
+  "name": "vprcs",
+  "version": "0.0.1",
+  "description": "VPRCS (Visual Programming React Component Suite) includes React components—namely `VPEditor` and `NodelibraryPanel`, tailored for node-based visual programming. It's built for users to interactively construct visual workflows and experimental prototypes rapidly.",
   "private": false,
   "repository": {
     "type": "git",
-    "url": "git@github.com:Max-ChenFei/VisualProgrammingEditor.git"
+    "url": "git@github.com:Max-ChenFei/Visual-Programming-React-Component-Suite.git"
   },
   "keywords": [
     "react-widget",
@@ -17,7 +17,7 @@
   "author": "Fei Chen",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/Max-ChenFei/VisualProgrammingEditor/issues",
+    "url": "https://github.com/Max-ChenFei/Visual-Programming-React-Component-Suite/issues",
     "email": "boxchenfei@gmail.com"
   },
   "dependencies": {

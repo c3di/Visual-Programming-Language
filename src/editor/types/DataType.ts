@@ -1,5 +1,27 @@
 import { type HandleType } from 'reactflow';
 
+interface ImageMetadata {
+  colorSpace: 'rgb' | 'gbr' | 'grayscale';
+  channelOrder: 'none' | 'first' | 'last';
+  isBatched: boolean;
+  intensityRange: '0-255' | '0-1';
+  device: 'cpu' | 'gpu';
+}
+
+export interface ISourceImage {
+  dataType: string;
+  value: any;
+  metadata: ImageMetadata;
+}
+
+export interface ITargetImage {
+  dataType: string;
+  value: any;
+  metadata: ImageMetadata[];
+}
+
+export type IImage = ISourceImage | ITargetImage;
+
 const getNewColor = (noIncludes: string[]): string => {
   let color = '';
   do {
@@ -20,6 +42,7 @@ export interface DataType {
   shownInColor: string;
   widget?: string;
   options?: any;
+  isStruct?: boolean;
 }
 
 export const DataTypes: Record<string, DataType> = {
@@ -64,6 +87,18 @@ export const DataTypes: Record<string, DataType> = {
     defaultValue: '[]',
     widget: 'TextInput',
     shownInColor: `${hsl(300, 100, 25)}`,
+  },
+  image: {
+    shownInColor: `${hsl(300, 200, 25)}`,
+    isStruct: true,
+    defaultValue: {
+      dataType: 'None',
+      value: 'None',
+      layout: ['bchw'],
+      colorMode: ['rgb'],
+      intensityRange: '0-255',
+      device: 'cpu',
+    },
   },
 };
 

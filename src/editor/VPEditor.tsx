@@ -405,6 +405,7 @@ const Scene = ({
                   toFilter: toFilterFlag,
                   startHandleInfo: startHandle,
                   addEdge: sceneActions?.addEdge,
+                  getNodById: sceneActions?.getNodeById,
                 }
               );
               gui.connectionStartNodeId.current = null;
