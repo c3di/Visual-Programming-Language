@@ -108,8 +108,7 @@ export default function useScene(
   reactflowInstance: React.MutableRefObject<ReactFlowInstance | undefined>,
   domReference: React.RefObject<HTMLDivElement>
 ): ISceneState {
-  const { selectedNodes, edges, getFreeUniqueNodeIds, findExecStartNode } =
-    graphState;
+  const { selectedNodes, edges, getFreeUniqueNodeIds } = graphState;
   const [extraCommands, setExtraCommands] = useState<Command[]>([]);
   const { setCenter, getZoom, project } = useReactFlow();
 
@@ -350,6 +349,14 @@ export default function useScene(
         position.x += positionOffset.x;
         position.y += positionOffset.y;
       }
+      if (configType === 'Flow Control.Execute Start') {
+        const existingExecStartNode = graphState
+          .getNodes()
+          .find((n) => n.data.configType === 'Flow Control.Execute Start');
+        if (existingExecStartNode) {
+          configType = 'Function & Variable Creation.Create Function';
+        }
+      }
       const config = deserializer.serializedToGraphNodeConfig({
         id,
         title: data?.title,
@@ -488,8 +495,6 @@ export default function useScene(
   );
 
   const onNodeAdd = (node: Node): void => {
-    const nds = graphState.getNodes();
-    const hasExecStartNode = findExecStartNode(nds);
     if (node.type === 'createVariable') {
       setExtraCommands((commands) => {
         if (
@@ -528,7 +533,7 @@ export default function useScene(
           },
         ];
       });
-    } else if (node.type === 'createFunction' || hasExecStartNode) {
+    } else if (node.type === 'createFunction') {
       setExtraCommands((commands) => {
         if (!node.data.title) {
           node.data.title = funNamePool.current.createNew('newFun');
