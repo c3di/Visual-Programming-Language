@@ -29,7 +29,7 @@ npm i vprcs
 
 ## Example
 
-An example is [here]([Visual-Programming-React-Component-Suite/src/index.tsx at main · Max-ChenFei/Visual-Programming-React-Component-Suite (github.com)](https://github.com/Max-ChenFei/Visual-Programming-React-Component-Suite/blob/main/src/index.tsx))
+An example is [here](https://github.com/Max-ChenFei/Visual-Programming-React-Component-Suite/blob/main/src/index.tsx)
 
 The test example app was bootstrapped using [Create React App](https://github.com/facebook/create-react-app). After cloning the project, execute `npm start` in the console to run the app. You can then view the example in your browser at [http://localhost:3000](http://localhost:3000/).
 
