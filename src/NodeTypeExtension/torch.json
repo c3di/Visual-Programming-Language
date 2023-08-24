@@ -66,8 +66,8 @@
         }
       }
     },
-    "Tensor / Float": {
-      "type": "Tensor / Float",
+    "tensor / float": {
+      "type": "tensor / float",
       "category": "math",
       "title": "/",
       "tooltip": "Tensor Divide by a scalar",
