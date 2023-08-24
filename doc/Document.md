@@ -26,7 +26,7 @@
       - **Action**: Insert a new node using the context menu.
       - **How-to**: Right-click on the canvas background to open the menu, then select the desired node type from the menu items to add.
 
-    - **Port-to-Background **
+    - **Port-to-Background**
       - **Action**: Extend from an existing port, add a new node, and connect them.
       - **How-to**:  Left-click and drag from a node's port, and release on the canvas background. When the menu appears, select the desired node type. The new node's corresponding port will automatically connect to the initial node's port from which you dragged.
 
@@ -192,7 +192,7 @@ With this structured approach, our goal is to foster a clear, transparent, and a
 
 **Example**:
 
-![example](.\screenshots\node-config.jpg)
+![example](./screenshots/node-config.jpg)
 
 ```json
 {
@@ -271,13 +271,13 @@ With this structured approach, our goal is to foster a clear, transparent, and a
 }
 ```
 
-##　**Automatic Image Data Transitions via a Configurable State Machine**
+## **Automatic Image Data Transitions via a Configurable State Machine**
 
 Different software libraries and tools (such as TensorFlow, PyTorch, and OpenCV) have their distinct ways of representing and working with images. By having a unified image representation, you allow seamless interaction between these tools. We've developed a unified, abstract representation for image data, paired with a state machine model. This system facilitates automatic data type conversion based on predefined transition rules, streamlining the process and eliminating the need for cumbersome manual conversions.
 
-![automatic image data transitions](.\screenshots\Automatic_Image_Data_Transitions_via_a_Configurab_e_State_Machine.jpg)
+![automatic image data transitions](./screenshots/Automatic_Image_Data_Transitions_via_a_Configurab_e_State_Machine.jpg)
 
-###　**Image Representation**
+### **Image Representation**
 
 ``````typescript
 interface ImageMetadata {
