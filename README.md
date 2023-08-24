@@ -4,7 +4,7 @@
 
 VPRCS (Visual Programming React Component Suite) includes React components—namely `VPEditor` and `NodelibraryPanel`—tailored for node-based visual programming. It's built for users to interactively construct visual workflows and experimental prototypes rapidly.
 
-![image-20230823172210509](.\doc\screenshots\VPRCS.jpg)
+![image-20230823172210509](./doc/screenshots/VPRCS.jpg)
 
 ## Features
 
@@ -17,7 +17,6 @@ VPRCS (Visual Programming React Component Suite) includes React components—nam
 * **Textual Code Generation:** Facilitate source code generation directly from your visual design.
 * **Node-Library Panel:** A sophisticated panel displays and manages all installed node libraries, featuring easy installation, uninstallation, activation, and deactivation processes.
 * **Integration Ready:** Designed for seamless integration into existing React environments
-
 
 
 ## Installation
@@ -38,7 +37,7 @@ The test example app was bootstrapped using [Create React App](https://github.co
 
 ## Document
 
-For a comprehensive guide and detailed documentation including basic view and navigation, node operations, JSON-based specification for Node Library, code generation, and so on, please visit our [Document](./doc/Document.MD).
+For a comprehensive guide and detailed documentation including basic view and navigation, node operations, JSON-based specification for Node Library, code generation, and so on, please visit our [Document](./doc/Document.md).
 
 
 
@@ -49,6 +48,6 @@ For a comprehensive guide and detailed documentation including basic view and na
 
 
 
-##　License
+## License
 
 This project is licensed under the GNU General Public License v3.0 license.
