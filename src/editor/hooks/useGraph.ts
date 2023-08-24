@@ -102,6 +102,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
   const [nodes, setNodes, onNodesChange] = useNodesState(initGraph.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initGraph.edges);
   const shouldUpdateDataTypeOfRerouteNode = useRef(false);
+  const shouldAddExecStartNode = useRef(false);
   const selectedCounts = useRef<selectedElementsCounts>({
     nodesCount: 0,
     edgesCount: 0,
@@ -279,46 +280,6 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
       }
     }
     return dataType;
-  }, []);
-
-  const keepOneExecStartNodeInGraph = useCallback((): void => {
-    const allNodes = getNodes();
-    const execStartNode = findExecStartNode(allNodes);
-    if (execStartNode) {
-      console.log('we already have execute start node');
-      const { x, y, width, height } = getRectOfNodes(execStartNode);
-      setCenter(x + width / 2, y + height / 2, {
-        duration: 200,
-        zoom: getZoom(),
-      });
-    } else {
-      console.log('no execute start, we create one');
-      const nodeId = getFreeUniqueNodeIds(1)[0];
-      addElements({
-        newNodes: [
-          {
-            id: nodeId,
-            type: 'function',
-            position: { x: 0, y: 0 },
-            data: {
-              configType: 'Flow Control.Execute Start',
-              category: 'function',
-              title: 'Execute Start',
-              tooltip: 'The execute start point of the program',
-              sourceCode: '{{{outputs.0}}}',
-              outputs: {
-                execOut: {
-                  tooltip: 'exec out',
-                  dataType: 'exec',
-                  showWidget: false,
-                  showTitle: false,
-                },
-              },
-            },
-          },
-        ],
-      });
-    }
   }, []);
 
   const isConnectToNonRerouteNodes = useCallback(
@@ -740,8 +701,64 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
   }, [edges]);
 
   useEffect(() => {
-    keepOneExecStartNodeInGraph();
+    const allNodes = getNodes();
+    const execStartNode = findExecStartNode(allNodes);
+    if (!execStartNode) {
+      shouldAddExecStartNode.current = true;
+    } else {
+      centerExecStartNode(execStartNode);
+    }
   }, [nodes]);
+
+  useEffect(() => {
+    if (shouldAddExecStartNode.current) {
+      addExecStartNode();
+      shouldAddExecStartNode.current = false;
+    }
+  }, [nodes]);
+
+  const findExecStartNode = (nodes: Node[]): Node[] | undefined => {
+    const ExecuteStartNode = nodes.filter(
+      (node) => node.data.configType === 'Flow Control.Execute Start'
+    );
+    return ExecuteStartNode.length > 0 ? ExecuteStartNode : undefined;
+  };
+
+  const addExecStartNode = useCallback(() => {
+    const nodeId = getFreeUniqueNodeIds(1)[0];
+    addElements({
+      newNodes: [
+        {
+          id: nodeId,
+          type: 'function',
+          position: { x: 0, y: 0 },
+          data: {
+            configType: 'Flow Control.Execute Start',
+            category: 'function',
+            title: 'Execute Start',
+            tooltip: 'The execute start point of the program',
+            sourceCode: '{{{outputs.0}}}',
+            outputs: {
+              execOut: {
+                tooltip: 'exec out',
+                dataType: 'exec',
+                showWidget: false,
+                showTitle: false,
+              },
+            },
+          },
+        },
+      ],
+    });
+  }, [nodes]);
+
+  const centerExecStartNode = useCallback((execStartNode: Node[]) => {
+    const { x, y, width, height } = getRectOfNodes(execStartNode);
+    setCenter(x + width / 2, y + height / 2, {
+      duration: 200,
+      zoom: getZoom(),
+    });
+  }, []);
 
   const getConnectedInfo = (
     nodeId: string,
@@ -786,12 +803,6 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     });
   };
 
-  const findExecStartNode = (nodes: Node[]): Node[] | undefined => {
-    const ExecuteStartNode = nodes.filter(
-      (node) => node.data.configType === 'Flow Control.Execute Start'
-    );
-    return ExecuteStartNode.length > 0 ? ExecuteStartNode : undefined;
-  };
   return {
     initGraph,
     getFreeUniqueNodeIds,
