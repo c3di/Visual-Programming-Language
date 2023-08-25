@@ -328,6 +328,22 @@ export default function useScene(
           }
         });
 
+        const execStartNodeKey = Object.keys(newNodes).find(
+          (key) =>
+            newNodes[key].data.configType === 'Flow Control.Execute Start'
+        );
+
+        if (execStartNodeKey) {
+          const execStartNode = newNodes[execStartNodeKey];
+          const config = deserializer.serializedToGraphNodeConfig({
+            id: execStartNode.id,
+            type: 'Function & Variable Creation.Create Function',
+            position: execStartNode.position,
+            selected: true,
+          });
+          newNodes[execStartNodeKey] = deserializer.configToNode(config);
+        }
+
         graphState.selectAll(false);
         for (const node of Object.values(newNodes)) {
           onNodeAdd(node);
