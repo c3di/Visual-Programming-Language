@@ -757,6 +757,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
       }
     });
   };
+
   return {
     initGraph,
     getFreeUniqueNodeIds,
