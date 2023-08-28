@@ -275,7 +275,7 @@ With this structured approach, our goal is to foster a clear, transparent, and a
 
 Different software libraries and tools (such as TensorFlow, PyTorch, and OpenCV) have their distinct ways of representing and working with images. By having a unified image representation, you allow seamless interaction between these tools. We've developed a unified, abstract representation for image data, paired with a Knowledge Graph. This system facilitates automatic data type conversion based on predefined transition rules, streamlining the process and eliminating the need for cumbersome manual conversions.
 
-![automatic image data transitions](./screenshots/Automatic_Image_Data_Transitions_via_a_Configurable_State_Machine.jpg)
+![automatic image data transitions](./screenshots/Automatic_Image_Data_Transitions_via_a_Configurable_Knowledge_Graph.jpg)
 
 ### **Image Representation**
 
@@ -368,4 +368,4 @@ The conversion rule can be configured using a JSON file. For instance, here's ho
 }
 ```
 
-For more conversion rules please check [Automatic_Image_Data Transitions_via_a_Configurable_State_Machine.ipynb](https://github.com/Max-ChenFei/Visual-Programming-React-Component-Suite/blob/main/doc/Automatic_Image_Data Transitions_via_a_Configurable_State_Machine.ipynb)
+For more conversion rules please check [Automatic_Image_Data Transitions_via_a_Configurable_Knowledge_Graph.ipynb](https://github.com/Max-ChenFei/Visual-Programming-React-Component-Suite/blob/main/doc/Automatic_Image_Data Transitions_via_a_Configurable_Knowledge_Graph.ipynb)
