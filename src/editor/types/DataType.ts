@@ -1,9 +1,9 @@
 import { type HandleType } from 'reactflow';
 
 interface ImageMetadata {
-  colorSpace: 'rgb' | 'gbr' | 'grayscale';
-  channelOrder: 'none' | 'first' | 'last';
-  isBatched: boolean;
+  colorChannel: 'rgb' | 'gbr' | 'grayscale';
+  channelOrder: 'none' | 'channelFirst' | 'channelLast';
+  isMiniBatched: boolean;
   intensityRange: '0-255' | '0-1';
   device: 'cpu' | 'gpu';
 }
