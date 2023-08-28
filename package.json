@@ -1,6 +1,6 @@
 {
   "name": "vprcs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "VPRCS (Visual Programming React Component Suite) includes React components—namely `VPEditor` and `NodelibraryPanel`, tailored for node-based visual programming. It's built for users to interactively construct visual workflows and experimental prototypes rapidly.",
   "private": false,
   "repository": {

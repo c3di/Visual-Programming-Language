@@ -1,4 +1,4 @@
-# VPRCS Document
+# Document
 
 [toc]
 
@@ -271,9 +271,9 @@ With this structured approach, our goal is to foster a clear, transparent, and a
 }
 ```
 
-## **Automatic Image Data Transitions via a Configurable State Machine**
+## **Automatic Image Data Transitions via a Configurable Knowledge Graph**
 
-Different software libraries and tools (such as TensorFlow, PyTorch, and OpenCV) have their distinct ways of representing and working with images. By having a unified image representation, you allow seamless interaction between these tools. We've developed a unified, abstract representation for image data, paired with a state machine model. This system facilitates automatic data type conversion based on predefined transition rules, streamlining the process and eliminating the need for cumbersome manual conversions.
+Different software libraries and tools (such as TensorFlow, PyTorch, and OpenCV) have their distinct ways of representing and working with images. By having a unified image representation, you allow seamless interaction between these tools. We've developed a unified, abstract representation for image data, paired with a Knowledge Graph. This system facilitates automatic data type conversion based on predefined transition rules, streamlining the process and eliminating the need for cumbersome manual conversions.
 
 ![automatic image data transitions](./screenshots/Automatic_Image_Data_Transitions_via_a_Configurable_State_Machine.jpg)
 
@@ -281,9 +281,9 @@ Different software libraries and tools (such as TensorFlow, PyTorch, and OpenCV)
 
 ``````typescript
 interface ImageMetadata {
-  colorSpace: 'rgb' | 'gbr' | 'grayscale';
-  channelOrder: 'none' | 'first' | 'last';
-  isBatched: boolean;
+  colorChannel: 'rgb' | 'gbr' | 'grayscale';
+  channelOrder: 'none' | 'channelFirst' | 'channelLast';
+  isMiniBatched: boolean;
   intensityRange: '0-255' | '0-1';
   device: 'cpu' | 'gpu';
 }
@@ -321,7 +321,7 @@ In the output handle, define the default value for that specific handle and then
 
 ```json
 {
-"sourceCode": "{{indent}}{{{outputs.1}}} = io.read_image({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}, 'dataType': 'torch.tensor', 'metadata': {'colorSpace': 'rgb', 'channelOrder': 'first', 'isBatched': False, 'intensityRange': '0-255', 'device': 'cpu'}}\n{{{outputs.0}}}"
+"sourceCode": "{{indent}}{{{outputs.1}}} = io.read_image({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}, 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': False, 'intensityRange': '0-255', 'device': 'cpu'}}\n{{{outputs.0}}}"
 ...
 }
 ```
@@ -330,21 +330,21 @@ In the output handle, define the default value for that specific handle.
 
 ```json
 { 
-	"image": {
+  "image": {
       "title": "image",
       "dataType": "image",
       "defaultValue": {
         "dataType": "numpy.ndarray",
         "metadata": [
           {
-            "colorSpace": "rgb",
-            "isBatched": false,
-            "channelOrder": "last",
+            "colorChannel": "rgb",
+            "isMiniBatched": false,
+            "channelOrder": "channelLast",
             "intensityRange": "0-255"
           },
           {
-            "colorSpace": "grayscale",
-            "isBatched": false,
+            "colorChannel": "grayscale",
+            "isMiniBatched": false,
             "channelOrder": "none",
             "intensityRange": "0-255"
           }
