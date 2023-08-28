@@ -368,4 +368,4 @@ The conversion rule can be configured using a JSON file. For instance, here's ho
 }
 ```
 
-For more conversion rules please check [Automatic_Image_Data Transitions_via_a_Configurable_Knowledge_Graph.ipynb](https://github.com/Max-ChenFei/Visual-Programming-React-Component-Suite/blob/main/doc/Automatic_Image_DataTransitions_via_a_Configurable_Knowledge_Graph.ipynb)
+For more conversion rules please check [Automatic_Image_Data Transitions_via_a_Configurable_Knowledge_Graph.ipynb](https://github.com/Max-ChenFei/Visual-Programming-React-Component-Suite/blob/main/doc/Automatic_Image_Data_Transitions_via_a_Configurable_Knowledge_Graph.ipynb)
