@@ -1,0 +1,705 @@
+{
+  "enable": true,
+  "nodes": {
+    "Dilation": {
+      "type": "Dilation",
+      "category": "function",
+      "title": "dilation",
+      "tooltip": "Return the dilated image applying the same kernel in each channel.",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.morphology.dilation({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
+        },
+        "kernel": {
+          "title": "kernel",
+          "dataType": "torch.tensor",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky) "
+        },
+        "structuring_element": {
+          "title": "structuring_element",
+          "dataType": "torch.tensor",
+          "defaultValue": "None",
+          "tooltip": "Structuring element used for the grayscale dilation."
+        },
+        "origin ": {
+          "title": "origin",
+          "dataType": "tuple",
+          "defaultValue": "None",
+          "tooltip": "Origin of the structuring element. Default: None and uses the center of the structuring element as origin (rounding towards zero)."
+        },
+        "border_type": {
+          "title": "border_type",
+          "dataType": "string",
+          "defaultValue": "geodesic",
+          "tooltip": "It determines how the image borders are handled, where border_value is the value when border_type is equal to constant."
+        },
+        "border_value": {
+          "title": "border_value",
+          "dataType": "float",
+          "defaultValue": 0.0,
+          "tooltip": "Value to fill past edges of input if border_type is constant"
+        },
+        "max_val": {
+          "title": "max_val",
+          "dataType": "float",
+          "defaultValue": "1e4",
+          "tooltip": "The value of the infinite elements in the kernel"
+        },
+        "engine": {
+          "title": "engine",
+          "dataType": "str",
+          "defaultValue": "unfold",
+          "tooltip": "convolution is faster and less memory hungry, and unfold is more stable numerically"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "image: Dilated image with shape, shape of (B, C, H, W)."
+        }
+      }
+    },
+    "Erosion": {
+      "type": "Erosion",
+      "category": "function",
+      "title": "erosion",
+      "tooltip": "Return the eroded image applying the same kernel in each channel.",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.morphology.erosion({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
+        },
+        "kernel": {
+          "title": "kernel",
+          "dataType": "torch.tensor",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky) "
+        },
+        "structuring_element": {
+          "title": "structuring_element",
+          "dataType": "torch.tensor",
+          "defaultValue": "None",
+          "tooltip": "Structuring element used for the grayscale dilation."
+        },
+        "origin ": {
+          "title": "origin",
+          "dataType": "tuple",
+          "defaultValue": "None",
+          "tooltip": "Origin of the structuring element. Default: None and uses the center of the structuring element as origin (rounding towards zero)."
+        },
+        "border_type": {
+          "title": "border_type",
+          "dataType": "string",
+          "defaultValue": "geodesic",
+          "tooltip": "It determines how the image borders are handled, where border_value is the value when border_type is equal to constant."
+        },
+        "border_value": {
+          "title": "border_value",
+          "dataType": "float",
+          "defaultValue": 0.0,
+          "tooltip": "Value to fill past edges of input if border_type is constant"
+        },
+        "max_val": {
+          "title": "max_val",
+          "dataType": "float",
+          "defaultValue": "1e4",
+          "tooltip": "The value of the infinite elements in the kernel"
+        },
+        "engine": {
+          "title": "engine",
+          "dataType": "str",
+          "defaultValue": "unfold",
+          "tooltip": "convolution is faster and less memory hungry, and unfold is more stable numerically"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "image: Eroded image with shape, shape of (B, C, H, W)."
+        }
+      }
+    },
+    "Opening": {
+      "type": "Opening",
+      "category": "function",
+      "title": "opening",
+      "tooltip": "Return the opened image, (that means, dilation after an erosion) applying the same kernel in each channel.",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.morphology.opening({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
+        },
+        "kernel": {
+          "title": "kernel",
+          "dataType": "torch.tensor",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky) "
+        },
+        "structuring_element": {
+          "title": "structuring_element",
+          "dataType": "torch.tensor",
+          "defaultValue": "None",
+          "tooltip": "Structuring element used for the grayscale dilation."
+        },
+        "origin ": {
+          "title": "origin",
+          "dataType": "tuple",
+          "defaultValue": "None",
+          "tooltip": "Origin of the structuring element. Default: None and uses the center of the structuring element as origin (rounding towards zero)."
+        },
+        "border_type": {
+          "title": "border_type",
+          "dataType": "string",
+          "defaultValue": "geodesic",
+          "tooltip": "It determines how the image borders are handled, where border_value is the value when border_type is equal to constant."
+        },
+        "border_value": {
+          "title": "border_value",
+          "dataType": "float",
+          "defaultValue": 0.0,
+          "tooltip": "Value to fill past edges of input if border_type is constant"
+        },
+        "max_val": {
+          "title": "max_val",
+          "dataType": "float",
+          "defaultValue": "1e4",
+          "tooltip": "The value of the infinite elements in the kernel"
+        },
+        "engine": {
+          "title": "engine",
+          "dataType": "str",
+          "defaultValue": "unfold",
+          "tooltip": "convolution is faster and less memory hungry, and unfold is more stable numerically"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "image: Opened image with shape, shape of (B, C, H, W)."
+        }
+      }
+    },
+    "Closing": {
+      "type": "Closing",
+      "category": "function",
+      "title": "closing",
+      "tooltip": "Return the closed image, (that means, erosion after a dilation) applying the same kernel in each channel.",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.morphology.closing({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
+        },
+        "kernel": {
+          "title": "kernel",
+          "dataType": "torch.tensor",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky) "
+        },
+        "structuring_element": {
+          "title": "structuring_element",
+          "dataType": "torch.tensor",
+          "defaultValue": "None",
+          "tooltip": "Structuring element used for the grayscale dilation."
+        },
+        "origin ": {
+          "title": "origin",
+          "dataType": "tuple",
+          "defaultValue": "None",
+          "tooltip": "Origin of the structuring element. Default: None and uses the center of the structuring element as origin (rounding towards zero)."
+        },
+        "border_type": {
+          "title": "border_type",
+          "dataType": "string",
+          "defaultValue": "geodesic",
+          "tooltip": "It determines how the image borders are handled, where border_value is the value when border_type is equal to constant."
+        },
+        "border_value": {
+          "title": "border_value",
+          "dataType": "float",
+          "defaultValue": 0.0,
+          "tooltip": "Value to fill past edges of input if border_type is constant"
+        },
+        "max_val": {
+          "title": "max_val",
+          "dataType": "float",
+          "defaultValue": "1e4",
+          "tooltip": "The value of the infinite elements in the kernel"
+        },
+        "engine": {
+          "title": "engine",
+          "dataType": "str",
+          "defaultValue": "unfold",
+          "tooltip": "convolution is faster and less memory hungry, and unfold is more stable numerically"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "image: Closed image with shape, shape of (B, C, H, W)."
+        }
+      }
+    },
+    "Gradient": {
+      "type": "Gradient",
+      "category": "function",
+      "title": "gradient",
+      "tooltip": "Return the morphological gradient of an image.",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.morphology.gradient({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
+        },
+        "kernel": {
+          "title": "kernel",
+          "dataType": "torch.tensor",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky) "
+        },
+        "structuring_element": {
+          "title": "structuring_element",
+          "dataType": "torch.tensor",
+          "defaultValue": "None",
+          "tooltip": "Structuring element used for the grayscale dilation."
+        },
+        "origin ": {
+          "title": "origin",
+          "dataType": "tuple",
+          "defaultValue": "None",
+          "tooltip": "Origin of the structuring element. Default: None and uses the center of the structuring element as origin (rounding towards zero)."
+        },
+        "border_type": {
+          "title": "border_type",
+          "dataType": "string",
+          "defaultValue": "geodesic",
+          "tooltip": "It determines how the image borders are handled, where border_value is the value when border_type is equal to constant."
+        },
+        "border_value": {
+          "title": "border_value",
+          "dataType": "float",
+          "defaultValue": 0.0,
+          "tooltip": "Value to fill past edges of input if border_type is constant"
+        },
+        "max_val": {
+          "title": "max_val",
+          "dataType": "float",
+          "defaultValue": "1e4",
+          "tooltip": "The value of the infinite elements in the kernel"
+        },
+        "engine": {
+          "title": "engine",
+          "dataType": "str",
+          "defaultValue": "unfold",
+          "tooltip": "convolution is faster and less memory hungry, and unfold is more stable numerically"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "image: Gradient image with shape, shape of (B, C, H, W)."
+        }
+      }
+    },
+    "Top_Hat": {
+      "type": "Top_Hat",
+      "category": "function",
+      "title": "top hat",
+      "tooltip": "Return the top hat transformation of an image.",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.morphology.top_hat({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
+        },
+        "kernel": {
+          "title": "kernel",
+          "dataType": "torch.tensor",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky) "
+        },
+        "structuring_element": {
+          "title": "structuring_element",
+          "dataType": "torch.tensor",
+          "defaultValue": "None",
+          "tooltip": "Structuring element used for the grayscale dilation."
+        },
+        "origin ": {
+          "title": "origin",
+          "dataType": "tuple",
+          "defaultValue": "None",
+          "tooltip": "Origin of the structuring element. Default: None and uses the center of the structuring element as origin (rounding towards zero)."
+        },
+        "border_type": {
+          "title": "border_type",
+          "dataType": "string",
+          "defaultValue": "geodesic",
+          "tooltip": "It determines how the image borders are handled, where border_value is the value when border_type is equal to constant."
+        },
+        "border_value": {
+          "title": "border_value",
+          "dataType": "float",
+          "defaultValue": 0.0,
+          "tooltip": "Value to fill past edges of input if border_type is constant"
+        },
+        "max_val": {
+          "title": "max_val",
+          "dataType": "float",
+          "defaultValue": "1e4",
+          "tooltip": "The value of the infinite elements in the kernel"
+        },
+        "engine": {
+          "title": "engine",
+          "dataType": "str",
+          "defaultValue": "unfold",
+          "tooltip": "convolution is faster and less memory hungry, and unfold is more stable numerically"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "image: Top hat transformed image with shape, shape of (B, C, H, W)."
+        }
+      }
+    },
+    "Bottom_Hat": {
+      "type": "Bottom_Hat",
+      "category": "function",
+      "title": "bottom hat",
+      "tooltip": "Return the bottom hat transformation of an image.",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.morphology.top_hat({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
+        },
+        "kernel": {
+          "title": "kernel",
+          "dataType": "torch.tensor",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky) "
+        },
+        "structuring_element": {
+          "title": "structuring_element",
+          "dataType": "torch.tensor",
+          "defaultValue": "None",
+          "tooltip": "Structuring element used for the grayscale dilation."
+        },
+        "origin ": {
+          "title": "origin",
+          "dataType": "tuple",
+          "defaultValue": "None",
+          "tooltip": "Origin of the structuring element. Default: None and uses the center of the structuring element as origin (rounding towards zero)."
+        },
+        "border_type": {
+          "title": "border_type",
+          "dataType": "string",
+          "defaultValue": "geodesic",
+          "tooltip": "It determines how the image borders are handled, where border_value is the value when border_type is equal to constant."
+        },
+        "border_value": {
+          "title": "border_value",
+          "dataType": "float",
+          "defaultValue": 0.0,
+          "tooltip": "Value to fill past edges of input if border_type is constant"
+        },
+        "max_val": {
+          "title": "max_val",
+          "dataType": "float",
+          "defaultValue": "1e4",
+          "tooltip": "The value of the infinite elements in the kernel"
+        },
+        "engine": {
+          "title": "engine",
+          "dataType": "str",
+          "defaultValue": "unfold",
+          "tooltip": "convolution is faster and less memory hungry, and unfold is more stable numerically"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "image: Bottom hat transformed image with shape, shape of (B, C, H, W)."
+        }
+      }
+    }
+  }
+}
