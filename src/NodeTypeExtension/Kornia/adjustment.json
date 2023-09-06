@@ -7,7 +7,7 @@
       "title": "add weighted",
       "tooltip": "Calculate the weighted sum of two Tensors.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = kornia.enhance.add_weighted({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.enhance.add_weighted({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -35,7 +35,7 @@
           "title": "alpha",
           "dataType": "float",
           "defaultValue": 0.5,
-          "tooltip": "weight of the src1 "
+          "tooltip": "weight of the src1"
         },
         "src2 ": {
           "title": "src2",
@@ -89,7 +89,7 @@
       "title": "adjust brightness",
       "tooltip": "Adjust the brightness of an image tensor.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = kornia.enhance.adjust_brightness({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.enhance.adjust_brightness({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': False, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -117,7 +117,7 @@
           "title": "factor",
           "dataType": "float",
           "defaultValue": 0.5,
-          "tooltip": "Brightness adjust factor per element in the batch. It’s recommended to bound the factor by [0, 1]"
+          "tooltip": "Brightness adjust factor per element in the batch. It's recommended to bound the factor by [0, 1]"
         }
       },
       "outputs": {
@@ -143,7 +143,7 @@
       "title": "adjust contrast",
       "tooltip": "Adjust the brightness of an image tensor.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = kornia.enhance.adjust_contrast({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.enhance.adjust_contrast({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': False, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -171,7 +171,7 @@
           "title": "factor",
           "dataType": "float",
           "defaultValue": 0.5,
-          "tooltip": "Contrast adjust factor per element in the batch. It’s recommended to bound the factor by [0, 1]"
+          "tooltip": "Contrast adjust factor per element in the batch. It's recommended to bound the factor by [0, 1]"
         },
         "clip_output": {
           "title": "clip_output",
@@ -203,7 +203,7 @@
       "title": "adjust contrast with mean subtraction",
       "tooltip": "Adjust the contrast of an image tensor by subtracting the mean over channels.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = kornia.enhance.adjust_contrast_with_mean_subtraction({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.enhance.adjust_contrast_with_mean_subtraction({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': False, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -257,7 +257,7 @@
       "title": "adjust gamma",
       "tooltip": "Perform gamma correction on an image.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = kornia.enhance.adjust_gamma({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.enhance.adjust_gamma({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': False, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -317,7 +317,7 @@
       "title": "adjust hue",
       "tooltip": "Perform gamma correction on an image.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = kornia.enhance.adjust_hue({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.enhance.adjust_hue({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': False, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -345,7 +345,7 @@
           "title": "factor",
           "dataType": "float",
           "defaultValue": 0.5,
-          "tooltip": " How much to shift the hue channel."
+          "tooltip": "How much to shift the hue channel."
         }
       },
       "outputs": {
@@ -371,7 +371,7 @@
       "title": "adjust saturation",
       "tooltip": "Adjust color saturation of an image.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = kornia.enhance.adjust_saturation({{{inputs.1}}}, {{{inputs.2}}}, {{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.enhance.adjust_saturation({{{inputs.1}}}, {{{inputs.2}}}, {{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': False, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -431,7 +431,7 @@
       "title": "adjust sigmoid",
       "tooltip": "Adjust sigmoid correction on the input image tensor.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = kornia.enhance.adjust_sigmoid({{{inputs.1}}}, {{{inputs.2}}}, {{{inputs.3}}},{{{inputs.4}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.enhance.adjust_sigmoid({{{inputs.1}}}, {{{inputs.2}}}, {{{inputs.3}}},{{{inputs.4}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': False, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -459,7 +459,7 @@
           "title": "cutoff",
           "dataType": "float",
           "defaultValue": 0.5,
-          "tooltip": "The cutoff of sigmoid function. "
+          "tooltip": "The cutoff of sigmoid function."
         },
         "gain": {
           "title": "gain",
@@ -497,7 +497,7 @@
       "title": "adjust log",
       "tooltip": "Adjust log correction on the input image tensor.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = kornia.enhance.adjust_log({{{inputs.1}}}, {{{inputs.2}}}, {{{inputs.3}}},{{{inputs.4}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.enhance.adjust_log({{{inputs.1}}}, {{{inputs.2}}}, {{{inputs.3}}},{{{inputs.4}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': False, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -531,10 +531,10 @@
           "title": "inv",
           "dataType": "bool",
           "defaultValue": "False",
-          "tooltip": "If is set to True the function will return the  inverse logarithmic correction."
+          "tooltip": "If is set to True the function will return the inverse logarithmic correction."
         },
-        "clip_output ": {
-          "title": "clip_output ",
+        "clip_output": {
+          "title": "clip_output",
           "dataType": "bool",
           "defaultValue": "True",
           "tooltip": "Whether to clip the output image with range of [0, 1]."
@@ -563,7 +563,7 @@
       "title": "invert",
       "tooltip": "Invert the values of an input image tensor by its maximum value.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = kornia.enhance.invert({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.enhance.invert({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -617,7 +617,7 @@
       "title": "posterize",
       "tooltip": "Reduce the number of bits for each color channel.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = kornia.enhance.posterize({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.enhance.posterize({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': False, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -639,10 +639,10 @@
               }
             ]
           },
-          "tooltip": "image tensor with shape （*,C,H,W）to posterize."
+          "tooltip": "image tensor with shape (*,C,H,W)to posterize."
         },
-        "bits ": {
-          "title": "bits ",
+        "bits": {
+          "title": "bits",
           "dataType": "integer",
           "defaultValue": 8,
           "tooltip": "number of high bits. Must be in range [0, 8]."
@@ -661,7 +661,7 @@
           "defaultValue": {
             "dataType": "torch.tensor"
           },
-          "tooltip": "Image with reduced color channels with shape（*,C,H,W）"
+          "tooltip": "Image with reduced color channels with shape(*,C,H,W)"
         }
       }
     },
@@ -671,7 +671,7 @@
       "title": "sharpness",
       "tooltip": "Reduce the number of bits for each color channel.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = kornia.enhance.sharpness({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.enhance.sharpness({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': False, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -693,7 +693,7 @@
               }
             ]
           },
-          "tooltip": "image tensor with shape （*,C,H,W）to sharpen."
+          "tooltip": "image tensor with shape (*,C,H,W)to sharpen."
         },
         "factor": {
           "title": "factor",
@@ -715,7 +715,7 @@
           "defaultValue": {
             "dataType": "torch.tensor"
           },
-          "tooltip": "Sharpened image or images with shape （*,C,H,W）"
+          "tooltip": "Sharpened image or images with shape(*,C,H,W)"
         }
       }
     },
@@ -723,9 +723,9 @@
       "type": "Solarize",
       "category": "function",
       "title": "solarize",
-      "tooltip": "For each pixel in the image less than threshold,we add ‘addition’ amount to it and then clip the pixel value to be between 0 and 1.0. ",
+      "tooltip": "For each pixel in the image less than threshold,we add 'addition' amount to it and then clip the pixel value to be between 0 and 1.0.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = kornia.enhance.solarize({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.enhance.solarize({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': False, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -747,7 +747,7 @@
               }
             ]
           },
-          "tooltip": "image tensor with shape （*,C,H,W）to solarize."
+          "tooltip": "image tensor with shape (*,C,H,W)to solarize."
         },
         "thresholds": {
           "title": "thresholds",
@@ -759,7 +759,7 @@
           "title": "additions",
           "dataType": "float",
           "defaultValue": 0,
-          "tooltip": "between -0.5 and 0.5. "
+          "tooltip": "between -0.5 and 0.5."
         }
       },
       "outputs": {
@@ -775,7 +775,7 @@
           "defaultValue": {
             "dataType": "torch.tensor"
           },
-          "tooltip": "The solarized images with shape（*,C,H,W）"
+          "tooltip": "The solarized images with shape(*,C,H,W)"
         }
       }
     }
