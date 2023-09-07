@@ -1,0 +1,251 @@
+{
+  "enable": true,
+  "nodes": {
+    "Swirl": {
+      "type": "Swirl",
+      "category": "function",
+      "title": "swirl",
+      "tooltip": "Image swirling is a non-linear image deformation that creates a whirlpool effect. ",
+      "externalImports": "from skimage.transform import swirl",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = swirl({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "The input image for swirl"
+        },
+        "center": {
+          "title": "center",
+          "dataType": "tuple",
+          "defaultValue": "(0,0)",
+          "tooltip": "Center coordinate of transformation."
+        },
+        "strength": {
+          "title": "strength",
+          "dataType": "float",
+          "defaultValue": 10.0,
+          "tooltip": "The amount of swirling applied."
+        },
+        "radius": {
+          "title": "radius",
+          "dataType": "float",
+          "defaultValue": 120.0,
+          "tooltip": "The extent of the swirl in pixels. "
+        },
+        "rotation": {
+          "title": "rotation",
+          "dataType": "float",
+          "defaultValue": 0.0,
+          "tooltip": "Additional rotation applied to the image."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "Swirled version of the input."
+        }
+      }
+    },
+    "Rescale": {
+      "type": "Rescale",
+      "category": "function",
+      "title": "rescale",
+      "tooltip": "Scale image by a certain factor.",
+      "externalImports": "from skimage.transform import rescale",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = rescale({{{inputs.1}}},{{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "The input image for rescale"
+        },
+        "scale": {
+          "title": "scale",
+          "dataType": "float",
+          "defaultValue": 0.25,
+          "tooltip": "Scale factors"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "Scaled version of the input."
+        }
+      }
+    },
+    "Resize": {
+      "type": "Resize",
+      "category": "function",
+      "title": "resize",
+      "tooltip": "Resize image to match a certain size.",
+      "externalImports": "from skimage.transform import resize",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = resize({{{inputs.1}}},{{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "The input image for rescale"
+        },
+        "output_shape": {
+          "title": "output_shape",
+          "dataType": "tuple",
+          "defaultValue": "(100,100)",
+          "tooltip": "Size of the generated output image"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "Resized version of the input."
+        }
+      }
+    },
+    "Downscale": {
+      "type": "Downscale",
+      "category": "function",
+      "title": "downscale",
+      "tooltip": "Down-sample N-dimensional image by local averaging.",
+      "externalImports": "from skimage.transform import downscale_local_mean",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = downscale_local_mean({{{inputs.1}}},{{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "The input image for rescale"
+        },
+        "factors": {
+          "title": "factors",
+          "dataType": "tuple",
+          "defaultValue": "(2,3)",
+          "tooltip": "Array containing down-sampling integer factor along each axis."
+        },
+        "cval": {
+          "title": "cval",
+          "dataType": "float",
+          "defaultValue": "None",
+          "tooltip": "Constant padding value if image is not perfectly divisible by the integer factors."
+        },
+        "clip": {
+          "title": "clip",
+          "dataType": "boolean",
+          "defaultValue": "None",
+          "tooltip": "Unused, but kept here for API consistency with the other transforms in this module. "
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "Down-sampled image with same number of dimensions as input image."
+        }
+      }
+    }
+  }
+}
