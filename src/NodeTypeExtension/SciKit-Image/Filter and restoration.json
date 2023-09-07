@@ -585,7 +585,7 @@
         },
         "win_size": {
           "title": "win_size",
-          "dataType": "int",
+          "dataType": "integer",
           "defaultValue": "None",
           "tooltip": "Window size for filtering. If win_size is not specified, it is calculated as max(5, 2 * ceil(3 * sigma_spatial) + 1)."
         },
@@ -615,7 +615,7 @@
         },
         "cval": {
           "title": "cval",
-          "dataType": "string",
+          "dataType": "float",
           "defaultValue": "None",
           "tooltip": "Used in conjunction with mode 'constant', the value outside the image boundaries."
         },
