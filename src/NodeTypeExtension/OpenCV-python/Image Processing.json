@@ -1,0 +1,855 @@
+{
+  "enable": true,
+  "nodes": {
+    "Image_Padding": {
+      "type": "Image_Padding",
+      "category": "function",
+      "title": "image padding",
+      "tooltip": " To create a border around an image, something like a photo frame.",
+      "externalImports": "import cv2 as cv",
+      "sourceCode": "{{indent}}{{{outputs.1}}} =  cv.copyMakeBorder({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}},{{{inputs.6}}},{{{inputs.7}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-255', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image."
+        },
+        "top": {
+          "title": "top",
+          "dataType": "integer",
+          "defaultValue": 10,
+          "tooltip": "border width in number of pixels in corresponding directions"
+        },
+        "bottom": {
+          "title": "bottom",
+          "dataType": "integer",
+          "defaultValue": 10,
+          "tooltip": "border width in number of pixels in corresponding directions"
+        },
+        "left": {
+          "title": "left",
+          "dataType": "integer",
+          "defaultValue": 10,
+          "tooltip": "border width in number of pixels in corresponding directions"
+        },
+        "right": {
+          "title": "right",
+          "dataType": "integer",
+          "defaultValue": 10,
+          "tooltip": "border width in number of pixels in corresponding directions"
+        },
+        "borderType ": {
+          "title": "borderType ",
+          "dataType": "string",
+          "defaultValue": "cv.BORDER_CONSTANT",
+          "tooltip": "Flag defining what kind of border to be added. It can be following types {'cv.BORDER_CONSTANT','cv.BORDER_REFLECT ','cv.BORDER_DEFAULT ','cv.BORDER_REPLICATE','cv.BORDER_WRAP ',}"
+        },
+        "value": {
+          "title": "value",
+          "dataType": "string",
+          "defaultValue": "BLUE",
+          "tooltip": "Color of border if border type is cv.BORDER_CONSTANT"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "Bordered Image"
+        }
+      }
+    },
+    "Image_Blending": {
+      "type": "Image_Blending",
+      "category": "function",
+      "title": "image blending",
+      "tooltip": "Different weights are given to images in order to give a feeling of blending or transparency",
+      "externalImports": "import cv2 as cv",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = cv.addWeighted({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-255', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "src1": {
+          "title": "src1",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "First input array., equal to shape of src2"
+        },
+        "alpha": {
+          "title": "alpha",
+          "dataType": "float",
+          "defaultValue": 0.5,
+          "tooltip": "weight of the src1"
+        },
+        "src2 ": {
+          "title": "src2",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Second input array , equal to shape of src1."
+        },
+        "beta": {
+          "title": "beta",
+          "dataType": "float",
+          "defaultValue": 0.5,
+          "tooltip": "weight of the src2"
+        },
+        "gamma": {
+          "title": "gamma",
+          "dataType": "float",
+          "defaultValue": 1.0,
+          "tooltip": "scalar added to each sum"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "Weighted Image blending of scr1 and src2"
+        }
+      }
+    },
+    "Simple_Thresholding": {
+      "type": "Simple_Thresholding",
+      "category": "function",
+      "title": "simple thresholding",
+      "tooltip": "Applies a fixed-level threshold to each array element.",
+      "externalImports": "import cv2 as cv",
+      "sourceCode": "{{indent}}{{{outputs.1}}} =  cv.threshold({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-255', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image"
+        },
+        "thresh": {
+          "title": "thresh",
+          "dataType": "integer",
+          "defaultValue": 127,
+          "tooltip": "Threshold value."
+        },
+        "maxval": {
+          "title": "maxval",
+          "dataType": "integer",
+          "defaultValue": 255,
+          "tooltip": "Maximum value to use with the THRESH_BINARY and THRESH_BINARY_INV thresholding types."
+        },
+        "type": {
+          "title": "type",
+          "dataType": "string",
+          "defaultValue": "cv.THRESH_BINARY",
+          "tooltip": "Thresholding type: {'cv.THRESH_BINARY', 'cv.THRESH_BINARY_INV', 'THRESH_TRUNC ','THRESH_TOZERO','THRESH_TOZERO_INV'}"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "thresh": {
+          "title": "thresh",
+          "dataType": "integer",
+          "defaultValue": "None",
+          "tooltip": "Threshold value we used."
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": " Thresholded image."
+        }
+      }
+    },
+    "Adaptive_Thresholding": {
+      "type": "Adaptive_Thresholding",
+      "category": "function",
+      "title": "adaptive thresholding",
+      "tooltip": "Applies an adaptive threshold to an array.",
+      "externalImports": "import cv2 as cv",
+      "sourceCode": "{{indent}}{{{outputs.1}}} =  cv.adaptiveThreshold({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}},{{{inputs.6}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-255', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image"
+        },
+        "maxValue": {
+          "title": "maxValue",
+          "dataType": "integer",
+          "defaultValue": 255,
+          "tooltip": "Maximum value to use with the THRESH_BINARY and THRESH_BINARY_INV thresholding types."
+        },
+        "adaptiveMethod": {
+          "title": "adaptiveMethod",
+          "dataType": "string",
+          "defaultValue": "cv.ADAPTIVE_THRESH_MEAN_C",
+          "tooltip": "Adaptive thresholding type: {'cv.ADAPTIVE_THRESH_MEAN_C', 'cv.ADAPTIVE_THRESH_GAUSSIAN_C'}"
+        },
+        "thresholdType": {
+          "title": "thresholdType",
+          "dataType": "string",
+          "defaultValue": "cv.THRESH_BINARY",
+          "tooltip": "Thresholding type that must be either cv.THRESH_BINARY or cv.THRESH_BINARY_INV,"
+        },
+        "blockSize": {
+          "title": "blockSize",
+          "dataType": "integer",
+          "defaultValue": 11,
+          "tooltip": "Size of a pixel neighborhood that is used to calculate a threshold value for the pixel: 3, 5, 7, and so on."
+        },
+        "C": {
+          "title": "C",
+          "dataType": "integer",
+          "defaultValue": 2,
+          "tooltip": "Constant subtracted from the mean or weighted mean (see the details below). Normally, it is positive but may be zero or negative as well."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "thresh": {
+          "title": "thresh",
+          "dataType": "integer",
+          "defaultValue": "None",
+          "tooltip": "Threshold value we used."
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "Adaptive thresholded image."
+        }
+      }
+    },
+    "Image_Blurring_Average": {
+      "type": "Image_Blurring_Average",
+      "category": "function",
+      "title": "image blurring average",
+      "tooltip": "Blurs an image using the normalized box filter.",
+      "externalImports": "import cv2 as cv",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = cv.blur({{{inputs.1}}},{{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-255', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image"
+        },
+        "ksize": {
+          "title": "kernel_size",
+          "dataType": "tuple",
+          "defaultValue": "(5,5)",
+          "tooltip": "blurring kernel size."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "Smoothing image using normalized box kernel."
+        }
+      }
+    },
+    "Image_Blurring_Gaussian": {
+      "type": "Image_Blurring_Gaussian",
+      "category": "function",
+      "title": "image blurring gaussian",
+      "tooltip": "Blurs an image using the Gaussian filter.",
+      "externalImports": "import cv2 as cv",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = cv.GaussianBlur({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-255', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image"
+        },
+        "ksize": {
+          "title": "kernel_size",
+          "dataType": "tuple",
+          "defaultValue": "(5,5)",
+          "tooltip": "blurring kernel size."
+        },
+        "sigmaX": {
+          "title": "sigmaX",
+          "dataType": "integer",
+          "defaultValue": 0,
+          "tooltip": "Gaussian kernel standard deviation in X direction."
+        },
+        "sigmaY": {
+          "title": "sigmaY",
+          "dataType": "integer",
+          "defaultValue": 0,
+          "tooltip": "Gaussian kernel standard deviation in Y direction."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "Smoothing image using Gaussian filter."
+        }
+      }
+    },
+    "Image_Blurring_Median": {
+      "type": "Image_Blurring_Median",
+      "category": "function",
+      "title": "image blurring median",
+      "tooltip": "Blurs an image using the median of all the pixels under the kernel area",
+      "externalImports": "import cv2 as cv",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = cv.medianBlur({{{inputs.1}}},{{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-255', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image"
+        },
+        "ksize": {
+          "title": "kernel_size",
+          "dataType": "integer",
+          "defaultValue": 5,
+          "tooltip": "aperture linear size; it must be odd and greater than 1, for example: 3, 5, 7 ..."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "Smoothing image using median blurring."
+        }
+      }
+    },
+    "Image_Blurring_Bilateral": {
+      "type": "Image_Blurring_Bilateral",
+      "category": "function",
+      "title": "image blurring bilateral",
+      "tooltip": "Blurs an image using the Bilateral filter.",
+      "externalImports": "import cv2 as cv",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = cv.bilateralFilter({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-255', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image"
+        },
+        "d": {
+          "title": "diameter",
+          "dataType": "integer",
+          "defaultValue": 9,
+          "tooltip": "Diameter of each pixel neighborhood that is used during filtering."
+        },
+        "sigmaColor": {
+          "title": "sigmaColor",
+          "dataType": "integer",
+          "defaultValue": 75,
+          "tooltip": "Filter sigma in the color space"
+        },
+        "sigmaSpace": {
+          "title": "sigmaSpace",
+          "dataType": "integer",
+          "defaultValue": 75,
+          "tooltip": "Filter sigma in the coordinate space."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "Smoothing image using Bilateral filter."
+        }
+      }
+    },
+    "Image_Gradients_Sobel": {
+      "type": "Image_Gradients_Sobel",
+      "category": "function",
+      "title": "image gradients sobel",
+      "tooltip": "Calculates the first, second, third, or mixed image derivatives using an extended Sobel operator.",
+      "externalImports": "import cv2 as cv",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = cv.Sobel({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-255', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image"
+        },
+        "ddepth": {
+          "title": "ddepth",
+          "dataType": "string",
+          "defaultValue": "cv.CV_64F",
+          "tooltip": "Depth combinations :{'cv.CV_64F','cv.CV_32F','cv.CV_16U/CV_16S','cv.CV_8U'}"
+        },
+        "dx": {
+          "title": "dx",
+          "dataType": "integer",
+          "defaultValue": 1,
+          "tooltip": "order of the derivative x."
+        },
+        "dy": {
+          "title": "dy",
+          "dataType": "integer",
+          "defaultValue": 0,
+          "tooltip": "order of the derivative y."
+        },
+        "ksize": {
+          "title": "ksize",
+          "dataType": "integer",
+          "defaultValue": 5,
+          "tooltip": "size of the extended Sobel kernel; it must be 1, 3, 5, or 7."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "Image gradients using Sobel derivatives"
+        }
+      }
+    },
+    "Image_Gradients_Laplacian": {
+      "type": "Image_Gradients_Laplacian",
+      "category": "function",
+      "title": "image gradients laplacian",
+      "tooltip": "Calculates the Laplacian of an image.",
+      "externalImports": "import cv2 as cv",
+      "sourceCode": "{{indent}}{{{outputs.1}}} =  cv.Laplacian({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-255', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image"
+        },
+        "ddepth": {
+          "title": "ddepth",
+          "dataType": "string",
+          "defaultValue": "cv.CV_64F",
+          "tooltip": "Depth combinations :{'cv.CV_64F','cv.CV_32F','cv.CV_16U/CV_16S','cv.CV_8U'}"
+        },
+        "ksize": {
+          "title": "ksize",
+          "dataType": "integer",
+          "defaultValue": 5,
+          "tooltip": "size of the extended Sobel kernel; it must be 1, 3, 5, or 7."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "Image gradients using Laplacian derivatives"
+        }
+      }
+    },
+    "Canny_Edge_Detection": {
+      "type": "Canny_Edge_Detection",
+      "category": "function",
+      "title": "canny edge detection",
+      "tooltip": "Finds edges in an image using the Canny algorithm",
+      "externalImports": "import cv2 as cv",
+      "sourceCode": "{{indent}}{{{outputs.1}}} =  cv.Canny({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image"
+        },
+        "threshold1": {
+          "title": "threshold1",
+          "dataType": "integer",
+          "defaultValue": 100,
+          "tooltip": "first threshold for the hysteresis procedure."
+        },
+        "threshold2": {
+          "title": "threshold2",
+          "dataType": "integer",
+          "defaultValue": 200,
+          "tooltip": "second threshold for the hysteresis procedure."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "Edges in input image using the Canny algorithm"
+        }
+      }
+    },
+    "Image_Pyramid_Downsample": {
+      "type": "Image_Pyramid_Downsample",
+      "category": "function",
+      "title": "image pyramid downsample",
+      "tooltip": "Blurs an image and downsamples it.",
+      "externalImports": "import cv2 as cv",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = cv.pyrDown({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-255', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "Downsampled image."
+        }
+      }
+    },
+    "Image_Pyramid_Upsample": {
+      "type": "Image_Pyramid_Upsample",
+      "category": "function",
+      "title": "image pyramid upsample",
+      "tooltip": "Upsamples an image and then blurs it.",
+      "externalImports": "import cv2 as cv",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = cv.pyrUp({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-255', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "Upsampled image."
+        }
+      }
+    }
+  }
+}
