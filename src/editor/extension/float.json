@@ -67,6 +67,70 @@
           "showTitle": true
         }
       }
+    },
+    "Float > Float ": {
+      "type": "Float > Float",
+      "category": "math",
+      "title": "x1 > x2",
+      "tooltip": "Return the truth value of (x1 > x2) element-wise.",
+      "enableAddNewOne": true,
+      "dataType": "numpy.ndarray",
+      "externalImports": "import numpy as np",
+      "sourceCode": "{{indent}}{{{outputs.0}}}=np.greater([{{{inputs}}}])",
+      "inputs": {
+        "input1": {
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "title": "x1",
+          "showTitle": true
+        },
+        "input2": {
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "title": "x2",
+          "showTitle": true
+        }
+      },
+      "outputs": {
+        "truth_value": {
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "title": "truth value of (x1 > x2) element-wise.",
+          "showTitle": true
+        }
+      }
+    },
+    "Float / Float ": {
+      "type": "Float / Float",
+      "category": "math",
+      "title": "x1 / x2",
+      "tooltip": "Divide arguments element-wise.",
+      "enableAddNewOne": true,
+      "dataType": "numpy.ndarray",
+      "externalImports": "import numpy as np",
+      "sourceCode": "{{indent}}{{{outputs.0}}}=np.divide([{{{inputs}}}])",
+      "inputs": {
+        "input1": {
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "title": "x1",
+          "showTitle": true
+        },
+        "input2": {
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "title": "x2",
+          "showTitle": true
+        }
+      },
+      "outputs": {
+        "quotient": {
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "title": "The quotient x1/x2 element-wise. ",
+          "showTitle": true
+        }
+      }
     }
   }
 }
