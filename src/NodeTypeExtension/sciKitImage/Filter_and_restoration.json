@@ -738,6 +738,144 @@
           "tooltip": "Denoised image."
         }
       }
+    },
+    "Filters_rank_mean": {
+      "type": "Filters_rank_mean",
+      "category": "function",
+      "title": "filters_rank_mean",
+      "tooltip": "Return local mean of an image.",
+      "externalImports": "from skimage.filters.rank import mean",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = mean({{{inputs.1}}},{{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image"
+        },
+        "footprint": {
+          "title": "footprint",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "The neighborhood expressed as an ndarray of 1's and 0's."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "Local mean of an image."
+        }
+      }
+    },
+    "Img_as_unit": {
+      "type": "Img_as_unit",
+      "category": "function",
+      "title": "img_as_unit",
+      "tooltip": "Convert an image to 16-bit unsigned integer format.",
+      "externalImports": "from skimage.util import img_as_uint",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = img_as_uint({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "Output image of uint16."
+        }
+      }
+    },
+    "Morphology_disk": {
+      "type": "Morphology_disk",
+      "category": "function",
+      "title": "morphology_disk",
+      "tooltip": "Generates a flat, disk-shaped footprint.",
+      "externalImports": "from skimage.morphology import disk",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = disk({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "radius": {
+          "title": "radius",
+          "dataType": "integer",
+          "defaultValue": "None",
+          "tooltip": "The radius of the disk-shaped footprint."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "footprint": {
+          "title": "footprint",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "The footprint where elements of the neighborhood are 1 and 0 otherwise."
+        }
+      }
     }
   }
 }
