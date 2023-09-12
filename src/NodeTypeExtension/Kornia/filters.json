@@ -29,7 +29,6 @@
               }
             ]
           },
-
           "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
         },
         "low_threshold": {
@@ -83,6 +82,1070 @@
             "dataType": "torch.tensor"
           },
           "tooltip": "image: the canny edge magnitudes map, shape of (B, 1, H, W)."
+        }
+      },
+      "Canny": {
+        "type": "Canny",
+        "category": "function",
+        "title": "canny edge detection",
+        "tooltip": "Find edges of the input image and filters them using the Canny algorithm.",
+        "externalImports": "import kornia as K",
+        "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.canny({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}},{{{inputs.7}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+        "inputs": {
+          "execIn": {
+            "title": "execIn",
+            "dataType": "exec",
+            "showWidget": false,
+            "showTitle": false
+          },
+          "image": {
+            "title": "image",
+            "dataType": "image",
+            "defaultValue": {
+              "dataType": "torch.tensor",
+              "metadata": [
+                {
+                  "colorChannel": "rgb",
+                  "isMiniBatched": true,
+                  "channelOrder": "channelFirst",
+                  "intensityRange": "0-1"
+                }
+              ]
+            },
+            "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
+          },
+          "low_threshold": {
+            "title": "low_threshold",
+            "dataType": "float",
+            "defaultValue": "0.1",
+            "tooltip": "lower threshold for the hysteresis procedure."
+          },
+          "high_threshold": {
+            "title": "high_threshold",
+            "dataType": "float",
+            "defaultValue": "0.2",
+            "tooltip": "upper threshold for the hysteresis procedure."
+          },
+          "kernel_size": {
+            "title": "kernel_size",
+            "dataType": "tuple",
+            "defaultValue": "(5, 5)",
+            "tooltip": "the size of the kernel for the gaussian blur."
+          },
+          "sigma": {
+            "title": "sigma",
+            "dataType": "tuple",
+            "defaultValue": "(1, 1)",
+            "tooltip": "the standard deviation of the kernel for the gaussian blur."
+          },
+          "hysteresis": {
+            "title": "hysteresis",
+            "dataType": "boolean",
+            "defaultValue": "true",
+            "tooltip": "if True, applies the hysteresis edge tracking. Otherwise, the edges are divided between weak (0.5) and strong (1) edges. Default: True"
+          },
+          "eps": {
+            "title": "eps",
+            "dataType": "float",
+            "defaultValue": "1e-6",
+            "tooltip": "regularization number to avoid NaN during backprop."
+          }
+        },
+        "outputs": {
+          "execOut": {
+            "title": "execOut",
+            "dataType": "exec",
+            "showWidget": false,
+            "showTitle": false
+          },
+          "image": {
+            "title": "image",
+            "dataType": "image",
+            "defaultValue": {
+              "dataType": "torch.tensor"
+            },
+            "tooltip": "image: the canny edge magnitudes map, shape of (B, 1, H, W)."
+          }
+        }
+      }
+    },
+    "Bilateral_Blur": {
+      "type": "Bilateral_Blur",
+      "category": "function",
+      "title": "bilateral blur",
+      "tooltip": "The operator is an edge-preserving image smoothing bilateral filter",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.bilateral_blur({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}})\n{{indent}}{{{outputs.}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
+        },
+        "kernel_size": {
+          "title": "kernel_size",
+          "dataType": "tuple",
+          "defaultValue": "(5, 5)",
+          "tooltip": "the size of the kernel for the gaussian blur."
+        },
+        "sigma_color": {
+          "title": "sigma_color",
+          "dataType": "float",
+          "defaultValue": 0.1,
+          "tooltip": "the standard deviation for intensity/color Gaussian kernel. "
+        },
+        "sigma_space": {
+          "title": "sigma_color",
+          "dataType": "tuple",
+          "defaultValue": "(1,1)",
+          "tooltip": "the standard deviation for spatial Gaussian kernel"
+        },
+        "border_type": {
+          "title": "border_type",
+          "dataType": "string",
+          "defaultValue": "reflect",
+          "tooltip": "the padding mode to be applied before convolving. The expected modes are: 'constant', 'reflect', 'replicate' or 'circular'."
+        },
+        "color_distance_type": {
+          "title": "color_distance_type",
+          "dataType": "string",
+          "defaultValue": "l1",
+          "tooltip": "the type of distance to calculate intensity/color difference. Only 'l1' or 'l2' is allowed. "
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "image: the blurred tensor with shape , shape of (B, C, H, W)."
+        }
+      }
+    },
+    "Blur_Pool2d": {
+      "type": "Blur_Pool2d",
+      "category": "function",
+      "title": "blur pool2d",
+      "tooltip": "Compute blurs and downsample a given feature map.",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.blur_pool2d({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
+        },
+        "kernel_size": {
+          "title": "kernel_size",
+          "dataType": "tuple",
+          "defaultValue": "(5, 5)",
+          "tooltip": "the kernel size for max pooling."
+        },
+        "ceil_mode": {
+          "title": "ceil_mode",
+          "dataType": "boolean",
+          "defaultValue": true,
+          "tooltip": "should be true to match output size of conv2d with same kernel size."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "image: the transformed tensor, shape of (N, C, H, W)."
+        }
+      }
+    },
+    "Box_Blur": {
+      "type": "Box_Blur",
+      "category": "function",
+      "title": "box blur",
+      "tooltip": "Blur an image using the box filter.",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.box_blur({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
+        },
+        "kernel_size": {
+          "title": "kernel_size",
+          "dataType": "tuple",
+          "defaultValue": "(3, 3)",
+          "tooltip": "the blurring kernel size."
+        },
+        "border_type": {
+          "title": "border_type",
+          "dataType": "string",
+          "defaultValue": "reflect",
+          "tooltip": "the padding mode to be applied before convolving. The expected modes are: 'constant', 'reflect', 'replicate' or 'circular'."
+        },
+        "separable": {
+          "title": "separable",
+          "dataType": "boolean",
+          "defaultValue": "False",
+          "tooltip": "run as composition of two 1d-convolutions."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "image: the blurred tensor with shape , shape of (B, C, H, W)."
+        }
+      }
+    },
+    "Gaussian_Blur2d": {
+      "type": "Gaussian_Blur2d",
+      "category": "function",
+      "title": "gaussian blur2d",
+      "tooltip": "The operator smooths the given tensor with a gaussian kernel by convolving it to each channel.",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.gaussian_blur2d({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
+        },
+        "kernel_size": {
+          "title": "kernel_size",
+          "dataType": "tuple",
+          "defaultValue": "(5, 5)",
+          "tooltip": "the size of the kernel for the gaussian blur."
+        },
+        "sigma": {
+          "title": "sigma",
+          "dataType": "tuple",
+          "defaultValue": "(3,3)",
+          "tooltip": "the standard deviation of the kernel."
+        },
+        "border_type": {
+          "title": "border_type",
+          "dataType": "string",
+          "defaultValue": "reflect",
+          "tooltip": "the padding mode to be applied before convolving. The expected modes are: 'constant', 'reflect', 'replicate' or 'circular'."
+        },
+        "separable": {
+          "title": "separable",
+          "dataType": "string",
+          "defaultValue": true,
+          "tooltip": "run as composition of two 1d-convolutions "
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "image: the blurred tensor with shape , shape of (B, C, H, W)."
+        }
+      }
+    },
+    "Guided_Blur": {
+      "type": "Guided_Blur",
+      "category": "function",
+      "title": "guided blur",
+      "tooltip": "The operator is an edge-preserving image smoothing filter",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.guided_blur({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "guidance": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "the guidance tensor with shape (B, C, H, W) and intensity from [0, 1]."
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
+        },
+        "kernel_size": {
+          "title": "kernel_size",
+          "dataType": "integer",
+          "defaultValue": 3,
+          "tooltip": "the size of the kernel"
+        },
+        "eps": {
+          "title": "eps",
+          "dataType": "float",
+          "defaultValue": 0.1,
+          "tooltip": "regularization parameter. Smaller values preserve more edges."
+        },
+        "border_type": {
+          "title": "border_type",
+          "dataType": "string",
+          "defaultValue": "reflect",
+          "tooltip": "the padding mode to be applied before convolving. The expected modes are: 'constant', 'reflect', 'replicate' or 'circular'."
+        },
+        "subsample": {
+          "title": "subsample",
+          "dataType": "float",
+          "defaultValue": 1,
+          "tooltip": "subsampling factor for Fast Guided filtering.Default: 1 (no subsampling)"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "image: the blurred tensor with shape , shape of (B, C, H, W)."
+        }
+      }
+    },
+    "Joint_Bilateral_Blur": {
+      "type": "Joint_Bilateral_Blur",
+      "category": "function",
+      "title": "joint bilateral blur",
+      "tooltip": "This operator is almost identical to a Bilateral filter. The only difference is that the color Gaussian kernel is computed based on another image called a guidance image",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.joint_bilateral_blur({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}},{{{input.7}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
+        },
+        "guidance": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "the guidance tensor with shape (B, C, H, W) and intensity from [0, 1]."
+        },
+        "kernel_size": {
+          "title": "kernel_size",
+          "dataType": "integer",
+          "defaultValue": 3,
+          "tooltip": "the size of the kernel"
+        },
+        "sigma_color ": {
+          "title": "sigma_color",
+          "dataType": "float",
+          "defaultValue": 0.1,
+          "tooltip": "the standard deviation for intensity/color Gaussian kernel. "
+        },
+        "sigma_space": {
+          "title": "sigma_color",
+          "dataType": "tuple",
+          "defaultValue": "(1,1)",
+          "tooltip": "the standard deviation for spatial Gaussian kernel"
+        },
+        "border_type": {
+          "title": "border_type",
+          "dataType": "string",
+          "defaultValue": "reflect",
+          "tooltip": "the padding mode to be applied before convolving. The expected modes are: 'constant', 'reflect', 'replicate' or 'circular'."
+        },
+        "color_distance_type": {
+          "title": "color_distance_type",
+          "dataType": "string",
+          "defaultValue": "l1",
+          "tooltip": "the type of distance to calculate intensity/color difference. Only 'l1' or 'l2' is allowed. "
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "image: the blurred tensor with shape , shape of (B, C, H, W)."
+        }
+      }
+    },
+    "Max_Blur_Pool2d": {
+      "type": "Max_Blur_Pool2d",
+      "category": "function",
+      "title": "max blur pool2d",
+      "tooltip": "Compute pools and blurs and downsample a given feature map.",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.max_blur_pool2d({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
+        },
+        "kernel_size": {
+          "title": "kernel_size",
+          "dataType": "integer",
+          "defaultValue": 3,
+          "tooltip": "the kernel size for max pooling"
+        },
+        "stride": {
+          "title": "stride",
+          "dataType": "integer",
+          "defaultValue": 2,
+          "tooltip": "stride for pooling."
+        },
+        "max_pool_size ": {
+          "title": "max_pool_size ",
+          "dataType": "integer",
+          "defaultValue": 2,
+          "tooltip": "the kernel size for max pooling"
+        },
+        "ceil_mode ": {
+          "title": "ceil_mode",
+          "dataType": "boolean",
+          "defaultValue": false,
+          "tooltip": "should be true to match output size of conv2d with same kernel size."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "image: the blurred tensor with shape , shape of (B, C, H, W)."
+        }
+      }
+    },
+    "Median_Blur": {
+      "type": "Median_Blur",
+      "category": "function",
+      "title": "Median_Blur",
+      "tooltip": "Blur an image using the median filter.",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.median_blur({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
+        },
+        "kernel_size": {
+          "title": "kernel_size",
+          "dataType": "tuple",
+          "defaultValue": "(5, 5)",
+          "tooltip": "the kernel size for max pooling."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "image: the blurred input tensor, shape of (B, C, H, W)."
+        }
+      }
+    },
+    "Motion_Blur": {
+      "type": "Motion_Blur",
+      "category": "function",
+      "title": "motion blur",
+      "tooltip": "Perform motion blur on tensor images.",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.motion_blur({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
+        },
+        "kernel_size": {
+          "title": "kernel_size",
+          "dataType": "integer",
+          "defaultValue": 3,
+          "tooltip": "motion kernel width and height. It should be odd and positive"
+        },
+        "angle": {
+          "title": "angle",
+          "dataType": "float",
+          "defaultValue": 90.0,
+          "tooltip": "angle of the motion blur in degrees (anti-clockwise rotation)"
+        },
+        "direction": {
+          "title": "direction",
+          "dataType": "float",
+          "defaultValue": 0.0,
+          "tooltip": "forward/backward direction of the motion blur. Lower values towards -1.0 will point the motion blur towards the back (with angle provided via angle), while higher values towards 1.0 will point the motion blur forward."
+        },
+        "border_type": {
+          "title": "border_type",
+          "dataType": "string",
+          "defaultValue": "constant",
+          "tooltip": "the padding mode to be applied before convolving. The expected modes are: 'constant', 'reflect', 'replicate' or 'circular'."
+        },
+        "mode": {
+          "title": "color_distance_type",
+          "dataType": "string",
+          "defaultValue": "nearest",
+          "tooltip": "interpolation mode for rotating the kernel,'bilinear' or 'nearest'."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "image: the blurred image with shape , shape of (B, C, H, W)."
+        }
+      }
+    },
+    "Unsharp_Mask": {
+      "type": "Unsharp_Mask",
+      "category": "function",
+      "title": "unsharp mask",
+      "tooltip": "Create an operator that sharpens a tensor by applying operation out = 2 * image - gaussian_blur2d(image).",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.unsharp_mask({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
+        },
+        "kernel_size": {
+          "title": "kernel_size",
+          "dataType": "tuple",
+          "defaultValue": "(5,5)",
+          "tooltip": "the size of the kernel."
+        },
+        "sigma": {
+          "title": "sigma",
+          "dataType": "tuple",
+          "defaultValue": "(1.5,1.5)",
+          "tooltip": "the standard deviation of the kernel."
+        },
+        "border_type": {
+          "title": "border_type",
+          "dataType": "string",
+          "defaultValue": "reflect",
+          "tooltip": "the padding mode to be applied before convolving. The expected modes are: 'constant', 'reflect', 'replicate' or 'circular'."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "image: the blurred tensor with shape , shape of (B, C, H, W)."
+        }
+      }
+    },
+    "Laplacian": {
+      "type": "Laplacian",
+      "category": "function",
+      "title": "laplacian",
+      "tooltip": "The operator smooths the given tensor with a laplacian kernel by convolving it to each channel",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.laplacian({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
+        },
+        "kernel_size": {
+          "title": "kernel_size",
+          "dataType": "integer",
+          "defaultValue": 3,
+          "tooltip": "the size of the kernel."
+        },
+        "border_type": {
+          "title": "border_type",
+          "dataType": "string",
+          "defaultValue": "reflect",
+          "tooltip": "the padding mode to be applied before convolving. The expected modes are: 'constant', 'reflect', 'replicate' or 'circular'."
+        },
+        "normalized": {
+          "title": "normalized",
+          "dataType": "boolean",
+          "defaultValue": "True",
+          "tooltip": "if True, L1 norm of the kernel is set to 1."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "image: the blurred image with shape , shape of (B, C, H, W)."
+        }
+      }
+    },
+    "Sobel": {
+      "type": "Sobel",
+      "category": "function",
+      "title": "sobel",
+      "tooltip": "Compute the Sobel operator and returns the magnitude per channel.",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.sobel({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
+        },
+        "normalized": {
+          "title": "normalized",
+          "dataType": "boolean",
+          "defaultValue": "True",
+          "tooltip": "if True, L1 norm of the kernel is set to 1."
+        },
+        "eps": {
+          "title": "eps",
+          "dataType": "float",
+          "defaultValue": 1e-6,
+          "tooltip": "regularization number to avoid NaN during backprop."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "image: the sobel edge gradient magnitudes map with shape , shape of (B, C, H, W)."
+        }
+      }
+    },
+    "Spatial_Gradient": {
+      "type": "Spatial_Gradient",
+      "category": "function",
+      "title": "spatial gradient",
+      "tooltip": "Compute the first order image derivative in both x and y using a Sobel operator.",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.spatial_gradient({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
+        },
+        "mode": {
+          "title": "mode",
+          "dataType": "string",
+          "defaultValue": "sobel",
+          "tooltip": "derivatives modality, can be: sobel or diff. "
+        },
+        "order": {
+          "title": "order",
+          "dataType": "integer",
+          "defaultValue": 1,
+          "tooltip": "the order of the derivatives."
+        },
+        "normalized": {
+          "title": "normalized",
+          "dataType": "boolean",
+          "defaultValue": "True",
+          "tooltip": "whether the output is normalized"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "image: the derivatives of the input feature map with shape , shape of (B, C, 2, H, W)"
+        }
+      }
+    },
+    "Spatial_Gradient3d": {
+      "type": "Spatial_Gradient3d",
+      "category": "function",
+      "title": "spatial gradient3d",
+      "tooltip": "Compute the first and second order volume derivative in x, y and d using a diff operator.",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.spatial_gradient3d({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "input image tensor with shape (B, C,D, H, W) and intensity from [0, 1]."
+        },
+        "mode": {
+          "title": "mode",
+          "dataType": "string",
+          "defaultValue": "diff",
+          "tooltip": "derivatives modality, can be: sobel or diff. "
+        },
+        "order": {
+          "title": "order",
+          "dataType": "integer",
+          "defaultValue": 1,
+          "tooltip": "the order of the derivatives."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "image: the spatial gradients of the input feature map with shape math , shape of (B, C, 3, H, W) or (B, C, 6, H, W)"
         }
       }
     }

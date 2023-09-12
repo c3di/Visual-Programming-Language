@@ -1,0 +1,315 @@
+{
+  "enable": true,
+  "nodes": {
+    "Equalize": {
+      "type": "Equalize",
+      "category": "function",
+      "title": "equalize",
+      "tooltip": "Apply equalize on the input tensor.",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.enhance.equalize({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': False, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "image tensor to equalize with shape (*,C,H,W)"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "Equalized image tensor with shape (*,C,H,W)"
+        }
+      }
+    },
+    "Equalize_Clahe": {
+      "type": "Equalize_Clahe",
+      "category": "function",
+      "title": "equalize clahe",
+      "tooltip": "Apply clahe equalization on the input tensor.",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.enhance.equalize_clahe({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': False, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "images tensor to equalize with values in the range [0, 1] and shape (*,C,H,W)"
+        },
+        "clip_limit": {
+          "title": "clip_limit",
+          "dataType": "float",
+          "defaultValue": 40.0,
+          "tooltip": " threshold value for contrast limiting. If 0 clipping is disabled."
+        },
+        "grid_size": {
+          "title": "grid_size",
+          "dataType": "tuple",
+          "defaultValue": "(8,8)",
+          "tooltip": "number of tiles to be cropped in each direction (GH, GW)."
+        },
+        "slow_and_differentiable ": {
+          "title": "slow_and_differentiable ",
+          "dataType": "bool",
+          "defaultValue": "False",
+          "tooltip": "flag to select implementation"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "Equalized image or images with shape (*,C,H,W) as the input."
+        }
+      }
+    },
+    "Equalize3d": {
+      "type": "Equalize_Clahe",
+      "category": "function",
+      "title": "equalize clahe",
+      "tooltip": "Apply clahe equalization on the input tensor.",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.enhance.equalize_clahe({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "image tensor with shape(*,C,D,H,W) to equalize."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "Equalized volume with shape (B,C,D,H,W) as the input."
+        }
+      }
+    },
+    "Histogram": {
+      "type": "Histogram",
+      "category": "function",
+      "title": "histogram",
+      "tooltip": "Estimate the histogram of the input tensor.",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.enhance.histogram({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input tensor to compute the histogram with shape (B,D)"
+        },
+        "bins": {
+          "title": "bins",
+          "dataType": "torch.tensor",
+          "defaultValue": "None",
+          "tooltip": "The number of bins to use the histogram(Nbins)"
+        },
+        "bandwidth": {
+          "title": "bandwidth",
+          "dataType": "torch.tensor",
+          "defaultValue": "None",
+          "tooltip": "Gaussian smoothing factor with shape shape [1]"
+        },
+        "epsilon": {
+          "title": "epsilon",
+          "dataType": "float",
+          "defaultValue": 1e-10,
+          "tooltip": "A scalar, for numerical stability."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "Computed histogram of shape (B,Nbins) "
+        }
+      }
+    },
+    "Histogram2d": {
+      "type": "Histogram2d",
+      "category": "function",
+      "title": "histogram2d",
+      "tooltip": "Estimate the histogram of the input tensor.",
+      "externalImports": "import kornia as K",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.enhance.histogram2d({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "x1": {
+          "title": "x1",
+          "dataType": "torch.tensor",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input tensor to compute the histogram with shape (B,D1)"
+        },
+        "x2": {
+          "title": "x2",
+          "dataType": "torch.tensor",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input tensor to compute the histogram with shape (B,D2)"
+        },
+        "bins": {
+          "title": "bins",
+          "dataType": "torch.tensor",
+          "defaultValue": "None",
+          "tooltip": "The number of bins to use the histogram(Nbins)"
+        },
+        "bandwidth": {
+          "title": "bandwidth",
+          "dataType": "torch.tensor",
+          "defaultValue": "None",
+          "tooltip": "Gaussian smoothing factor with shape shape [1]"
+        },
+        "epsilon": {
+          "title": "epsilon",
+          "dataType": "float",
+          "defaultValue": 1e-10,
+          "tooltip": "A scalar, for numerical stability."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "Computed histogram of shape (B,Nbins),Nbins) "
+        }
+      }
+    }
+  }
+}

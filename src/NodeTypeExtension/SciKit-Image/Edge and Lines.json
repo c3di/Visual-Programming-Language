@@ -1,0 +1,391 @@
+{
+  "enable": true,
+  "nodes": {
+    "Convex_Hull": {
+      "type": "Convex_Hull",
+      "category": "function",
+      "title": "convex hull",
+      "tooltip": "The convex hull of a binary image is the set of pixels included in the smallest convex polygon that surround all white pixels in the input.",
+      "externalImports": "from skimage.morphology import convex_hull_image",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = convex_hull_image({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "The input image for convex hull"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "The output image for convex hull"
+        }
+      }
+    },
+    "Canny_edge_detector": {
+      "type": "Canny_edge_detector",
+      "category": "function",
+      "title": "Canny edge detector",
+      "tooltip": "The Canny filter is a multi-stage edge detector. It uses a filter based on the derivative of a Gaussian in order to compute the intensity of the gradients.",
+      "externalImports": "from skimage import feature",
+      "sourceCode": "{{indent}}{{{outputs.1}}} =  feature.canny({{{inputs.1}}},{{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "The input image for Canny filter"
+        },
+        "sigma": {
+          "title": "sigma",
+          "dataType": "float",
+          "defaultValue": 1.0,
+          "tooltip": "The low and high threshold for the hysteresis thresholding"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "The output image for Canny filter"
+        }
+      }
+    },
+    "Ridge_operators": {
+      "type": "Ridge_operators",
+      "category": "function",
+      "title": "Ridge operators",
+      "tooltip": "Ridge filters can be used to detect ridge-like structures",
+      "externalImports": "from skimage.filters import meijering",
+      "sourceCode": "{{indent}}{{{outputs.1}}} =  meijering({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "The input image for Ridge filter"
+        },
+        "black_ridges": {
+          "title": "black_ridges",
+          "dataType": "boolean",
+          "defaultValue": "True",
+          "tooltip": "The `black_ridges` parameter specifies whether the filter should detect black ridges (`True`) or white ridges (`False`) in the image. "
+        },
+        "sigma": {
+          "title": "sigma",
+          "dataType": "float",
+          "defaultValue": 1.0,
+          "tooltip": "The low and high threshold for the Ridge filter"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "The output image for Ridge filter"
+        }
+      }
+    },
+    "Approximate_subdivide_polygons": {
+      "type": "Approximate_subdivide_polygons",
+      "category": "function",
+      "title": "Approximate_subdivide_polygons",
+      "tooltip": "To shows how to approximate a image based on Douglas-Peucker algorithm and subdivide (B-Splines) polygonal chains.",
+      "externalImports": "from skimage.measure import approximate_polygon,subdivide_polygon",
+      "sourceCode": "{{indent}}{{{outputs.1}}} =  subdivide_polygon({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n {{indent}}{{{outputs.2}}} =  approximate_polygon({{{inputs.1}}},{{{inputs.4}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}} {{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "The input image for Canny filter"
+        },
+        "degree": {
+          "title": "degree",
+          "dataType": "integer",
+          "defaultValue": 2,
+          "tooltip": "The degree we use in subdivide polygon B-Splines"
+        },
+        "preserve_ends": {
+          "title": "preserve_ends",
+          "dataType": "boolean",
+          "defaultValue": "True",
+          "tooltip": "Preserve ends or not in subdividing"
+        },
+        "tolerance": {
+          "title": "tolerance",
+          "dataType": "float",
+          "defaultValue": 0.02,
+          "tooltip": "The tolerance we use in Douglas-Peucker algorithm"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "appr_image": {
+          "title": "appr_image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "The approximate subdivided polygon with Douglas-Peucker algorithm"
+        },
+        "sub_image": {
+          "title": "sub_image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "The subdivide polygon using 2nd degree B-Splines"
+        }
+      }
+    },
+    "Skeletonize": {
+      "type": "Skeletonize",
+      "category": "function",
+      "title": "skeletonize",
+      "tooltip": "Compute the skeleton of a binary image.",
+      "externalImports": "from skimage.morphology import skeletonize",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = skeletonize({{{inputs.1}}},{{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "An image containing the objects to be skeletonized."
+        },
+        "method": {
+          "title": "method",
+          "dataType": "string",
+          "defaultValue": "Zhang",
+          "tooltip": "Which algorithm to use, Zhang for 2D images, Lee for 3D images"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "The thinned image."
+        }
+      }
+    },
+    "Edge_Operator_Sobel": {
+      "type": "Edge_Operator_Sobel",
+      "category": "function",
+      "title": "edge operator sobel",
+      "tooltip": "Find edges in an image using the Sobel filter.",
+      "externalImports": "from skimage import filters",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = filters.sobel({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "The input image."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "The Sobel edge map."
+        }
+      }
+    },
+    "Edge_Operator_Roberts": {
+      "type": "Edge_Operator_Roberts",
+      "category": "function",
+      "title": "edge operator roberts",
+      "tooltip": "Find the edge magnitude using Roberts’ cross operator.",
+      "externalImports": "from skimage import filters",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = filters.sobel({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "The input image."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "The Roberts’ Cross edge map."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,473 @@
+{
+  "enable": true,
+  "nodes": {
+    "Maximum_Filter": {
+      "type": "Maximum_Filter",
+      "category": "function",
+      "title": "maximum filter",
+      "tooltip": "Calculate a multidimensional maximum filter.",
+      "externalImports": "from scipy import ndimage as ndi",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = ndi.maximum_filter({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}},{{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image to be filtered."
+        },
+        "size": {
+          "title": "size",
+          "dataType": "tuple",
+          "defaultValue": "None",
+          "tooltip": "Size gives the shape that is taken from the input array, at every element position.Ignored if footprint is given."
+        },
+        "footprint": {
+          "title": "image",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "footprint is a boolean array that specifies (implicitly) a shape, but also which of the elements within this shape will get passed to the filter function."
+        },
+        "output": {
+          "title": "output",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "The array in which to place the output, or the dtype of the returned array."
+        },
+        "mode": {
+          "title": "mode",
+          "dataType": "string",
+          "defaultValue": "constant",
+          "tooltip": "How to handle values outside the image borders,{'constant', 'edge', 'symmetric', 'reflect', 'wrap'}"
+        },
+        "cval": {
+          "title": "cval",
+          "dataType": "float",
+          "defaultValue": 0.0,
+          "tooltip": "Value to fill past edges of input if mode is 'constant'"
+        },
+        "origins": {
+          "title": "origins",
+          "dataType": "integer",
+          "defaultValue": 0,
+          "tooltip": "Controls the placement of the filter on the input array’s pixels. "
+        },
+        "axes": {
+          "title": "axes",
+          "dataType": "integer",
+          "defaultValue": -1,
+          "tooltip": "If None, the image is assumed to be grayscale (single-channel). Otherwise, this parameter indicates which axis of the array corresponds to channels."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "Filtered array. Has the same shape as input."
+        }
+      }
+    },
+    "Felzenszwalb_Segmentation": {
+      "type": "Felzenszwalb_Segmentation",
+      "category": "function",
+      "title": "felzenszwalb segmentation",
+      "tooltip": "Computes Felsenszwalb’s efficient graph based image segmentation.",
+      "externalImports": "from skimage.segmentation import felzenszwalb",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = felzenszwalb({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image to be segmented"
+        },
+        "scale": {
+          "title": "scale",
+          "dataType": "float",
+          "defaultValue": 100,
+          "tooltip": "Free parameter. Higher means larger clusters."
+        },
+        "sigma": {
+          "title": "sigma",
+          "dataType": "float",
+          "defaultValue": 0.5,
+          "tooltip": "Width (standard deviation) of Gaussian kernel used in preprocessing."
+        },
+        "min_size": {
+          "title": "output",
+          "dataType": "integer",
+          "defaultValue": 50,
+          "tooltip": "Minimum component size. Enforced using postprocessing."
+        },
+        "channel_axis": {
+          "title": "channel_axis",
+          "dataType": "integer",
+          "defaultValue": -1,
+          "tooltip": "If None, the image is assumed to be grayscale (single-channel). Otherwise, this parameter indicates which axis of the array corresponds to channels."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "Integer mask indicating segment labels."
+        }
+      }
+    },
+    "Slic_Segmentation": {
+      "type": "Slic_Segmentation",
+      "category": "function",
+      "title": "slic segmentation",
+      "tooltip": "Segments image using k-means clustering in Color-(x,y,z) space.",
+      "externalImports": "from skimage.segmentation import slic",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = slic({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}},{{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}},{{{inputs.9}}},{{{inputs.10}}},{{{inputs.11}}},{{{inputs.12}}},{{{inputs.13}}},{{{inputs.14}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image to be segmented"
+        },
+        "n_segments": {
+          "title": "n_segments",
+          "dataType": "integer",
+          "defaultValue": 200,
+          "tooltip": "The (approximate) number of labels in the segmented output image."
+        },
+        "compactness": {
+          "title": "compactness",
+          "dataType": "float",
+          "defaultValue": 10,
+          "tooltip": "Balances color proximity and space proximity.We recommend exploring possible values on a log scale, e.g., 0.01, 0.1, 1, 10, 100, before refining around a chosen value"
+        },
+        "max_num_iter": {
+          "title": "max_num_iter",
+          "dataType": "integer",
+          "defaultValue": "None",
+          "tooltip": "Maximum number of iterations of k-means."
+        },
+        "sigma": {
+          "title": "sigma",
+          "dataType": "float",
+          "defaultValue": 1.0,
+          "tooltip": "Width (standard deviation) of Gaussian kernel used in preprocessing."
+        },
+        "spacing": {
+          "title": "spacing",
+          "dataType": "float",
+          "defaultValue": "None",
+          "tooltip": "The voxel spacing along each spatial dimension."
+        },
+        "convert2lab": {
+          "title": "convert2lab",
+          "dataType": "boolean",
+          "defaultValue": "True",
+          "tooltip": "Whether the input should be converted to Lab colorspace prior to segmentation. "
+        },
+        "enforce_connectivity": {
+          "title": "enforce_connectivity",
+          "dataType": "boolean",
+          "defaultValue": "None",
+          "tooltip": "Whether the generated segments are connected or not"
+        },
+        "min_size_factor": {
+          "title": "min_size_factor",
+          "dataType": "float",
+          "defaultValue": "None",
+          "tooltip": "Proportion of the minimum segment size to be removed with respect to the supposed segment size `depth*width*height/n_segments`"
+        },
+        "max_size_factor": {
+          "title": "max_size_factor",
+          "dataType": "float",
+          "defaultValue": 3,
+          "tooltip": "Proportion of the maximum connected segment size. "
+        },
+        "slic_zero": {
+          "title": "slic_zero",
+          "dataType": "boolean",
+          "defaultValue": "True",
+          "tooltip": "Run SLIC-zero, the zero-parameter mode of SLIC."
+        },
+        "start_label": {
+          "title": "start_label",
+          "dataType": "integer",
+          "defaultValue": 1,
+          "tooltip": "The labels’ index start. Should be 0 or 1."
+        },
+        "mask": {
+          "title": "mask",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "If provided, superpixels are computed only where mask is True, and seed points are homogeneously distributed over the mask using a k-means clustering strategy. "
+        },
+        "channel_axis": {
+          "title": "channel_axis",
+          "dataType": "integer",
+          "defaultValue": "None",
+          "tooltip": "If None, the image is assumed to be a grayscale (single channel) image. Otherwise, this parameter indicates which axis of the array corresponds to channels."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "Integer mask indicating segment labels."
+        }
+      }
+    },
+    "Quickshift_Segmentation": {
+      "type": "Quickshift_Segmentation",
+      "category": "function",
+      "title": "quickshift segmentation",
+      "tooltip": "Segment image using quickshift clustering in Color-(x,y) space.",
+      "externalImports": "from skimage.segmentation import quickshift",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = quickshift({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}},{{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}},{{{inputs.9}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image to be segmented"
+        },
+        "ratio": {
+          "title": "ratio",
+          "dataType": "float",
+          "defaultValue": 0.5,
+          "tooltip": "Balances color-space proximity and image-space proximity, between 0 and 1"
+        },
+        "kernel_size": {
+          "title": "kernel_size",
+          "dataType": "float",
+          "defaultValue": 3.0,
+          "tooltip": "Width of Gaussian kernel used in smoothing the sample density. Higher means fewer clusters."
+        },
+        "max_dist": {
+          "title": "max_dist",
+          "dataType": "float",
+          "defaultValue": 6.0,
+          "tooltip": "Cut-off point for data distances. Higher means fewer clusters."
+        },
+        "return_tree": {
+          "title": "return_tree",
+          "dataType": "bool",
+          "defaultValue": "None",
+          "tooltip": "Whether to return the full segmentation hierarchy tree and distances."
+        },
+        "sigma": {
+          "title": "sigma",
+          "dataType": "float",
+          "defaultValue": 1.0,
+          "tooltip": "Width (standard deviation) of Gaussian kernel used in preprocessing."
+        },
+        "convert2lab": {
+          "title": "convert2lab",
+          "dataType": "boolean",
+          "defaultValue": "True",
+          "tooltip": "Whether the input should be converted to Lab colorspace prior to segmentation. "
+        },
+        "rng": {
+          "title": "rng",
+          "dataType": "integer",
+          "defaultValue": 42,
+          "tooltip": "Pseudo-random number generator. By default, a PCG64 generator is used"
+        },
+        "channel_axis": {
+          "title": "channel_axis",
+          "dataType": "integer",
+          "defaultValue": "None",
+          "tooltip": "The axis of image corresponding to color channels"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "Integer mask indicating segment labels."
+        }
+      }
+    },
+    "Flood Fill": {
+      "type": "Flood Fill",
+      "category": "function",
+      "title": "flood fill",
+      "tooltip": "Perform flood filling on an image.",
+      "externalImports": "from skimage.segmentation import flood_fill",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = quickshift({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}},{{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}},{{{inputs.9}}},{{{inputs.10}}},{{{inputs.11}}},{{{inputs.12}}},{{{inputs.13}}},{{{inputs.14}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image to be segmented"
+        },
+        "seed_point": {
+          "title": "seed_point",
+          "dataType": "tuple",
+          "defaultValue": "(155,150)",
+          "tooltip": "The point in image used as the starting point for the flood fill."
+        },
+        "new_value": {
+          "title": "new_value",
+          "dataType": "integer",
+          "defaultValue": 255,
+          "tooltip": "New value to set the entire fill."
+        },
+        "footprint": {
+          "title": "footprint",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "The footprint (structuring element) used to determine the neighborhood of each evaluated pixel. It must contain only 1’s and 0’s, have the same number of dimensions as image."
+        },
+        "connectivity": {
+          "title": "connectivity",
+          "dataType": "integer",
+          "defaultValue": "None",
+          "tooltip": "A number used to determine the neighborhood of each evaluated pixel."
+        },
+        "tolerance": {
+          "title": "tolerance",
+          "dataType": "float",
+          "defaultValue": 10.0,
+          "tooltip": " If a tolerance is provided, adjacent points with values within plus or minus tolerance from the seed point are filled (inclusive)."
+        },
+        "in_place": {
+          "title": "in_place",
+          "dataType": "boolean",
+          "defaultValue": "False",
+          "tooltip": "If True, flood filling is applied to image in place. If False, the flood filled result is returned without modifying the input image (default)."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "An array with the same shape as image is returned, with values in areas connected to and equal (or within tolerance of) the seed point replaced with new_value."
+        }
+      }
+    }
+  }
+}
