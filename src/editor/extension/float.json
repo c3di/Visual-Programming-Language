@@ -157,6 +157,58 @@
           "showTitle": true
         }
       }
+    },
+    "Zeros": {
+      "type": "Zeros",
+      "category": "function",
+      "title": "numpy.zeros",
+      "tooltip": "Return a new array of given shape and type, filled with zeros.",
+      "enableAddNewOne": true,
+      "dataType": "numpy.ndarray",
+      "externalImports": "import numpy as np",
+      "sourceCode": "{{indent}}{{{outputs.0}}}=np.zeros([{{{inputs}}}])",
+      "inputs": {
+        "input1": {
+          "dataType": "tuple",
+          "defaultValue": "None",
+          "title": "shape",
+          "showTitle": true
+        }
+      },
+      "outputs": {
+        "array": {
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "title": "Array of zeros with the given shape",
+          "showTitle": true
+        }
+      }
+    },
+    "Shape": {
+      "type": "Zeros",
+      "category": "function",
+      "title": "numpy.shape",
+      "tooltip": "Return the shape of an array.",
+      "enableAddNewOne": true,
+      "dataType": "numpy.ndarray",
+      "externalImports": "import numpy as np",
+      "sourceCode": "{{indent}}{{{outputs.0}}}=np.shape([{{{inputs}}}])",
+      "inputs": {
+        "input1": {
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "title": "array",
+          "showTitle": true
+        }
+      },
+      "outputs": {
+        "shape": {
+          "dataType": "tuple",
+          "defaultValue": "None",
+          "title": "shape of the corresponding array",
+          "showTitle": true
+        }
+      }
     }
   }
 }
