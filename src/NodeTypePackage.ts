@@ -8,7 +8,9 @@ import imagevisualization from './NodeTypeExtension/image visualization.json';
 import torch from './NodeTypeExtension/torch.json';
 import Path from './NodeTypeExtension/Path.json';
 import init from './NodeTypeExtension/Kornia/__init__.json';
+import init2 from './NodeTypeExtension/sciKitImage/__init__.json';
 import filters from './NodeTypeExtension/Kornia/filters.json';
+import Segmentation from './NodeTypeExtension/sciKitImage/Segmentation.json';
 
 export const extension1 = {
   isPackage: true,
@@ -38,6 +40,14 @@ export const Kornia = {
   },
 };
 
+export const sciKitImage = {
+  isPackage: true,
+  subpackages: {
+    __init__: init2,
+    Segmentation,
+  },
+};
+
 export const extension2 = module;
 
 export const extensions = {
@@ -48,4 +58,5 @@ export const extensions = {
   torch,
   Path,
   Kornia,
+  sciKitImage,
 };

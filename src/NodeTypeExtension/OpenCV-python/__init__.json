@@ -1,0 +1,4 @@
+{
+  "description": "OpenCV_python is a library of programming functions mainly aimed at real-time computer vision, developed in C++ and ported to Python, that provides tools for image and video processing, object detection, and machine learning.",
+  "enable": true
+}
