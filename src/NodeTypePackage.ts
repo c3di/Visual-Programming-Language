@@ -45,6 +45,7 @@ export const sciKitImage = {
   subpackages: {
     __init__: init2,
     Segmentation,
+    Filter_and_restoration,
   },
 };
 
