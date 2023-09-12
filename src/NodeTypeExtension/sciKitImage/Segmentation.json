@@ -778,6 +778,90 @@
           "tooltip": "A labeled matrix of the same type and shape as markers"
         }
       }
+    },
+    "Label2rgb": {
+      "type": "Label2rgb",
+      "category": "function",
+      "title": "label2rgb",
+      "tooltip": "Return an RGB image where color-coded labels are painted over the image.",
+      "externalImports": "from skimage.color import label2rgb",
+      "sourceCode": "{{indent}}{{{outputs.1}}} =  label2rgb({{{inputs.1}}},{{{inputs.2}}},{{{alpha=inputs.3}}},{{{bg_color=inputs.4}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "label": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Integer array of labels with the same shape as image."
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Image used as underlay for labels. "
+        },
+        "alpha": {
+          "title": "alpha",
+          "dataType": "float",
+          "defaultValue": "None",
+          "tooltip": "Opacity of colorized labels, [0,1]"
+        },
+        "bg_color": {
+          "title": "bg_color",
+          "dataType": "string",
+          "defaultValue": "None",
+          "tooltip": "Background color"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "The result of blending a cycling colormap (colors) for each distinct value in label with the image, at a certain alpha value."
+        }
+      }
     }
   }
 }
