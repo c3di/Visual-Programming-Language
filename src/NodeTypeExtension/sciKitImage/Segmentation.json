@@ -566,6 +566,218 @@
           "tooltip": "The regions that applying multi-Otsu thresholds"
         }
       }
+    },
+    "Measure_label": {
+      "type": "Measure_label",
+      "category": "function",
+      "title": "measure_label",
+      "tooltip": "Label connected regions of an integer array.",
+      "externalImports": "from skimage import measure",
+      "sourceCode": "{{indent}}{{{outputs.1}}} =  measure.label({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Image to label."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "labels": {
+          "title": "labels",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "Labeled array, where all connected regions are assigned the same integer value."
+        }
+      }
+    },
+    "Euclidean_distance_transform": {
+      "type": "Euclidean_distance_transform",
+      "category": "function",
+      "title": "euclidean_distance_transform",
+      "tooltip": "Exact Euclidean distance transform.",
+      "externalImports": "from scipy import ndimage as ndi",
+      "sourceCode": "{{indent}}{{{outputs.1}}} =  ndi.distance_transform_edt({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "distance": {
+          "title": "distance",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "The calculated Euclidean distance transform"
+        }
+      }
+    },
+    "Peak_local_max": {
+      "type": "Peak_local_max",
+      "category": "function",
+      "title": "peak_local_max",
+      "tooltip": "Find peaks in an image as coordinate list.",
+      "externalImports": "from skimage import feature",
+      "sourceCode": "{{indent}}{{{outputs.1}}} =  feature.peak_local_max({{{inputs.1}}},{{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image"
+        },
+        "min_distance": {
+          "title": "min_distance",
+          "dataType": "integer",
+          "defaultValue": "None",
+          "tooltip": "The minimal allowed distance separating peaks. "
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "coordinates": {
+          "title": "coordinates",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "The coordinates of the peaks."
+        }
+      }
+    },
+    "Watershed_segmentation": {
+      "type": "Watershed_segmentation",
+      "category": "function",
+      "title": "watershed_segmentation",
+      "tooltip": "The watershed is a classical algorithm used for segmentation,",
+      "externalImports": "from skimage.segmentation import watershed",
+      "sourceCode": "{{indent}}{{{outputs.1}}} =  watershed({{{-inputs.1}}},{{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image"
+        },
+        "markers": {
+          "title": "markers",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "The desired number of markers, or an array marking the basins with the values to be assigned in the label matrix."
+        },
+        "mask": {
+          "title": "mask",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "ndarray of bools or 0s and 1s"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "A labeled matrix of the same type and shape as markers"
+        }
+      }
     }
   }
 }

@@ -11,6 +11,7 @@ import init from './NodeTypeExtension/Kornia/__init__.json';
 import init2 from './NodeTypeExtension/sciKitImage/__init__.json';
 import filters from './NodeTypeExtension/Kornia/filters.json';
 import Segmentation from './NodeTypeExtension/sciKitImage/Segmentation.json';
+import Filter_and_restoration from './NodeTypeExtension/sciKitImage/Filter_and_restoration.json';
 
 export const extension1 = {
   isPackage: true,
