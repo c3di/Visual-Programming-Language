@@ -131,6 +131,32 @@
           "showTitle": true
         }
       }
+    },
+    "Maximum": {
+      "type": "Maximum ",
+      "category": "math",
+      "title": "Maximum of a float array",
+      "tooltip": "Return the maximum of a float array",
+      "enableAddNewOne": true,
+      "dataType": "numpy.ndarray",
+      "externalImports": "import numpy as np",
+      "sourceCode": "{{indent}}{{{outputs.0}}}=np.max([{{{inputs}}}])",
+      "inputs": {
+        "input1": {
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "title": "x",
+          "showTitle": true
+        }
+      },
+      "outputs": {
+        "max": {
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "title": "Maximum of array x",
+          "showTitle": true
+        }
+      }
     }
   }
 }
