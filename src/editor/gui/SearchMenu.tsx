@@ -1,27 +1,27 @@
-import React, { memo, useCallback, useEffect, useState } from 'react';
-import { type Connection } from 'reactflow';
-import { Popover } from '@mui/material';
-import { createSvgIcon } from '@mui/material/utils';
 import {
   Comment,
-  Route,
   DoNotDisturb,
   FitScreen,
   Notes,
+  Route,
 } from '@mui/icons-material';
+import { Popover } from '@mui/material';
+import { createSvgIcon } from '@mui/material/utils';
+import React, { memo, useCallback, useEffect, useState } from 'react';
+import { type Connection } from 'reactflow';
+import { nodeConfigRegistry } from '../extension';
+import { type Command } from '../hooks';
+import {
+  isDataTypeMatch,
+  type Node,
+  type OnConnectStartParams,
+  type SourceCodeExec,
+} from '../types';
 import {
   SearchedTreeView,
   nodeConfigsToTreeData,
   type TreeItemData,
 } from './elements';
-import {
-  isDataTypeMatch,
-  type OnConnectStartParams,
-  type SourceCodeExec,
-  type Node,
-} from '../types';
-import { type Command } from '../hooks';
-import { nodeConfigRegistry } from '../extension';
 
 const StickyNoteIcon = createSvgIcon(
   <svg
@@ -53,7 +53,6 @@ const SearchMenu = memo(function SearchMenu({
   moreCommands,
   startHandleInfo,
   addEdge,
-  getNodById,
 }: {
   onClose: () => void;
   anchorPosition: { top: number; left: number };
@@ -67,7 +66,6 @@ const SearchMenu = memo(function SearchMenu({
   moreCommands?: Command[];
   startHandleInfo?: OnConnectStartParams;
   addEdge?: (params: Connection) => void;
-  getNodById: (id: string) => Node | undefined;
 }): JSX.Element {
   const [commands, setCommand] = useState<Command[]>([
     {
@@ -321,44 +319,14 @@ const SearchMenu = memo(function SearchMenu({
     (configType: string) => {
       const node = addNodeWithSceneCoord?.(configType, anchorPosition);
       if (toFilter() && node) {
-        const dragFromNode = getNodById(startHandleInfo!.nodeId!);
-        for (const [id, handle] of Object.entries(
-          startHandleInfo!.handleType === 'source'
-            ? dragFromNode?.data.outputs ?? {}
-            : dragFromNode?.data.inputs ?? {}
-        )) {
-          const matchingHandle = findHandleWithMatchingDataType(
-            node,
-            startHandleInfo!.handleType,
-            (handle as any).dataType
-          );
-
-          let newConnection: Connection;
-          if (startHandleInfo!.handleType === 'source' && matchingHandle) {
-            newConnection = {
-              source: startHandleInfo!.nodeId,
-              target: Object(node).id,
-              sourceHandle: id,
-              targetHandle: matchingHandle,
-            };
-            window.requestAnimationFrame(() => {
-              addEdge?.(newConnection);
-            });
-          } else if (
-            startHandleInfo!.handleType === 'target' &&
-            matchingHandle
-          ) {
-            newConnection = {
-              source: Object(node).id,
-              target: startHandleInfo!.nodeId,
-              sourceHandle: matchingHandle,
-              targetHandle: id,
-            };
-            window.requestAnimationFrame(() => {
-              addEdge?.(newConnection);
-            });
-          }
-        }
+        const matchingHandle = findHandleWithMatchingDataType(
+          node,
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+          startHandleInfo!.handleType,
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+          startHandleInfo!.handleDataType
+        );
+        connectWithNewNode(node, matchingHandle);
       }
     },
     [startHandleInfo]
