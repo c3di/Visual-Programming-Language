@@ -115,54 +115,6 @@
         }
       }
     },
-    "Equalize3d": {
-      "type": "Equalize_Clahe",
-      "category": "function",
-      "title": "equalize clahe",
-      "tooltip": "Apply clahe equalization on the input tensor.",
-      "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.enhance.equalize_clahe({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
-      "inputs": {
-        "execIn": {
-          "title": "execIn",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "torch.tensor",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "image tensor with shape(*,C,D,H,W) to equalize."
-        }
-      },
-      "outputs": {
-        "execOut": {
-          "title": "execOut",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "torch.tensor"
-          },
-          "tooltip": "Equalized volume with shape (B,C,D,H,W) as the input."
-        }
-      }
-    },
     "Histogram": {
       "type": "Histogram",
       "category": "function",

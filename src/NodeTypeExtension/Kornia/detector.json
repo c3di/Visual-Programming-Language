@@ -517,7 +517,7 @@
       "title": "blob DoG single",
       "tooltip": "Module that calculates Difference-of-Gaussians blobs.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.feature.dog_response_single({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = K.feature.BlobDoGSingle({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
