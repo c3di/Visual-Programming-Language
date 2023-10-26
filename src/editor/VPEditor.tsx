@@ -1,32 +1,32 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactFlow, {
-  SelectionMode,
   ConnectionLineType,
-  ReactFlowProvider,
   ConnectionMode,
+  ReactFlowProvider,
+  SelectionMode,
   getRectOfNodes,
-  type ReactFlowInstance,
-  type PanelPosition,
   type Connection,
+  type PanelPosition,
+  type ReactFlowInstance,
 } from 'reactflow';
 import {
+  onKeyDown,
   useGraph,
   useScene,
-  onKeyDown,
   useTrackMousePos,
   type ISceneActions,
 } from './hooks';
 
+import 'reactflow/dist/style.css';
+import { SceneStateContext, WidgetFactoryProvider } from './Context';
+import './VPEditor.css';
 import Setting from './VPPanelSetting';
-import { WidgetFactoryProvider, SceneStateContext } from './Context';
+import componentType, { Background, ControlPanel, MiniMap } from './components';
 import type {
+  OnConnectStartParams,
   SerializedGraph,
   selectedElementsCounts,
-  OnConnectStartParams,
 } from './types';
-import componentType, { Background, ControlPanel, MiniMap } from './components';
-import 'reactflow/dist/style.css';
-import './VPEditor.css';
 
 export interface IVPEditorOption {
   controller?: {
@@ -405,7 +405,6 @@ const Scene = ({
                   toFilter: toFilterFlag,
                   startHandleInfo: startHandle,
                   addEdge: sceneActions?.addEdge,
-                  getNodById: sceneActions?.getNodeById,
                 }
               );
               gui.connectionStartNodeId.current = null;
