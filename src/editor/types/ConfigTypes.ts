@@ -16,6 +16,8 @@ export interface NodeConfig {
   [key: string]: any;
   dataType?: string; // the data type for all the handles
   enable?: boolean;
+  codeGenerator?: string;
+  externalImports?: string;
 }
 
 export interface NodePackage {

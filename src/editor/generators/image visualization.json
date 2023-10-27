@@ -1,0 +1,72 @@
+{
+  "description": "os",
+  "enable": true,
+  "nodes": {
+    "show_image": {
+      "type": "show_image",
+      "category": "function",
+      "title": "show_image",
+      "tooltip": "Takes an input tensor in CHW layout and display it as an image",
+      "externalImports": "from matplotlib import pyplot as plt",
+      "codeGenerator": "function code(inputs, outputs) {\n    return `def show_image(img, title=None, cmap=None, figSize=(9, 5)):\\n    plt.figure(figsize=figSize)\\n    plt.imshow(img, cmap=cmap)\\n    plt.title(title)\\n    plt.axis('off')\\n    plt.show()\\n show_image(${outputs[1]}, ${outputs[2]}, ${outputs[3]}, ${outputs[4]})\\n ${outputs[0]}`;\n}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": false,
+                "channelOrder": "channelLast",
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "grayscale",
+                "isMiniBatched": false,
+                "channelOrder": "none",
+                "intensityRange": "0-255"
+              }
+            ]
+          },
+          "tooltip": "numpy.ndarray[image_height, image_width] | numpy.ndarray[image_height, image_width, 3] | numpy.ndarray[image_height, image_width, 4]"
+        },
+        "title": {
+          "title": "title",
+          "dataType": "string",
+          "defaultValue": "",
+          "tooltip": "title - A title to be set for the image. Default: None."
+        },
+        "cmap": {
+          "title": "cmap",
+          "dataType": "string",
+          "defaultValue": "viridis",
+          "tooltip": "cmap(str, optional) - The registered colormap name in matplotlib used to map scalar data to colors. This parameter is ignored if X is RGB(A)."
+        },
+        "figSize": {
+          "title": "figSize",
+          "dataType": "tuple",
+          "defaultValue": "(9, 5)",
+          "tooltip": "figSize 2-tuple of floats, default: (9, 5) - Figure dimension (width, height) in inches"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "tooltip": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        }
+      }
+    }
+  }
+}
