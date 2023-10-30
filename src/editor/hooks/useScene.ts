@@ -1,42 +1,42 @@
+import ContentPaste from '@mui/icons-material/ContentPaste';
+import ELK from 'elkjs/lib/elk.bundled.js';
+import Mustache from 'mustache';
 import {
-  type Dispatch,
-  type SetStateAction,
   useCallback,
   useRef,
   useState,
+  type Dispatch,
+  type SetStateAction,
 } from 'react';
+import {
+  getRectOfNodes,
+  useReactFlow,
+  type Connection,
+  type Node as RcNode,
+  type ReactFlowInstance,
+  type XYPosition,
+} from 'reactflow';
+import toposort from 'toposort';
+import { deserializer } from '../Deserializer';
+import { nodeConfigRegistry } from '../extension';
+import { type TypeConversionRule } from '../extension/NodeConfigRegistry';
 import type {
-  Node,
   ClipboardInfo,
   ConnectionStatus,
   Edge,
-  selectedElementsCounts,
+  GenerationResult,
   Graph,
-  SourceCodeExec,
   ISourceImage,
   ITargetImage,
+  Node,
+  selectedElementsCounts,
 } from '../types';
 import { isCommentNode } from '../types';
-import { type GraphState } from './useGraph';
-import { deserializer } from '../Deserializer';
-import useGui, { type IGui, type Command } from './useGui';
-import ContentPaste from '@mui/icons-material/ContentPaste';
-import ELK from 'elkjs/lib/elk.bundled.js';
-import {
-  useReactFlow,
-  getRectOfNodes,
-  type Connection,
-  type XYPosition,
-  type Node as RcNode,
-  type ReactFlowInstance,
-} from 'reactflow';
-import { UniqueNamePool, type IUniqueNamePool } from '../utils';
-import { copy, deepCopy, fromClientCoordToScene } from '../util';
-import Mustache from 'mustache';
 import { type Handle } from '../types/Handle';
-import toposort from 'toposort';
-import { nodeConfigRegistry } from '../extension';
-import { type TypeConversionRule } from '../extension/NodeConfigRegistry';
+import { copy, deepCopy, fromClientCoordToScene } from '../util';
+import { UniqueNamePool, type IUniqueNamePool } from '../utils';
+import { type GraphState } from './useGraph';
+import useGui, { type Command, type IGui } from './useGui';
 
 function nodeInsideOfNode(n: Node, containter: Node): boolean {
   return (
@@ -90,7 +90,7 @@ export interface ISceneActions {
   sortZIndexOfComments: (nodes: Node[]) => Node[];
   autoLayout: () => void;
   deleteHandle: (nodeId: string, nodeType: string, handleId: string) => void;
-  sourceCode: () => SourceCodeExec;
+  sourceCode: () => GenerationResult;
   closeMenu?: () => void;
 }
 export interface ISceneState {
@@ -776,29 +776,6 @@ export default function useScene(
     });
   }, []);
 
-  const object2PythonDict = (source: object): string => {
-    return `{
-      ${Object.entries(source)
-        .map(([key, value]) => {
-          return `'${key}': ${
-            // use variable name directly for value property
-            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands, @typescript-eslint/restrict-template-expressions
-            key !== 'value'
-              ? mapToLanguageDefinition(typeof value, value)
-              : value === ''
-              ? 'None'
-              : value
-          }`;
-        })
-        .join(', ')}
-    }`;
-  };
-  const indentFunStr = (indentLevel: number, fun: string): string => {
-    return (
-      '  '.repeat(indentLevel) +
-      fun.replaceAll('\n', '\n' + '  '.repeat(indentLevel))
-    );
-  };
   /**
    * @returns {string} python function of conversion rules
    * @example
@@ -808,7 +785,7 @@ export default function useScene(
    *        ...
    *    def ndarray2ndarray(source, target):
    *        ...
-   *    return ndarray2ndarray(tensor2numpy(source), target)
+   *    return ndarray2ndarray(tensor2numpy(s ource), target)
    * ```
    */
   const createImageConversionFunction = (
@@ -878,7 +855,7 @@ export default function useScene(
     };
   };
 
-  const sourceCode = (): SourceCodeExec => {
+  const sourceCode = (): GenerationResult => {
     const startNode = graphState
       .getNodes()
       .find((n) => n.data.configType.includes('Start'));
@@ -1040,7 +1017,7 @@ export default function useScene(
     indentLevel: number,
     execTrace: Array<{ nodeId: string; handleId: string }>,
     externalImports: Set<string>
-  ): SourceCodeExec => {
+  ): GenerationResult => {
     if (!node?.data) return { hasError: false, result: '' };
     let source = '';
     execTrace.push({ nodeId: node.id, handleId: execInId ?? '' });
@@ -1248,7 +1225,7 @@ export default function useScene(
   const sourceCodeForFunction = (
     createFunctionNode: Node,
     externalImports: Set<string>
-  ): SourceCodeExec => {
+  ): GenerationResult => {
     const indentLevel = 1;
     const execTrace: Array<{ nodeId: string; handleId: string }> = [];
     const result = sourceCodeWithStartNode(

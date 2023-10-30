@@ -13,9 +13,9 @@ import { nodeConfigRegistry } from '../extension';
 import { type Command } from '../hooks';
 import {
   isDataTypeMatch,
+  type GenerationResult,
   type Node,
   type OnConnectStartParams,
-  type SourceCodeExec,
 } from '../types';
 import {
   SearchedTreeView,
@@ -56,7 +56,7 @@ const SearchMenu = memo(function SearchMenu({
 }: {
   onClose: () => void;
   anchorPosition: { top: number; left: number };
-  getSourceCode?: () => SourceCodeExec;
+  getSourceCode?: () => GenerationResult;
   addNodeWithSceneCoord?: (
     configType: string,
     anchorPosition: { top: number; left: number }

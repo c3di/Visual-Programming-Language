@@ -1,4 +1,3 @@
-import { type NodeConfig } from '../types';
 import { CodeGenerator } from './code_generator';
 
 export class PythonGenerator extends CodeGenerator {
@@ -10,10 +9,19 @@ export class PythonGenerator extends CodeGenerator {
    */
   pass: string = this.indent + 'pass';
 
-  programToCode(program: any): string {
-    // todo: indentLines(code)
-    // build the graph, then get the inputs values and get the code of node and then combine them together
-    return 'CodeGenerator';
+  nodeToCode(
+    nodeGenerator: string | undefined,
+    inputs: any[],
+    outputs: any[]
+  ): string {
+    if (!nodeGenerator) {
+      // todo: find a title or other unique identifier for the node
+      console.warn(`Node has no source code`);
+      return '';
+    }
+    // eslint-disable-next-line no-eval
+    const func = eval(`(${nodeGenerator})`);
+    return func(inputs, outputs);
   }
 
   // todo: refactor this function
@@ -21,6 +29,7 @@ export class PythonGenerator extends CodeGenerator {
     dataType: string | undefined,
     value: any
   ): any => {
+    // todo quote for single value and multiple values
     if (value === undefined || value === null) return `None`;
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     if (dataType === 'string') return `'${value}'`;
@@ -53,14 +62,4 @@ export class PythonGenerator extends CodeGenerator {
         .join(', ')}
     }`;
   };
-
-  nodeToCode(node: NodeConfig, inputs: any[], outputs: any[]): string {
-    if (!node.codeGenerator) {
-      console.warn(`Node ${node.title ?? ''} has no source code`);
-      return '';
-    }
-    // eslint-disable-next-line no-eval
-    const func = eval(`(${node.codeGenerator})`);
-    return func(inputs, outputs);
-  }
 }
