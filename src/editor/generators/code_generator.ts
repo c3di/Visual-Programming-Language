@@ -7,48 +7,51 @@ export abstract class CodeGenerator {
   abstract name: string;
   indent: string = '  ';
 
-  checkEntryPoint(program: VisualProgram): GenerationResult {
-    if (!program.getStartNode())
-      return {
-        messages: [
-          {
-            type: 'warning',
-            message: 'No entry named "Exec Start"node found',
-          },
-        ],
-        code: '',
-      };
-    return { messages: [], code: '' };
-  }
-
   programToCode(program: VisualProgram): GenerationResult {
-    const results: GenerationResult = { messages: [], code: '' };
+    const results: GenerationResult = {
+      messages: [],
+      code: '',
+      imports: new Set<string>(),
+    };
 
     const entryCheck = this.checkEntryPoint(program);
-    results.messages.push(...entryCheck.messages);
+    results.messages.push(...(entryCheck.messages ?? []));
 
-    const sortedFunDefs = this.topoSortFunDef(program);
+    const sortedFunDefs = this.topoSortFuncsInProgram(program);
     if (sortedFunDefs.hasError) {
       results.messages.push({
         type: 'error',
-        message: sortedFunDefs.result,
+        message: sortedFunDefs.errorMessage as string,
       });
       return results;
     }
 
-    const generation = this.functionsToCode(sortedFunDefs.sortedNodes, program);
-    results.messages.push(...generation.messages);
+    const generation = this.functionsToCode(
+      sortedFunDefs.nodeIds.map((id) => program.getNodeById(id)!),
+      program
+    );
+    results.messages.push(...(generation.messages ?? []));
     results.code = generation.code;
     return results;
   }
 
   functionsToCode(funDefs: Node[], program: VisualProgram): GenerationResult {
-    const results: GenerationResult = { messages: [], code: '' };
+    const results: GenerationResult = {
+      messages: [],
+      code: '',
+      imports: new Set<string>(),
+    };
     const funcCodeList = [];
     const importsSet = new Set<string>();
     for (const def of funDefs) {
+      if (program.isAcyclic(def.id)) {
+        results.messages.push({
+          type: 'error',
+          message: `Acyclic dependency found`,
+        });
+      }
       const generation = this.functionToCode(def, program);
-      results.messages.push(...generation.messages);
+      results.messages.push(...(generation.messages ?? []));
       funcCodeList.push(generation.code);
       generation.imports.forEach((i: string) => importsSet.add(i));
     }
@@ -56,19 +59,30 @@ export abstract class CodeGenerator {
     return results;
   }
 
-  functionToCode(
+  abstract functionToCode(
     funcDefNode: Node,
     program: VisualProgram
-  ): FunctionGenerationResult {
-    // todo: indentLines(code)
-    retrun;
-  }
+  ): GenerationResult;
 
-  abstract nodeToCode(
-    nodeGenerator: string | undefined,
+  abstract nodeToCode(node: Node, program: VisualProgram): GenerationResult;
+
+  nodeSourceGeneration(
+    node: Node,
     inputs: any[],
-    outputs: any[]
-  ): string;
+    outputs: any[],
+    options?: any[]
+  ): string {
+    const nodeGenerator: string = node.data.nodeGenerator;
+    if (!nodeGenerator) {
+      console.warn(
+        `Node type:${node.data.configType as string} has no bound source code`
+      );
+      return '';
+    }
+    // eslint-disable-next-line no-eval
+    const func = eval(`(${nodeGenerator})`);
+    return func(inputs, outputs, options, this);
+  }
 
   /**
    * transform the value from the widget to the language specific value
@@ -80,6 +94,8 @@ export abstract class CodeGenerator {
     value: any
   ): any;
 
+  abstract _getUniqueNameOfHandle(node: Node, handleId: string): string;
+
   /**
    * Intended onto each line of code.
    * Intended for indenting code
@@ -90,44 +106,34 @@ export abstract class CodeGenerator {
     return this.indent + text.replace(/(?!\n$)\n/g, '\n' + this.indent);
   }
 
-  topoSortFunDef = (program: VisualProgram): SortedFunDefs => {
-    /**
-     * find the function definition nodes include the main function
-     * and for each of them find the function call nodes and create a dependency graph,
-     * then sort the graph and know the order of the function definitions
-     *
-     */
-    const sortedFunDefs = {
-      hasError: false,
-      errorMessage: [],
-      nodeIds: [],
+  checkEntryPoint(program: VisualProgram): GenerationResult {
+    const result: GenerationResult = {
+      messages: [],
+      code: '',
+      imports: new Set<string>(),
     };
-    const nodeAndDdependency: Array<[string, string]> = [];
-    const funDefs = program.getFuncDefNodes();
-
-    while (queue.length) {
-      const nodeId = queue.shift();
-      if (nodeId === undefined) continue;
-      visited.push(nodeId);
-      const functionCallNodes: Node[] = [];
-      graphState.findFunctionCallNodes(
-        graphState.getNodeById(nodeId)!,
-        functionCallNodes,
-        []
-      );
-      functionCallNodes.forEach((n) => {
-        const createFunctionNodeId = n.data.nodeRef as string;
-        dependencies.push([createFunctionNodeId, nodeId]);
-        if (
-          !visited.includes(createFunctionNodeId) &&
-          !queue.includes(createFunctionNodeId)
-        )
-          queue.push(createFunctionNodeId);
+    if (!program.getStartNode())
+      result.messages.push({
+        type: 'warning',
+        message: 'No "main" entry node found',
       });
+    return result;
+  }
+
+  topoSortFuncsInProgram = (program: VisualProgram): SortedFunDefs => {
+    const nodeAndDependency: Array<[string, string]> = [];
+    const funcs = program.getFuncDefNodes();
+    for (const func of funcs) {
+      const funcCalls: Node[] = program.funcCallsInFunc(func);
+      for (const call of funcCalls) {
+        const dependent = program.getFuncDefNodeIdByFuncCallNode(call);
+        nodeAndDependency.push([dependent, func.id]);
+      }
     }
+
     let sorted: string[] = [];
     try {
-      sorted = toposort(dependencies);
+      sorted = toposort(nodeAndDependency);
     } catch (e: any) {
       if (e.message.includes('node was:')) {
         const nodeId = e.message.match(/\d+/);
@@ -136,11 +142,15 @@ export abstract class CodeGenerator {
           `node was:"${program.getNodeById(nodeId[0])!.data.title as string}"`
         );
       }
-      return e.message;
+      return {
+        hasError: true,
+        errorMessage: e.message,
+        nodeIds: [],
+      };
     }
-
-    return sorted.map((id) => program.getNodeById(id)!);
-
-    return sortedFunDefs;
+    return {
+      hasError: false,
+      nodeIds: sorted.map((id) => program.getNodeById(id)!.id),
+    };
   };
 }

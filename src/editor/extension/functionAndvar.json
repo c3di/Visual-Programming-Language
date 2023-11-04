@@ -59,7 +59,7 @@
     "Create Function": {
       "type": "Create Function",
       "category": "createFunction",
-      "sourceCode": "{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, options, generator) {\n    return `def ${options[0]}(${outputs.join(',')}):\\n${generator.indent}${outputs[0] !== '' ? outputs[0] : 'pass'}`;\n}",
       "outputs": {
         "execOut": {
           "title": "execOut",

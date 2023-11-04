@@ -2,12 +2,12 @@
   "description": "Flow control nodes are used to control the execution order of a program. They include sequence, for loop, if, and other nodes that can alter the flow based on conditions or iterations. ",
   "enable": true,
   "nodes": {
-    "Execute Start": {
-      "type": "Execute Start",
+    "Main": {
+      "type": "Main",
       "category": "function",
-      "title": "Execute Start",
-      "tooltip": "The execute start point of the program",
-      "sourceCode": "{{{outputs.0}}}",
+      "title": "main",
+      "tooltip": "The execute entry point of the program",
+      "codeGenerator": "function code(inputs, outputs, options, generator) {\n    return `${outputs[0]}`;\n}",
       "outputs": {
         "execOut": {
           "tooltip": "exec out",
@@ -43,7 +43,7 @@
           "deletable": true
         }
       },
-      "sourceCode": "{{#outputs}}{{{.}}}\n{{/outputs}}"
+      "codeGenerator": "function code(inputs, outputs, options, generator) {\n    return `generator.indentLines(???)}"
     },
     "If Else": {
       "type": "If Else",
