@@ -1,0 +1,141 @@
+{
+  "enable": true,
+  "nodes": {
+    "Maximum_Filter": {
+      "type": "Maximum_Filter",
+      "category": "function",
+      "title": "maximum filter",
+      "tooltip": "Calculate a multidimensional maximum filter.",
+      "externalImports": "from scipy import ndimage as ndi",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = ndi.maximum_filter({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}},{{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image to be filtered."
+        },
+        "size": {
+          "title": "size",
+          "dataType": "tuple",
+          "defaultValue": "None",
+          "tooltip": "Size gives the shape that is taken from the input array, at every element position.Ignored if footprint is given."
+        },
+        "footprint": {
+          "title": "image",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "footprint is a boolean array that specifies (implicitly) a shape, but also which of the elements within this shape will get passed to the filter function."
+        },
+        "output": {
+          "title": "output",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "The array in which to place the output, or the dtype of the returned array."
+        },
+        "mode": {
+          "title": "mode",
+          "dataType": "string",
+          "defaultValue": "constant",
+          "tooltip": "How to handle values outside the image borders,{'constant', 'edge', 'symmetric', 'reflect', 'wrap'}"
+        },
+        "cval": {
+          "title": "cval",
+          "dataType": "float",
+          "defaultValue": 0.0,
+          "tooltip": "Value to fill past edges of input if mode is 'constant'"
+        },
+        "origins": {
+          "title": "origins",
+          "dataType": "integer",
+          "defaultValue": 0,
+          "tooltip": "Controls the placement of the filter on the input array’s pixels. "
+        },
+        "axes": {
+          "title": "axes",
+          "dataType": "integer",
+          "defaultValue": -1,
+          "tooltip": "If None, the image is assumed to be grayscale (single-channel). Otherwise, this parameter indicates which axis of the array corresponds to channels."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "Filtered array. Has the same shape as input."
+        }
+      }
+    },
+    "Euclidean_distance_transform": {
+      "type": "Euclidean_distance_transform",
+      "category": "function",
+      "title": "euclidean_distance_transform",
+      "tooltip": "Exact Euclidean distance transform.",
+      "externalImports": "from scipy import ndimage as ndi",
+      "sourceCode": "{{indent}}{{{outputs.1}}} =  ndi.distance_transform_edt({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "distance": {
+          "title": "distance",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "The calculated Euclidean distance transform"
+        }
+      }
+    }
+  }
+}
