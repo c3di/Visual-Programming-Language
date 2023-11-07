@@ -1,0 +1,57 @@
+{
+  "enable": true,
+  "nodes": {
+    "Multi_Otsu_Thresholding_regions": {
+      "type": "Multi_Otsu_Thresholding_regions",
+      "category": "function",
+      "title": "multi_Otsu_thresholding_regions",
+      "tooltip": "Using the multi-Otsu threshold values, generating some regions.",
+      "externalImports": "import numpy as np",
+      "sourceCode": "{{indent}}{{{outputs.1}}} =  np.digitize({{{inputs.1}}},{{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Input image"
+        },
+        "thresholds": {
+          "title": "thresholds",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "Multi-Otsu threshold values"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "regions": {
+          "title": "regions",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "The regions that applying multi-Otsu thresholds"
+        }
+      }
+    }
+  }
+}
