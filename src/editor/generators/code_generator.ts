@@ -7,6 +7,16 @@ export abstract class CodeGenerator {
   abstract name: string;
   indent: string = '  ';
 
+  isExecNode(node: Node): boolean {
+    for (const output of Object.values(node.data.outputs ?? {})) {
+      if ((output as any).dataType === 'exec') return true;
+    }
+    for (const input of Object.values(node.data.inputs ?? {})) {
+      if ((input as any).dataType === 'exec') return true;
+    }
+    return false;
+  }
+
   programToCode(program: VisualProgram): GenerationResult {
     const results: GenerationResult = {
       messages: [],
@@ -68,11 +78,10 @@ export abstract class CodeGenerator {
 
   nodeSourceGeneration(
     node: Node,
-    inputs: any[],
-    outputs: any[],
-    options?: any[]
+    inputs: string[],
+    outputs: string[]
   ): string {
-    const nodeGenerator: string = node.data.nodeGenerator;
+    const nodeGenerator: string = node.data.codeGenerator;
     if (!nodeGenerator) {
       console.warn(
         `Node type:${node.data.configType as string} has no bound source code`
@@ -81,7 +90,7 @@ export abstract class CodeGenerator {
     }
     // eslint-disable-next-line no-eval
     const func = eval(`(${nodeGenerator})`);
-    return func(inputs, outputs, options, this);
+    return func(inputs, outputs, node, this);
   }
 
   /**

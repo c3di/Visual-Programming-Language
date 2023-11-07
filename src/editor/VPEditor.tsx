@@ -78,8 +78,8 @@ const Scene = ({
     edges,
     onEdgesChange,
     onConnect,
-    fromJSON,
-    toString,
+    fromSerializedGraph,
+    toJSONString,
   } = graphState ?? {};
   const gui = sceneState?.gui;
   const {
@@ -108,8 +108,8 @@ const Scene = ({
   useEffect(() => {
     // the graph may be changed before the scene is initialized
     if (!initialed) return;
-    if (toString() !== (graph ? JSON.stringify(graph) : '')) {
-      const { nodes } = fromJSON(graph);
+    if (toJSONString() !== (graph ? JSON.stringify(graph) : '')) {
+      const { nodes } = fromSerializedGraph(graph);
       const rect = getRectOfNodes(nodes);
       sceneInstance.current?.fitBounds(rect);
     }
@@ -117,7 +117,7 @@ const Scene = ({
 
   const triggerContentChange = useCallback(() => {
     if (!onContentChange) return;
-    const content = toString();
+    const content = toJSONString();
     if (content !== currentContent.current) {
       currentContent.current = content;
       onContentChange(content);
@@ -232,6 +232,7 @@ const Scene = ({
                 clear: sceneActions?.clear,
                 autoLayout: sceneActions?.autoLayout,
                 moreCommands: sceneState?.extraCommands,
+                toJSONString,
               }
             );
           }}
@@ -405,6 +406,7 @@ const Scene = ({
                   toFilter: toFilterFlag,
                   startHandleInfo: startHandle,
                   addEdge: sceneActions?.addEdge,
+                  toJSONString,
                 }
               );
               gui.connectionStartNodeId.current = null;

@@ -1,40 +1,40 @@
 import {
-  type Node,
-  type Edge,
-  type Graph,
-  type SerializedGraph,
-  type HandleData,
-  type ConnectionStatus,
-  type selectedElementsCounts,
-  isDataTypeMatch,
-  getMaxConnection,
-  ConnectionAction,
-  DataTypes,
-} from '../types';
-import {
-  useNodesState,
-  useEdgesState,
-  type Connection,
-  addEdge as rcAddEdge,
-  type NodeChange,
-  type EdgeChange,
-  type Node as RcNode,
-  MarkerType,
-  getConnectedEdges,
-  getOutgoers,
-  getIncomers,
-  useReactFlow,
-} from 'reactflow';
-import {
-  type Dispatch,
-  type SetStateAction,
   useCallback,
   useEffect,
   useRef,
   useState,
+  type Dispatch,
+  type SetStateAction,
 } from 'react';
-import { serializer } from '../Serializer';
+import {
+  MarkerType,
+  getConnectedEdges,
+  getIncomers,
+  getOutgoers,
+  addEdge as rcAddEdge,
+  useEdgesState,
+  useNodesState,
+  useReactFlow,
+  type Connection,
+  type EdgeChange,
+  type NodeChange,
+  type Node as RcNode,
+} from 'reactflow';
 import { deserializer } from '../Deserializer';
+import { serializer } from '../Serializer';
+import {
+  ConnectionAction,
+  DataTypes,
+  getMaxConnection,
+  isDataTypeMatch,
+  type ConnectionStatus,
+  type Edge,
+  type Graph,
+  type HandleData,
+  type Node,
+  type SerializedGraph,
+  type selectedElementsCounts,
+} from '../types';
 import { deepCopy } from '../util';
 
 type OnChange<ChangesType> = (changes: ChangesType[]) => void;
@@ -85,8 +85,8 @@ export interface GraphState {
   getHandleConnectionCounts: (nodeId: string, handleId: string) => number;
   anyConnectableNodeSelected: boolean;
   anyConnectionToSelectedNode: boolean;
-  toString: () => string;
-  fromJSON: (graph: SerializedGraph | undefined | null) => {
+  toJSONString: () => string;
+  fromSerializedGraph: (graph: SerializedGraph | undefined | null) => {
     nodes: Node[];
     edges: Edge[];
   };
@@ -571,7 +571,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     );
   }, []);
 
-  const toString = useCallback((): string => {
+  const toJSONString = useCallback((): string => {
     if (getNodes().length === 0) return '';
     const graph = serializer.serialize({
       nodes: deepCopy(getNodes()),
@@ -580,7 +580,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     return JSON.stringify(graph);
   }, []);
 
-  const fromJSON = useCallback(
+  const fromSerializedGraph = useCallback(
     (
       graph: SerializedGraph | undefined | null
     ): { nodes: Node[]; edges: Edge[] } => {
@@ -793,8 +793,8 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     getHandleConnectionCounts,
     anyConnectableNodeSelected,
     anyConnectionToSelectedNode,
-    toString,
-    fromJSON,
+    toJSONString,
+    fromSerializedGraph,
     getConnectedInfo,
     findFunctionCallNodes,
   };

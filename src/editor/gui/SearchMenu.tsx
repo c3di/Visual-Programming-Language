@@ -53,6 +53,7 @@ const SearchMenu = memo(function SearchMenu({
   moreCommands,
   startHandleInfo,
   addEdge,
+  toJSONString,
 }: {
   onClose: () => void;
   anchorPosition: { top: number; left: number };
@@ -66,6 +67,7 @@ const SearchMenu = memo(function SearchMenu({
   moreCommands?: Command[];
   startHandleInfo?: OnConnectStartParams;
   addEdge?: (params: Connection) => void;
+  toJSONString?: () => string;
 }): JSX.Element {
   const [commands, setCommand] = useState<Command[]>([
     {
@@ -117,10 +119,22 @@ const SearchMenu = memo(function SearchMenu({
       labelIcon: FitScreen,
     },
     {
+      name: 'Copy JSON String of Visual Code',
+      action: () => {
+        const clipboardStr = toJSONString?.();
+        if (!clipboardStr) return;
+        navigator.clipboard.writeText(clipboardStr).catch((err) => {
+          console.error('Could not copy text: ', err);
+        });
+      },
+      labelIcon: Notes,
+      tooltip: 'Copy JSON string of visual code to clipboard',
+    },
+    {
       name: 'Copy Textual Code',
       action: () => {
         const code = getSourceCode?.();
-        const clipboardStr = code?.result ?? '';
+        const clipboardStr = code?.code ?? '';
         navigator.clipboard.writeText(clipboardStr).catch((err) => {
           console.error('Could not copy text: ', err);
         });

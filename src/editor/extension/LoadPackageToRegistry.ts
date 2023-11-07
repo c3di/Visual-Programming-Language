@@ -1,18 +1,18 @@
-import buildin from './buildin.json';
-import flowControl from './flowControl.json';
-import log from './log.json';
 import {
-  type TypeConversionRule,
   nodeConfigRegistry,
+  type TypeConversionRule,
 } from './NodeConfigRegistry';
-import stringPkg from './string.json';
-import floatPkg from './float.json';
-import functionAndvar from './functionAndvar.json';
+import builtin from './builtin.json';
 import collections from './collections.json';
+import floatPkg from './float.json';
+import flowControl from './flowControl.json';
+import functionAndvar from './functionAndvar.json';
 import list from './list.json';
+import log from './log.json';
+import stringPkg from './string.json';
 import tuple from './tuple.json';
 
-import { addNewType, type NodePackage, type NodeConfig } from '../types';
+import { addNewType, type NodeConfig, type NodePackage } from '../types';
 /*
  * A module is a json file that contains nodes and types.
  * A package is a folder that contains libraries and other packages.
@@ -158,7 +158,7 @@ export const LoadPackageToRegistry = (
 };
 
 export const LoadDefaultModule = (): void => {
-  LoadPackageToRegistry('', buildin);
+  LoadPackageToRegistry('', builtin);
   LoadPackageToRegistry('Float', floatPkg);
   LoadPackageToRegistry('String', stringPkg);
   LoadPackageToRegistry('Flow Control', flowControl);

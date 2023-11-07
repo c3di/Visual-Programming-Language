@@ -42,16 +42,6 @@ export class VisualProgram {
     return nodes;
   }
 
-  isExecNode(node: Node): boolean {
-    for (const output of Object.values(node.data.outputs ?? {})) {
-      if ((output as any).dataType === 'exec') return true;
-    }
-    for (const input of Object.values(node.data.inputs ?? {})) {
-      if ((input as any).dataType === 'exec') return true;
-    }
-    return false;
-  }
-
   getFuncDefNodeIdByFuncCallNode(node: Node): string {
     return node.data.nodeRef;
   }
@@ -118,11 +108,6 @@ export class VisualProgram {
     const visited = new Map<string, boolean>();
     const recStack = new Map<string, boolean>();
     return !this._isCyclicUtil(startNodeId, visited, recStack);
-  }
-
-  optionsForNode(node: Node): any {
-    if (this.isExecNode(node)) return { name: node.data.title };
-    return {};
   }
 
   private _isCyclicUtil(

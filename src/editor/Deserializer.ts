@@ -4,19 +4,19 @@
  * ---> Graph (nodes: Node[] + edges: Edge[])
  */
 import type {
-  SerializedGraphNode,
-  SerializedGraph,
+  Edge,
+  Graph,
   GraphEdgeConfig,
   GraphNodeConfig,
-  Edge,
-  Node,
-  Graph,
   HandleData,
+  Node,
+  SerializedGraph,
   SerializedGraphEdge,
+  SerializedGraphNode,
 } from './types';
 // import { MarkerType } from 'reactflow';
-import { nodeConfigRegistry } from './extension';
 import { MarkerType } from 'reactflow';
+import { nodeConfigRegistry } from './extension';
 
 export class Deserializer {
   private static instance: Deserializer;
@@ -190,7 +190,7 @@ export class Deserializer {
         outputs,
         configType: type,
         nodeRef,
-        sourceCode: config.sourceCode,
+        codeGenerator: config.codeGenerator,
         breakExecution: config.breakExecution,
         externalImports: config.externalImports,
         functionName: config.functionName,

@@ -7,16 +7,20 @@
       "zIndex": -1001,
       "notShowInMenu": true
     },
+    "stickyNote": {
+      "type": "stickyNote",
+      "category": "stickyNote",
+      "dragHandle": ".stickyNote__node__body",
+      "zIndex": -1001,
+      "notShowInMenu": true
+    },
     "reroute": {
       "type": "reroute",
       "title": "reroute",
       "category": "reroute",
       "tooltip": "Reroute node wires",
       "notShowInMenu": true,
-      "sourceCode": {
-        "input": "{{{outputs.0}}}",
-        "output": "{{indent}}{{{outputs.0}}}={{{inputs.0}}}"
-      },
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\n    if (generator.isExecNode(node))\n        return `${outputs[0]}`;\n    return `${outputs[0]} = ${inputs[0]}`;\n}",
       "dataType": "any",
       "inputs": {
         "input": {
@@ -30,13 +34,6 @@
           "dataType": "any"
         }
       }
-    },
-    "stickyNote": {
-      "type": "stickyNote",
-      "category": "stickyNote",
-      "dragHandle": ".stickyNote__node__body",
-      "zIndex": -1001,
-      "notShowInMenu": true
     }
   }
 }

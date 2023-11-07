@@ -55,12 +55,7 @@ export class PythonGenerator extends CodeGenerator {
     }
     result.code = [
       ...preComputeOfInputs,
-      this.nodeSourceGeneration(
-        node,
-        inputs,
-        outputs,
-        program.optionsForNode(node)
-      ),
+      this.nodeSourceGeneration(node, inputs, outputs),
     ].join('\n');
     return result;
   }
@@ -93,7 +88,7 @@ export class PythonGenerator extends CodeGenerator {
     );
     result.code = this._getUniqueNameOfHandle(incomingNode, outputHandle!);
     // if the input is connected to a exec node, then reference the output of the exec node
-    if (program.isExecNode(incomingNode)) {
+    if (this.isExecNode(incomingNode)) {
       return result;
     }
     // if the input is connected to a value operation node, then reference the output of the node
