@@ -20,7 +20,17 @@ print(torch.equal(expected, ${returnVar}['value']) and list(${returnVar}[\'value
     const expectedCode = `from torchvision import io
 from torchvision.io import ImageReadMode
 ${returnVar} = io.read_image(${inputs[1]}, ${inputs[2]})
-image = {'value': image, 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': False, 'intensityRange': '0-255', 'device': 'cpu'}}
+${returnVar} = {
+  'value': image,
+  'dataType': 'torch.tensor',
+  'metadata': {
+    'colorChannel': 'rgb',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': False,
+    'intensityRange': '0-255',
+    'device': 'cpu'
+  }
+}
 ${execTest}`;
 
     await nodeExecCheck(node, inputs, outputs, expectedCode);

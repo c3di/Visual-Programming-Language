@@ -8,7 +8,7 @@
       "title": "read_image",
       "tooltip": "Reads a JPEG or PNG image into a 3 dimensional RGB or grayscale Tensor. Optionally converts the image to the desired format. The values of the output tensor are uint8 in [0, 255].",
       "externalImports": "from torchvision import io\nfrom torchvision.io import ImageReadMode",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\n    if (inputs[2] === 'ImageReadMode.RGB')\n        return `${outputs[1]} = io.read_image(${inputs[1]}, ${inputs[2]})\\n${outputs[1]} = {'value': ${outputs[1]}, 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': False, 'intensityRange': '0-255', 'device': 'cpu'}}\\n${outputs[0]}`;\n    if (inputs[2] === 'ImageReadMode.GRAY')\n        return `${outputs[1]} = io.read_image(${inputs[1]}, ${inputs[2]})\\n${outputs[1]} = {'value': ${outputs[1]}, 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': False, 'intensityRange': '0-255', 'device': 'cpu'}}\\n${outputs[0]}`;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = io.read_image(${inputs[1]}, ${inputs[2]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-255',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
