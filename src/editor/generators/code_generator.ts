@@ -106,6 +106,21 @@ export abstract class CodeGenerator {
   abstract _getUniqueNameOfHandle(node: Node, handleId: string): string;
 
   /**
+   * Encode a string as a properly escaped Python string, complete with quotes.
+   * @param {string} string Text to encode.
+   * @return {string} Python string.
+   */
+  abstract quote(str: string): string;
+
+  /**
+   * Encode a string as a properly escaped multiline Python string, complete
+   * with quotes.
+   * @param {string} string Text to encode.
+   * @return {string} Python string.
+   */
+  abstract multiline_quote(str: string): string;
+
+  /**
    * Intended onto each line of code.
    * Intended for indenting code
    *

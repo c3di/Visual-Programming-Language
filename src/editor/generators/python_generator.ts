@@ -128,12 +128,48 @@ export class PythonGenerator extends CodeGenerator {
     return `n_${node.id}_${handleId}`;
   }
 
+  /**
+   * Encode a string as a properly escaped Python string, complete with quotes.
+   * @param {string} string Text to encode.
+   * @return {string} Python string.
+   */
+  quote(str: string): string {
+    str = str.replace(/\\/g, '\\\\').replace(/\n/g, '\\\n');
+
+    // Follow the CPython behaviour of repr() for a non-byte string.
+    let quote = "'";
+    if (str.includes("'")) {
+      if (!str.includes('"')) {
+        quote = '"';
+      } else {
+        str = str.replace(/'/g, "\\'");
+      }
+    }
+    return quote + str + quote;
+  }
+
+  /**
+   * Encode a string as a properly escaped multiline Python string, complete
+   * with quotes.
+   * @param {string} string Text to encode.
+   * @return {string} Python string.
+   */
+  multiline_quote(str: string): string {
+    const lines = str.split(/\n/g).map(this.quote);
+    // Join with the following, plus a newline:
+    // + '\n' +
+    return lines.join(" + '\\n' + \n");
+  }
+
   // todo: refactor this function
   widgetValueToLanguageValue(dataType: string | undefined, value: any): any {
     // quote for single value and multiple values
     if (value === undefined || value === null) return `None`;
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    if (dataType === 'string') return `'${value}'`;
+    if (dataType === 'string') {
+      if (value.includes('\n')) return this.multiline_quote(value);
+      else return this.quote(value);
+    }
     // todo: quote string or escape string
     if (dataType === 'boolean') return value ? 'True' : 'False';
     if (dataType === 'image') return this.object2PythonDict(value);
