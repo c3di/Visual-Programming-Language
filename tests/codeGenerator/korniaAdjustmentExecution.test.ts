@@ -1,7 +1,7 @@
 import { nodeExecCheck } from '../execution';
 import { loadNode } from '../loader';
 
-describe('Code Execution of node kornia adjustment add_weighted', () => {
+describe('Code Execution of node kornia adjustment', () => {
   test('generate the code of kornia.enhance.add_weighted', async () => {
     const node = loadNode(
       'src/NodeTypeExtension/kornia/adjustment.json',
