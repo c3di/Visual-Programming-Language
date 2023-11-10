@@ -295,6 +295,13 @@ otherCodeString`,
       outputs: [],
       expected: `return`,
     },
+    {
+      jsonPath: 'src/editor/extension/log.json',
+      nodeName: 'print',
+      inputs: ['', '"first line"'],
+      outputs: ['otherCodeString'],
+      expected: 'print("first line")\notherCodeString',
+    },
   ];
 
   test.each(testData)(
