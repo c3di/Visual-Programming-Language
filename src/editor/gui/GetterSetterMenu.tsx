@@ -1,6 +1,6 @@
 import { useSceneState } from '../Context';
 import { type NodeConfig } from '../types';
-import { type IMenuItem, CreateMenu } from './elements';
+import { CreateMenu, type IMenuItem } from './elements';
 
 export default function GetterSetterMenu({
   onClose,
@@ -20,10 +20,9 @@ export default function GetterSetterMenu({
   const handleData = {
     title:
       node?.data?.inputs.name?.value ?? node?.data?.inputs.name?.defaultValue,
-    dataType:
-      node?.data?.inputs.type?.value ?? node?.data?.inputs.type?.defaultValue,
     value:
       node?.data?.inputs.value?.value ?? node?.data?.inputs.value?.defaultValue,
+    dataType: 'anyDataType',
   };
 
   const items: IMenuItem[] = [

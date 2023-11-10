@@ -67,6 +67,11 @@ export const DataTypes: Record<string, DataType> = {
   },
   string: {
     defaultValue: '',
+    widget: 'StringInput',
+    shownInColor: `${hsl(60)}`,
+  },
+  text: {
+    defaultValue: '',
     widget: 'TextInput',
     shownInColor: `${hsl(60)}`,
   },

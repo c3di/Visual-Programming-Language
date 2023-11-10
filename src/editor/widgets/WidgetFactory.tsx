@@ -1,14 +1,15 @@
 import React from 'react';
-import {
-  BooleanInput,
-  EnumSelect,
-  NumberInput,
-  TextInput,
-  IntegerInput,
-} from './Widgets';
 import { DataTypes, addNewType } from '.././types';
 import { stringArrayToObject } from '.././util';
 import { type WidgetProps } from './WidgetProps';
+import {
+  BooleanInput,
+  EnumSelect,
+  IntegerInput,
+  NumberInput,
+  StringInput,
+  TextInput,
+} from './Widgets';
 
 export class WidgetFactory {
   private static instance: WidgetFactory;
@@ -25,6 +26,7 @@ export class WidgetFactory {
     TextInput: <TextInput {...this.defaultWidgetProps} />,
     BooleanInput: <BooleanInput {...this.defaultWidgetProps} />,
     EnumSelect: <EnumSelect {...this.defaultWidgetProps} />,
+    StringInput: <StringInput {...this.defaultWidgetProps} />,
   };
 
   private constructor() {}
@@ -67,6 +69,7 @@ export class WidgetFactory {
       return <></>;
     }
     const widgetTypeToUse = DataTypes[type].widget ?? type;
+    console.log('widgetTypeToUse', widgetTypeToUse);
     const options = DataTypes[type].options ?? {};
     const widget = this._availableWidgets[widgetTypeToUse];
 

@@ -120,7 +120,8 @@ export const HandleElement = ({
   handleData: HandleData;
 }): JSX.Element => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-  const color = `${DataTypes[handleData.dataType!].shownInColor as string}`;
+  const config = DataTypes[handleData.dataType ?? 'any'] ?? DataTypes.any;
+  const color = `${config.shownInColor}`;
   return (
     <RCHandle
       className={`vp-rc-handle-${handleData.dataType ?? 'default'} ${

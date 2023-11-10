@@ -2,7 +2,7 @@ import React, { memo, useCallback, useRef, useState } from 'react';
 import { IconButton } from '@mui/material';
 import { AddCircle } from '@mui/icons-material';
 import { SourceHandle, TargetHandle, HandleElement } from '../handles';
-import { type HandleData, type ConnectableData, DataTypes } from '../../types';
+import { type HandleData, type ConnectableData } from '../../types';
 import { InplaceInput } from '../../widgets';
 import { useSceneState, useWidgetFactory } from '../../Context';
 import { Position } from 'reactflow';
@@ -28,25 +28,7 @@ export function ParameterHandle({
   if (!handleData) {
     console.error('handleData is undefined');
   }
-  const { setNodes, deleteAllEdgesOfHandle } =
-    useSceneState()?.sceneActions ?? {};
-  const onDatatypeChange = useCallback((value: string) => {
-    setNodes?.((nds) => {
-      return nds.map((nd) => {
-        if (nd.id === nodeId) {
-          nd.data.outputs[id].dataType = value;
-          nd.data.outputs[id].defaultValue = DataTypes[value].defaultValue;
-          nd.data.outputs[id].value = DataTypes[value].defaultValue;
-        }
-        if (nd.data.nodeRef === nodeId) {
-          nd.data.inputs[id].dataType = value;
-          deleteAllEdgesOfHandle?.(nd.id, id);
-        }
-        return nd;
-      });
-    });
-    deleteAllEdgesOfHandle?.(nodeId, id);
-  }, []);
+  const { setNodes } = useSceneState()?.sceneActions ?? {};
 
   const onFinishInput = useCallback(
     (element: HTMLElement | EventTarget): void => {
@@ -70,17 +52,6 @@ export function ParameterHandle({
     [handleData.title]
   );
 
-  const onValueChange = useCallback((value: string) => {
-    setNodes?.((nds) => {
-      return nds.map((nd) => {
-        if (nd.id === nodeId) {
-          nd.data.outputs[id].value = value;
-        }
-        return nd;
-      });
-    });
-  }, []);
-
   return (
     <div
       className={'parameter-handle'}
@@ -92,50 +63,16 @@ export function ParameterHandle({
       }}
       title={handleData.tooltip}
     >
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          gridTemplateRows: 'repeat(2, 1fr)',
-          gridGap: '3px',
-        }}
-      >
-        <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-          name
-          {widgetFactory.createWidget('string', {
-            value: handleData.title,
-            className: `nodrag handle-widget`,
-            onBlur: onFinishInput,
-            onEnterKeyDown: onFinishInput,
-          })}
-        </label>
-        <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-          dataType
-          {widgetFactory.createSelectorWidget({
-            value: handleData.dataType,
-            className: `nodrag handle-widget`,
-            onChange: onDatatypeChange,
-          })}
-        </label>
-        <label
-          style={{
-            gridColumn: 'span 2',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '5px',
-          }}
-        >
-          defaultValue
-          {widgetFactory.createWidget(handleData.dataType!, {
-            value:
-              handleData.value ??
-              handleData.defaultValue ??
-              DataTypes[handleData.dataType!]?.defaultValue,
-            className: `nodrag handle-widget`,
-            onChange: onValueChange,
-          })}
-        </label>
-      </div>
+      <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+        name
+        {widgetFactory.createWidget('anyDataType', {
+          value: handleData.title,
+          className: `nodrag handle-widget`,
+          onBlur: onFinishInput,
+          onEnterKeyDown: onFinishInput,
+        })}
+      </label>
+
       <HandleElement
         id={id}
         handleType={handleType}
@@ -170,14 +107,14 @@ function CreateFunction({
   }
 
   const addNewHandle = useCallback(() => {
-    const title = `new_out_${handleCount.current++}`;
-    let handleTitle = `new_out_${handleCount.current}`;
+    const title = `out_${handleCount.current++}`;
+    let handleTitle = `out_${handleCount.current}`;
     while (IsNameDuplicated?.(handleTitle)) {
       handleCount.current++;
-      handleTitle = `new_out_${handleCount.current}`;
+      handleTitle = `out_${handleCount.current}`;
     }
     const value = {
-      dataType: 'boolean',
+      dataType: 'anyDataType',
       title: handleTitle,
       showWidget: false,
       deletable: true,

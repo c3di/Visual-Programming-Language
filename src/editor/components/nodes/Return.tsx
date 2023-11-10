@@ -27,26 +27,7 @@ export function ParameterHandle({
   if (!handleData) {
     console.error('handleData is undefined');
   }
-  const { setNodes, deleteAllEdgesOfHandle, getNodeById } =
-    useSceneState()?.sceneActions ?? {};
-  const onDatatypeChange = useCallback((value: string) => {
-    setNodes?.((nds) => {
-      return nds.map((nd) => {
-        if (nd.id === nodeId) {
-          nd.data.inputs[id].dataType = value;
-          nd.data.inputs[id].defaultValue = DataTypes[value].defaultValue;
-          nd.data.inputs[id].value = DataTypes[value].defaultValue;
-        }
-        const ref = getNodeById?.(nd.data.nodeRef);
-        if (ref?.data.nodeRef === nodeId) {
-          nd.data.outputs[id].dataType = value;
-          deleteAllEdgesOfHandle?.(nd.id, id);
-        }
-        return nd;
-      });
-    });
-    deleteAllEdgesOfHandle?.(nodeId, id);
-  }, []);
+  const { setNodes, getNodeById } = useSceneState()?.sceneActions ?? {};
 
   const onFinishInput = useCallback(
     (element: HTMLElement | EventTarget): void => {
@@ -86,56 +67,38 @@ export function ParameterHandle({
     <div
       className={'parameter-handle'}
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: '5px',
         paddingLeft: '10px',
       }}
       title={handleData.tooltip}
     >
-      <HandleElement
-        id={id}
-        handleType={handleType}
-        handlePosition={handlePosition}
-        handleData={handleData}
-      />
       {showLabel && (
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
-            gridTemplateRows: 'repeat(2, 1fr)',
-            gridGap: '3px',
-          }}
-        >
+        <div>
           <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
             name
-            {widgetFactory.createWidget('string', {
+            {widgetFactory.createWidget('anyDataType', {
               value: handleData.title,
               className: `nodrag handle-widget`,
               onBlur: onFinishInput,
               onEnterKeyDown: onFinishInput,
             })}
           </label>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-            dataType
-            {widgetFactory.createSelectorWidget({
-              value: handleData.dataType,
-              className: `nodrag handle-widget`,
-              onChange: onDatatypeChange,
-            })}
-          </label>
-          {!handleData.connection && (
-            <label
-              style={{
-                gridColumn: 'span 2',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '5px',
-              }}
-            >
-              defaultValue
-              {widgetFactory.createWidget(handleData.dataType!, {
+          <label
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+              marginBottom: '2px',
+            }}
+          >
+            <HandleElement
+              id={id}
+              handleType={handleType}
+              handlePosition={handlePosition}
+              handleData={handleData}
+            />
+            value
+            {!handleData.connection &&
+              widgetFactory.createWidget(handleData.dataType!, {
                 value:
                   handleData.value ??
                   handleData.defaultValue ??
@@ -143,8 +106,7 @@ export function ParameterHandle({
                 className: `nodrag handle-widget`,
                 onChange: onValueChange,
               })}
-            </label>
-          )}
+          </label>
         </div>
       )}
     </div>
@@ -198,7 +160,7 @@ function Return({
             ...handle,
             tooltip: `the return value of ${String(handle.title)}`,
           }}
-          showLabel={data.title === 'Return'}
+          showLabel={data.title === 'return'}
           handleType="target"
           handlePosition={Position.Left}
           IsNameDuplicated={IsNameDuplicated}
@@ -207,14 +169,14 @@ function Return({
     }
   }
   const addNewHandle = useCallback(() => {
-    const title = `new_in_${handleCount.current++}`;
-    let handleTitle = `new_in_${handleCount.current}`;
+    const title = `in_${handleCount.current++}`;
+    let handleTitle = `in_${handleCount.current}`;
     while (IsNameDuplicated?.(handleTitle)) {
       handleCount.current++;
-      handleTitle = `new_in_${handleCount.current}`;
+      handleTitle = `in_${handleCount.current}`;
     }
     const value = {
-      dataType: 'boolean',
+      dataType: 'anyDataType',
       title: handleTitle,
       showWidget: false,
       deletable: true,

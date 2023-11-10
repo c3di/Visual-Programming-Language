@@ -37,7 +37,7 @@ export function NumberInput(props: WidgetProps): JSX.Element {
   );
 }
 
-export function TextInput(props: WidgetProps): JSX.Element {
+export function StringInput(props: WidgetProps): JSX.Element {
   const { value, className, onChange, onBlur, onEnterKeyDown } = props;
   return (
     <>
@@ -62,6 +62,32 @@ export function TextInput(props: WidgetProps): JSX.Element {
       />
       <span style={{ marginLeft: '-4px' }}>&quot;</span>
     </>
+  );
+}
+
+// todo ListInput, tupleInput
+
+export function TextInput(props: WidgetProps): JSX.Element {
+  const { value, className, onChange, onBlur, onEnterKeyDown } = props;
+  return (
+    <input
+      className={className}
+      type={'text'}
+      defaultValue={value}
+      style={inputStyles}
+      onChange={(e) => {
+        onChange?.(e.target.value);
+      }}
+      onBlur={(e) => {
+        onBlur?.(e.target);
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          onEnterKeyDown?.(e.target);
+        }
+      }}
+    />
   );
 }
 
