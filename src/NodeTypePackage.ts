@@ -10,10 +10,10 @@ import init2 from './NodeTypeExtension/sciKitImage/__init__.json';
 import Segmentation from './NodeTypeExtension/sciKitImage/Segmentation.json';
 import Filter_and_restoration from './NodeTypeExtension/sciKitImage/Filter_and_restoration.json';
 
-import  init3 from './NodeTypeExtension/NumPy/__init__.json';
+import init3 from './NodeTypeExtension/NumPy/__init__.json';
 import Data_Binning from './NodeTypeExtension/NumPy/Data_Binning.json';
 
-import  init4 from './NodeTypeExtension/SciPy/__init__.json';
+import init4 from './NodeTypeExtension/SciPy/__init__.json';
 import ndimage from './NodeTypeExtension/SciPy/ndimage.json';
 
 export const Kornia = {
@@ -48,7 +48,6 @@ export const SciPy = {
     ndimage,
   },
 };
-
 
 export const extensions = {
   imageio,
