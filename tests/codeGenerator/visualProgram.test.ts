@@ -315,7 +315,6 @@ describe('VisualProgram', () => {
 
   describe('funcCallsInFunc', () => {
     it('should identify function call nodes within a function', () => {
-      console.log(JSON.stringify(nodes));
       const funcCalls = JSON.parse(JSON.stringify(nodes));
       funcCalls[1].data.configType = 'function call';
       funcCalls[4].data.configType = 'function call';
