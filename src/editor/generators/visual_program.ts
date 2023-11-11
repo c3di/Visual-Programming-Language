@@ -1,9 +1,9 @@
 import { type Edge, type Node } from './../types';
 
 /**
- * A visual program is made up of several functions. Each functions either
- * start from the `Main Node` or `Function Node` and each function is an directional acyclic graph of nodes and edges.
- * The function defined can be called by other functions via `Function Call` node.
+ * A visual program is made up of several functions. Each function either
+ * start from the `main` node or `new function` node (funcDef node) and each function is an directional acyclic graph of nodes and edges.
+ * The function defined can be called by other functions via `function call` node.
  *
  */
 export class VisualProgram {
@@ -28,12 +28,12 @@ export class VisualProgram {
   }
 
   getStartNode(): Node | undefined {
-    return this.nodes.find((n) => n.data.configType.includes('Main'));
+    return this.nodes.find((n) => n.data.configType.includes('main'));
   }
 
   getFuncDefNodes(): Node[] {
     const nodes = this.nodes.filter((n) =>
-      n.data.configType.includes('Function')
+      n.data.configType.includes('new function')
     );
     const main = this.getStartNode();
     if (main) {
@@ -46,12 +46,6 @@ export class VisualProgram {
     return node.data.nodeRef;
   }
 
-  funcCallsInFunc(funcDef: Node): Node[] {
-    const funcCalls: Node[] = [];
-    this._funcCallsInFunc(funcDef, funcCalls);
-    return funcCalls;
-  }
-
   getOutgoingNodes(nodeId: string, handleId: string): Node[] {
     const outgoingEdges = this.edges.filter(
       (e) => e.source === nodeId && e.sourceHandle === handleId
@@ -60,7 +54,7 @@ export class VisualProgram {
   }
 
   getOutgoingNodesByHandleType(nodeId: string, handleType: string): Node[] {
-    const outputs = this.getNodeById(nodeId)?.data.output ?? {};
+    const outputs = this.getNodeById(nodeId)?.data.outputs ?? {};
     const handldIdsByType = Object.keys(outputs).filter(
       (key) => outputs[key].dataType === handleType
     );
@@ -123,8 +117,12 @@ export class VisualProgram {
         nodeId,
         'exec'
       );
+
       for (const node of outgoingExecNodes) {
-        if (this._isCyclicUtil(node.id, visited, recStack)) {
+        if (
+          !visited.get(node.id) &&
+          this._isCyclicUtil(node.id, visited, recStack)
+        ) {
           return true;
         } else if (recStack.get(node.id)) {
           return true;
@@ -133,6 +131,17 @@ export class VisualProgram {
     }
     recStack.set(nodeId, false);
     return false;
+  }
+
+  /**
+   *  find all function calls in a function starting from the given `new function` node.
+   * @param funcDef the `new function` node
+   * @returns function call nodes
+   */
+  funcCallsInFunc(funcDef: Node): Node[] {
+    const funcCalls: Node[] = [];
+    this._funcCallsInFunc(funcDef, funcCalls);
+    return funcCalls;
   }
 
   private readonly _funcCallsInFunc = (
@@ -145,7 +154,7 @@ export class VisualProgram {
     Object.entries(startNode.data.outputs ?? {}).forEach(([name, output]) => {
       if ((output as any).dataType === 'exec') {
         this.getOutgoingNodes(startNode.id, name).forEach((node) => {
-          if (node.type === 'functionCall') {
+          if (node.data.configType.includes('function call')) {
             functionCallNodes.push(node);
           }
           this._funcCallsInFunc(node, functionCallNodes, visitedNodeIds);
