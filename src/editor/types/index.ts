@@ -1,4 +1,4 @@
-export { type GenerationResult } from '../generators/generation_result';
+export { type GenResult } from '../generators/generation_result';
 export type { default as Node } from './BasicNode';
 export { type ClipboardInfo } from './ClipboardInfo';
 export { isCommentNode, type Comment } from './Comment';

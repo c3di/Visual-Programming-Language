@@ -1,4 +1,7 @@
 declare module 'toposort' {
-  // eslint-disable-next-line @typescript-eslint/array-type
-  export default function toposort(graph: [string, string][]): string[];
+  function toposort(edges: Array<[string, string]>): string[];
+  namespace toposort {
+    function array(nodes: string[], edges: Array<[string, string]>): string[];
+  }
+  export = toposort;
 }

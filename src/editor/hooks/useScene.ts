@@ -16,12 +16,11 @@ import {
   type XYPosition,
 } from 'reactflow';
 import { deserializer } from '../Deserializer';
-import { VisualProgram, pythonGenerator } from '../generators';
+import { VisualProgram, pythonGenerator, type GenResult } from '../generators';
 import type {
   ClipboardInfo,
   ConnectionStatus,
   Edge,
-  GenerationResult,
   Graph,
   Node,
   selectedElementsCounts,
@@ -84,7 +83,7 @@ export interface ISceneActions {
   sortZIndexOfComments: (nodes: Node[]) => Node[];
   autoLayout: () => void;
   deleteHandle: (nodeId: string, nodeType: string, handleId: string) => void;
-  sourceCode: () => GenerationResult;
+  sourceCode: () => GenResult;
   closeMenu?: () => void;
 }
 export interface ISceneState {
@@ -849,7 +848,7 @@ export default function useScene(
   //   };
   // };
 
-  const sourceCode = (): GenerationResult => {
+  const sourceCode = (): GenResult => {
     return pythonGenerator.programToCode(
       new VisualProgram(graphState.getNodes(), graphState.getEdges())
     );

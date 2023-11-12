@@ -1,9 +1,9 @@
 import { type Node } from './../types';
 import { CodeGenerator } from './code_generator';
 import {
-  pushGenerationResultTo,
-  type GenerationResult,
-  type GenerationResultOfInput,
+  InputGenRes,
+  NodeGenRes,
+  type FunctionGenRes,
 } from './generation_result';
 import { type VisualProgram } from './visual_program';
 
@@ -11,40 +11,32 @@ export class PythonGenerator extends CodeGenerator {
   name: string = 'PythonGenerator';
   indent: string = '  ';
 
-  functionToCode(funcDefNode: Node, program: VisualProgram): GenerationResult {
+  functionToCode(funcDefNode: Node, program: VisualProgram): FunctionGenRes {
     return this.nodeToCode(funcDefNode, program);
   }
 
-  nodeToCode(node: Node, program: VisualProgram): GenerationResult {
-    const result = { messages: [], code: '', imports: new Set<string>() };
-    const preComputeOfInputs = [];
+  nodeToCode(node: Node | undefined, program: VisualProgram): NodeGenRes {
+    const result = new NodeGenRes();
+    if (node === undefined) return result;
+    const preComputeOfInputs: string[] = [];
+
     const inputs = [];
     for (const id in node.data.inputs ?? {}) {
-      const inputGenResult = this._getInputValueOfNode(node, id, program);
-      pushGenerationResultTo(
-        {
-          messages: inputGenResult.messages,
-          code: '',
-          imports: inputGenResult.imports,
-        },
-        result
-      );
+      const inputGenResult = this.getInputValueOfNode(node, id, program);
+      result.add(inputGenResult);
       inputs.push(inputGenResult.code);
-      if (inputGenResult.preComputeCode)
+      if (
+        inputGenResult.preComputeCode &&
+        !preComputeOfInputs.includes(inputGenResult.preComputeCode)
+      ) {
         preComputeOfInputs.push(inputGenResult.preComputeCode);
+      }
     }
 
     const outputs = [];
     for (const id in node.data.outputs ?? {}) {
-      const outputGenResult = this._getOutputValueOfNode(node, id, program);
-      pushGenerationResultTo(
-        {
-          messages: outputGenResult.messages,
-          code: '',
-          imports: outputGenResult.imports,
-        },
-        result
-      );
+      const outputGenResult = this.getOutputValueOfNode(node, id, program);
+      result.add(outputGenResult);
       outputs.push(outputGenResult.code);
     }
 
@@ -53,6 +45,7 @@ export class PythonGenerator extends CodeGenerator {
         result.imports.add(requiredImport);
       }
     }
+
     result.code = [
       ...preComputeOfInputs,
       this.nodeSourceGeneration(node, inputs, outputs),
@@ -60,17 +53,12 @@ export class PythonGenerator extends CodeGenerator {
     return result;
   }
 
-  private _getInputValueOfNode(
+  getInputValueOfNode(
     node: Node,
     inputId: string,
     program: VisualProgram
-  ): GenerationResultOfInput {
-    const result = {
-      messages: [],
-      code: '',
-      imports: new Set<string>(),
-      preComputeCode: '',
-    };
+  ): InputGenRes {
+    const result = new InputGenRes();
     const input = node.data.inputs[inputId];
     if (input.dataType === 'exec') return result;
     // if the input is not connected, then use the value from the widget
@@ -79,7 +67,6 @@ export class PythonGenerator extends CodeGenerator {
       result.code = this.widgetValueToLanguageValue(input.dataType, value);
       return result;
     }
-
     const incomingNode = program.getIncomingNodes(node.id, inputId)[0]; // only one input is allowed
     const outputHandle = program.getSourceHandleConnectedToTargetHandle(
       incomingNode.id,
@@ -95,32 +82,29 @@ export class PythonGenerator extends CodeGenerator {
     // and add the code of the connected node as the preComputeCode
     const incomingNodeResult = this.nodeToCode(incomingNode, program);
     result.preComputeCode = incomingNodeResult.code;
-    result.imports = new Set([
-      ...(result.imports ?? []),
-      ...(incomingNodeResult.imports ?? []),
-    ]);
+    result.imports = new Set(incomingNodeResult.imports ?? []);
     return result;
   }
 
-  private _getOutputValueOfNode(
+  getOutputValueOfNode(
     node: Node,
     outputId: string,
     program: VisualProgram
-  ): GenerationResult {
+  ): NodeGenRes {
     const output = node.data.outputs[outputId];
     if (output.dataType === 'exec') {
       const outgoingExecNode = program.getOutgoingNodes(node.id, outputId)[0];
       return this.nodeToCode(outgoingExecNode, program);
     }
-    return {
-      code: this._getUniqueNameOfHandle(node, outputId),
-      imports: new Set(),
-      messages: [],
-    };
+    return new NodeGenRes(
+      [],
+      this._getUniqueNameOfHandle(node, outputId),
+      new Set()
+    );
   }
 
   _getUniqueNameOfHandle(node: Node, handleId: string): string {
-    if (node.type === 'setter' || node.type === 'getter')
+    if (node.data.configType === 'setter' || node.data.configType === 'getter')
       return `${
         (node.data.outputs.setter_out?.title ??
           node.data.outputs.getter?.title) as string

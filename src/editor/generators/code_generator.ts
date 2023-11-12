@@ -1,6 +1,11 @@
 import toposort from 'toposort';
 import { type Node } from './../types';
-import { type GenerationResult, type SortedFunDefs } from './generation_result';
+import {
+  FunctionGenRes,
+  GenResult,
+  type NodeGenRes,
+  type SortedFunDefs,
+} from './generation_result';
 import { type VisualProgram } from './visual_program';
 
 export abstract class CodeGenerator {
@@ -17,64 +22,42 @@ export abstract class CodeGenerator {
     return false;
   }
 
-  programToCode(program: VisualProgram): GenerationResult {
-    const results: GenerationResult = {
-      messages: [],
-      code: '',
-      imports: new Set<string>(),
-    };
-
+  programToCode(program: VisualProgram): GenResult {
+    const result = new GenResult();
     const entryCheck = this.checkEntryPoint(program);
-    results.messages.push(...(entryCheck.messages ?? []));
-
+    result.add(entryCheck);
     const sortedFunDefs = this.topoSortFuncsInProgram(program);
     if (sortedFunDefs.hasError) {
-      results.messages.push({
-        type: 'error',
-        message: sortedFunDefs.errorMessage as string,
-      });
-      return results;
+      result.addErrorMessage(sortedFunDefs.errorMessage!);
+      return result;
     }
-
-    const generation = this.functionsToCode(
-      sortedFunDefs.nodeIds.map((id) => program.getNodeById(id)!),
-      program
-    );
-    results.messages.push(...(generation.messages ?? []));
-    results.code = generation.code;
-    return results;
+    const funcsGen = this.functionsToCode(sortedFunDefs.nodes, program);
+    result.add(funcsGen.toGenResult());
+    return result;
   }
 
-  functionsToCode(funDefs: Node[], program: VisualProgram): GenerationResult {
-    const results: GenerationResult = {
-      messages: [],
-      code: '',
-      imports: new Set<string>(),
-    };
-    const funcCodeList = [];
-    const importsSet = new Set<string>();
+  functionsToCode(funDefs: Node[], program: VisualProgram): FunctionGenRes {
+    const result = new FunctionGenRes();
     for (const def of funDefs) {
       if (program.isAcyclic(def.id)) {
-        results.messages.push({
-          type: 'error',
-          message: `Acyclic dependency found`,
-        });
+        result.addErrorMessage('Acyclic dependency found');
+        return result;
       }
-      const generation = this.functionToCode(def, program);
-      results.messages.push(...(generation.messages ?? []));
-      funcCodeList.push(generation.code);
-      generation.imports.forEach((i: string) => importsSet.add(i));
+      const genResult = this.functionToCode(def, program);
+      result.add(genResult);
     }
-    results.code = [...importsSet, ...funcCodeList].join('\n');
-    return results;
+    return result;
   }
 
   abstract functionToCode(
     funcDefNode: Node,
     program: VisualProgram
-  ): GenerationResult;
+  ): FunctionGenRes;
 
-  abstract nodeToCode(node: Node, program: VisualProgram): GenerationResult;
+  abstract nodeToCode(
+    node: Node | undefined,
+    program: VisualProgram
+  ): NodeGenRes;
 
   nodeSourceGeneration(
     node: Node,
@@ -84,7 +67,7 @@ export abstract class CodeGenerator {
     const nodeGenerator: string = node.data.codeGenerator;
     if (!nodeGenerator) {
       console.warn(
-        `Node type:${node.data.configType as string} has no bound source code`
+        `Node type:${node.data.configType as string} has no source code`
       );
       return '';
     }
@@ -130,12 +113,8 @@ export abstract class CodeGenerator {
     return this.indent + text.replace(/(?!\n$)\n/g, '\n' + this.indent);
   }
 
-  checkEntryPoint(program: VisualProgram): GenerationResult {
-    const result: GenerationResult = {
-      messages: [],
-      code: '',
-      imports: new Set<string>(),
-    };
+  checkEntryPoint(program: VisualProgram): GenResult {
+    const result = new GenResult();
     if (!program.getStartNode())
       result.messages.push({
         type: 'warning',
@@ -157,11 +136,14 @@ export abstract class CodeGenerator {
 
     let sorted: string[] = [];
     try {
-      sorted = toposort(nodeAndDependency);
+      sorted = toposort.array(
+        funcs.map((n) => n.id),
+        nodeAndDependency
+      );
     } catch (e: any) {
       if (e.message.includes('node was:')) {
         const nodeId = e.message.match(/\d+/);
-        return e.message.replace(
+        e.message.replace(
           `node was:"${nodeId[0] as string}"`,
           `node was:"${program.getNodeById(nodeId[0])!.data.title as string}"`
         );
@@ -169,12 +151,12 @@ export abstract class CodeGenerator {
       return {
         hasError: true,
         errorMessage: e.message,
-        nodeIds: [],
+        nodes: [],
       };
     }
     return {
       hasError: false,
-      nodeIds: sorted.map((id) => program.getNodeById(id)!.id),
+      nodes: sorted.map((id) => program.getNodeById(id)!),
     };
   };
 }

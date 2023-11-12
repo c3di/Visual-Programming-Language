@@ -10,10 +10,10 @@ import { createSvgIcon } from '@mui/material/utils';
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { type Connection } from 'reactflow';
 import { nodeConfigRegistry } from '../extension';
+import { type GenResult } from '../generators';
 import { type Command } from '../hooks';
 import {
   isDataTypeMatch,
-  type GenerationResult,
   type Node,
   type OnConnectStartParams,
 } from '../types';
@@ -57,7 +57,7 @@ const SearchMenu = memo(function SearchMenu({
 }: {
   onClose: () => void;
   anchorPosition: { top: number; left: number };
-  getSourceCode?: () => GenerationResult;
+  getSourceCode?: () => GenResult;
   addNodeWithSceneCoord?: (
     configType: string,
     anchorPosition: { top: number; left: number }
