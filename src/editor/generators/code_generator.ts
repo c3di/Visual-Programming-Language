@@ -73,7 +73,8 @@ export abstract class CodeGenerator {
     }
     // eslint-disable-next-line no-eval
     const func = eval(`(${nodeGenerator})`);
-    return func(inputs, outputs, node, this);
+    // remove the trailing new line
+    return func(inputs, outputs, node, this).replace(/\n+$/, '');
   }
 
   /**

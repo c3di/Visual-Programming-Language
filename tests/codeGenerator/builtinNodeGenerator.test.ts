@@ -137,9 +137,7 @@ describe('codeGenerator function', () => {
   test('generate code with no value inputs or outputs', () => {
     const inputs = [''];
     const outputs = [''];
-    const expectedCode = `${functionName}()
-`;
-    console.log(expectedCode);
+    const expectedCode = `${functionName}()`;
     const generatedCode = generator.nodeSourceGeneration(node, inputs, outputs);
     expect(generatedCode).toBe(expectedCode);
   });

@@ -617,7 +617,7 @@ describe('PythonGenerator', () => {
         })`;
         const expected = new NodeGenRes(
           [],
-          preComputeCode + '\n' + code + '\n',
+          preComputeCode + '\n' + code,
           new Set([
             'import numpy as np',
             'import pandas as pd2',
@@ -652,7 +652,7 @@ describe('PythonGenerator', () => {
 
         const expected = new NodeGenRes(
           [],
-          preComputeCode + '\n' + code + '\n',
+          preComputeCode + '\n' + code,
           new Set([
             'import numpy as np',
             'import pandas as pd2',
