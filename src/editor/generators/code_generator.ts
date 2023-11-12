@@ -39,8 +39,8 @@ export abstract class CodeGenerator {
   functionsToCode(funDefs: Node[], program: VisualProgram): FunctionGenRes {
     const result = new FunctionGenRes();
     for (const def of funDefs) {
-      if (program.isAcyclic(def.id)) {
-        result.addErrorMessage('Acyclic dependency found');
+      if (!program.isAcyclic(def.id)) {
+        result.addErrorMessage('Cycle Dependency Detected in Acyclic Graph');
         return result;
       }
       const genResult = this.functionToCode(def, program);

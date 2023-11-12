@@ -673,7 +673,7 @@ describe('PythonGenerator', () => {
               new Set([`import ${def.id}`])
             )
         );
-        program.isAcyclic = jest.fn(() => false);
+        program.isAcyclic = jest.fn(() => true);
         const testFunDefs = [nodes[5], nodes[7]];
         const actual = generator.functionsToCode(testFunDefs, program);
         const expected = new FunctionGenRes(
@@ -685,10 +685,12 @@ describe('PythonGenerator', () => {
       });
 
       it('should report an error for function definitions with cyclic dependencies', () => {
-        program.isAcyclic = jest.fn(() => true);
+        program.isAcyclic = jest.fn(() => false);
         const testFunDefs = [nodes[5], nodes[7]];
         const actual = generator.functionsToCode(testFunDefs, program);
-        expect(actual.messages[0].message).toBe('Acyclic dependency found');
+        expect(actual.messages[0].message).toBe(
+          'Cycle Dependency Detected in Acyclic Graph'
+        );
       });
     });
 
@@ -750,7 +752,7 @@ describe('PythonGenerator', () => {
         ]);
 
         generator.checkEntryPoint = jest.fn(() => expected);
-        const expectedMsg = 'Acyclic dependency found';
+        const expectedMsg = 'Cycle Dependency Detected in Acyclic Graph';
         generator.topoSortFuncsInProgram = jest.fn(() => ({
           hasError: true,
           errorMessage: expectedMsg,
