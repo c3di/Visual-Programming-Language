@@ -21,7 +21,7 @@ print(torch.equal(expected, ${returnVar}['value']) and list(${returnVar}[\'value
 from torchvision.io import ImageReadMode
 ${returnVar} = io.read_image(${inputs[1]}, ${inputs[2]})
 ${returnVar} = {
-  'value': image,
+  'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
     'colorChannel': 'rgb',

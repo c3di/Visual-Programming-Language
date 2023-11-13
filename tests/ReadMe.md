@@ -2,10 +2,11 @@
 
 This README provides an overview of unit testing for the exec node. Unit tests are critical to ensuring that the exec node behaves as expected. We focus on two key aspects:
 
-1. **Code Generation Verification**: 
-   - We verify the TypeScript function's generated code string against the expected output derived from a JSON configuration file.
+1. **Code Generation Verification**:
 
-2. **Code Execution Validation**: 
+   - We verify the TypeScript function's generated code string against the expected output derived from a JSON configuration file.
+2. **Code Execution Validation**:
+
    - We check if the output value adheres to the predefined metadata constraints.
    - We ensure that the actual execution result matches the expected outcome.
 
@@ -14,12 +15,13 @@ Detailed implementation is encapsulated within the `nodeExecCheck` function. We 
 ## Environment Setup
 
 ### Setting up the Node.js Environment for Jest:
+
 - Install [Node.js](https://nodejs.org/en) on your local machine.
 - In the root directory of the project, execute `npm install` to install all necessary dependencies, including Jest.
 
 ### Setting up the Python Environment:
-- Install [Anaconda](https://www.anaconda.com/), a comprehensive package and environment management system.
 
+- Install [Anaconda](https://www.anaconda.com/), a comprehensive package and environment management system.
 - Utilize the `environment.yml` file located in the tests directory to create a Python environment.
 
   Notice: if there is a package issue, please reinstall the packages.
@@ -104,7 +106,7 @@ print(torch.equal(expected, ${returnVar}['value']) and list(${returnVar}[\'value
     const expectedCode = `from torchvision import io
 from torchvision.io import ImageReadMode
 ${returnVar} = io.read_image(${inputs[1]}, ${inputs[2]})
-image = {'value': image, 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': False, 'intensityRange': '0-255', 'device': 'cpu'}}
+image = {'value': ${returnVar}, 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': False, 'intensityRange': '0-255', 'device': 'cpu'}}
 ${execTest}`;
     // run the check function
     await nodeExecCheck(node, inputs, outputs, expectedCode);
@@ -117,7 +119,6 @@ ${execTest}`;
 To execute the unit tests, follow these simple steps:
 
 0. Set the new path of `anacondaPath` at line 13 in `execution.ts` in the tests folder. **ToDo** will be replaced by auto search.
-
 1. Open your command line interface (CLI) or terminal.
 2. Navigate to the root directory of your project where your `package.json` file is located.
 3. Run the following command:
