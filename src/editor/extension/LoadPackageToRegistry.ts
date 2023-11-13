@@ -1,6 +1,5 @@
 import builtin from './builtin.json';
 import collections from './collections.json';
-import floatPkg from './float.json';
 import flowControl from './flowControl.json';
 import functionAndvar from './functionAndvar.json';
 import list from './list.json';
@@ -10,7 +9,6 @@ import {
   type TypeConversionRule,
 } from './NodeConfigRegistry';
 import operators from './operators.json';
-import stringPkg from './string.json';
 import tuple from './tuple.json';
 
 import { addNewType, type NodeConfig, type NodePackage } from '../types';
@@ -160,8 +158,6 @@ export const LoadPackageToRegistry = (
 
 export const LoadDefaultModule = (): void => {
   LoadPackageToRegistry('', builtin);
-  LoadPackageToRegistry('Float', floatPkg);
-  LoadPackageToRegistry('String', stringPkg);
   LoadPackageToRegistry('Flow Control', flowControl);
   LoadPackageToRegistry('Collections', collections);
   LoadPackageToRegistry('List', list);
