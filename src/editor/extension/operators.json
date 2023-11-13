@@ -1,0 +1,128 @@
+{
+  "description": "A library provides the literal creation, +, -, *, /, etc.",
+  "enable": true,
+  "nodes": {
+    "make literal": {
+      "type": "make literal",
+      "category": "literal",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\n  return `${outputs[0]} = ${inputs[0]}`;\n}",
+      "inputs": {
+        "in": {
+          "title": "value",
+          "dataType": "anyDataType"
+        }
+      },
+      "dataType": "anyDataType"
+    },
+
+    "+": {
+      "type": "+",
+      "category": "math",
+      "title": "+",
+      "tooltip": "Addition of objects",
+      "enableAddNewOne": true,
+      "dataType": "anyDataType",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\n  return `${outputs[0]} = ${inputs.filter(s => s.length > 0).join(' + ')}`;\n}",
+      "inputs": {
+        "in1": {
+          "dataType": "anyDataType",
+          "title": "in",
+          "showTitle": false
+        },
+        "in2": {
+          "dataType": "anyDataType",
+          "showTitle": false
+        }
+      },
+      "outputs": {
+        "out": {
+          "dataType": "anyDataType",
+          "title": "out",
+          "showTitle": false
+        }
+      }
+    },
+
+    "*": {
+      "type": "*",
+      "category": "math",
+      "title": "*",
+      "tooltip": "Multiplication of objects",
+      "enableAddNewOne": true,
+      "dataType": "anyDataType",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\n  return `${outputs[0]} = ${inputs.filter(s => s.length > 0).join(' * ')}`;\n}",
+      "inputs": {
+        "in1": {
+          "dataType": "anyDataType",
+          "defaultValue": 0,
+          "title": "in",
+          "showTitle": false
+        },
+        "in2": {
+          "dataType": "anyDataType",
+          "showTitle": false
+        }
+      },
+      "outputs": {
+        "out": {
+          "dataType": "anyDataType",
+          "title": "out",
+          "showTitle": false
+        }
+      }
+    },
+
+    "-": {
+      "type": "-",
+      "category": "math",
+      "title": "-",
+      "tooltip": "Subtraction of objects",
+      "enableAddNewOne": false,
+      "dataType": "anyDataType",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\n  return `${outputs[0]} = ${inputs[0]} - ${inputs[1]}`;\n}",
+      "inputs": {
+        "in1": {
+          "dataType": "anyDataType",
+          "showTitle": false
+        },
+        "in2": {
+          "dataType": "anyDataType",
+          "showTitle": false
+        }
+      },
+      "outputs": {
+        "out": {
+          "dataType": "anyDataType",
+          "title": "out",
+          "showTitle": false
+        }
+      }
+    },
+
+    "/": {
+      "type": "/",
+      "category": "math",
+      "title": "/",
+      "tooltip": "Divide arguments element-wise.",
+      "enableAddNewOne": false,
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\n  return `${outputs[0]} = ${inputs[0]} / ${inputs[1]}`;\n}",
+      "inputs": {
+        "in1": {
+          "dataType": "anyDataType",
+          "showTitle": false
+        },
+        "in2": {
+          "dataType": "anyDataType",
+          "showTitle": false,
+          "defaultValue": 1
+        }
+      },
+      "outputs": {
+        "out": {
+          "dataType": "anyDataType",
+          "showTitle": false
+        }
+      }
+    }
+  }
+}

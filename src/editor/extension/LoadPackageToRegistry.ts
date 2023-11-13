@@ -1,7 +1,3 @@
-import {
-  nodeConfigRegistry,
-  type TypeConversionRule,
-} from './NodeConfigRegistry';
 import builtin from './builtin.json';
 import collections from './collections.json';
 import floatPkg from './float.json';
@@ -9,6 +5,11 @@ import flowControl from './flowControl.json';
 import functionAndvar from './functionAndvar.json';
 import list from './list.json';
 import log from './log.json';
+import {
+  nodeConfigRegistry,
+  type TypeConversionRule,
+} from './NodeConfigRegistry';
+import operators from './operators.json';
 import stringPkg from './string.json';
 import tuple from './tuple.json';
 
@@ -167,4 +168,5 @@ export const LoadDefaultModule = (): void => {
   LoadPackageToRegistry('Tuple', tuple);
   LoadPackageToRegistry('Function & Variable Creation', functionAndvar);
   LoadPackageToRegistry('Log', log);
+  LoadPackageToRegistry('Operators', operators);
 };
