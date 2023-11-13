@@ -43,7 +43,7 @@
           "deletable": true
         }
       },
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\n    return `${outputs.join('\\n')}`;\n}"
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\n  return `${outputs.filter(str => str !== '').join('\\n')}`;\n}"
     },
     "if else": {
       "type": "if else",
