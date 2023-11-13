@@ -627,9 +627,10 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     const createFunNodeWithoutRef: string[] = [];
     // the connection will affect the whole graph, so we need to update the whole graph
     let allNodes = getNodes();
-    let found = false;
+
     allNodes = allNodes.map((n) => {
       if (n.type === 'createFunction') {
+        let found = false;
         let thisNode = n;
         const queue: Node[] = [thisNode];
         while (queue.length > 0 && !found) {
