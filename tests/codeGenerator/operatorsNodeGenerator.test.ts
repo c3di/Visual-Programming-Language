@@ -1,5 +1,3 @@
-import path from 'path';
-import { Node } from '../../src/editor';
 import { pythonGenerator } from '../../src/editor/generators';
 import { loadNode } from '../loader';
 
@@ -17,6 +15,20 @@ describe('nodeGenerator', () => {
   const generator = pythonGenerator;
 
   const testData: testNodeData[] = [
+    {
+      jsonPath: 'src/editor/extension/operators.json',
+      nodeName: 'make literal',
+      inputs: ['1'],
+      outputs: ['out'],
+      expected: 'out = 1',
+    },
+    {
+      jsonPath: 'src/editor/extension/operators.json',
+      nodeName: 'make literal',
+      inputs: ['"1"'],
+      outputs: ['out'],
+      expected: 'out = "1"',
+    },
     {
       jsonPath: 'src/editor/extension/operators.json',
       nodeName: '+',
