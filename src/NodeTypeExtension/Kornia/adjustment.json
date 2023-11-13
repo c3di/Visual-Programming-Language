@@ -669,7 +669,7 @@
       "type": "Sharpness",
       "category": "function",
       "title": "sharpness",
-      "tooltip": "Reduce the number of bits for each color channel.",
+      "tooltip": "Apply sharpness to the input tensor.",
       "externalImports": "import kornia as K",
       "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = K.enhance.sharpness(${inputs[1]}, ${inputs[2]})\r\n ${outputs[1]} = {\r\n 'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
