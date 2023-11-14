@@ -119,7 +119,7 @@ const SearchMenu = memo(function SearchMenu({
       labelIcon: FitScreen,
     },
     {
-      name: 'Copy JSON String of Visual Code',
+      name: 'Copy Serialized Visual Code ',
       action: () => {
         const clipboardStr = toJSONString?.();
         if (!clipboardStr) return;
