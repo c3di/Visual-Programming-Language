@@ -83,7 +83,7 @@
           "dataType": "boolean",
           "defaultValue": false,
           "tooltip": "Whether to keep the original range of values."
-        },
+        }
       },
       "outputs": {
         "execOut": {
@@ -177,7 +177,7 @@
           "dataType": "integer",
           "defaultValue": "None",
           "tooltip": "If None, the image is assumed to be a grayscale (single channel) image. Otherwise, this parameter indicates which axis of the array corresponds to channels."
-        },
+        }
       },
       "outputs": {
         "execOut": {
