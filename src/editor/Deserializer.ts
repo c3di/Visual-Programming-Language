@@ -191,9 +191,7 @@ export class Deserializer {
         configType: type,
         nodeRef,
         codeGenerator: config.codeGenerator,
-        breakExecution: config.breakExecution,
         externalImports: config.externalImports,
-        functionName: config.functionName,
         enableAddNewOne: config.enableAddNewOne,
       },
     };
@@ -213,9 +211,14 @@ export class Deserializer {
               type: MarkerType.Arrow,
               width: 15,
               height: 15,
-              color: getComputedStyle(document.body).getPropertyValue(
-                '--vp-exec-color'
-              ),
+              color: `${
+                typeof window !== 'undefined' &&
+                typeof window.getComputedStyle === 'function'
+                  ? getComputedStyle(document.body).getPropertyValue(
+                      '--vp-exec-color'
+                    )
+                  : '#808080'
+              }`,
             }
           : undefined,
       data: {

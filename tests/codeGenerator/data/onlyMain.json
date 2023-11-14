@@ -2,7 +2,7 @@
   "nodes": [
     {
       "id": "0",
-      "type": "Flow Control.Main",
+      "type": "Flow Control.main",
       "position": { "x": 242, "y": 257 },
       "outputs": { "execOut": { "dataType": "exec" } },
       "title": "main"

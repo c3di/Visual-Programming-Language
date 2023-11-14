@@ -322,15 +322,14 @@ export default function useScene(
         });
 
         const execStartNodeKey = Object.keys(newNodes).find(
-          (key) =>
-            newNodes[key].data.configType === 'Flow Control.Execute Start'
+          (key) => newNodes[key].data.configType === 'Flow Control.main'
         );
 
         if (execStartNodeKey) {
           const execStartNode = newNodes[execStartNodeKey];
           const config = deserializer.serializedToGraphNodeConfig({
             id: execStartNode.id,
-            type: 'Function & Variable Creation.Create Function',
+            type: 'Function & Variable Creation.new function',
             position: execStartNode.position,
             selected: true,
           });
@@ -377,12 +376,12 @@ export default function useScene(
         position.x += positionOffset.x;
         position.y += positionOffset.y;
       }
-      if (configType === 'Flow Control.Execute Start') {
+      if (configType === 'Flow Control.main') {
         const existingExecStartNode = graphState
           .getNodes()
-          .find((n) => n.data.configType === 'Flow Control.Execute Start');
+          .find((n) => n.data.configType === 'Flow Control.main');
         if (existingExecStartNode) {
-          configType = 'Function & Variable Creation.Create Function';
+          configType = 'Function & Variable Creation.new function';
         }
       }
       const config = deserializer.serializedToGraphNodeConfig({
@@ -423,11 +422,11 @@ export default function useScene(
     configType: string,
     handleId: string
   ): void => {
-    if (configType.includes('CreateFunction')) {
+    if (configType.includes('new function')) {
       deleteOutputHandleOfCreateFunction(nodeId, handleId);
-    } else if (configType.includes('Return')) {
+    } else if (configType.includes('return')) {
       deleteInputHandleOfReturnNode(nodeId, handleId);
-    } else if (configType.includes('Sequence')) {
+    } else if (configType.includes('sequence')) {
       deleteHandleOfSequenceNode(nodeId, handleId);
     } else {
       deleteHandleOfNormalNode(nodeId, handleId);
@@ -604,7 +603,7 @@ export default function useScene(
                 }
               );
 
-              addNode('Function & Variable Creation.functionCall', undefined, {
+              addNode('Function & Variable Creation.function call', undefined, {
                 title: latest.data.title,
                 nodeRef: node.id,
                 inputs: latest.data.outputs,
