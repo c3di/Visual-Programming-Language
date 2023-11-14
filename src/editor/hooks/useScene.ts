@@ -474,13 +474,16 @@ export default function useScene(
     nodeId: string,
     handleId: string
   ): void => {
+    const nodeIds: string[] = [];
     graphState.setNodes((nds) => {
       return nds.map((nd) => {
         if (nd.id === nodeId) {
+          nodeIds.push(nd.id);
           const { [handleId]: _, ...remained } = nd.data.outputs;
           nd.data.outputs = remained;
         }
         if (nd.data.nodeRef === nodeId) {
+          nodeIds.push(nd.id);
           const { [handleId]: _, ...remained } = nd.data.inputs;
           nd = {
             ...nd,
@@ -493,18 +496,24 @@ export default function useScene(
         return nd;
       });
     });
+    nodeIds.forEach((id) => {
+      graphState.deleteAllEdgesOfHandle(id, handleId);
+    });
   };
 
   const deleteInputHandleOfReturnNode = useCallback(
     (nodeId: string, handleId: string) => {
+      const nodeIds: string[] = [];
       graphState.setNodes((nds) => {
         return nds.map((nd) => {
           if (nd.id === nodeId) {
+            nodeIds.push(nd.id);
             const { [handleId]: _, ...remained } = nd.data.inputs;
             nd.data.inputs = remained;
           }
           const ref = graphState.getNodeById(nd.data.nodeRef);
           if (ref?.data.nodeRef === nodeId) {
+            nodeIds.push(nd.id);
             const { [handleId]: _, ...remained } = nd.data.outputs;
             nd = {
               ...nd,
@@ -516,6 +525,9 @@ export default function useScene(
           }
           return nd;
         });
+      });
+      nodeIds.forEach((id) => {
+        graphState.deleteAllEdgesOfHandle(id, handleId);
       });
     },
     []
