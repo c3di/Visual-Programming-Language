@@ -5,9 +5,10 @@
       "type": "Swirl",
       "category": "function",
       "title": "swirl",
-      "tooltip": "Image swirling is a non-linear image deformation that creates a whirlpool effect. ",
+      "tooltip": "Image swirling is a non-linear image deformation that creates a whirlpool effect.",
       "externalImports": "from skimage.transform import swirl",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = swirl({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = swirl({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}},{{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}},{{{inputs.9}}},{{{inputs.10}}},{{{inputs.11}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}, 'dataType': 'numpy.ndarray'}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = swirl(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, ${inputs[9]}, ${inputs[10]}, ${inputs[11]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -19,42 +20,70 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
+            "dataType": "numpy.ndarray"
           },
           "tooltip": "The input image for swirl"
         },
         "center": {
           "title": "center",
           "dataType": "tuple",
-          "defaultValue": "(0,0)",
+          "defaultValue": "None",
           "tooltip": "Center coordinate of transformation."
         },
         "strength": {
           "title": "strength",
           "dataType": "float",
-          "defaultValue": 10.0,
+          "defaultValue": 1.0,
           "tooltip": "The amount of swirling applied."
         },
         "radius": {
           "title": "radius",
           "dataType": "float",
-          "defaultValue": 120.0,
-          "tooltip": "The extent of the swirl in pixels. "
+          "defaultValue": 100.0,
+          "tooltip": "The extent of the swirl in pixels."
         },
         "rotation": {
           "title": "rotation",
           "dataType": "float",
           "defaultValue": 0.0,
           "tooltip": "Additional rotation applied to the image."
-        }
+        },
+        "output_shape": {
+          "title": "output_shape",
+          "dataType": "tuple",
+          "defaultValue": "None",
+          "tooltip": "Shape of the output image generated."
+        },
+        "order": {
+          "title": "order",
+          "dataType": "integer",
+          "defaultValue": "None",
+          "tooltip": "The order of the spline interpolation, default is 0 if image.dtype is bool and 1 otherwise. The order has to be in the range 0-5."
+        },
+        "mode": {
+          "title": "mode",
+          "dataType": "string",
+          "defaultValue": "reflect",
+          "tooltip": "Points outside the boundaries of the input are filled according to the given mode (default: ‘constant’ or ‘reflect’ - update: see Github Issue #7240 scikit-image)"
+        },
+        "cval": {
+          "title": "cval",
+          "dataType": "float",
+          "defaultValue": 0.0,
+          "tooltip": "Used in conjunction with mode ‘constant’, the value outside the image boundaries."
+        },
+        "clip": {
+          "title": "clip",
+          "dataType": "boolean",
+          "defaultValue": true,
+          "tooltip": "Whether to clip the output to the range of values of the input image."
+        },
+        "preserve_range": {
+          "title": "clip",
+          "dataType": "boolean",
+          "defaultValue": false,
+          "tooltip": "Whether to keep the original range of values."
+        },
       },
       "outputs": {
         "execOut": {
@@ -79,7 +108,8 @@
       "title": "rescale",
       "tooltip": "Scale image by a certain factor.",
       "externalImports": "from skimage.transform import rescale",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = rescale({{{inputs.1}}},{{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = rescale({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}},{{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}},{{{inputs.9}}},{{{inputs.10}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}, 'dataType': 'numpy.ndarray'}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = rescale(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, ${inputs[9]}, ${inputs[10]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -91,24 +121,63 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
+            "dataType": "numpy.ndarray"
           },
           "tooltip": "The input image for rescale"
         },
         "scale": {
           "title": "scale",
           "dataType": "float",
-          "defaultValue": 0.25,
           "tooltip": "Scale factors"
-        }
+        },
+        "order": {
+          "title": "order",
+          "dataType": "integer",
+          "defaultValue": "None",
+          "tooltip": "The order of the spline interpolation, default is 0 if image.dtype is bool and 1 otherwise. The order has to be in the range 0-5."
+        },
+        "mode": {
+          "title": "mode",
+          "dataType": "string",
+          "defaultValue": "reflect",
+          "tooltip": "Points outside the boundaries of the input are filled according to the given mode"
+        },
+        "cval": {
+          "title": "cval",
+          "dataType": "float",
+          "defaultValue": 0.0,
+          "tooltip": "Used in conjunction with mode ‘constant’, the value outside the image boundaries."
+        },
+        "clip": {
+          "title": "clip",
+          "dataType": "boolean",
+          "defaultValue": true,
+          "tooltip": "Whether to clip the output to the range of values of the input image."
+        },
+        "preserve_range": {
+          "title": "preserve_range",
+          "dataType": "boolean",
+          "defaultValue": false,
+          "tooltip": "Whether to keep the original range of values."
+        },
+        "anti_aliasing": {
+          "title": "anti_aliasing",
+          "dataType": "boolean",
+          "defaultValue": "None",
+          "tooltip": "Whether to apply a Gaussian filter to smooth the image prior to down-scaling."
+        },
+        "anti_aliasing_sigma": {
+          "title": "anti_aliasing_sigma",
+          "dataType": "float",
+          "defaultValue": "None",
+          "tooltip": "Standard deviation for Gaussian filtering to avoid aliasing artifacts."
+        },
+        "channel_axis": {
+          "title": "channel_axis",
+          "dataType": "integer",
+          "defaultValue": "None",
+          "tooltip": "If None, the image is assumed to be a grayscale (single channel) image. Otherwise, this parameter indicates which axis of the array corresponds to channels."
+        },
       },
       "outputs": {
         "execOut": {
@@ -133,7 +202,8 @@
       "title": "resize",
       "tooltip": "Resize image to match a certain size.",
       "externalImports": "from skimage.transform import resize",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = resize({{{inputs.1}}},{{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = resize({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}},{{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}},{{{inputs.9}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}, 'dataType': 'numpy.ndarray'}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = resize(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, ${inputs[9]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -145,23 +215,56 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
+            "dataType": "numpy.ndarray"
           },
-          "tooltip": "The input image for rescale"
+          "tooltip": "The input image for resize"
         },
         "output_shape": {
           "title": "output_shape",
           "dataType": "tuple",
-          "defaultValue": "(100,100)",
           "tooltip": "Size of the generated output image"
+        },
+        "order": {
+          "title": "order",
+          "dataType": "integer",
+          "defaultValue": "None",
+          "tooltip": "The order of the spline interpolation, default is 0 if image.dtype is bool and 1 otherwise. The order has to be in the range 0-5."
+        },
+        "mode": {
+          "title": "mode",
+          "dataType": "string",
+          "defaultValue": "reflect",
+          "tooltip": "Points outside the boundaries of the input are filled according to the given mode"
+        },
+        "cval": {
+          "title": "cval",
+          "dataType": "float",
+          "defaultValue": 0.0,
+          "tooltip": "Used in conjunction with mode ‘constant’, the value outside the image boundaries."
+        },
+        "clip": {
+          "title": "clip",
+          "dataType": "boolean",
+          "defaultValue": true,
+          "tooltip": "Whether to clip the output to the range of values of the input image."
+        },
+        "preserve_range": {
+          "title": "preserve_range",
+          "dataType": "boolean",
+          "defaultValue": false,
+          "tooltip": "Whether to keep the original range of values."
+        },
+        "anti_aliasing": {
+          "title": "anti_aliasing",
+          "dataType": "boolean",
+          "defaultValue": "None",
+          "tooltip": "Whether to apply a Gaussian filter to smooth the image prior to downsampling."
+        },
+        "anti_aliasing_sigma": {
+          "title": "anti_aliasing_sigma",
+          "dataType": "float",
+          "defaultValue": "None",
+          "tooltip": "Standard deviation for Gaussian filtering used when anti-aliasing."
         }
       },
       "outputs": {
@@ -187,7 +290,8 @@
       "title": "downscale",
       "tooltip": "Down-sample N-dimensional image by local averaging.",
       "externalImports": "from skimage.transform import downscale_local_mean",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = downscale_local_mean({{{inputs.1}}},{{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = downscale_local_mean({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}, 'dataType': 'numpy.ndarray'}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = downscale_local_mean(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -199,34 +303,25 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
+            "dataType": "numpy.ndarray"
           },
-          "tooltip": "The input image for rescale"
+          "tooltip": "N-dimensional input image for downscale."
         },
         "factors": {
           "title": "factors",
           "dataType": "tuple",
-          "defaultValue": "(2,3)",
           "tooltip": "Array containing down-sampling integer factor along each axis."
         },
         "cval": {
           "title": "cval",
           "dataType": "float",
-          "defaultValue": "None",
+          "defaultValue": 0.0,
           "tooltip": "Constant padding value if image is not perfectly divisible by the integer factors."
         },
         "clip": {
           "title": "clip",
           "dataType": "boolean",
-          "defaultValue": "None",
+          "defaultValue": true,
           "tooltip": "Unused, but kept here for API consistency with the other transforms in this module. "
         }
       },

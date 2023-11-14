@@ -47,7 +47,7 @@
         "include_borders": {
           "title": "include_borders",
           "dataType": "boolean",
-          "defaultValue": "True",
+          "defaultValue": true,
           "tooltip": "Tolerance when determining whether a point is inside the hull."
         }
       },
@@ -116,19 +116,19 @@
         "low_threshold": {
           "title": "low_threshold",
           "dataType": "float",
-          "defaultValue": null,
+          "defaultValue": "None",
           "tooltip": "Lower bound for hysteresis thresholding (default: 10% of dtype’s max)."
         },
         "high_threshold": {
           "title": "high_threshold",
           "dataType": "float",
-          "defaultValue": null,
+          "defaultValue": "None",
           "tooltip": "Upper bound for hysteresis thresholding (default: 20% of dtype’s max)."
         },
         "mask": {
           "title": "mask",
           "dataType": "numpy.ndarray",
-          "defaultValue": null,
+          "defaultValue": "None",
           "tooltip": "Mask to limit the application of Canny to a certain area."
         },
         "use_quantiles": {
@@ -214,7 +214,7 @@
         "alpha": {
           "title": "alpha",
           "dataType": "float",
-          "defaultValue": null,
+          "defaultValue": "None",
           "tooltip": "Shaping filter constant, that selects maximally flat elongated features (default:-1/(ndim+1))."
         },
         "black_ridges": {
@@ -284,7 +284,6 @@
         "tolerance": {
           "title": "tolerance",
           "dataType": "float",
-          "defaultValue": 0.02,
           "tooltip": "The tolerance used in Douglas-Peucker algorithm"
         }
       },
@@ -331,7 +330,7 @@
         "preserve_ends": {
           "title": "preserve_ends",
           "dataType": "boolean",
-          "defaultValue": "False",
+          "defaultValue": false,
           "tooltip": "Specify whether to preserve the ends in subdivision"
         }
       },
@@ -383,7 +382,7 @@
         "method": {
           "title": "method",
           "dataType": "string",
-          "defaultValue": null,
+          "defaultValue": "None",
           "tooltip": "Which algorithm to use, Zhang for 2D images, Lee for 3D images"
         }
       },
@@ -446,13 +445,13 @@
         "mask": {
           "title": "mask",
           "dataType": "numpy.ndarray",
-          "defaultValue": null,
+          "defaultValue": "None",
           "tooltip": "Clip the output image to this mask. (Values where mask=0 will be set to 0.)"
         },
         "axis": {
           "title": "axis",
           "dataType": "numpy.ndarray",
-          "defaultValue": null,
+          "defaultValue": "None",
           "tooltip": "Compute the edge filter along this axis. If not provided, the edge magnitude is computed."
         },
         "mode": {
@@ -527,7 +526,7 @@
         "mask": {
           "title": "mask",
           "dataType": "numpy.ndarray",
-          "defaultValue": null,
+          "defaultValue": "None",
           "tooltip": "An optional mask to limit the application to a certain area."
         }
       },
