@@ -627,7 +627,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     const createFunNodeWithoutRef: string[] = [];
     // the connection will affect the whole graph, so we need to update the whole graph
     let allNodes = getNodes();
-
+    // find the return node for each createFunction node
     allNodes = allNodes.map((n) => {
       if (n.type === 'createFunction') {
         let found = false;
@@ -684,6 +684,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
 
     const toBeUpdated = Object.keys(createFunNodeWithRef);
     allNodes = allNodes.map((n) => {
+      // update the signature of the function call node
       if (toBeUpdated.includes(n.data.nodeRef)) {
         const returnNode = getNode(createFunNodeWithRef[n.data.nodeRef]);
         if (
@@ -691,11 +692,15 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
           Object.keys(n.data.outputs).length !==
             Object.keys(returnNode.data.inputs).length
         ) {
-          const inputsWithoutExec: Record<string, any> = {};
+          const inputsWithoutExec: Record<string, HandleData> = {};
           for (const [name, input] of Object.entries(returnNode.data.inputs)) {
-            if ((input as any).dataType !== 'exec') {
-              (input as any).showTitle = true;
-              inputsWithoutExec[name] = input;
+            const handle = input as HandleData;
+            if (handle.dataType !== 'exec') {
+              handle.showTitle = true;
+              inputsWithoutExec[name] = {
+                ...handle,
+                connection: n.data.outputs[name]?.connection ?? 0,
+              };
             }
           }
           n.data.outputs = {
@@ -706,6 +711,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
       }
       return n;
     });
+    // at least keep the exec output for non-return-value function
     for (const node of Object.values(allNodes)) {
       if (createFunNodeWithoutRef.includes(node.data.nodeRef as string)) {
         node.data.outputs = {

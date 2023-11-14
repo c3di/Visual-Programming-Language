@@ -128,6 +128,7 @@ function CreateFunction({
             [title]: value,
           };
         }
+        // update the signature of `function call` node
         if (nd.data.nodeRef === id) {
           nd = {
             ...nd,
@@ -135,7 +136,7 @@ function CreateFunction({
               ...nd.data,
               inputs: {
                 ...nd.data.inputs,
-                [title]: value,
+                [title]: { ...value, connection: 0 },
               },
             },
           };
