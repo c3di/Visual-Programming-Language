@@ -64,7 +64,7 @@
           "title": "mode",
           "dataType": "string",
           "defaultValue": "reflect",
-          "tooltip": "Points outside the boundaries of the input are filled according to the given mode (default: ‘constant’ or ‘reflect’ - update: see Github Issue #7240 scikit-image)"
+          "tooltip": "Points outside the boundaries of the input are filled according to the given mode (default: ‘reflect’)"
         },
         "cval": {
           "title": "cval",
