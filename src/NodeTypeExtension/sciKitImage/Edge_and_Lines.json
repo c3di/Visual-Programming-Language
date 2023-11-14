@@ -7,7 +7,8 @@
       "title": "convex hull",
       "tooltip": "The convex hull of a binary image is the set of pixels included in the smallest convex polygon that surround all white pixels in the input.",
       "externalImports": "from skimage.morphology import convex_hull_image",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = convex_hull_image({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = convex_hull_image({{{inputs.1}}}, {{{inputs.2}}}, {{{inputs.3}}},{{{inputs.4}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}, 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': False, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = convex_hull_image(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -22,14 +23,32 @@
             "dataType": "numpy.ndarray",
             "metadata": [
               {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
                 "intensityRange": "0-1"
               }
             ]
           },
-          "tooltip": "The input image for convex hull"
+          "tooltip": "The binary input image for convex hull"
+        },
+        "offset_coordinates": {
+          "title": "offset_coordinates",
+          "dataType": "boolean",
+          "defaultValue": true,
+          "tooltip": "Adds half-pixel offsets to pixel coordinates if set to True"
+        },
+        "tolerance": {
+          "title": "tolerance",
+          "dataType": "float",
+          "defaultValue": 1e-10,
+          "tooltip": "Tolerance when determining whether a point is inside the hull."
+        },
+        "include_borders": {
+          "title": "include_borders",
+          "dataType": "boolean",
+          "defaultValue": "True",
+          "tooltip": "Tolerance when determining whether a point is inside the hull."
         }
       },
       "outputs": {
@@ -43,9 +62,17 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray"
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-1"
+              }
+            ]
           },
-          "tooltip": "The output image for convex hull"
+          "tooltip": "Binary image with pixels in convex hull set to True."
         }
       }
     },
@@ -54,8 +81,9 @@
       "category": "function",
       "title": "Canny edge detector",
       "tooltip": "The Canny filter is a multi-stage edge detector. It uses a filter based on the derivative of a Gaussian in order to compute the intensity of the gradients.",
-      "externalImports": "from skimage import feature",
-      "sourceCode": "{{indent}}{{{outputs.1}}} =  feature.canny({{{inputs.1}}},{{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "externalImports": "from skimage.feature import canny",
+      "sourceCode": "{{indent}}{{{outputs.1}}} =  canny({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}},{{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}, 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': False, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = canny(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -70,10 +98,10 @@
             "dataType": "numpy.ndarray",
             "metadata": [
               {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
               }
             ]
           },
@@ -83,7 +111,43 @@
           "title": "sigma",
           "dataType": "float",
           "defaultValue": 1.0,
-          "tooltip": "The low and high threshold for the hysteresis thresholding"
+          "tooltip": "Standard deviation of the Gaussian filter."
+        },
+        "low_threshold": {
+          "title": "low_threshold",
+          "dataType": "float",
+          "defaultValue": null,
+          "tooltip": "Lower bound for hysteresis thresholding (default: 10% of dtype’s max)."
+        },
+        "high_threshold": {
+          "title": "high_threshold",
+          "dataType": "float",
+          "defaultValue": null,
+          "tooltip": "Upper bound for hysteresis thresholding (default: 20% of dtype’s max)."
+        },
+        "mask": {
+          "title": "mask",
+          "dataType": "numpy.ndarray",
+          "defaultValue": null,
+          "tooltip": "Mask to limit the application of Canny to a certain area."
+        },
+        "use_quantiles": {
+          "title": "use_quantiles",
+          "dataType": "boolean",
+          "defaultValue": false,
+          "tooltip": "If True then treat low_threshold and high_threshold as quantiles of the edge magnitude image, rather than absolute edge magnitude values. If True then the thresholds must be in the range [0, 1]."
+        },
+        "mode": {
+          "title": "mode",
+          "dataType": "string",
+          "defaultValue": "constant",
+          "tooltip": "The mode parameter determines how the array borders are handled during Gaussian filtering, where cval is the value when mode is equal to ‘constant’."
+        },
+        "cval": {
+          "title": "cval",
+          "dataType": "float",
+          "defaultValue": 0.0,
+          "tooltip": "Value to fill past edges of input if mode is ‘constant’."
         }
       },
       "outputs": {
@@ -97,9 +161,17 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "torch.tensor"
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-1"
+              }
+            ]
           },
-          "tooltip": "The output image for Canny filter"
+          "tooltip": "The binary edge map."
         }
       }
     },
@@ -109,7 +181,8 @@
       "title": "Ridge operators",
       "tooltip": "Ridge filters can be used to detect ridge-like structures",
       "externalImports": "from skimage.filters import meijering",
-      "sourceCode": "{{indent}}{{{outputs.1}}} =  meijering({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}{{{outputs.1}}} =  meijering({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}},{{{inputs.6}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}, 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': False, 'intensityRange': '0-255', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = meijering(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-255',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -124,55 +197,48 @@
             "dataType": "numpy.ndarray",
             "metadata": [
               {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
               }
             ]
           },
           "tooltip": "The input image for Ridge filter"
         },
+        "sigmas": {
+          "title": "sigmas",
+          "dataType": "numpy.ndarray",
+          "tooltip": "optional iterable of floats indicating scales for the filter."
+        },
+        "alpha": {
+          "title": "alpha",
+          "dataType": "float",
+          "defaultValue": null,
+          "tooltip": "Shaping filter constant, that selects maximally flat elongated features (default:-1/(ndim+1))."
+        },
         "black_ridges": {
           "title": "black_ridges",
           "dataType": "boolean",
-          "defaultValue": "True",
-          "tooltip": "The `black_ridges` parameter specifies whether the filter should detect black ridges (`True`) or white ridges (`False`) in the image. "
+          "defaultValue": true,
+          "tooltip": "When True (the default), the filter detects black ridges; when False, it detects white ridges."
         },
-        "sigma": {
-          "title": "sigma",
+        "mode": {
+          "title": "mode",
+          "dataType": "string",
+          "defaultValue": "reflect",
+          "tooltip": "How to handle values outside the image borders."
+        },
+        "cval": {
+          "title": "cval",
           "dataType": "float",
-          "defaultValue": 1.0,
-          "tooltip": "The low and high threshold for the Ridge filter"
+          "defaultValue": 0.0,
+          "tooltip": "Used in conjunction with mode ‘constant’, the value outside the image boundaries."
         }
       },
       "outputs": {
         "execOut": {
           "title": "execOut",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "numpy.ndarray"
-          },
-          "tooltip": "The output image for Ridge filter"
-        }
-      }
-    },
-    "Approximate_subdivide_polygons": {
-      "type": "Approximate_subdivide_polygons",
-      "category": "function",
-      "title": "Approximate_subdivide_polygons",
-      "tooltip": "To shows how to approximate a image based on Douglas-Peucker algorithm and subdivide (B-Splines) polygonal chains.",
-      "externalImports": "from skimage.measure import approximate_polygon,subdivide_polygon",
-      "sourceCode": "{{indent}}{{{outputs.1}}} =  subdivide_polygon({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n {{indent}}{{{outputs.2}}} =  approximate_polygon({{{inputs.1}}},{{{inputs.4}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}} {{{outputs.0}}}",
-      "inputs": {
-        "execIn": {
-          "title": "execIn",
           "dataType": "exec",
           "showWidget": false,
           "showTitle": false
@@ -184,32 +250,42 @@
             "dataType": "numpy.ndarray",
             "metadata": [
               {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
               }
             ]
           },
-          "tooltip": "The input image for Canny filter"
+          "tooltip": "Filtered image (maximum of pixels across all scales)."
+        }
+      }
+    },
+    "Approximate_polygon": {
+      "type": "Approximate_polygon",
+      "category": "function",
+      "title": "Approximate polygon",
+      "tooltip": "Approximate a polygonal chain using the Douglas-Peucker algorithm.",
+      "externalImports": "from skimage.measure import approximate_polygon",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = approximate_polygon({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray'}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = approximate_polygon(${inputs[1]}, ${inputs[2]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
         },
-        "degree": {
-          "title": "degree",
-          "dataType": "integer",
-          "defaultValue": 2,
-          "tooltip": "The degree we use in subdivide polygon B-Splines"
-        },
-        "preserve_ends": {
-          "title": "preserve_ends",
-          "dataType": "boolean",
-          "defaultValue": "True",
-          "tooltip": "Preserve ends or not in subdividing"
+        "coords": {
+          "title": "coords",
+          "dataType": "numpy.ndarray",
+          "tooltip": "The input are coordinate for approximation"
         },
         "tolerance": {
           "title": "tolerance",
           "dataType": "float",
           "defaultValue": 0.02,
-          "tooltip": "The tolerance we use in Douglas-Peucker algorithm"
+          "tooltip": "The tolerance used in Douglas-Peucker algorithm"
         }
       },
       "outputs": {
@@ -219,21 +295,57 @@
           "showWidget": false,
           "showTitle": false
         },
-        "appr_image": {
-          "title": "appr_image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "numpy.ndarray"
-          },
-          "tooltip": "The approximate subdivided polygon with Douglas-Peucker algorithm"
+        "appr_coords": {
+          "title": "appr_coords",
+          "dataType": "numpy.ndarray",
+          "tooltip": "The approximate polygonal chain (output matrix dimensions X <= input matrix dimensions X)"
+        }
+      }
+    },
+    "Subdivide_polygon": {
+      "type": "Subdivide_polygon",
+      "category": "function",
+      "title": "Subdivide polygon",
+      "tooltip": "Subdivide a polygonal chain using B-Splines.",
+      "externalImports": "from skimage.measure import subdivide_polygon",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = subdivide_polygon({{{inputs.1}}}, {{{inputs.2}}}, {{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray'}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = subdivide_polygon(${inputs[1]}, ${inputs[2]}, ${inputs[3]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
         },
-        "sub_image": {
-          "title": "sub_image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "numpy.ndarray"
-          },
-          "tooltip": "The subdivide polygon using 2nd degree B-Splines"
+        "coords": {
+          "title": "coords",
+          "dataType": "numpy.ndarray",
+          "tooltip": "The input are coordinate for subdivision"
+        },
+        "degree": {
+          "title": "degree",
+          "dataType": "integer",
+          "defaultValue": 2,
+          "tooltip": "Degree used in B-Splines for subdivision"
+        },
+        "preserve_ends": {
+          "title": "preserve_ends",
+          "dataType": "boolean",
+          "defaultValue": "False",
+          "tooltip": "Specify whether to preserve the ends in subdivision"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "sub_coords": {
+          "title": "sub_coords",
+          "dataType": "numpy.ndarray",
+          "tooltip": "The subdivided polygonal chain"
         }
       }
     },
@@ -243,7 +355,8 @@
       "title": "skeletonize",
       "tooltip": "Compute the skeleton of a binary image.",
       "externalImports": "from skimage.morphology import skeletonize",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = skeletonize({{{inputs.1}}},{{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = skeletonize({{{inputs.1}}},{{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}, 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': False, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = skeletonize(${inputs[1]}, ${inputs[2]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -258,19 +371,19 @@
             "dataType": "numpy.ndarray",
             "metadata": [
               {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
                 "intensityRange": "0-1"
               }
             ]
           },
-          "tooltip": "An image containing the objects to be skeletonized."
+          "tooltip": "An image containing the objects to be skeletonized (0 = background)."
         },
         "method": {
           "title": "method",
           "dataType": "string",
-          "defaultValue": "Zhang",
+          "defaultValue": null,
           "tooltip": "Which algorithm to use, Zhang for 2D images, Lee for 3D images"
         }
       },
@@ -285,7 +398,15 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray"
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-1"
+              }
+            ]
           },
           "tooltip": "The thinned image."
         }
@@ -296,8 +417,9 @@
       "category": "function",
       "title": "edge operator sobel",
       "tooltip": "Find edges in an image using the Sobel filter.",
-      "externalImports": "from skimage import filters",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = filters.sobel({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "externalImports": "from skimage.filters import sobel",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = sobel({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}, 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': False, 'intensityRange': '0-255', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = sobel(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-255',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -312,14 +434,38 @@
             "dataType": "numpy.ndarray",
             "metadata": [
               {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
               }
             ]
           },
           "tooltip": "The input image."
+        },
+        "mask": {
+          "title": "mask",
+          "dataType": "numpy.ndarray",
+          "defaultValue": null,
+          "tooltip": "Clip the output image to this mask. (Values where mask=0 will be set to 0.)"
+        },
+        "axis": {
+          "title": "axis",
+          "dataType": "numpy.ndarray",
+          "defaultValue": null,
+          "tooltip": "Compute the edge filter along this axis. If not provided, the edge magnitude is computed."
+        },
+        "mode": {
+          "title": "mode",
+          "dataType": "string",
+          "defaultValue": "reflect",
+          "tooltip": "The boundary mode for the convolution."
+        },
+        "cval": {
+          "title": "cval",
+          "dataType": "float",
+          "defaultValue": 0.0,
+          "tooltip": "When mode is 'constant', this is the constant used in values outside the boundary of the image data."
         }
       },
       "outputs": {
@@ -333,7 +479,15 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray"
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              }
+            ]
           },
           "tooltip": "The Sobel edge map."
         }
@@ -344,8 +498,9 @@
       "category": "function",
       "title": "edge operator roberts",
       "tooltip": "Find the edge magnitude using Roberts’ cross operator.",
-      "externalImports": "from skimage import filters",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = filters.roberts({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "externalImports": "from skimage.filters import roberts",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = roberts({{{inputs.1}}},{{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}, 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': False, 'intensityRange': '0-255', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = roberts(${inputs[1]}, ${inputs[2]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-255',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -360,14 +515,20 @@
             "dataType": "numpy.ndarray",
             "metadata": [
               {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
               }
             ]
           },
           "tooltip": "The input image."
+        },
+        "mask": {
+          "title": "mask",
+          "dataType": "numpy.ndarray",
+          "defaultValue": null,
+          "tooltip": "An optional mask to limit the application to a certain area."
         }
       },
       "outputs": {
@@ -381,7 +542,15 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray"
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              }
+            ]
           },
           "tooltip": "The Roberts’ Cross edge map."
         }
