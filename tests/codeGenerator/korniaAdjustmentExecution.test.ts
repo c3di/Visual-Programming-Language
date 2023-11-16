@@ -1,7 +1,24 @@
 import { nodeExecCheck } from '../execution';
 import { loadNode } from '../loader';
 
+interface testNodeData {
+  jsonPath: string;
+  nodeName: string;
+  inputs: string[];
+  outputs: string[];
+  expected: string;
+}
+
 describe('Code Execution of node kornia adjustment', () => {
+  const testData: testNodeData[] = [
+    {
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
+      nodeName: 'Add_Weighted',
+      inputs: [''],
+      outputs: ['image'],
+      expected: `import kornia as K',
+    }
+  ];
   test('generate the code of kornia.enhance.add_weighted', async () => {
     const node = loadNode(
       'src/NodeTypeExtension/kornia/adjustment.json',
@@ -600,4 +617,13 @@ ${execTest}`;
 
     await nodeExecCheck(node, inputs, outputs, expectedCode);
   }, 100000);
+
+    test.each(testData)(
+      'generate the code from the node $nodeName in $jsonPath',
+      ({ jsonPath, nodeName, inputs, outputs, expected }) => {
+        const node = loadNode(jsonPath, nodeName);
+        const result = generator.nodeSourceGeneration(node, inputs, outputs);
+        expect(result).toBe(expected);
+      }
+    );
 });
