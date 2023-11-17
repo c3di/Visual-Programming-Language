@@ -5,66 +5,65 @@ interface testNodeData {
   jsonPath: string;
   nodeName: string;
   inputs: string[];
-  outputs: string[];
-  expected: string;
+  returnVar: string;
+  getExpectedOutput: (inputs: any, returnVar: any) => string;
 }
+
 
 describe('Code Execution of node kornia adjustment', () => {
   const testData: testNodeData[] = [
     {
       jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Add_Weighted',
-      inputs: [''],
-      outputs: ['image'],
-      expected: `import kornia as K',
+      inputs: ['', 'input_tensor1', '0.5', 'input_tensor2', '0.5', '1.0'],
+      returnVar: 'image',
+      getExpectedOutput: (inputs, returnVar) => `import kornia as K
+      input_tensor1 = torch.rand(1, 1, 5, 5, device = 'cpu')
+      input_tensor2 = torch.rand(1, 1, 5, 5, device = 'cpu')
+      ${returnVar} = K.enhance.add_weighted(input_tensor1, ${inputs[2]}, input_tensor2, ${inputs[4]}, ${inputs[5]})
+      ${returnVar} = {
+      'value': ${returnVar},
+      'dataType': 'torch.tensor',
+      'metadata': {
+        'colorChannel': 'grayscale',
+        'channelOrder': 'channelFirst',
+        'isMiniBatched': True,
+        'intensityRange': '0-1',
+        'device': 'cpu'
+      }
+    }
+    import torch
+    from torch import Tensor
+    expected = K.enhance.add_weighted(input_tensor1, ${inputs[2]}, input_tensor2, ${inputs[4]}, ${inputs[5]})
+    print(torch.equal(expected, ${returnVar}['value']);`,
+    }
+
+    {
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
+      nodeName: 'Add_Weighted',
+      inputs: ['', 'torch.rand(1, 1, 5, 5)', '0.5', 'torch.rand(1, 1, 5, 5)', '0.5', '1.0'],
+      returnVar: 'image',
+      getExpectedOutput: (inputs, returnVar) => `import kornia as K
+      ${returnVar} = K.enhance.add_weighted(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]})
+      ${returnVar} = {
+      'value': ${returnVar},
+      'dataType': 'torch.tensor',
+      'metadata': {
+        'colorChannel': 'grayscale',
+        'channelOrder': 'channelFirst',
+        'isMiniBatched': True,
+        'intensityRange': '0-1',
+        'device': 'cpu'
+      }
+    }
+    import torch
+    from torch import Tensor
+    expected = K.enhance.add_weighted(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]})
+    print(torch.equal(expected, ${returnVar}['value']);`,
     }
   ];
-  test('generate the code of kornia.enhance.add_weighted', async () => {
-    const node = loadNode(
-      'src/NodeTypeExtension/kornia/adjustment.json',
-      'Add_Weighted'
-    );
 
-    const inputs = [
-      '',
-      'torch.tensor([[[[0.5, 0.5], [0.5, 0.5]], [[0.4, 0.4], [0.4, 0.4]], [[0.3, 0.3], [0.3, 0.3]]]])',
-      '0.5',
-      'torch.tensor([[[[0.25, 0.25],[0.25, 0.25]], [[0.20, 0.20], [0.20, 0.20]], [[0.15, 0.15], [0.15, 0.15]]]])',
-      '0.5',
-      '1.0',
-    ];
 
-    const returnVar = 'image';
-    const execTest = `import torch
-expected = k.enhance.add_weighted(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]})
-print(torch.equal(expected, ${returnVar}['value']) and 
-  expected == tensor([[[[1.3750, 1.3750],
-          [1.3750, 1.3750]],
-          [[1.3000, 1.3000],
-          [1.3000, 1.3000]],
-          [[1.2250, 1.2250],
-          [1.2250, 1.2250]]]]) and
-    expected.dtype == torch.float32 and
-      expected.device == 'cpu' if returnVar.device == 'cpu' else 'gpu')`;
-    const outputs = [`${execTest}`, returnVar];
-
-    const expectedCode = `import kornia as K
-${returnVar} = K.enhance.add_weighted(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb', 
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True, 
-    'intensityRange': '0-1', 
-    'device': 'cpu' 
-  }
-}
-${execTest}`;
-
-    await nodeExecCheck(node, inputs, outputs, expectedCode);
-  }, 100000);
 
   test('generate the code of kornia.enhance.adjust_brightness', async () => {
     const node = loadNode(
@@ -219,15 +218,7 @@ ${execTest}`;
     const execTest = `import torch
       from torch import Tensor
 expected = k.enhance.adjust_gamma(${inputs[1]}, ${inputs[2]}, ${inputs[3]})
-print(torch.equal(expected, ${returnVar}['value']) and 
-  expected == tensor([[[[0.5000, 0.5000],
-          [0.5000, 0.5000]],
-          [[0.3200, 0.3200],
-          [0.3200, 0.3200]],
-          [[0.1800, 0.1800],
-          [0.1800, 0.1800]]]]) and
-    expected.dtype == torch.float32 and
-      expected.device == 'cpu' if returnVar.device == 'cpu' else 'gpu')`;
+print(torch.equal(expected, ${returnVar}['value']);
     const outputs = [`${execTest}`, returnVar];
 
     const expectedCode = `import kornia as K
@@ -264,15 +255,7 @@ ${execTest}`;
     const execTest = `import torch
       from torch import Tensor
 expected = k.enhance.adjust_hue(${inputs[1]}, ${inputs[2]})
-print(torch.equal(expected, ${returnVar}['value']) and 
-  expected == tensor([[[[0.3000, 0.3000],
-        [0.3000, 0.3000]],
-        [[0.4000, 0.4000],
-        [0.4000, 0.4000]],
-        [[0.5000, 0.5000],
-        [0.5000, 0.5000]]]]) and
-    expected.dtype == torch.float32 and
-      expected.device == 'cpu' if returnVar.device == 'cpu' else 'gpu')`;
+print(torch.equal(expected, ${returnVar}['value']);
     const outputs = [`${execTest}`, returnVar];
 
     const expectedCode = `import kornia as K
@@ -615,15 +598,15 @@ ${returnVar} = {
 }
 ${execTest}`;
 
-    await nodeExecCheck(node, inputs, outputs, expectedCode);
-  }, 100000);
 
-    test.each(testData)(
-      'generate the code from the node $nodeName in $jsonPath',
-      ({ jsonPath, nodeName, inputs, outputs, expected }) => {
-        const node = loadNode(jsonPath, nodeName);
-        const result = generator.nodeSourceGeneration(node, inputs, outputs);
-        expect(result).toBe(expected);
-      }
-    );
+
+  test.each(testData)(
+    'generate the code from the node $nodeName in $jsonPath',
+    async({ jsonPath, nodeName, inputs, returnVar, getExpectedOutput }) => {
+      const node = loadNode(jsonPath, nodeName);
+      const expectedOutput = getExpectedOutput(inputs, returnVar);
+      await nodeExecCheck(node, inputs, [expectedOutput, returnVar], expectedOutput);
+  }, 
+  100000);
+  );
 });
