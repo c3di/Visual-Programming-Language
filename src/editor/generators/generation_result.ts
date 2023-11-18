@@ -48,6 +48,10 @@ export class FunctionGenRes extends GenResult {
     this.imports = new Set([...this.imports, ...result.imports]);
   }
 
+  addImports(imports: Set<string>): void {
+    this.imports = new Set([...this.imports, ...imports]);
+  }
+
   equals(other: FunctionGenRes): boolean {
     return super.equals(other) && isEqual(this.imports, other.imports);
   }
@@ -55,34 +59,36 @@ export class FunctionGenRes extends GenResult {
   toGenResult(): GenResult {
     return new GenResult(
       this.messages,
-      `${[...this.imports].join(', ')}${'\n'.repeat(this.imports.size)}${
-        this.code
-      }`
+      `${[...this.imports].join('\n')}${'\n'.repeat(
+        this.imports.size === 0 ? 0 : 1
+      )}${this.code}`
     );
   }
 }
 export class NodeGenRes extends FunctionGenRes {}
 
 export class InputGenRes extends NodeGenRes {
-  preComputeCode: string;
+  prerequisiteCode: string;
   constructor(
     messages?: Message[],
     code?: string,
     imports?: Set<string>,
-    preComputeCode?: string
+    prerequisiteCode?: string
   ) {
     super(messages, code, imports);
-    this.preComputeCode = preComputeCode ?? '';
+    this.prerequisiteCode = prerequisiteCode ?? '';
   }
 
   add(result: InputGenRes): void {
     super.add(result);
-    this.preComputeCode = this.preComputeCode + '\n' + result.preComputeCode;
+    this.prerequisiteCode =
+      this.prerequisiteCode + '\n' + result.prerequisiteCode;
   }
 
   equals(other: InputGenRes): boolean {
     return (
-      super.equals(other) && isEqual(this.preComputeCode, other.preComputeCode)
+      super.equals(other) &&
+      isEqual(this.prerequisiteCode, other.prerequisiteCode)
     );
   }
 }

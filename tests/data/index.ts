@@ -1,7 +1,7 @@
 import path from 'path';
-import { deserializer } from '../../../src/editor/Deserializer';
-import { VisualProgram } from '../../../src/editor/generators';
-import { readJsonFileSync } from '../../loader';
+import { deserializer } from '../../src/editor/Deserializer';
+import { VisualProgram } from '../../src/editor/generators';
+import { readJsonFileSync } from '../loader';
 
 /**
  * load the visual program data from the file in the data folder

@@ -1,0 +1,150 @@
+{
+  "nodes": [
+    {
+      "id": "0",
+      "type": "Flow Control.main",
+      "position": { "x": 10.694992017213622, "y": 58.52503991393195 },
+      "outputs": { "execOut": { "dataType": "exec" } },
+      "title": "main"
+    },
+    {
+      "id": "1",
+      "type": "Mock Node Extension.exec_image_out",
+      "position": { "x": 117, "y": 58.031911626541735 },
+      "inputs": { "execIn": { "dataType": "exec" } },
+      "outputs": {
+        "execOut": { "title": "execOut", "dataType": "exec" },
+        "image": { "title": "image", "dataType": "image" }
+      },
+      "title": "exec_image_out"
+    },
+    {
+      "id": "2",
+      "type": "Mock Node Extension.exec_image_in",
+      "position": { "x": 298, "y": 58.32157446235909 },
+      "inputs": {
+        "execIn": { "dataType": "exec" },
+        "image": {
+          "title": "image",
+          "value": {
+            "dataType": "dataType5",
+            "colorChannel": ["rgb", "gbr"],
+            "channelOrder": "channelLast",
+            "isMiniBatched": true,
+            "intensityRange": ["0-255"],
+            "device": "cpu"
+          },
+          "dataType": "image"
+        }
+      },
+      "outputs": { "execOut": { "title": "execOut", "dataType": "exec" } },
+      "title": "exec_image_in"
+    },
+    {
+      "id": "3",
+      "type": "Mock Node Extension.exec_image_in",
+      "position": { "x": 511.9497907949791, "y": 58.23923911402474 },
+      "inputs": {
+        "execIn": { "dataType": "exec" },
+        "image": {
+          "title": "image",
+          "value": {
+            "dataType": "dataType5",
+            "colorChannel": ["rgb", "gbr"],
+            "channelOrder": "channelLast",
+            "isMiniBatched": true,
+            "intensityRange": ["0-255"],
+            "device": "cpu"
+          },
+          "dataType": "image"
+        }
+      },
+      "outputs": { "execOut": { "title": "execOut", "dataType": "exec" } },
+      "title": "exec_image_in"
+    },
+    {
+      "id": "4",
+      "type": "Mock Node Extension.value_image_out",
+      "position": { "x": 28.280556258662898, "y": 217.61952494898048 },
+      "outputs": { "image": { "title": "image", "dataType": "image" } },
+      "title": "value_in_image"
+    },
+    {
+      "id": "5",
+      "type": "Mock Node Extension.image_plus_image",
+      "position": { "x": 286.71023084868574, "y": 189.57876846853813 },
+      "inputs": {
+        "image1": {
+          "title": "image1",
+          "value": { "dataType": "dataType1" },
+          "dataType": "image"
+        },
+        "image2": {
+          "title": "image2",
+          "value": { "dataType": "dataType4" },
+          "dataType": "image"
+        }
+      },
+      "outputs": { "image": { "title": "image", "dataType": "image" } },
+      "title": "image_plus_image"
+    }
+  ],
+  "edges": [
+    {
+      "id": "reactflow__edge-0execOut-1execIn",
+      "output": "0",
+      "input": "1",
+      "outputHandle": "execOut",
+      "inputHandle": "execIn",
+      "dataType": "exec"
+    },
+    {
+      "id": "reactflow__edge-1execOut-2execIn",
+      "output": "1",
+      "input": "2",
+      "outputHandle": "execOut",
+      "inputHandle": "execIn",
+      "dataType": "exec"
+    },
+    {
+      "id": "reactflow__edge-1image-2image",
+      "output": "1",
+      "input": "2",
+      "outputHandle": "image",
+      "inputHandle": "image",
+      "dataType": "image"
+    },
+    {
+      "id": "reactflow__edge-2execOut-3execIn",
+      "output": "2",
+      "input": "3",
+      "outputHandle": "execOut",
+      "inputHandle": "execIn",
+      "dataType": "exec"
+    },
+    {
+      "id": "reactflow__edge-4image-5image2",
+      "output": "4",
+      "input": "5",
+      "outputHandle": "image",
+      "inputHandle": "image2",
+      "dataType": "image"
+    },
+    {
+      "id": "reactflow__edge-1image-5image1",
+      "output": "1",
+      "input": "5",
+      "outputHandle": "image",
+      "inputHandle": "image1",
+      "dataType": "image"
+    },
+    {
+      "id": "reactflow__edge-5image-3image",
+      "output": "5",
+      "input": "3",
+      "outputHandle": "image",
+      "inputHandle": "image",
+      "dataType": "image"
+    }
+  ]
+}

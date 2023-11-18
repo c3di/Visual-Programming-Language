@@ -77,6 +77,11 @@ export abstract class CodeGenerator {
     return func(inputs, outputs, node, this).replace(/\n+$/, '');
   }
 
+  abstract generateJsonParseCode(jsonStr: string): {
+    dependent: string;
+    code: string;
+  };
+
   /**
    * transform the value from the widget to the language specific value
    * @param dataType

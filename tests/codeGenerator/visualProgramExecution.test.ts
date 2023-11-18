@@ -1,14 +1,20 @@
-import { LoadDefaultModule } from '../../src/editor/extension/LoadPackageToRegistry';
+import { imageTypeConverter } from '../../src/editor/ImageTypeConversion';
+import {
+  LoadDefaultModule,
+  LoadPackageToRegistry,
+} from '../../src/editor/extension/LoadPackageToRegistry';
 import { GenResult, pythonGenerator } from '../../src/editor/generators';
+import { loadVisualProgram } from '../data';
+import { getConversionGraphTestData } from '../data/conversionGraphTestData';
+import mockNodeExtension from '../data/mockNodeExtension.json';
 import { execPythonCode } from '../execution';
-import { loadVisualProgram } from './data';
 
 interface testProgram {
   path: string;
   expected: any;
 }
 
-describe('Code Generation and Execution of Visual Program', () => {
+describe('Code Generation and Execution of Visual Program without image type', () => {
   beforeAll(() => {
     LoadDefaultModule();
   });
@@ -112,6 +118,58 @@ print(n_15_output)`
     expect(actual.messages).toEqual(data.expected.messages);
     expect(actual.code).toEqual(data.expected.code);
     await execPythonCode(actual.code);
+  });
+});
+
+describe('Code Generation and Execution of Visual Program with image type', () => {
+  beforeAll(() => {
+    LoadDefaultModule();
+    LoadPackageToRegistry('Mock Node Extension', mockNodeExtension);
+    imageTypeConverter.cvtGraph = getConversionGraphTestData();
+  });
+
+  const testData: testProgram[] = [
+    {
+      path: 'imageConversion.json',
+      expected: new GenResult(
+        [],
+        `def convert5_to_5(image, metalist):
+  # Convert dataType5 to dataType5
+  return image
+import json
+def 4_to_5(image):
+  # Convert dataType4 to dataType5
+  return image
+def 5_to_2(image):
+  # Convert dataType5 to torch.tensor
+  return image
+def 2_to_1(image):
+  # Convert torch.tensor to numpy.ndarray
+  return image
+def convert1_to_1(image, metalist):
+  # Convert numpy.ndarray to numpy.ndarray
+  return image
+def 3_to_4(image):
+  # Convert dataType3 to dataType4
+  return image
+import value_image_out
+import duplication
+import image_plus_image
+import exec_image_in
+import exec_image_out
+n_1_image = 'output a image'
+print(convert5_to_5(n_1_image, json.loads('[{"colorChannel":"rgb","channelOrder":"channelLast","isMiniBatched":true,"intensityRange":"0-255","device":"cpu"}]')))
+n_4_image = "mock image"
+n_5_image = convert1_to_1(2_to_1(5_to_2(n_1_image)), json.loads('[{"colorChannel":"rgb","channelOrder":"channelLast","isMiniBatched":true,"intensityRange":"0-255","device":"cpu"}]')) + convert5_to_5(4_to_5(3_to_4(n_4_image)), json.loads('[{"colorChannel":"rgb","channelOrder":"channelLast","isMiniBatched":true,"intensityRange":"0-255","device":"cpu"}]'))
+print(convert5_to_5(4_to_5(n_5_image), json.loads('[{"colorChannel":"rgb","channelOrder":"channelLast","isMiniBatched":true,"intensityRange":"0-255","device":"cpu"}]')))`
+      ),
+    },
+  ];
+  test.each(testData)('Test %s.path', async (data) => {
+    const program = loadVisualProgram(data.path);
+    const actual = pythonGenerator.programToCode(program);
+    expect(actual.messages).toEqual(data.expected.messages);
+    expect(actual.code).toEqual(data.expected.code);
   });
 });
 export {};

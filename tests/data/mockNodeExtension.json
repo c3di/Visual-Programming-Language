@@ -1,0 +1,124 @@
+{
+  "description": "A mock node extension for testing",
+  "enable": true,
+  "nodes": {
+    "exec_image_out": {
+      "type": "exec_image_out",
+      "category": "function",
+      "externalImports": "import exec_image_out",
+      "title": "exec_image_out",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {  \n  const code = `${outputs[1]} = 'output a image'\n${outputs[0]}`;\n  return code;\n}",
+      "inputs": {
+        "execIn": {
+          "dataType": "exec",
+          "tooltip": "exec in"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "tooltip": "execOut",
+          "dataType": "exec"
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "dataType5"
+          }
+        }
+      }
+    },
+    "exec_image_in": {
+      "type": "exec_image_in",
+      "category": "function",
+      "title": "exec_image_in",
+      "externalImports": "import exec_image_in\nimport duplication",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {  \n  const code = `print(${inputs[1]})\n${outputs[0]}`;\n  return code;\n}",
+      "inputs": {
+        "execIn": {
+          "dataType": "exec",
+          "tooltip": "exec in"
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "dataType5",
+            "colorChannel": ["rgb"],
+            "channelOrder": "channelLast",
+            "isMiniBatched": true,
+            "intensityRange": ["0-255"],
+            "device": "cpu"
+          }
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "tooltip": "execOut",
+          "dataType": "exec"
+        }
+      }
+    },
+    "value_image_out": {
+      "type": "value_image_out",
+      "category": "math",
+      "title": "value_in_image",
+      "externalImports": "import value_image_out\nimport duplication",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {  \n  const code = `${outputs[0]} = \"mock image\"`;\n  return code;\n}",
+      "inputs": {},
+      "outputs": {
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "dataType3"
+          }
+        }
+      }
+    },
+    "image_plus_image": {
+      "type": "image_plus_image",
+      "category": "math",
+      "externalImports": "import image_plus_image\nimport duplication",
+      "title": "image_plus_image",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {  \n  const code = `${outputs[0]} = ${inputs[0]} + ${inputs[1]}`;\n  return code;\n}",
+      "inputs": {
+        "image1": {
+          "title": "image1",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "dataType1",
+            "colorChannel": ["rgb"],
+            "channelOrder": "channelLast",
+            "isMiniBatched": true,
+            "intensityRange": ["0-255"],
+            "device": "cpu"
+          }
+        },
+        "image2": {
+          "title": "image2",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "dataType5",
+            "colorChannel": ["rgb"],
+            "channelOrder": "channelLast",
+            "isMiniBatched": true,
+            "intensityRange": ["0-255"],
+            "device": "cpu"
+          }
+        }
+      },
+      "outputs": {
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "dataType4"
+          }
+        }
+      }
+    }
+  }
+}

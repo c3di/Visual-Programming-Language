@@ -1,8 +1,6 @@
 import { pythonGenerator } from '../../src/editor/generators';
 import { loadNode } from '../loader';
 
-const rootDir = process.cwd();
-
 interface testNodeData {
   jsonPath: string;
   nodeName: string;

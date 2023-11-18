@@ -5,11 +5,7 @@ describe('Code Execution of node', () => {
   test('generate the code of torchvision.io.read_image', async () => {
     const node = loadNode('src/NodeTypeExtension/imageio.json', 'read_image');
 
-    const inputs = [
-      '',
-      '"./tests/codeGenerator/data/lena.png"',
-      'ImageReadMode.RGB',
-    ];
+    const inputs = ['', '"./tests/data/lena.png"', 'ImageReadMode.RGB'];
 
     const returnVar = 'image';
     const execTest = `import torch

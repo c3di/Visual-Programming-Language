@@ -1,3 +1,4 @@
+import { imageTypeConverter } from '../ImageTypeConversion';
 import { type Node } from './../types';
 import { CodeGenerator } from './code_generator';
 import {
@@ -18,7 +19,7 @@ export class PythonGenerator extends CodeGenerator {
   nodeToCode(node: Node | undefined, program: VisualProgram): NodeGenRes {
     const result = new NodeGenRes();
     if (node === undefined) return result;
-    const preComputeOfInputs: string[] = [];
+    const prerequisiteCodeOfInputs: string[] = [];
 
     const inputs = [];
     for (const id in node.data.inputs ?? {}) {
@@ -26,10 +27,10 @@ export class PythonGenerator extends CodeGenerator {
       result.add(inputGenResult);
       inputs.push(inputGenResult.code);
       if (
-        inputGenResult.preComputeCode &&
-        !preComputeOfInputs.includes(inputGenResult.preComputeCode)
+        inputGenResult.prerequisiteCode &&
+        !prerequisiteCodeOfInputs.includes(inputGenResult.prerequisiteCode)
       ) {
-        preComputeOfInputs.push(inputGenResult.preComputeCode);
+        prerequisiteCodeOfInputs.push(inputGenResult.prerequisiteCode);
       }
     }
 
@@ -47,7 +48,7 @@ export class PythonGenerator extends CodeGenerator {
     }
 
     result.code = [
-      ...preComputeOfInputs,
+      ...prerequisiteCodeOfInputs,
       this.nodeSourceGeneration(node, inputs, outputs),
     ].join('\n');
     return result;
@@ -61,28 +62,37 @@ export class PythonGenerator extends CodeGenerator {
     const result = new InputGenRes();
     const input = node.data.inputs[inputId];
     if (input.dataType === 'exec') return result;
-    // if the input is not connected, then use the value from the widget
     if (!program.isConnected(node.id, 'input', inputId)) {
       const value = input.value ?? input.defaultValue ?? '';
       result.code = this.widgetValueToLanguageValue(input.dataType, value);
       return result;
     }
-    const incomingNode = program.getIncomingNodes(node.id, inputId)[0]; // only one input is allowed
+    const incomingNode: Node = program.getIncomingNodes(node.id, inputId)[0]; // only one input is allowed
     const outputHandle = program.getSourceHandleConnectedToTargetHandle(
       incomingNode.id,
       node.id,
       inputId
     );
     result.code = this._getUniqueNameOfHandle(incomingNode, outputHandle!);
-    // if the input is connected to a exec node, then reference the output of the exec node
+    if (input.dataType === 'image') {
+      const conversion = imageTypeConverter.getConversion(
+        incomingNode.data.outputs[outputHandle!].defaultValue.dataType,
+        input.defaultValue,
+        result.code,
+        this
+      );
+      result.code = conversion.convertCodeStr;
+      result.addImports(new Set(conversion.convertFunctions));
+    }
     if (this.isExecNode(incomingNode)) {
+      // if the input is connected to a exec node, then reference the output of the exec node
       return result;
     }
-    // if the input is connected to a value operation node, then reference the output of the node
-    // and add the code of the connected node as the preComputeCode
+    // if the input is connected to a value node, then reference the output of the node
+    // and add the code of the connected node as the prerequisite code
     const incomingNodeResult = this.nodeToCode(incomingNode, program);
-    result.preComputeCode = incomingNodeResult.code;
-    result.imports = new Set(incomingNodeResult.imports ?? []);
+    result.prerequisiteCode = incomingNodeResult.code;
+    result.addImports(new Set(incomingNodeResult.imports ?? []));
     return result;
   }
 
@@ -101,6 +111,13 @@ export class PythonGenerator extends CodeGenerator {
       this._getUniqueNameOfHandle(node, outputId),
       new Set()
     );
+  }
+
+  generateJsonParseCode(jsonStr: string): { dependent: string; code: string } {
+    return {
+      dependent: 'import json',
+      code: `json.loads('${jsonStr.replace(/'/g, "\\'")}')`,
+    };
   }
 
   _getUniqueNameOfHandle(node: Node, handleId: string): string {

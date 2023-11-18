@@ -605,7 +605,7 @@ describe('PythonGenerator', () => {
         // simulate the different cases of inputs: unconnected, connected to exec node, connected to non-exec node
         // simulate the case of outputs: unconnected
         const actual = generator.nodeToCode(nodes[5] as any as Node, program);
-        const preComputeCode =
+        const prerequisiteCode =
           generator._getUniqueNameOfHandle(nodes[10], 'out_b') +
           ' = ' +
           `${nodes[10].data.inputs['in_b'].value}`;
@@ -617,7 +617,7 @@ describe('PythonGenerator', () => {
         })`;
         const expected = new NodeGenRes(
           [],
-          preComputeCode + '\n' + code,
+          prerequisiteCode + '\n' + code,
           new Set([
             'import numpy as np',
             'import pandas as pd2',
@@ -638,7 +638,7 @@ describe('PythonGenerator', () => {
         const program = new VisualProgram(nodes, testEdges);
         const actual = generator.nodeToCode(nodes[5], program);
 
-        const preComputeCode =
+        const prerequisiteCode =
           generator._getUniqueNameOfHandle(nodes[10], 'out_b') +
           ' = ' +
           `${nodes[10].data.inputs['in_b'].value}`;
@@ -652,7 +652,7 @@ describe('PythonGenerator', () => {
 
         const expected = new NodeGenRes(
           [],
-          preComputeCode + '\n' + code,
+          prerequisiteCode + '\n' + code,
           new Set([
             'import numpy as np',
             'import pandas as pd2',
