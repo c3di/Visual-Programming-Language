@@ -1,6 +1,6 @@
 # Node Type Specification
 
-This documentation outlines the configuration and code generation process for Node Type using JSON. The JSON schema is defined in `\src\editor\types\ConfigTypes.ts`
+This documentation outlines the configuration and code generation process for Node Type using JSON. The JSON schema is defined in `/src/editor/types/ConfigTypes.ts`
 
 There are two primary types of nodes: Exec Nodes and Value Nodes.
 
@@ -144,7 +144,7 @@ console.log(jsonFormattedString);
 }
 ```
 
-![image-20231118221949728](.\screenshots\exec_node.png)
+![image-20231118221949728](screenshots/exec_node.png)
 
 ### Value Node Example
 
@@ -214,4 +214,4 @@ console.log(jsonFormattedString);
 }
 ```
 
-![image-20231118222818801](.\screenshots\value_node.png)
+![image-20231118222818801](screenshots/value_node.png)
