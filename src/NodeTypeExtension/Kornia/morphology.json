@@ -34,18 +34,7 @@
         "kernel": {
           "title": "kernel",
           "dataType": "torch.tensor",
-          "defaultValue": {
-            "dataType": "torch.tensor",
-            "metadata": [
-              {
-                "colorChannel": ["rgb", "grayscale"],
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky) "
+          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky), must be a 2-dim tensor with odd sides, i.e. 3x3."
         },
         "structuring_element": {
           "title": "structuring_element",
@@ -134,18 +123,7 @@
         "kernel": {
           "title": "kernel",
           "dataType": "torch.tensor",
-          "defaultValue": {
-            "dataType": "torch.tensor",
-            "metadata": [
-              {
-                "colorChannel": ["rgb", "grayscale"],
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky) "
+          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky), must be a 2-dim tensor with odd sides, i.e. 3x3."
         },
         "structuring_element": {
           "title": "structuring_element",
@@ -234,18 +212,7 @@
         "kernel": {
           "title": "kernel",
           "dataType": "torch.tensor",
-          "defaultValue": {
-            "dataType": "torch.tensor",
-            "metadata": [
-              {
-                "colorChannel": ["rgb", "grayscale"],
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky) "
+          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky), must be a 2-dim tensor with odd sides, i.e. 3x3."
         },
         "structuring_element": {
           "title": "structuring_element",
@@ -334,18 +301,7 @@
         "kernel": {
           "title": "kernel",
           "dataType": "torch.tensor",
-          "defaultValue": {
-            "dataType": "torch.tensor",
-            "metadata": [
-              {
-                "colorChannel": ["rgb", "grayscale"],
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky) "
+          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky), must be a 2-dim tensor with odd sides, i.e. 3x3."
         },
         "structuring_element": {
           "title": "structuring_element",
@@ -434,18 +390,7 @@
         "kernel": {
           "title": "kernel",
           "dataType": "torch.tensor",
-          "defaultValue": {
-            "dataType": "torch.tensor",
-            "metadata": [
-              {
-                "colorChannel": ["rgb", "grayscale"],
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky) "
+          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky), must be a 2-dim tensor with odd sides, i.e. 3x3."
         },
         "structuring_element": {
           "title": "structuring_element",
@@ -534,18 +479,7 @@
         "kernel": {
           "title": "kernel",
           "dataType": "torch.tensor",
-          "defaultValue": {
-            "dataType": "torch.tensor",
-            "metadata": [
-              {
-                "colorChannel": ["rgb", "grayscale"],
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky) "
+          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky), must be a 2-dim tensor with odd sides, i.e. 3x3."
         },
         "structuring_element": {
           "title": "structuring_element",
@@ -634,18 +568,7 @@
         "kernel": {
           "title": "kernel",
           "dataType": "torch.tensor",
-          "defaultValue": {
-            "dataType": "torch.tensor",
-            "metadata": [
-              {
-                "colorChannel": ["rgb", "grayscale"],
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky) "
+          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky), must be a 2-dim tensor with odd sides, i.e. 3x3."
         },
         "structuring_element": {
           "title": "structuring_element",
