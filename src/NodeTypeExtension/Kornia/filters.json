@@ -7,7 +7,7 @@
       "title": "canny edge detection",
       "tooltip": "Find edges of the input image and filters them using the Canny algorithm.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.canny(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.canny(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': ${input[1]}.device == 'cpu'? 'cpu' : 'gpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -91,7 +91,7 @@
       "title": "bilateral blur",
       "tooltip": "The operator is an edge-preserving image smoothing bilateral filter",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.bilateral_blur(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.bilateral_blur(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': ${input[1]}.device == 'cpu'? 'cpu' : 'gpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -169,7 +169,7 @@
       "title": "blur pool2d",
       "tooltip": "Compute blurs and downsample a given feature map.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.blur_pool2d(${inputs[1]}, ${inputs[2]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.blur_pool2d(${inputs[1]}, ${inputs[2]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': ${input[1]}.device == 'cpu'? 'cpu' : 'gpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -229,7 +229,7 @@
       "title": "box blur",
       "tooltip": "Blur an image using the box filter.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.box_blur(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.box_blur(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': ${input[1]}.device == 'cpu'? 'cpu' : 'gpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -295,7 +295,7 @@
       "title": "gaussian blur2d",
       "tooltip": "The operator smooths the given tensor with a gaussian kernel by convolving it to each channel.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.gaussian_blur2d(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.gaussian_blur2d(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': ${input[1]}.device == 'cpu'? 'cpu' : 'gpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -367,7 +367,7 @@
       "title": "guided blur",
       "tooltip": "The operator is an edge-preserving image smoothing filter",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.guided_blur(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.guided_blur(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': ${input[1]}.device == 'cpu'? 'cpu' : 'gpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -455,7 +455,7 @@
       "title": "joint bilateral blur",
       "tooltip": "This operator is almost identical to a Bilateral filter. The only difference is that the color Gaussian kernel is computed based on another image called a guidance image",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.joint_bilateral_blur(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.joint_bilateral_blur(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': ${input[1]}.device == 'cpu'? 'cpu' : 'gpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -549,7 +549,7 @@
       "title": "max blur pool2d",
       "tooltip": "Compute pools and blurs and downsample a given feature map.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.max_blur_pool2d(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.max_blur_pool2d(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': ${input[1]}.device == 'cpu'? 'cpu' : 'gpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -621,7 +621,7 @@
       "title": "Median_Blur",
       "tooltip": "Blur an image using the median filter.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.median_blur(${inputs[1]}, ${inputs[2]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.median_blur(${inputs[1]}, ${inputs[2]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': ${input[1]}.device == 'cpu'? 'cpu' : 'gpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -675,7 +675,7 @@
       "title": "motion blur",
       "tooltip": "Perform motion blur on tensor images.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.motion_blur(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n  ${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.motion_blur(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': ${input[1]}.device == 'cpu'? 'cpu' : 'gpu'\r\n  }\r\n}\r\n  ${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -753,7 +753,7 @@
       "title": "unsharp mask",
       "tooltip": "Create an operator that sharpens a tensor by applying operation out = 2 * image - gaussian_blur2d(image).",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.unsharp_mask(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n  ${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.unsharp_mask(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': ${input[1]}.device == 'cpu'? 'cpu' : 'gpu'\r\n  }\r\n}\r\n  ${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -819,7 +819,7 @@
       "title": "laplacian",
       "tooltip": "The operator smooths the given tensor with a laplacian kernel by convolving it to each channel",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.laplacian(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n  ${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.laplacian(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': ${input[1]}.device == 'cpu'? 'cpu' : 'gpu'\r\n  }\r\n}\r\n  ${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -885,7 +885,7 @@
       "title": "sobel",
       "tooltip": "Compute the Sobel operator and returns the magnitude per channel.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.sobel(${inputs[1]}, ${inputs[2]}, ${inputs[3]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n  ${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.sobel(${inputs[1]}, ${inputs[2]}, ${inputs[3]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': ${input[1]}.device == 'cpu'? 'cpu' : 'gpu'\r\n  }\r\n}\r\n  ${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -945,7 +945,7 @@
       "title": "spatial gradient",
       "tooltip": "Compute the first order image derivative in both x and y using a Sobel operator.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.spatial_gradient(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n  ${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.spatial_gradient(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': ${input[1]}.device == 'cpu'? 'cpu' : 'gpu'\r\n  }\r\n}\r\n  ${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -1011,7 +1011,7 @@
       "title": "spatial gradient3d",
       "tooltip": "Compute the first and second order volume derivative in x, y and d using a diff operator.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.spatial_gradient3d(${inputs[1]}, ${inputs[2]}, ${inputs[3]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n  ${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.filters.spatial_gradient3d(${inputs[1]}, ${inputs[2]}, ${inputs[3]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': ${input[1]}.device == 'cpu'? 'cpu' : 'gpu'\r\n  }\r\n}\r\n  ${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
