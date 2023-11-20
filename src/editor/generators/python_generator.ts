@@ -76,7 +76,12 @@ export class PythonGenerator extends CodeGenerator {
     result.code = this._getUniqueNameOfHandle(incomingNode, outputHandle!);
     if (input.dataType === 'image') {
       const conversion = imageTypeConverter.getConversion(
-        incomingNode.data.outputs[outputHandle!].defaultValue.dataType,
+        this.getDataTypeInImageOutput(
+          incomingNode,
+          outputHandle!,
+          node,
+          program
+        ),
         input.defaultValue,
         result.code,
         this

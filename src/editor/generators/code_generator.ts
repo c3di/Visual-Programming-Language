@@ -165,4 +165,95 @@ export abstract class CodeGenerator {
       nodes: sorted.map((id) => program.getNodeById(id)!),
     };
   };
+
+  getDataTypeInImageOutput(
+    node: Node,
+    handle: string,
+    connectWhom: Node,
+    program: VisualProgram
+  ): string {
+    const handles = node.data.outputs;
+    const dataType = handles[handle].defaultValue?.dataType;
+    if (!dataType) {
+      if (node.type === 'reroute') {
+        // copy the data type from the output that connect to the input of the reroute node
+        const incomingNodes = program.getIncomingNodes(
+          node.id,
+          Object.keys(node.data.inputs)[0]
+        );
+        if (incomingNodes.length === 0) return '';
+        const incomingNode = incomingNodes[0];
+        const incomingHandle = program.getSourceHandleConnectedToTargetHandle(
+          incomingNode.id,
+          node.id,
+          Object.keys(node.data.inputs)[0]
+        )!;
+        return this.getDataTypeInImageOutput(
+          incomingNode,
+          incomingHandle,
+          node,
+          program
+        );
+      } else if (node.type === 'getter') {
+        // for the variable getter, find the last node who is `setter` or `createVariable`
+        const variableName = (Object.values(node.data.outputs)[0] as any).title;
+        while (
+          (connectWhom.type !== 'setter' &&
+            connectWhom.type !== 'createVariable') ||
+          (connectWhom.type === 'setter' &&
+            (Object.values(connectWhom.data.inputs)[1] as any).title !==
+              variableName) ||
+          (connectWhom.type === 'createVariable' &&
+            (Object.values(connectWhom.data.inputs)[1] as any).value !==
+              variableName)
+        ) {
+          const incomingNode = program.getIncomingNodes(
+            connectWhom.id,
+            Object.keys(connectWhom.data.inputs)[0] // exec input bug: if not exec node, like reroute
+          )[0];
+          connectWhom = incomingNode;
+        }
+
+        const index = connectWhom.type === 'setter' ? 1 : 2;
+        const incomingNodes = program.getIncomingNodes(
+          connectWhom.id,
+          Object.keys(connectWhom.data.inputs)[index] // value input
+        );
+        if (incomingNodes.length === 0) return '';
+        const incomingNode = incomingNodes[0];
+        const outputHandle = program.getSourceHandleConnectedToTargetHandle(
+          incomingNode.id,
+          connectWhom.id,
+          Object.keys(connectWhom.data.inputs)[index]
+        )!;
+
+        return this.getDataTypeInImageOutput(
+          incomingNode,
+          outputHandle,
+          connectWhom,
+          program
+        );
+      } else if (node.type === 'setter') {
+        const incomingNodes = program.getIncomingNodes(
+          node.id,
+          Object.keys(node.data.inputs)[1] // value input
+        );
+        if (incomingNodes.length === 0) return '';
+        const incomingNode = incomingNodes[0];
+        const outputHandle = program.getSourceHandleConnectedToTargetHandle(
+          incomingNode.id,
+          node.id,
+          Object.keys(node.data.inputs)[1]
+        )!;
+        return this.getDataTypeInImageOutput(
+          incomingNode,
+          outputHandle, // value input
+          node,
+          program
+        );
+      }
+      // we will update the data type of image in the `function call`
+    }
+    return dataType;
+  }
 }

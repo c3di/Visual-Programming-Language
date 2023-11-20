@@ -1,0 +1,346 @@
+{
+  "nodes": [
+    {
+      "id": "0",
+      "type": "Function & Variable Creation.new function",
+      "position": { "x": 182.5, "y": 222.5 },
+      "outputs": {
+        "execOut": { "title": "execOut", "dataType": "exec" },
+        "out_0": { "title": "out_1", "dataType": "image" }
+      },
+      "nodeRef": "3",
+      "title": "newFun_0"
+    },
+    {
+      "id": "1",
+      "type": "Mock Node Extension.exec_image_in",
+      "position": { "x": 387.12648562186257, "y": 223.6518608723756 },
+      "inputs": {
+        "execIn": { "dataType": "exec" },
+        "image": {
+          "title": "image",
+          "value": {
+            "dataType": "dataType5",
+            "colorChannel": ["rgb"],
+            "channelOrder": "channelLast",
+            "isMiniBatched": true,
+            "intensityRange": ["0-255"],
+            "device": "cpu"
+          },
+          "dataType": "image"
+        }
+      },
+      "outputs": { "execOut": { "title": "execOut", "dataType": "exec" } },
+      "title": "exec_image_in"
+    },
+    {
+      "id": "2",
+      "type": "Mock Node Extension.exec_image_out",
+      "position": { "x": 570.6264856218626, "y": 268.1518608723756 },
+      "inputs": { "execIn": { "dataType": "exec" } },
+      "outputs": {
+        "execOut": { "title": "execOut", "dataType": "exec" },
+        "image": { "title": "image", "dataType": "image" }
+      },
+      "title": "exec_image_out"
+    },
+    {
+      "id": "3",
+      "type": "Function & Variable Creation.return",
+      "position": { "x": 740.1264856218626, "y": 240.6518608723756 },
+      "inputs": {
+        "execIn": { "title": "execIn", "dataType": "exec" },
+        "in_0": { "title": "in_1", "dataType": "image" }
+      },
+      "title": "return"
+    },
+    {
+      "id": "4",
+      "type": "Flow Control.main",
+      "position": { "x": 210.839817878325, "y": 57.55677895245424 },
+      "outputs": { "execOut": { "dataType": "exec" } },
+      "title": "main"
+    },
+    {
+      "id": "5",
+      "type": "Mock Node Extension.exec_image_out",
+      "position": { "x": 292.6757093145015, "y": 55.75526513530001 },
+      "inputs": { "execIn": { "dataType": "exec" } },
+      "outputs": {
+        "execOut": { "title": "execOut", "dataType": "exec" },
+        "image": { "title": "image", "dataType": "image" }
+      },
+      "title": "exec_image_out"
+    },
+    {
+      "id": "6",
+      "type": "Mock Node Extension.exec_image_in",
+      "position": { "x": 555.9733121574563, "y": 52.852936334117985 },
+      "inputs": {
+        "execIn": { "dataType": "exec" },
+        "image": {
+          "title": "image",
+          "value": {
+            "dataType": "dataType5",
+            "colorChannel": ["rgb"],
+            "channelOrder": "channelLast",
+            "isMiniBatched": true,
+            "intensityRange": ["0-255"],
+            "device": "cpu"
+          },
+          "dataType": "image"
+        }
+      },
+      "outputs": { "execOut": { "title": "execOut", "dataType": "exec" } },
+      "title": "exec_image_in"
+    },
+    {
+      "id": "7",
+      "type": "reroute",
+      "position": { "x": 455.7881764500876, "y": 148.64808800705944 },
+      "inputs": { "input": { "title": "input", "dataType": "image" } },
+      "outputs": { "output": { "title": "output", "dataType": "image" } },
+      "dataType": "image",
+      "title": "reroute"
+    },
+    {
+      "id": "8",
+      "type": "Function & Variable Creation.new variable",
+      "position": { "x": 750.7428909540423, "y": 76.34654311502916 },
+      "inputs": {
+        "execIn": { "dataType": "exec" },
+        "name": { "title": "name", "dataType": "anyDataType" },
+        "value": { "title": "value", "dataType": "anyDataType" }
+      },
+      "outputs": { "execOut": { "dataType": "exec" } },
+      "title": "new variable"
+    },
+    {
+      "id": "9",
+      "type": "Function & Variable Creation.function call",
+      "position": { "x": 1009.1725655440652, "y": 75.58868483177395 },
+      "inputs": {
+        "execOut": { "title": "execOut", "dataType": "exec" },
+        "out_0": { "title": "out_1", "dataType": "image" }
+      },
+      "outputs": {
+        "functionCallExecOut": {
+          "title": "functionCallExecOut",
+          "dataType": "exec"
+        },
+        "in_0": { "title": "in_1", "dataType": "image" }
+      },
+      "nodeRef": "0",
+      "title": "newFun_0"
+    },
+    {
+      "id": "10",
+      "type": "Function & Variable Creation.setter",
+      "position": { "x": 1187.5952481675668, "y": 76.06271216942127 },
+      "inputs": {
+        "execIn": { "title": "execIn", "dataType": "exec" },
+        "setter": { "title": "newVar_0", "dataType": "anyDataType" }
+      },
+      "nodeRef": "8"
+    },
+    {
+      "id": "11",
+      "type": "Function & Variable Creation.function call",
+      "position": { "x": 1590.859831467323, "y": 77.02980036455448 },
+      "inputs": {
+        "execOut": { "title": "execOut", "dataType": "exec" },
+        "out_0": { "title": "out_1", "dataType": "image" }
+      },
+      "outputs": {
+        "functionCallExecOut": {
+          "title": "functionCallExecOut",
+          "dataType": "exec"
+        },
+        "in_0": { "title": "in_1", "dataType": "image" }
+      },
+      "nodeRef": "0",
+      "title": "newFun_0"
+    },
+    {
+      "id": "12",
+      "type": "Function & Variable Creation.getter",
+      "position": { "x": 1489.1592353898106, "y": 207.65441917970747 },
+      "outputs": {
+        "getter": { "title": "newVar_0", "dataType": "anyDataType" }
+      },
+      "nodeRef": "8"
+    },
+    {
+      "id": "13",
+      "type": "Function & Variable Creation.function call",
+      "position": { "x": 1434.1102888891396, "y": 77.02980036455449 },
+      "inputs": {
+        "execOut": { "title": "execOut", "dataType": "exec" },
+        "out_0": { "title": "out_1", "dataType": "image" }
+      },
+      "outputs": {
+        "functionCallExecOut": {
+          "title": "functionCallExecOut",
+          "dataType": "exec"
+        },
+        "in_0": { "title": "in_1", "dataType": "image" }
+      },
+      "nodeRef": "0",
+      "title": "newFun_0"
+    }
+  ],
+  "edges": [
+    {
+      "id": "reactflow__edge-0execOut-1execIn",
+      "output": "0",
+      "input": "1",
+      "outputHandle": "execOut",
+      "inputHandle": "execIn",
+      "dataType": "exec"
+    },
+    {
+      "id": "reactflow__edge-0out_0-1image",
+      "output": "0",
+      "input": "1",
+      "outputHandle": "out_0",
+      "inputHandle": "image",
+      "dataType": "image"
+    },
+    {
+      "id": "reactflow__edge-1execOut-2execIn",
+      "output": "1",
+      "input": "2",
+      "outputHandle": "execOut",
+      "inputHandle": "execIn",
+      "dataType": "exec"
+    },
+    {
+      "id": "reactflow__edge-2execOut-3execIn",
+      "output": "2",
+      "input": "3",
+      "outputHandle": "execOut",
+      "inputHandle": "execIn",
+      "dataType": "exec"
+    },
+    {
+      "id": "reactflow__edge-2image-3in_0",
+      "output": "2",
+      "input": "3",
+      "outputHandle": "image",
+      "inputHandle": "in_0",
+      "dataType": "anyDataType"
+    },
+    {
+      "id": "reactflow__edge-4execOut-5execIn",
+      "output": "4",
+      "input": "5",
+      "outputHandle": "execOut",
+      "inputHandle": "execIn",
+      "dataType": "exec"
+    },
+    {
+      "id": "reactflow__edge-5execOut-6execIn",
+      "output": "5",
+      "input": "6",
+      "outputHandle": "execOut",
+      "inputHandle": "execIn",
+      "dataType": "exec"
+    },
+    {
+      "id": "reactflow__edge-5image-7input",
+      "output": "5",
+      "input": "7",
+      "outputHandle": "image",
+      "inputHandle": "input",
+      "dataType": "image"
+    },
+    {
+      "id": "reactflow__edge-7output-6image",
+      "output": "7",
+      "input": "6",
+      "outputHandle": "output",
+      "inputHandle": "image",
+      "dataType": "image"
+    },
+    {
+      "id": "reactflow__edge-6execOut-8execIn",
+      "output": "6",
+      "input": "8",
+      "outputHandle": "execOut",
+      "inputHandle": "execIn",
+      "dataType": "exec"
+    },
+    {
+      "id": "reactflow__edge-7output-8value",
+      "output": "7",
+      "input": "8",
+      "outputHandle": "output",
+      "inputHandle": "value",
+      "dataType": "anyDataType"
+    },
+    {
+      "id": "reactflow__edge-8execOut-9execOut",
+      "output": "8",
+      "input": "9",
+      "outputHandle": "execOut",
+      "inputHandle": "execOut",
+      "dataType": "exec"
+    },
+    {
+      "id": "reactflow__edge-5image-9out_0",
+      "output": "5",
+      "input": "9",
+      "outputHandle": "image",
+      "inputHandle": "out_0",
+      "dataType": "image"
+    },
+    {
+      "id": "reactflow__edge-9functionCallExecOut-10execIn",
+      "output": "9",
+      "input": "10",
+      "outputHandle": "functionCallExecOut",
+      "inputHandle": "execIn",
+      "dataType": "exec"
+    },
+    {
+      "id": "reactflow__edge-9in_0-10setter",
+      "output": "9",
+      "input": "10",
+      "outputHandle": "in_0",
+      "inputHandle": "setter",
+      "dataType": "anyDataType"
+    },
+    {
+      "id": "reactflow__edge-12getter-11out_0",
+      "output": "12",
+      "input": "11",
+      "outputHandle": "getter",
+      "inputHandle": "out_0",
+      "dataType": "image"
+    },
+    {
+      "id": "reactflow__edge-10execIn_out-13execOut",
+      "output": "10",
+      "input": "13",
+      "outputHandle": "execIn_out",
+      "inputHandle": "execOut",
+      "dataType": "exec"
+    },
+    {
+      "id": "reactflow__edge-13functionCallExecOut-11execOut",
+      "output": "13",
+      "input": "11",
+      "outputHandle": "functionCallExecOut",
+      "inputHandle": "execOut",
+      "dataType": "exec"
+    },
+    {
+      "id": "reactflow__edge-10setter_out-13out_0",
+      "output": "10",
+      "input": "13",
+      "outputHandle": "setter_out",
+      "inputHandle": "out_0",
+      "dataType": "image"
+    }
+  ]
+}

@@ -722,6 +722,127 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     setNodes(allNodes);
   }, [edges]);
 
+  const updateDataTypeInImageOfFunctionCallNode = (nds: any[]): any[] => {
+    const newNodes = nds.map((n) => {
+      if (n.type === 'functionCall') {
+        let index = -1;
+        const nodeRef = getNode(n.data.nodeRef as string)!;
+        for (const input of Object.values(n.data.inputs)) {
+          index += 1;
+          if ((input as any).dataType === 'exec') continue;
+          // the default value is the default value of the input that connect to the output in the nodeRef node with same index
+          const outputHandle = Object.keys(nodeRef.data.outputs)[index];
+          const { nodes, connectedHandlesId } = getConnectedInfo(
+            nodeRef.id,
+            outputHandle
+          );
+          if (nodes.length === 0) {
+            if ((input as any).dataType === 'image') {
+              (input as any).defaultValue = null;
+              (input as any).dataType = 'anyDataType';
+            }
+            continue;
+          }
+          const connectedHandle = nodes[0].data.inputs[connectedHandlesId[0]];
+          if (connectedHandle.dataType === 'image') {
+            (input as any).dataType = 'image';
+            (input as any).defaultValue = connectedHandle.defaultValue;
+          }
+        }
+
+        index = -1;
+        for (const output of Object.values(n.data.outputs)) {
+          index += 1;
+          if ((output as any).dataType === 'exec') continue;
+          // the default value is the default value of the output that connect to the input in the `return node` with same index
+          const funcDef = getNode(n.data.nodeRef as string)!;
+          const returnNode = getNode(funcDef.data.nodeRef as string)!;
+          const inputHandle = Object.keys(returnNode.data.inputs)[index];
+          const { nodes, connectedHandlesId } = getConnectedInfo(
+            returnNode.id,
+            inputHandle
+          );
+          if (nodes.length === 0) {
+            if ((output as any).dataType === 'image') {
+              (output as any).defaultValue = null;
+              (output as any).dataType = 'anyDataType';
+            }
+            continue;
+          }
+          const connectedHandle = nodes[0].data.outputs[connectedHandlesId[0]];
+          if (connectedHandle.dataType === 'image') {
+            (output as any).dataType = 'image';
+            (output as any).defaultValue = connectedHandle.defaultValue;
+          }
+        }
+
+        n.data = {
+          ...n.data,
+          inputs: {
+            ...n.data.inputs,
+          },
+        };
+      } else if (n.type === 'createFunction') {
+        // if any output connected to a value whose dataType is image, then change the dataType of the output to image and set the default value
+        for (const [name, output] of Object.entries(n.data.outputs)) {
+          if ((output as any).dataType === 'exec') continue;
+          const { nodes, connectedHandlesId } = getConnectedInfo(n.id, name);
+          if (nodes.length === 0) {
+            if ((output as any).dataType === 'image') {
+              (output as any).defaultValue = null;
+              (output as any).dataType = 'anyDataType';
+            }
+            continue;
+          }
+          const connectedHandle = nodes[0].data.inputs[connectedHandlesId[0]];
+          if (connectedHandle.dataType === 'image') {
+            (output as any).dataType = 'image';
+            (output as any).defaultValue = connectedHandle.defaultValue;
+          }
+        }
+        n.data = {
+          ...n.data,
+          outputs: {
+            ...n.data.outputs,
+          },
+        };
+      } else if (n.type === 'return') {
+        // if any output connected to a value whose dataType is image, then change the dataType of the output to image and set the default value
+
+        for (const [name, input] of Object.entries(n.data.inputs)) {
+          if ((input as any).dataType === 'exec') continue;
+          const { nodes, connectedHandlesId } = getConnectedInfo(n.id, name);
+          if (nodes.length === 0) {
+            if ((input as any).dataType === 'image') {
+              (input as any).defaultValue = null;
+              (input as any).dataType = 'anyDataType';
+            }
+            continue;
+          }
+          const connectedHandle = nodes[0].data.outputs[connectedHandlesId[0]];
+          if (connectedHandle.dataType === 'image') {
+            (input as any).dataType = 'image';
+            (input as any).defaultValue = connectedHandle.defaultValue;
+          }
+        }
+        n.data = {
+          ...n.data,
+          outputs: {
+            ...n.data.outputs,
+          },
+        };
+      }
+      return n;
+    });
+    return newNodes;
+  };
+
+  useEffect(() => {
+    setNodes((nds) => {
+      return updateDataTypeInImageOfFunctionCallNode(nds);
+    });
+  }, [edges]);
+
   const getConnectedInfo = (
     nodeId: string,
     handleId: string

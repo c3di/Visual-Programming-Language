@@ -15,13 +15,13 @@ export class ImageTypeConverter {
 
   getConversion(
     startDataType: string,
-    goalImage: IImageConfig,
+    goalImage: IImageConfig | undefined,
     startImageVar: string,
     codeGenerator: CodeGenerator
   ): IConversion {
     const convertCodeConfigs = this.generateConversionConfigs(
       startDataType,
-      goalImage.dataType
+      goalImage
     );
     return this.cvtConfigsToConversion(
       goalImage,
@@ -33,10 +33,11 @@ export class ImageTypeConverter {
 
   private generateConversionConfigs(
     startDataType: string,
-    goalDataType: string
+    goalImage: IImageConfig | undefined
   ): IConvertCodeConfig[] {
     const convertCodeConfigs: IConvertCodeConfig[] = [];
-    const path = this.cvtGraph.shortestPath(startDataType, goalDataType);
+    if (!goalImage || startDataType === '') return convertCodeConfigs;
+    const path = this.cvtGraph.shortestPath(startDataType, goalImage.dataType);
     if (path.length === 0) return convertCodeConfigs;
 
     for (let i = 0; i < path.length - 1; i++) {
@@ -62,13 +63,17 @@ export class ImageTypeConverter {
   }
 
   private cvtConfigsToConversion(
-    goalImage: IImageConfig,
+    goalImage: IImageConfig | undefined,
     convertCodeConfigs: IConvertCodeConfig[],
     startImageVar: string,
     codeGenerator: CodeGenerator
   ): IConversion {
     let input = startImageVar;
-    if (convertCodeConfigs.length === 0) {
+    if (
+      !goalImage ||
+      convertCodeConfigs.length === 0 ||
+      goalImage.channelOrder === undefined
+    ) {
       return {
         convertCodeStr: input,
         convertFunctions: [],

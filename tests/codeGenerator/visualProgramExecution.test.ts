@@ -130,7 +130,7 @@ describe('Code Generation and Execution of Visual Program with image type', () =
 
   const testData: testProgram[] = [
     {
-      path: 'imageConversion.json',
+      path: 'fixedImageConversion.json',
       expected: new GenResult(
         [],
         `def convert5_to_5(image, metalist):
@@ -168,6 +168,120 @@ print(convert5_to_5(4_to_5(n_5_image), json.loads('[{"colorChannel":"rgb","chann
   test.each(testData)('Test %s.path', async (data) => {
     const program = loadVisualProgram(data.path);
     const actual = pythonGenerator.programToCode(program);
+    expect(actual.messages).toEqual(data.expected.messages);
+    expect(actual.code).toEqual(data.expected.code);
+  });
+});
+
+describe('Code Generation and Execution of Visual Program with dynamic image type', () => {
+  beforeAll(() => {
+    LoadDefaultModule();
+    LoadPackageToRegistry('Mock Node Extension', mockNodeExtension);
+  });
+
+  beforeEach(() => {
+    imageTypeConverter.cvtGraph = getConversionGraphTestData();
+  });
+
+  const testData: testProgram[] = [
+    {
+      path: 'imageConversionForReroute.json',
+      expected: new GenResult(
+        [],
+        `def convert5_to_5(image, metalist):
+  # Convert dataType5 to dataType5
+  return image
+import json
+def 3_to_4(image):
+  # Convert dataType3 to dataType4
+  return image
+def 4_to_5(image):
+  # Convert dataType4 to dataType5
+  return image
+import value_image_out
+import duplication
+import exec_image_in
+import exec_image_out
+n_6_image = 'output a image'
+print(convert5_to_5(n_6_image, json.loads('[{"colorChannel":"rgb","channelOrder":"channelLast","isMiniBatched":true,"intensityRange":"0-255","device":"cpu"}]')))
+n_3_image = "mock image"
+n_1_output = n_3_image
+n_4_output = n_1_output
+print(convert5_to_5(4_to_5(3_to_4(n_4_output)), json.loads('[{"colorChannel":"rgb","channelOrder":"channelLast","isMiniBatched":true,"intensityRange":"0-255","device":"cpu"}]')))`
+      ),
+    },
+    {
+      path: 'imageConversionForVariable.json',
+      expected: new GenResult(
+        [],
+        `import value_image_out
+import duplication
+def 3_to_4(image):
+  # Convert dataType3 to dataType4
+  return image
+def 4_to_5(image):
+  # Convert dataType4 to dataType5
+  return image
+def convert5_to_5(image, metalist):
+  # Convert dataType5 to dataType5
+  return image
+import json
+import exec_image_in
+import exec_image_out
+n_2_image = "mock image"
+ad = n_2_image
+n_4_getter = ad
+print(convert5_to_5(4_to_5(3_to_4(n_4_getter)), json.loads('[{"colorChannel":"rgb","channelOrder":"channelLast","isMiniBatched":true,"intensityRange":"0-255","device":"cpu"}]')))
+n_6_image = 'output a image'
+ad = n_6_image
+n_12_setter_out = ad
+n_8_getter = ad
+print(convert5_to_5(n_8_getter, json.loads('[{"colorChannel":"rgb","channelOrder":"channelLast","isMiniBatched":true,"intensityRange":"0-255","device":"cpu"}]')))
+n_9_image = "mock image"
+ad = n_9_image
+n_5_setter_out = ad
+print(convert5_to_5(4_to_5(3_to_4(n_5_setter_out)), json.loads('[{"colorChannel":"rgb","channelOrder":"channelLast","isMiniBatched":true,"intensityRange":"0-255","device":"cpu"}]')))`
+      ),
+    },
+    // because when the program was load into the scene, the datatype of the image type will be updated, otherwise cannot get the datatype of the image type, we manually check
+    // unit test for this case. Will be fixed in the future
+    //     {
+    //       path: 'imageConversionForFunction.json',
+    //       expected: new GenResult(
+    //         [],
+    //         `def convert5_to_5(image, metalist):
+    //   # Convert dataType5 to dataType5
+    //   return image
+    // import json
+    // import exec_image_out
+    // import exec_image_in
+    // import duplication
+    // def 3_to_4(image):
+    //   # Convert dataType3 to dataType4
+    //   return image
+    // def 4_to_5(image):
+    //   # Convert dataType4 to dataType5
+    //   return image
+    // import value_image_out
+    // def newFun_0(n_1_out_0):
+    //   print(convert5_to_5(n_1_out_0, json.loads('[{"colorChannel":"rgb","channelOrder":"channelLast","isMiniBatched":true,"intensityRange":"0-255","device":"cpu"}]')))
+    //   n_4_image = 'output a image'
+    //   return n_4_image
+    // n_6_image = 'output a image'
+    // n_5_in_0 = newFun_0(convert5_to_5(n_6_image, json.loads('[{"colorChannel":"rgb","channelOrder":"channelLast","isMiniBatched":true,"intensityRange":"0-255","device":"cpu"}]')))
+    // n_11_output = n_5_in_0
+    // print(convert5_to_5(n_11_output, json.loads('[{"colorChannel":"rgb","channelOrder":"channelLast","isMiniBatched":true,"intensityRange":"0-255","device":"cpu"}]')))
+    // n_9_image = "mock image"
+    // n_10_output = n_9_image
+    // n_7_in_0 = newFun_0(convert5_to_5(4_to_5(3_to_4(n_10_output)), json.loads('[{"colorChannel":"rgb","channelOrder":"channelLast","isMiniBatched":true,"intensityRange":"0-255","device":"cpu"}]')))`
+    //       ),
+    // },
+  ];
+  test.each(testData)('Test %s', async (data) => {
+    const program = loadVisualProgram(data.path);
+    console.log(program);
+    const actual = pythonGenerator.programToCode(program);
+    console.log(actual.code);
     expect(actual.messages).toEqual(data.expected.messages);
     expect(actual.code).toEqual(data.expected.code);
   });
