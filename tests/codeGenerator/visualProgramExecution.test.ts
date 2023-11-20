@@ -279,9 +279,7 @@ print(convert5_to_5(4_to_5(3_to_4(n_5_setter_out)), json.loads('[{"colorChannel"
   ];
   test.each(testData)('Test %s', async (data) => {
     const program = loadVisualProgram(data.path);
-    console.log(program);
     const actual = pythonGenerator.programToCode(program);
-    console.log(actual.code);
     expect(actual.messages).toEqual(data.expected.messages);
     expect(actual.code).toEqual(data.expected.code);
   });

@@ -49,7 +49,7 @@
             "channelOrder": "channelLast",
             "isMiniBatched": true,
             "intensityRange": ["0-255"],
-            "device": "cpu"
+            "device": ["cpu"]
           }
         }
       },
@@ -94,7 +94,7 @@
             "channelOrder": "channelLast",
             "isMiniBatched": true,
             "intensityRange": ["0-255"],
-            "device": "cpu"
+            "device": ["cpu"]
           }
         },
         "image2": {
@@ -106,7 +106,7 @@
             "channelOrder": "channelLast",
             "isMiniBatched": true,
             "intensityRange": ["0-255"],
-            "device": "cpu"
+            "device": ["cpu"]
           }
         }
       },

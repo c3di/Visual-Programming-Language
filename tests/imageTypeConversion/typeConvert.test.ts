@@ -26,7 +26,7 @@ describe('ImageTypeConverter', () => {
       channelOrder: 'channelLast',
       isMiniBatched: true,
       intensityRange: ['0-255', '0-1'],
-      device: 'cpu',
+      device: ['cpu'],
     };
     const startImageVar = 'imageVar5';
 
@@ -78,7 +78,7 @@ describe('ImageTypeConverter', () => {
       channelOrder: 'channelLast',
       isMiniBatched: true,
       intensityRange: ['0-255', '0-1'],
-      device: 'cpu',
+      device: ['cpu'],
     };
     const startImageVar = 'imageVar6';
 
@@ -110,7 +110,7 @@ describe('ImageTypeConverter', () => {
       channelOrder: 'channelLast',
       isMiniBatched: true,
       intensityRange: ['0-255', '0-1'],
-      device: 'cpu',
+      device: ['cpu'],
     };
     const startImageVar = 'imageVar5';
 

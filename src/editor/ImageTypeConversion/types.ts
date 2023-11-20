@@ -5,7 +5,7 @@ export interface IImageConfig {
   channelOrder: 'none' | 'channelFirst' | 'channelLast';
   isMiniBatched: boolean;
   intensityRange: Array<'0-255' | '0-1'>;
-  device: 'cpu' | 'gpu';
+  device: Array<'cpu' | 'gpu'>;
 }
 
 export interface IImageMetadata {
@@ -17,20 +17,26 @@ export interface IImageMetadata {
 }
 
 export function flattenConfigToMetadata(
-  config: IImageConfig
+  config: IImageConfig | IImageConfig[]
 ): IImageMetadata[] {
   const metadata: IImageMetadata[] = [];
-  config.colorChannel.forEach((colorChannel) => {
-    config.intensityRange.forEach((intensityRange) => {
-      metadata.push({
-        colorChannel,
-        channelOrder: config.channelOrder,
-        isMiniBatched: config.isMiniBatched,
-        intensityRange,
-        device: config.device,
+  if (!Array.isArray(config)) config = [config];
+  for (let i = 0; i < config.length; i++) {
+    const configItem = config[i];
+    configItem.colorChannel.forEach((colorChannel) => {
+      configItem.intensityRange.forEach((intensityRange) => {
+        configItem.device.forEach((device) => {
+          metadata.push({
+            colorChannel,
+            channelOrder: configItem.channelOrder,
+            isMiniBatched: configItem.isMiniBatched,
+            intensityRange,
+            device,
+          });
+        });
       });
     });
-  });
+  }
   return metadata;
 }
 
