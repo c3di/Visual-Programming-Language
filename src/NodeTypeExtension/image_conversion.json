@@ -1,0 +1,31 @@
+{
+  "description": "image conversion",
+  "imageTypeConversion": {
+    "imageTypes": [
+      {
+        "name": "numpy.ndarray",
+        "functionName": "numpyndarray2numpyndarray",
+        "function": "function numpyndarray2numpyndarray() { return 'numpyndarray2numpyndarray'; }"
+      },
+      {
+        "name": "torch.tensor",
+        "functionName": "torchtensor2torchtensor",
+        "function": "function torchtensor2torchtensor() { return 'torchtensor2torchtensor'; }"
+      }
+    ],
+    "ImageTypeConversions": [
+      {
+        "from": "numpy.ndarray",
+        "to": "torch.tensor",
+        "functionName": "numpyndarrayToTorchtensor",
+        "function": "function numpyndarrayToTorchtensor() { return 'numpyndarrayToTorchtensor'; }"
+      },
+      {
+        "from": "torch.tensor",
+        "to": "numpy.ndarray",
+        "functionName": "torchtensorToNumpyndarray",
+        "function": "function torchtensorToNumpyndarray() { return 'torchtensorToNumpyndarray'; }"
+      }
+    ]
+  }
+}

@@ -1,4 +1,5 @@
-import { type NodePackage, type NodeConfig } from '../types';
+import { Node, imageTypeConversionGraph } from '../ImageTypeConversion';
+import { type NodeConfig, type NodePackage } from '../types';
 
 export type config = NodeConfig | NodePackage;
 export interface TypeConversionRule {
@@ -6,80 +7,71 @@ export interface TypeConversionRule {
   function_name: string;
 }
 
+export interface NewImageType {
+  name: string;
+  functionName: string;
+  function: string;
+}
+export interface NewInterImageConversion {
+  from: string;
+  to: string;
+  functionName: string;
+  function: string;
+}
+
+export interface KnowledgeGraphExtension {
+  imageTypes?: NewImageType[];
+  ImageTypeConversions?: NewInterImageConversion[];
+}
+
 export class NodeConfigRegistry {
   private static instance: NodeConfigRegistry;
   private readonly registry: Record<string, config> = {};
-  private readonly _imageTypeConversion: Record<
-    string,
-    Record<string, TypeConversionRule>
-  > = {};
 
   private constructor() {}
 
-  get imageTypeConversion(): Record<
-    string,
-    Record<string, TypeConversionRule>
-  > {
-    return this._imageTypeConversion;
-  }
-
-  public registerImageTypeConversion(
-    name: string,
-    conversion: Record<string, TypeConversionRule>
+  public addKnowledgeGraphExtension(
+    extension: KnowledgeGraphExtension | undefined
   ): void {
-    if (!this._imageTypeConversion[name])
-      this._imageTypeConversion[name] = conversion;
-    else {
-      for (const key in conversion) {
-        this._imageTypeConversion[name][key] = conversion[key];
+    if (!extension) return;
+    const { imageTypes, ImageTypeConversions } = extension;
+    for (const imageType of imageTypes ?? []) {
+      imageTypeConversionGraph.addNode(
+        new Node(imageType.name, {
+          functionName: imageType.functionName,
+          function: imageType.function,
+        })
+      );
+    }
+
+    for (const conversion of ImageTypeConversions ?? []) {
+      let from = imageTypeConversionGraph.getNode(conversion.from);
+      if (!from) {
+        console.log(
+          `Node ${conversion.from} does not exist in graph, will be added.`
+        );
+        from = new Node(conversion.from, { functionName: '', function: '' });
+        imageTypeConversionGraph.addNode(from);
       }
-    }
-  }
-
-  public getConversionRule(
-    source: string,
-    target: string
-  ): TypeConversionRule | null {
-    return this._imageTypeConversion[source]?.[target];
-  }
-
-  public bfsShortestPath(
-    graph: Record<string, Record<string, TypeConversionRule>>,
-    start: string,
-    goal: string
-  ): string[] | null {
-    const explored = new Set<string>();
-    const queue: string[][] = [[start]];
-
-    if (start === goal) {
-      return [start];
-    }
-
-    while (queue.length > 0) {
-      const path = queue.shift()!;
-      const node = path[path.length - 1];
-
-      if (!explored.has(node)) {
-        const neighbors = Object.keys(graph[node]);
-
-        for (const neighbor of neighbors) {
-          const newPath = [...path, neighbor];
-          queue.push(newPath);
-
-          if (neighbor === goal) {
-            return newPath;
-          }
-        }
-
-        explored.add(node);
+      let to = imageTypeConversionGraph.getNode(conversion.to);
+      if (!to) {
+        console.log(
+          `Node ${conversion.to} does not exist in graph, will be added.`
+        );
+        to = new Node(conversion.to, { functionName: '', function: '' });
+        imageTypeConversionGraph.addNode(to);
       }
+
+      imageTypeConversionGraph.addDirectedEdge(
+        from,
+        to,
+        {
+          functionName: conversion.functionName,
+          function: conversion.function,
+        },
+        1
+      );
     }
-
-    return null;
-  }
-
-  public findConversionPath(from: string, to: string): string[] | null {
-    return this.bfsShortestPath(this._imageTypeConversion, from, to);
   }
 
   public static getInstance(): NodeConfigRegistry {

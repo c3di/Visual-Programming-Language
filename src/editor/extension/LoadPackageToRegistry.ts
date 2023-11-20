@@ -4,9 +4,10 @@ import flowControl from './flowControl.json';
 import functionAndvar from './functionAndvar.json';
 import list from './list.json';
 import log from './log.json';
+import mockNodeExtension from './mockNodeExtension.json';
 import {
   nodeConfigRegistry,
-  type TypeConversionRule,
+  type KnowledgeGraphExtension,
 } from './NodeConfigRegistry';
 import operators from './operators.json';
 import tuple from './tuple.json';
@@ -24,7 +25,7 @@ export interface INodeModule {
   href?: string;
   description?: string;
   enable?: boolean;
-  imageTypeConversion?: Record<string, Record<string, TypeConversionRule>>;
+  imageTypeConversion?: KnowledgeGraphExtension;
 }
 
 /*
@@ -63,16 +64,9 @@ export const ParseModule = (m: INodeModule, relativePath: string): any => {
       }
     );
   }
-  if (m.imageTypeConversion) {
-    Object.entries(m.imageTypeConversion).forEach(
-      ([name, rules]: [
-        name: string,
-        rules: Record<string, TypeConversionRule>
-      ]) => {
-        nodeConfigRegistry.registerImageTypeConversion(name, rules);
-      }
-    );
-  }
+
+  nodeConfigRegistry.addKnowledgeGraphExtension(m.imageTypeConversion);
+
   return returnModule;
 };
 
@@ -165,4 +159,5 @@ export const LoadDefaultModule = (): void => {
   LoadPackageToRegistry('Function & Variable Creation', functionAndvar);
   LoadPackageToRegistry('Log', log);
   LoadPackageToRegistry('Operators', operators);
+  LoadPackageToRegistry('Mock Node Extension', mockNodeExtension);
 };
