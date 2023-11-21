@@ -97,6 +97,17 @@ export default function Handle({
       className={className}
       title={`${handleData.dataType ?? ''}\n${handleData.tooltip ?? ''}`}
     >
+      {handleData.beWatched && (
+        <img
+          style={{
+            border: '1px solid #000000',
+            maxWidth: '30px',
+            maxHeight: '30px',
+          }}
+          id={handleData.imageDomId}
+          src="Error.src"
+        />
+      )}
       {label}
       <HandleElement
         id={id}

@@ -1,4 +1,5 @@
 import { type IConversion } from '../ImageTypeConversion';
+import { type Handle } from '../types/Handle';
 import { type Node } from './../types';
 import { CodeGenerator } from './code_generator';
 import { FunctionGenRes, InputGenRes, NodeGenRes } from './generation_result';
@@ -22,7 +23,7 @@ export class PythonGenerator extends CodeGenerator {
     const inputs = [];
     for (const id in node.data.inputs ?? {}) {
       const inputGenResult = this.getInputValueOfNode(node, id, program);
-      result.add(inputGenResult);
+      result.addImports(inputGenResult.imports);
       inputs.push(inputGenResult.code);
       if (
         inputGenResult.prerequisiteCode &&
@@ -35,7 +36,7 @@ export class PythonGenerator extends CodeGenerator {
     const outputs = [];
     for (const id in node.data.outputs ?? {}) {
       const outputGenResult = this.getOutputValueOfNode(node, id, program);
-      result.add(outputGenResult);
+      result.addImports(outputGenResult.imports);
       outputs.push(outputGenResult.code);
     }
 
@@ -45,10 +46,23 @@ export class PythonGenerator extends CodeGenerator {
       }
     }
 
-    result.code = [
+    result.code += [
       ...prerequisiteCodeOfInputs,
       this.nodeSourceGeneration(node, inputs, outputs),
     ].join('\n');
+
+    const outputValues: Handle[] = Object.values(node.data.outputs ?? {});
+    for (let index = 0; index < outputValues.length; index++) {
+      const output: Handle = outputValues[index];
+      if (!output.beWatched) continue;
+      result.add(
+        this.captureImageCode(
+          output.defaultValue.dataType,
+          outputs[index],
+          output.imageDomId ?? ''
+        )
+      );
+    }
     return result;
   }
 

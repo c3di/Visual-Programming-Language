@@ -8,4 +8,6 @@ export interface Handle {
   showWidget?: boolean;
   showTitle?: boolean;
   deletable?: boolean;
+  beWatched?: boolean;
+  imageDomId?: string;
 }

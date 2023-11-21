@@ -1,0 +1,77 @@
+{
+  "nodes": [
+    {
+      "id": "0",
+      "type": "Flow Control.main",
+      "position": { "x": 288, "y": 145 },
+      "outputs": { "execOut": { "dataType": "exec" } },
+      "title": "main"
+    },
+    {
+      "id": "1",
+      "type": "Mock Node Extension.exec_image_out",
+      "position": { "x": 398.3208931787019, "y": 145.70807767434673 },
+      "inputs": { "execIn": { "dataType": "exec" } },
+      "outputs": {
+        "execOut": { "title": "execOut", "dataType": "exec" },
+        "image": { "title": "image", "dataType": "image" }
+      },
+      "title": "exec_image_out"
+    },
+    {
+      "id": "2",
+      "type": "Mock Node Extension.exec_image_in",
+      "position": { "x": 566.5893267969, "y": 149.9951715244919 },
+      "inputs": {
+        "execIn": { "dataType": "exec" },
+        "image": {
+          "title": "image",
+          "value": {
+            "dataType": "dataType5",
+            "colorChannel": ["rgb"],
+            "channelOrder": "channelLast",
+            "isMiniBatched": true,
+            "intensityRange": ["0-255"],
+            "device": "cpu"
+          },
+          "dataType": "image"
+        }
+      },
+      "outputs": { "execOut": { "title": "execOut", "dataType": "exec" } },
+      "title": "exec_image_in"
+    },
+    {
+      "id": "3",
+      "type": "Mock Node Extension.value_image_out",
+      "position": { "x": 305.0766019380444, "y": 276.46444010377445 },
+      "outputs": { "image": { "title": "image", "dataType": "image" } },
+      "title": "value_in_image"
+    }
+  ],
+  "edges": [
+    {
+      "id": "reactflow__edge-0execOut-1execIn",
+      "output": "0",
+      "input": "1",
+      "outputHandle": "execOut",
+      "inputHandle": "execIn",
+      "dataType": "exec"
+    },
+    {
+      "id": "reactflow__edge-1execOut-2execIn",
+      "output": "1",
+      "input": "2",
+      "outputHandle": "execOut",
+      "inputHandle": "execIn",
+      "dataType": "exec"
+    },
+    {
+      "id": "reactflow__edge-3image-2image",
+      "output": "3",
+      "input": "2",
+      "outputHandle": "image",
+      "inputHandle": "image",
+      "dataType": "image"
+    }
+  ]
+}

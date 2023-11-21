@@ -4,7 +4,6 @@ import ReactFlow, {
   ConnectionMode,
   ReactFlowProvider,
   SelectionMode,
-  getRectOfNodes,
   type Connection,
   type PanelPosition,
   type ReactFlowInstance,
@@ -78,7 +77,6 @@ const Scene = ({
     edges,
     onEdgesChange,
     onConnect,
-    fromSerializedGraph,
     toJSONString,
   } = graphState ?? {};
   const gui = sceneState?.gui;
@@ -264,6 +262,35 @@ const Scene = ({
                           .configType,
                         gui.clickedHandle.current.id
                       );
+                  },
+                  handle: Object.keys(node.data.outputs).includes(id)
+                    ? graphState.getHandle(node.id, id)
+                    : undefined,
+                  watchImage: (sure: boolean) => {
+                    sceneActions.setNodes((nodes) => {
+                      const newNodes = nodes.map((n) => {
+                        if (n.id === node.id) {
+                          return {
+                            ...n,
+                            data: {
+                              ...n.data,
+                              outputs: {
+                                ...n.data.outputs,
+                                [id]: {
+                                  ...n.data.outputs[id],
+                                  beWatched: sure,
+                                  imageDomId: sure
+                                    ? `image-${node.id}-${id}`
+                                    : undefined,
+                                },
+                              },
+                            },
+                          };
+                        }
+                        return n;
+                      });
+                      return newNodes;
+                    });
                   },
                 }
               );
