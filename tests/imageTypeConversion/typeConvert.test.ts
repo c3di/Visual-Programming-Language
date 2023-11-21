@@ -22,11 +22,15 @@ describe('ImageTypeConverter', () => {
     const startDataType = 'dataType1';
     const goalImage: IImageConfig = {
       dataType: 'dataType5',
-      colorChannel: ['rgb', 'gbr'],
-      channelOrder: 'channelLast',
-      isMiniBatched: true,
-      intensityRange: ['0-255', '0-1'],
-      device: ['cpu'],
+      metadata: [
+        {
+          colorChannel: ['rgb', 'gbr'],
+          channelOrder: 'channelLast',
+          isMiniBatched: true,
+          intensityRange: ['0-255', '0-1'],
+          device: ['cpu'],
+        },
+      ],
     };
     const startImageVar = 'imageVar5';
 
@@ -74,11 +78,15 @@ describe('ImageTypeConverter', () => {
     const startDataType = 'dataType6';
     const goalImage: IImageConfig = {
       dataType: 'dataType6',
-      colorChannel: ['rgb', 'gbr'],
-      channelOrder: 'channelLast',
-      isMiniBatched: true,
-      intensityRange: ['0-255', '0-1'],
-      device: ['cpu'],
+      metadata: [
+        {
+          colorChannel: ['rgb', 'gbr'],
+          channelOrder: 'channelLast',
+          isMiniBatched: true,
+          intensityRange: ['0-255', '0-1'],
+          device: ['cpu'],
+        },
+      ],
     };
     const startImageVar = 'imageVar6';
 
@@ -106,11 +114,15 @@ describe('ImageTypeConverter', () => {
     const startDataType = 'dataType5';
     const goalImage: IImageConfig = {
       dataType: 'dataType8',
-      colorChannel: ['rgb', 'gbr'],
-      channelOrder: 'channelLast',
-      isMiniBatched: true,
-      intensityRange: ['0-255', '0-1'],
-      device: ['cpu'],
+      metadata: [
+        {
+          colorChannel: ['rgb', 'gbr'],
+          channelOrder: 'channelLast',
+          isMiniBatched: true,
+          intensityRange: ['0-255', '0-1'],
+          device: ['cpu'],
+        },
+      ],
     };
     const startImageVar = 'imageVar5';
 

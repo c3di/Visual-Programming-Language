@@ -1,11 +1,15 @@
 // Config is used in the Node Specification
-export interface IImageConfig {
-  dataType: string;
+export interface IImageConfigMetadata {
   colorChannel: Array<'rgb' | 'gbr' | 'grayscale'>;
   channelOrder: 'none' | 'channelFirst' | 'channelLast';
   isMiniBatched: boolean;
   intensityRange: Array<'0-255' | '0-1'>;
   device: Array<'cpu' | 'gpu'>;
+}
+
+export interface IImageConfig {
+  dataType: string;
+  metadata: IImageConfigMetadata[];
 }
 
 export interface IImageMetadata {
@@ -17,12 +21,12 @@ export interface IImageMetadata {
 }
 
 export function flattenConfigToMetadata(
-  config: IImageConfig | IImageConfig[]
+  config: IImageConfig
 ): IImageMetadata[] {
   const metadata: IImageMetadata[] = [];
-  if (!Array.isArray(config)) config = [config];
-  for (let i = 0; i < config.length; i++) {
-    const configItem = config[i];
+  const configMetaData = config.metadata;
+  for (let i = 0; i < configMetaData.length; i++) {
+    const configItem = configMetaData[i];
     configItem.colorChannel.forEach((colorChannel) => {
       configItem.intensityRange.forEach((intensityRange) => {
         configItem.device.forEach((device) => {

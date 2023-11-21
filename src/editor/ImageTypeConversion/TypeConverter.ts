@@ -72,7 +72,7 @@ export class ImageTypeConverter {
     if (
       !goalImage ||
       convertCodeConfigs.length === 0 ||
-      goalImage.channelOrder === undefined
+      goalImage.metadata === undefined
     ) {
       return {
         convertCodeStr: input,

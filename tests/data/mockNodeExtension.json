@@ -45,11 +45,15 @@
           "dataType": "image",
           "defaultValue": {
             "dataType": "dataType5",
-            "colorChannel": ["rgb"],
-            "channelOrder": "channelLast",
-            "isMiniBatched": true,
-            "intensityRange": ["0-255"],
-            "device": ["cpu"]
+            "metadata": [
+              {
+                "colorChannel": ["rgb"],
+                "channelOrder": "channelLast",
+                "isMiniBatched": true,
+                "intensityRange": ["0-255"],
+                "device": ["cpu"]
+              }
+            ]
           }
         }
       },
@@ -90,11 +94,15 @@
           "dataType": "image",
           "defaultValue": {
             "dataType": "dataType1",
-            "colorChannel": ["rgb"],
-            "channelOrder": "channelLast",
-            "isMiniBatched": true,
-            "intensityRange": ["0-255"],
-            "device": ["cpu"]
+            "metadata": [
+              {
+                "colorChannel": ["rgb"],
+                "channelOrder": "channelLast",
+                "isMiniBatched": true,
+                "intensityRange": ["0-255"],
+                "device": ["cpu"]
+              }
+            ]
           }
         },
         "image2": {
@@ -102,11 +110,15 @@
           "dataType": "image",
           "defaultValue": {
             "dataType": "dataType5",
-            "colorChannel": ["rgb"],
-            "channelOrder": "channelLast",
-            "isMiniBatched": true,
-            "intensityRange": ["0-255"],
-            "device": ["cpu"]
+            "metadata": [
+              {
+                "colorChannel": ["rgb"],
+                "channelOrder": "channelLast",
+                "isMiniBatched": true,
+                "intensityRange": ["0-255"],
+                "device": ["cpu"]
+              }
+            ]
           }
         }
       },
