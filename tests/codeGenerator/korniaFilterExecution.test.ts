@@ -4,10 +4,11 @@ import { loadNode } from '../loader';
 interface testNodeData {
   jsonPath: string;
   nodeName: string;
+  prepareInput: string;
   inputs: string[];
   returnVar: string;
   execTest: (inputs: any[], returnVar: any) => string;
-  getExpectedOutput: (
+  getExpectedCode: (
     inputs: any[],
     prepareInput: string,
     returnVar: any,
@@ -20,6 +21,18 @@ describe('Code Execution of node kornia filter', () => {
     {
       jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
       nodeName: 'Bilateral_Blur',
+      prepareInput: `import torch
+input_tensor1 = {
+  'dataType': 'torch.tensor',
+  'value': torch.rand(1, 1, 5, 5, device = 'cpu'),
+  'metadata': {
+    'colorChannel': 'grayscale',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': True,
+    'intensityRange': '0-1',
+    'device': 'cpu'
+  }
+}`,
       inputs: [
         '',
         'input_tensor1',
@@ -30,20 +43,24 @@ describe('Code Execution of node kornia filter', () => {
         '"l1"',
       ],
       returnVar: 'image',
+
       execTest: (inputs: any[], returnVar: any) => `import torch
 from torch import Tensor
-expected = K.filters.bilateral_blur(input_tensor1['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]})
+expected = K.filters.bilateral_blur(input_tensor1['value'], ${inputs
+        .slice(2)
+        .join(', ')})
 print(torch.equal(expected, ${returnVar}['value']));`,
-      getExpectedOutput: (
+
+      getExpectedCode: (
         inputs: any[],
         prepareInput: string,
         returnVar: any,
         execTest: (arg0: any, arg1: any) => any
       ) => `import kornia as K
 ${prepareInput}
-${returnVar} = K.filters.bilateral_blur(input_tensor1['value'], ${inputs[2]}, ${
-        inputs[3]
-      }, ${inputs[4]}, ${inputs[5]}, ${inputs[6]})
+${returnVar} = K.filters.bilateral_blur(input_tensor1['value'], ${inputs
+        .slice(2)
+        .join(', ')})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
@@ -66,25 +83,14 @@ ${execTest(inputs, returnVar)}`,
     async ({
       jsonPath,
       nodeName,
+      prepareInput: prepareInput,
       inputs,
       returnVar,
       execTest,
-      getExpectedOutput,
+      getExpectedCode: getExpectedOutput,
     }) => {
       const node = loadNode(jsonPath, nodeName);
       const executeTest = execTest(inputs, returnVar);
-      const prepareInput = `import torch
-input_tensor1 = {
-  'dataType': 'torch.tensor',
-  'value': torch.rand(1, 1, 5, 5, device = 'cpu'),
-  'metadata': {
-    'colorChannel': 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu'
-  }
-}`;
       const expectedOutput = getExpectedOutput(
         inputs,
         prepareInput,

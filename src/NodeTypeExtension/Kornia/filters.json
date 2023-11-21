@@ -91,7 +91,7 @@
       "title": "bilateral blur",
       "tooltip": "The operator is an edge-preserving image smoothing bilateral filter",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) { \n  const code = `${outputs[1]} = K.filters.bilateral_blur(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]})\n${outputs[1]} = {\n  'value': ${outputs[1]},\n  'dataType': 'torch.tensor',\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) { \n  const code = `${outputs[1]} = K.filters.bilateral_blur(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\n${outputs[1]} = {\n  'value': ${outputs[1]},\n  'dataType': 'torch.tensor',\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
