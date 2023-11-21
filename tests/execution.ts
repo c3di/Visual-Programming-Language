@@ -79,7 +79,8 @@ export async function nodeExecCheck(
   node: Node,
   inputs: string[],
   outputs: string[],
-  expectedCode: string
+  expectedCode: string,
+  inputPrepareCode?: string
 ) {
   const sourceCode = pythonGenerator.nodeSourceGeneration(
     node,
@@ -87,7 +88,9 @@ export async function nodeExecCheck(
     outputs
   );
   const importCode = node.data.externalImports;
-  const code = `${importCode}\n${sourceCode}`;
+  const code = inputPrepareCode
+    ? `${importCode}\n${inputPrepareCode}\n${sourceCode}`
+    : `${importCode}\n${sourceCode}`;
   expect(code).toBe(expectedCode);
   const assertion = await execPythonCode(code);
   expect(assertion).toBe(true);
