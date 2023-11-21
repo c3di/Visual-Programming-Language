@@ -1,16 +1,14 @@
-import { imageTypeConverter } from '../ImageTypeConversion';
+import { type IConversion } from '../ImageTypeConversion';
 import { type Node } from './../types';
 import { CodeGenerator } from './code_generator';
-import {
-  InputGenRes,
-  NodeGenRes,
-  type FunctionGenRes,
-} from './generation_result';
+import { FunctionGenRes, InputGenRes, NodeGenRes } from './generation_result';
 import { type VisualProgram } from './visual_program';
 
 export class PythonGenerator extends CodeGenerator {
   name: string = 'PythonGenerator';
   indent: string = '  ';
+  captureImageFunction: { functionName: string; function: string } | undefined;
+  commInJupyterLab: { functionName: string; function: string } | undefined;
 
   functionToCode(funcDefNode: Node, program: VisualProgram): FunctionGenRes {
     return this.nodeToCode(funcDefNode, program);
@@ -75,7 +73,7 @@ export class PythonGenerator extends CodeGenerator {
     );
     result.code = this._getUniqueNameOfHandle(incomingNode, outputHandle!);
     if (input.dataType === 'image') {
-      const conversion = imageTypeConverter.getConversion(
+      const conversion = this.imageTypeConvert!.getConversion(
         this.getDataTypeInImageOutput(
           incomingNode,
           outputHandle!,
@@ -123,6 +121,76 @@ export class PythonGenerator extends CodeGenerator {
       dependent: 'import json',
       code: `json.loads('${jsonStr.replace(/'/g, "\\'")}')`,
     };
+  }
+
+  captureImageCode(
+    startDataType: string,
+    imageVar: string,
+    imageDomId: string
+  ): FunctionGenRes {
+    if (!this.captureImageFunction) {
+      const functionName = `capture_image_${Date.now()}`;
+      this.captureImageFunction = {
+        functionName: `capture_image_${Date.now()}`,
+        function: `def ${functionName}(comm, image, image_dom_id):
+  # Save the image to a BytesIO object
+  buf = io.BytesIO()
+  image.save(buf, format="PNG")
+  buf.seek(0)
+  # Encode the buffer contents as base64
+  image_base64 = base64.b64encode(buf.read()).decode("utf-8")
+  buf.close()
+  # image_base64 now contains the base64-encoded grayscale image
+  comm.send({"image_data": image_base64, "image_dom_id": image_dom_id})`,
+      };
+    }
+    if (!this.commInJupyterLab) {
+      const functionName = `comm_${Date.now()}`;
+      this.commInJupyterLab = {
+        functionName,
+        function: `${functionName} = create_comm(target_name='capture_image')}`,
+      };
+    }
+    const conversion: IConversion = this.imageTypeConvert!.getConversion(
+      startDataType,
+      {
+        dataType: 'numpy.ndarray',
+        metadata: [
+          {
+            colorChannel: ['rgb'],
+            channelOrder: 'channelLast',
+            isMiniBatched: false,
+            intensityRange: ['0-255'],
+            device: ['cpu'],
+          },
+          {
+            colorChannel: ['grayscale'],
+            channelOrder: 'none',
+            isMiniBatched: false,
+            intensityRange: ['0-255'],
+            device: ['cpu'],
+          },
+        ],
+      },
+      imageVar,
+      this
+    );
+    const suffix = `${Date.now()}`;
+    return new FunctionGenRes(
+      undefined,
+      `const np_img_${suffix} = ${conversion.convertCodeStr};
+pil_img_${suffix} = Image.fromarray(np_img_${suffix}.value, np_img_${suffix}.metadata.colorChannel ==='rgb'? 'RGB', 'L');
+${this.captureImageFunction.functionName}(${this.commInJupyterLab.functionName}, pil_img_${suffix}, ${imageDomId})`,
+      new Set([
+        'import io',
+        'import base64',
+        'from PIL import Image',
+        'from comm import create_comm',
+        this.commInJupyterLab.function,
+        this.captureImageFunction.function,
+        ...conversion.convertFunctions,
+      ])
+    );
   }
 
   _getUniqueNameOfHandle(node: Node, handleId: string): string {

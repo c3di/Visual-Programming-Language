@@ -1,3 +1,4 @@
+import { imageTypeConverter } from '../../src/editor/ImageTypeConversion';
 import {
   FunctionGenRes,
   GenResult,
@@ -260,7 +261,7 @@ describe('PythonGenerator', () => {
   let program: VisualProgram;
 
   beforeEach(() => {
-    generator = new PythonGenerator();
+    generator = new PythonGenerator(imageTypeConverter);
     program = new VisualProgram(nodes, edges);
   });
 

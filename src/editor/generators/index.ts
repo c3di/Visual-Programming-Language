@@ -1,3 +1,4 @@
+import { imageTypeConverter } from '../ImageTypeConversion';
 import { PythonGenerator } from './python_generator';
 export { type CodeGenerator } from './code_generator';
 export {
@@ -9,4 +10,4 @@ export {
 export { PythonGenerator } from './python_generator';
 export { VisualProgram } from './visual_program';
 
-export const pythonGenerator = new PythonGenerator();
+export const pythonGenerator = new PythonGenerator(imageTypeConverter);

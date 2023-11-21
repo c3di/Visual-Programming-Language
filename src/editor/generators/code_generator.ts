@@ -1,4 +1,5 @@
 import toposort from 'toposort';
+import { type ImageTypeConverter } from '../ImageTypeConversion';
 import { type Node } from './../types';
 import {
   FunctionGenRes,
@@ -11,6 +12,11 @@ import { type VisualProgram } from './visual_program';
 export abstract class CodeGenerator {
   abstract name: string;
   indent: string = '  ';
+  imageTypeConvert: ImageTypeConverter | undefined;
+
+  constructor(convert: ImageTypeConverter) {
+    this.imageTypeConvert = convert;
+  }
 
   isExecNode(node: Node): boolean {
     for (const output of Object.values(node.data.outputs ?? {})) {
@@ -128,6 +134,12 @@ export abstract class CodeGenerator {
       });
     return result;
   }
+
+  abstract captureImageCode(
+    startDataType: string,
+    imageVar: string,
+    imageDomId: string
+  ): FunctionGenRes;
 
   topoSortFuncsInProgram = (program: VisualProgram): SortedFunDefs => {
     const nodeAndDependency: Array<[string, string]> = [];
