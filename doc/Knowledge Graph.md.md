@@ -139,7 +139,7 @@ function codeGenerator(inputs, outputs, node, generator) {
 
 ```typescript
 function codeGenerator(inputs, outputs, node, generator) {
-  const code = `${outputs[1]} = matplotlib.pyplot.imshow(${inputs[1]}.value, ${inputs[2]})
+  const code = `${outputs[1]} = matplotlib.pyplot.imshow(${inputs[1]}['value'], ${inputs[2]})
 ...`;
   return code;
 }
