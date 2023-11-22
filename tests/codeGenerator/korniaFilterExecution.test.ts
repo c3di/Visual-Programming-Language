@@ -50,7 +50,7 @@ from torch import Tensor
 expected = K.filters.canny(input_tensor1['value'], ${inputs
           .slice(2)
           .join(', ')})
-print(torch.equal(expected, ${returnVar}['value']));`,
+print(torch.equal(expected[0], ${returnVar}['value'][0]) and torch.equal(expected[1], ${returnVar}['value'][1]));`,
 
       getExpectedCode: (
         inputs: any[],
