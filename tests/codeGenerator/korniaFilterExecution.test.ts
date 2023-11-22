@@ -48,8 +48,8 @@ input_tensor1 = {
       execTest: (inputs: any[], returnVar: any) => `import torch
 from torch import Tensor
 expected = K.filters.canny(input_tensor1['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 print(torch.equal(expected, ${returnVar}['value']));`,
 
       getExpectedCode: (
@@ -60,8 +60,8 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.filters.canny(input_tensor1['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
@@ -104,8 +104,8 @@ input_tensor1 = {
       execTest: (inputs: any[], returnVar: any) => `import torch
 from torch import Tensor
 expected = K.filters.bilateral_blur(input_tensor1['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 print(torch.equal(expected, ${returnVar}['value']));`,
 
       getExpectedCode: (
@@ -116,15 +116,14 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.filters.bilateral_blur(input_tensor1['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'colorChannel': 'rgb' if ${inputs[1]
+        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
     'channelOrder': 'channelFirst',
     'isMiniBatched': True,
     'intensityRange': '0-1',
@@ -154,8 +153,8 @@ input_tensor1 = {
       execTest: (inputs: any[], returnVar: any) => `import torch
 from torch import Tensor
 expected = K.filters.blur_pool2d(input_tensor1['value'], ${inputs
-        .slice(3)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 print(torch.equal(expected, ${returnVar}['value']));`,
 
       getExpectedCode: (
@@ -166,15 +165,14 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.filters.blur_pool2d(input_tensor1['value'], ${inputs
-        .slice(3)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'colorChannel': 'rgb' if ${inputs[1]
+        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
     'channelOrder': 'channelFirst',
     'isMiniBatched': True,
     'intensityRange': '0-1',

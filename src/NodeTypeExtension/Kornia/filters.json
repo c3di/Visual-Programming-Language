@@ -7,7 +7,7 @@
       "title": "canny edge detection",
       "tooltip": "Find edges of the input image and filters them using the Canny algorithm.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.filters.canny(${inputs[1]}['value'],  ${inputs.slice(2).join(', ')})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.filters.canny(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -22,7 +22,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": "0-1"
@@ -106,7 +109,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": "0-1"
@@ -169,7 +175,7 @@
       "title": "blur pool2d",
       "tooltip": "Compute blurs and downsample a given feature map.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.filters.blur_pool2d(${inputs[1]}['value'], ${inputs.slice(3).join(', ')})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.filters.blur_pool2d(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -184,7 +190,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": "0-1"
@@ -195,7 +204,10 @@
         },
         "kernel_size": {
           "title": "kernel_size",
-          "dataType": ["tuple", "int"],
+          "dataType": [
+            "tuple",
+            "int"
+          ],
           "defaultValue": "(5, 5)",
           "tooltip": "the kernel size for max pooling."
         },
@@ -244,7 +256,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": "0-1"
@@ -310,7 +325,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": "0-1"
@@ -382,7 +400,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": "0-1"
@@ -398,7 +419,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": "0-1"
@@ -470,7 +494,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": "0-1"
@@ -486,7 +513,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": "0-1"
@@ -564,7 +594,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": "0-1"
@@ -636,7 +669,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": "0-1"
@@ -690,7 +726,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": "0-1"
@@ -768,7 +807,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": "0-1"
@@ -834,7 +876,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": "0-1"
@@ -900,7 +945,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": "0-1"
@@ -960,7 +1008,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": "0-1"
@@ -1026,7 +1077,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": "0-1"
