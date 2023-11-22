@@ -28,7 +28,7 @@
                 ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": ["0-1"]
               }
             ]
           },
@@ -115,7 +115,7 @@
                 ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": ["0-1"]
               }
             ]
           },
@@ -196,7 +196,7 @@
                 ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": ["0-1"]
               }
             ]
           },
@@ -262,7 +262,7 @@
                 ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": ["0-1"]
               }
             ]
           },
@@ -331,7 +331,7 @@
                 ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": ["0-1"]
               }
             ]
           },
@@ -406,7 +406,7 @@
                 ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": ["0-1"]
               }
             ]
           },
@@ -425,7 +425,7 @@
                 ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": ["0-1"]
               }
             ]
           },
@@ -500,7 +500,7 @@
                 ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": ["0-1"]
               }
             ]
           },
@@ -519,7 +519,7 @@
                 ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": ["0-1"]
               }
             ]
           },
@@ -600,7 +600,7 @@
                 ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": ["0-1"]
               }
             ]
           },
@@ -675,7 +675,7 @@
                 ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": ["0-1"]
               }
             ]
           },
@@ -732,7 +732,7 @@
                 ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": ["0-1"]
               }
             ]
           },
@@ -813,7 +813,7 @@
                 ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": ["0-1"]
               }
             ]
           },
@@ -882,7 +882,7 @@
                 ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": ["0-1"]
               }
             ]
           },
@@ -951,7 +951,7 @@
                 ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": ["0-1"]
               }
             ]
           },
@@ -1014,7 +1014,7 @@
                 ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": ["0-1"]
               }
             ]
           },
@@ -1083,7 +1083,7 @@
                 ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": ["0-1"]
               }
             ]
           },
