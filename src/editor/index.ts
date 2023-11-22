@@ -1,6 +1,7 @@
 import { LoadDefaultModule } from './extension';
 import './index.css';
 export * from './Deserializer';
+export { imageTypeConversionGraph } from './ImageTypeConversion';
 export * from './Serializer';
 export { default as VPEditor } from './VPEditor';
 export * from './extension';

@@ -35,6 +35,7 @@ export interface INodeModule {
 export const ParseModule = (m: INodeModule, relativePath: string): any => {
   const returnModule: INodeModule = {};
   const notShowInMenu = m.notShowInMenu === undefined ? false : m.notShowInMenu;
+  returnModule.notShowInMenu = notShowInMenu;
   returnModule.href = m.href;
   returnModule.description = m.description;
   returnModule.enable = m.enable;
@@ -77,18 +78,19 @@ const loadModule = (
 ): any | undefined => {
   const m = ParseModule(obj, relativePath);
   if (name === '__init__' || name === '') return { ...m.nodes };
-  else if (m.nodes) {
-    return {
-      [`${name}`]: {
-        isPackage: true,
-        nodes: m.nodes,
-        type: relativePath,
-        href: m.href,
-        description: m.description,
-        enable: m.enable,
-      },
-    };
-  }
+  // else if (m.nodes || m.imageTypeConversion) {
+  return {
+    [`${name}`]: {
+      isPackage: true,
+      nodes: m.nodes ?? {},
+      type: relativePath,
+      href: m.href,
+      description: m.description,
+      enable: m.enable,
+      notShowInMenu: m.notShowInMenu,
+    },
+    // };
+  };
 };
 
 export interface INodePackageDir {

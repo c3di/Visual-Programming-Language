@@ -1,5 +1,7 @@
 {
   "description": "image conversion",
+  "enable": true,
+  "notShowInMenu": true,
   "imageTypeConversion": {
     "imageTypes": [
       {

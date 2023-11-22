@@ -69,7 +69,7 @@ export class WidgetFactory {
       return <></>;
     }
     const widgetTypeToUse = DataTypes[type].widget ?? type;
-    console.log('widgetTypeToUse', widgetTypeToUse);
+    // console.log('widgetTypeToUse', widgetTypeToUse);
     const options = DataTypes[type].options ?? {};
     const widget = this._availableWidgets[widgetTypeToUse];
 
