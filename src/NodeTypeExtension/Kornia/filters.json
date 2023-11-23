@@ -117,9 +117,8 @@
                 ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": [
-                  "0-1"
-                ]
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
               }
             ]
           },
@@ -163,7 +162,7 @@
           "showWidget": false,
           "showTitle": false
         },
-        "image": {
+        "outputImage": {
           "title": "image",
           "dataType": "image",
           "defaultValue": {
