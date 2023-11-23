@@ -1,5 +1,5 @@
 import React from 'react';
-import { DataTypes, addNewType } from '.././types';
+import { DataTypes } from '.././types';
 import { stringArrayToObject } from '.././util';
 import { type WidgetProps } from './WidgetProps';
 import {
@@ -53,30 +53,17 @@ export class WidgetFactory {
   }
 
   public createWidget(type: string, widgetOptions: any): JSX.Element {
-    if (type === 'DataType') {
-      const opts: Record<string, string> = {};
-      Object.keys(DataTypes).forEach((key) => {
-        if (key !== 'any' && key !== 'exec') opts[key] = key;
-      });
-      addNewType('DataType', {
-        options: opts,
-        default: 'float',
-        widget: 'EnumSelect',
-      });
-    }
     if (!DataTypes[type]) {
       console.warn(`Invalid data type ${type}, return <></> element.`);
       return <></>;
     }
     const widgetTypeToUse = DataTypes[type].widget ?? type;
-    // console.log('widgetTypeToUse', widgetTypeToUse);
     const options = DataTypes[type].options ?? {};
     const widget = this._availableWidgets[widgetTypeToUse];
 
     if (widget) {
       return React.cloneElement(widget, { ...widgetOptions, options });
     } else {
-      console.warn(`Invalid widget type, return <></> element.`);
       return <></>;
     }
   }

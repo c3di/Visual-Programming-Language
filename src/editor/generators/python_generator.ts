@@ -249,42 +249,12 @@ ${this.captureImageFunction.functionName}(${this.commInJupyterLab.functionName},
     return lines.join(" + '\\n' + \n");
   }
 
-  // todo: refactor this function
   widgetValueToLanguageValue(dataType: string | undefined, value: any): any {
-    // quote for single value and multiple values
-    if (value === undefined || value === null) return `None`;
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     if (dataType === 'string') {
       if (value.includes('\n')) return this.multiline_quote(value);
       else return this.quote(value);
     }
-    // todo: quote string or escape string
     if (dataType === 'boolean') return value ? 'True' : 'False';
-    if (dataType === 'image') return this.object2PythonDict(value);
-    if (Array.isArray(value))
-      return `[${value
-        .map((v: any) => this.widgetValueToLanguageValue(typeof v, v))
-        .join(', ')}]`;
-    if (dataType === 'object' && !Array.isArray(value))
-      return this.object2PythonDict(value);
     return value;
   }
-
-  object2PythonDict = (source: object): string => {
-    return `{
-      ${Object.entries(source)
-        .map(([key, value]) => {
-          return `'${key}': ${
-            // use variable name directly for value property
-            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands, @typescript-eslint/restrict-template-expressions
-            key !== 'value'
-              ? this.widgetValueToLanguageValue(typeof value, value)
-              : value === ''
-              ? 'None'
-              : value
-          }`;
-        })
-        .join(', ')}
-    }`;
-  };
 }
