@@ -540,7 +540,7 @@ export default function useScene(
           !node.data.inputs.name.value &&
           !node.data.inputs.name.defaultValue
         ) {
-          node.data.inputs.name.defaultValue =
+          node.data.inputs.name.value =
             varsNamePool.current.createNew('newVar');
         }
         varsNamePool.current.add(

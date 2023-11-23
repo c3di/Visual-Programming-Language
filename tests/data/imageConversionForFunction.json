@@ -109,7 +109,11 @@
       "position": { "x": 750.7428909540423, "y": 76.34654311502916 },
       "inputs": {
         "execIn": { "dataType": "exec" },
-        "name": { "title": "name", "dataType": "anyDataType" },
+        "name": {
+          "title": "name",
+          "dataType": "anyDataType",
+          "value": "newVar_0"
+        },
         "value": { "title": "value", "dataType": "anyDataType" }
       },
       "outputs": { "execOut": { "dataType": "exec" } },
@@ -175,7 +179,11 @@
       "type": "Function & Variable Creation.function call",
       "position": { "x": 1434.1102888891396, "y": 77.02980036455449 },
       "inputs": {
-        "execOut": { "title": "execOut", "dataType": "exec" },
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "value": "newVar0"
+        },
         "out_0": { "title": "out_1", "dataType": "image" }
       },
       "outputs": {
