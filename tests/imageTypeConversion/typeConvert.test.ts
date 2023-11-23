@@ -110,7 +110,7 @@ describe('ImageTypeConverter', () => {
     expect(conversion.convertFunctions[1]).toBe(convertValue.dependent);
   });
 
-  test('getConversion should handle non-existent dataType conversion (dataType5 to dataType8)', () => {
+  test('getConversion should handle non-existent dataType conversion', () => {
     const startDataType = 'dataType5';
     const goalImage: IImageConfig = {
       dataType: 'dataType8',

@@ -18,14 +18,14 @@ describe('Knowledge Graph Extension', () => {
       new Node('numpy.ndarray', {
         functionName: 'numpyndarray2numpyndarray',
         function:
-          "function numpyndarray2numpyndarray() { return 'numpyndarray2numpyndarray'; }",
+          "def numpyndarray2numpyndarray(): return 'numpyndarray2numpyndarray'",
       })
     );
     expect(imageTypeConversionGraph.getNode('torch.tensor')).toStrictEqual(
       new Node('torch.tensor', {
         functionName: 'torchtensor2torchtensor',
         function:
-          "function torchtensor2torchtensor() { return 'torchtensor2torchtensor'; }",
+          "def torchtensor2torchtensor(): return 'torchtensor2torchtensor'",
       })
     );
 
@@ -40,7 +40,7 @@ describe('Knowledge Graph Extension', () => {
         {
           functionName: 'numpyndarrayToTorchtensor',
           function:
-            "function numpyndarrayToTorchtensor() { return 'numpyndarrayToTorchtensor'; }",
+            "def numpyndarrayToTorchtensor(): return 'numpyndarrayToTorchtensor'",
         },
         1
       ),
@@ -54,7 +54,7 @@ describe('Knowledge Graph Extension', () => {
         {
           functionName: 'torchtensorToNumpyndarray',
           function:
-            "function torchtensorToNumpyndarray() { return 'torchtensorToNumpyndarray'; }",
+            "def torchtensorToNumpyndarray(): return 'torchtensorToNumpyndarray'",
         },
         1
       ),
@@ -67,21 +67,19 @@ describe('Knowledge Graph Extension', () => {
     const module = readJsonFileSync(
       './src/NodeTypeExtension/image_conversion.json'
     );
-    console.log(module);
     LoadPackageToRegistry('image_conversion', module);
-    console.log(imageTypeConversionGraph);
     expect(imageTypeConversionGraph.getNode('numpy.ndarray')).toStrictEqual(
       new Node('numpy.ndarray', {
         functionName: 'numpyndarray2numpyndarray',
         function:
-          "function numpyndarray2numpyndarray() { return 'numpyndarray2numpyndarray'; }",
+          "def numpyndarray2numpyndarray(): return 'numpyndarray2numpyndarray'",
       })
     );
     expect(imageTypeConversionGraph.getNode('torch.tensor')).toStrictEqual(
       new Node('torch.tensor', {
         functionName: 'torchtensor2torchtensor',
         function:
-          "function torchtensor2torchtensor() { return 'torchtensor2torchtensor'; }",
+          "def torchtensor2torchtensor(): return 'torchtensor2torchtensor'",
       })
     );
 
@@ -96,7 +94,7 @@ describe('Knowledge Graph Extension', () => {
         {
           functionName: 'numpyndarrayToTorchtensor',
           function:
-            "function numpyndarrayToTorchtensor() { return 'numpyndarrayToTorchtensor'; }",
+            "def numpyndarrayToTorchtensor(): return 'numpyndarrayToTorchtensor'",
         },
         1
       ),
@@ -110,7 +108,7 @@ describe('Knowledge Graph Extension', () => {
         {
           functionName: 'torchtensorToNumpyndarray',
           function:
-            "function torchtensorToNumpyndarray() { return 'torchtensorToNumpyndarray'; }",
+            "def torchtensorToNumpyndarray(): return 'torchtensorToNumpyndarray'",
         },
         1
       ),
