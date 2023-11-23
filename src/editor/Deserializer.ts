@@ -198,7 +198,8 @@ export class Deserializer {
   };
 
   private readonly defaultConfigToEdge = (config: GraphEdgeConfig): Edge => {
-    const { id, input, output, inputHandle, outputHandle, dataType } = config;
+    const { id, input, output, inputHandle, outputHandle, dataType, style } =
+      config;
     return {
       id,
       source: output,
@@ -225,9 +226,7 @@ export class Deserializer {
         dataType,
       },
       className: Array.isArray(dataType) ? dataType.join(' ') : dataType,
-      style: {
-        strokeWidth: 2,
-      },
+      style,
     };
   };
 

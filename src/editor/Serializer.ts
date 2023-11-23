@@ -124,7 +124,8 @@ export class Serializer {
   };
 
   private readonly defaultEdgeToConfig = (edge: Edge): GraphEdgeConfig => {
-    const { id, source, target, sourceHandle, targetHandle, data } = edge;
+    const { id, source, target, sourceHandle, targetHandle, data, style } =
+      edge;
     if (!id || !source || !target || !sourceHandle || !targetHandle)
       throw new Error('Invalid edge config');
     return {
@@ -134,6 +135,7 @@ export class Serializer {
       outputHandle: sourceHandle,
       inputHandle: targetHandle,
       dataType: data?.dataType,
+      style,
     };
   };
 

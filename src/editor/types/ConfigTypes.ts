@@ -46,6 +46,7 @@ export interface GraphEdgeConfig {
   inputHandle: string;
   outputHandle: string;
   dataType?: string | string[];
+  style?: any;
 }
 
 export interface SerializedHandle {
