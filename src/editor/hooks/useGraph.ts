@@ -171,7 +171,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
   );
 
   const setDataTypeOfGraph = useCallback(
-    (nodeIds: string[], dataType: string, defaultValue?: any) => {
+    (nodeIds: string[], dataType: string | string[], defaultValue?: any) => {
       const edgeIds: string[] = [];
       setNodes((nds) => {
         const newNodes = nds.map((n) => {
@@ -199,7 +199,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
               ...n,
               data: {
                 ...n.data,
-                dataType: `${dataType}`,
+                dataType,
                 inputs,
                 outputs,
               },
@@ -250,7 +250,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
   );
 
   const setDataTypeInGraphWithRerouteNode = useCallback(
-    (node: Node, dataType: string, defaultValue?: any): void => {
+    (node: Node, dataType: string | string[], defaultValue?: any): void => {
       const visitedNode: string[] = [];
       graphIncludeNodeWithType(node, 'reroute', 'any', visitedNode);
       if (visitedNode.length === 0) return;
@@ -259,43 +259,46 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     []
   );
 
-  const updateDatatypeInGraph = useCallback((params: Connection): string => {
-    const sourceHandle = getNode(params.source!)?.data.outputs?.[
-      params.sourceHandle!
-    ] as HandleData;
-    const targetHandle = getNode(params.target!)?.data.inputs?.[
-      params.targetHandle!
-    ] as HandleData;
-    let dataType = 'any';
-    if (sourceHandle.dataType && sourceHandle.dataType !== 'any')
-      if (targetHandle.dataType && targetHandle.dataType !== 'any')
-        dataType = targetHandle.dataType;
+  const updateDatatypeInGraph = useCallback(
+    (params: Connection): string | string[] => {
+      const sourceHandle = getNode(params.source!)?.data.outputs?.[
+        params.sourceHandle!
+      ] as HandleData;
+      const targetHandle = getNode(params.target!)?.data.inputs?.[
+        params.targetHandle!
+      ] as HandleData;
+      let dataType: string | string[] = 'any';
+      if (sourceHandle.dataType && sourceHandle.dataType !== 'any')
+        if (targetHandle.dataType && targetHandle.dataType !== 'any')
+          dataType = targetHandle.dataType;
+        else {
+          dataType = sourceHandle.dataType;
+          const defaultValue = dataType.includes('image')
+            ? sourceHandle.defaultValue
+            : undefined;
+          setDataTypeInGraphWithRerouteNode(
+            getNode(params.target!)!,
+            dataType,
+            defaultValue
+          );
+        }
       else {
-        dataType = sourceHandle.dataType;
-        const defaultValue = dataType.includes('image')
-          ? sourceHandle.defaultValue
-          : undefined;
-        setDataTypeInGraphWithRerouteNode(
-          getNode(params.target!)!,
-          dataType,
-          defaultValue
-        );
+        if (targetHandle.dataType && targetHandle.dataType !== 'any') {
+          dataType = targetHandle.dataType;
+          const defaultValue = dataType.includes('image')
+            ? sourceHandle.defaultValue
+            : undefined;
+          setDataTypeInGraphWithRerouteNode(
+            getNode(params.source!)!,
+            dataType,
+            defaultValue
+          );
+        }
       }
-    else {
-      if (targetHandle.dataType && targetHandle.dataType !== 'any') {
-        dataType = targetHandle.dataType;
-        const defaultValue = dataType.includes('image')
-          ? sourceHandle.defaultValue
-          : undefined;
-        setDataTypeInGraphWithRerouteNode(
-          getNode(params.source!)!,
-          dataType,
-          defaultValue
-        );
-      }
-    }
-    return dataType;
-  }, []);
+      return dataType;
+    },
+    []
+  );
 
   const isConnectToNonRerouteNodes = useCallback(
     (node: Node, visited: string[] = []): boolean => {
@@ -367,7 +370,11 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
           },
           style: {
             strokeWidth: 2,
-            stroke: `${DataTypes[dataType].shownInColor}`,
+            stroke: `${
+              Array.isArray(dataType)
+                ? DataTypes.any.shownInColor
+                : DataTypes[dataType].shownInColor
+            }`,
           },
         },
         eds

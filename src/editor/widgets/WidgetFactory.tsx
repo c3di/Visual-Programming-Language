@@ -52,7 +52,13 @@ export class WidgetFactory {
     this._availableWidgets[widgetType] = widget;
   }
 
-  public createWidget(type: string, widgetOptions: any): JSX.Element {
+  public createWidget(
+    type: string | string[],
+    widgetOptions: any
+  ): JSX.Element {
+    if (Array.isArray(type)) {
+      return React.cloneElement(this._availableWidgets.TextInput);
+    }
     if (!DataTypes[type]) {
       console.warn(`Invalid data type ${type}, return <></> element.`);
       return <></>;

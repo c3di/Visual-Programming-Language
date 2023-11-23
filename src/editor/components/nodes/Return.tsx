@@ -102,7 +102,9 @@ export function ParameterHandle({
                 value:
                   handleData.value ??
                   handleData.defaultValue ??
-                  DataTypes[handleData.dataType!]?.defaultValue,
+                  Array.isArray(handleData.dataType)
+                    ? DataTypes[handleData.dataType![0]]?.defaultValue
+                    : DataTypes[handleData.dataType!]?.defaultValue,
                 className: `nodrag handle-widget`,
                 onChange: onValueChange,
               })}

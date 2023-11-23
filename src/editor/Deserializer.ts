@@ -224,7 +224,7 @@ export class Deserializer {
       data: {
         dataType,
       },
-      className: dataType,
+      className: Array.isArray(dataType) ? dataType.join(' ') : dataType,
       style: {
         strokeWidth: 2,
       },

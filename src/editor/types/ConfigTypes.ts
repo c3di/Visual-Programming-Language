@@ -2,7 +2,7 @@ import { type Handle as HandleData } from './Handle';
 
 export interface HandleConfig {
   title?: string;
-  dataType?: string;
+  dataType?: string | string[];
   defaultValue?: any;
   tooltip?: string;
 }
@@ -45,7 +45,7 @@ export interface GraphEdgeConfig {
   output: string;
   inputHandle: string;
   outputHandle: string;
-  dataType?: string;
+  dataType?: string | string[];
 }
 
 export interface SerializedHandle {

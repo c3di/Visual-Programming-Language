@@ -68,9 +68,14 @@ export default function Handle({
         value:
           handleData.value ??
           handleData.defaultValue ??
-          DataTypes[handleData.dataType]?.defaultValue ??
-          '',
-        className: `nodrag handle-widget ${handleData.dataType}`,
+          Array.isArray(handleData.dataType)
+            ? DataTypes[handleData.dataType[0]]?.defaultValue
+            : DataTypes[handleData.dataType]?.defaultValue ?? '',
+        className: `nodrag handle-widget ${
+          Array.isArray(handleData.dataType)
+            ? handleData.dataType.join(' ')
+            : handleData.dataType
+        }`,
         onChange: changeValue,
       });
     let title: null | JSX.Element = null;
@@ -95,7 +100,11 @@ export default function Handle({
   return (
     <div
       className={className}
-      title={`${handleData.dataType ?? ''}\n${handleData.tooltip ?? ''}`}
+      title={`${
+        (Array.isArray(handleData.dataType)
+          ? handleData.dataType.join(' ')
+          : handleData.dataType) ?? ''
+      }\n${handleData.tooltip ?? ''}`}
     >
       {handleData.beWatched && (
         <img
@@ -131,13 +140,20 @@ export const HandleElement = ({
   handleData: HandleData;
 }): JSX.Element => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-  const config = DataTypes[handleData.dataType ?? 'any'] ?? DataTypes.any;
+  const config =
+    DataTypes[
+      Array.isArray(handleData.dataType)
+        ? 'anyDataType'
+        : handleData.dataType ?? 'any'
+    ] ?? DataTypes.any;
   const color = `${config.shownInColor}`;
   return (
     <RCHandle
-      className={`vp-rc-handle-${handleData.dataType ?? 'default'} ${
-        handleData.connection ? 'handle_connected' : 'handle_not_connected'
-      }`}
+      className={`vp-rc-handle-${
+        (Array.isArray(handleData.dataType)
+          ? handleData.dataType.join(' ')
+          : handleData.dataType) ?? 'default'
+      } ${handleData.connection ? 'handle_connected' : 'handle_not_connected'}`}
       id={id}
       type={handleType}
       position={handlePosition}
