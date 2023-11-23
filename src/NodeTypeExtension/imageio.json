@@ -25,7 +25,7 @@
         "mode": {
           "title": "mode",
           "dataType": "imageio.ImageReadMode",
-          "default": "ImageReadMode.UNCHANGED",
+          "defaultValue": "ImageReadMode.RGB",
           "tooltip": "mode(ImageReadMode) - The read mode used for optionally converting the image. Default: ImageReadMode.UNCHANGED."
         }
       },
@@ -95,7 +95,7 @@
   "types": {
     "ImageReadMode": {
       "options": {
-        "GRAY ": " ImageReadMode.GRAY",
+        "GRAY": "ImageReadMode.GRAY",
         "RGB": "ImageReadMode.RGB"
       },
       "default": "RGB",
