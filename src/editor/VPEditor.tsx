@@ -4,6 +4,7 @@ import ReactFlow, {
   ConnectionMode,
   ReactFlowProvider,
   SelectionMode,
+  getRectOfNodes,
   type Connection,
   type PanelPosition,
   type ReactFlowInstance,
@@ -77,6 +78,7 @@ const Scene = ({
     edges,
     onEdgesChange,
     onConnect,
+    fromSerializedGraph,
     toJSONString,
   } = graphState ?? {};
   const gui = sceneState?.gui;
@@ -102,6 +104,16 @@ const Scene = ({
       closeWidget(null, true);
     }
   }, [activated]);
+
+  useEffect(() => {
+    // the graph may be changed before the scene is initialized
+    if (!initialed) return;
+    if (toJSONString() !== (graph ? JSON.stringify(graph) : '')) {
+      const { nodes } = fromSerializedGraph(graph);
+      const rect = getRectOfNodes(nodes);
+      sceneInstance.current?.fitBounds(rect);
+    }
+  }, [graph, initialed]);
 
   const triggerContentChange = useCallback(() => {
     if (!onContentChange) return;
