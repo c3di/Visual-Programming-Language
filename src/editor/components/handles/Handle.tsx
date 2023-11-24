@@ -68,9 +68,9 @@ export default function Handle({
         value:
           handleData.value ??
           handleData.defaultValue ??
-          Array.isArray(handleData.dataType)
+          (Array.isArray(handleData.dataType)
             ? DataTypes[handleData.dataType[0]]?.defaultValue
-            : DataTypes[handleData.dataType]?.defaultValue ?? '',
+            : DataTypes[handleData.dataType]?.defaultValue ?? ''),
         className: `nodrag handle-widget ${
           Array.isArray(handleData.dataType)
             ? handleData.dataType.join(' ')
@@ -142,9 +142,9 @@ export const HandleElement = ({
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
   const config =
     DataTypes[
-      Array.isArray(handleData.dataType)
+      (Array.isArray(handleData.dataType)
         ? 'anyDataType'
-        : handleData.dataType ?? 'any'
+        : handleData.dataType) ?? 'any'
     ] ?? DataTypes.any;
   const color = `${config.shownInColor}`;
   return (
