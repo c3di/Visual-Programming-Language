@@ -46,14 +46,14 @@ describe('captureImageCode', () => {
       imageDomId
     );
 
-    expect(result.toGenResult().code).toBe(`import io
+    expect(result.toGenResult().code).toBe(`import io as PythonIO
 import base64
 from PIL import Image
 from comm import create_comm
-comm_${now} = create_comm(target_name='capture_image')}
+comm_${now} = create_comm(target_name='capture_image')
 def capture_image_${now}(comm, image, image_dom_id):
   # Save the image to a BytesIO object
-  buf = io.BytesIO()
+  buf = PythonIO.BytesIO()
   image.save(buf, format="PNG")
   buf.seek(0)
   # Encode the buffer contents as base64
@@ -72,9 +72,9 @@ def 5_to_ndarray(image):
 def ndarray2ndarray(image):
   return image
 import json
-const np_img_${now} = ndarray2ndarray(5_to_ndarray(2_to_5(1_to_2(imageVar))), json.loads('[{"colorChannel":"rgb","channelOrder":"channelLast","isMiniBatched":false,"intensityRange":"0-255","device":"cpu"},{"colorChannel":"grayscale","channelOrder":"none","isMiniBatched":false,"intensityRange":"0-255","device":"cpu"}]'));
-pil_img_${now} = Image.fromarray(np_img_${now}.value, np_img_${now}.metadata.colorChannel ==='rgb'? 'RGB', 'L');
-capture_image_${now}(comm_${now}, pil_img_${now}, domId)`);
+np_img_${now} = ndarray2ndarray(5_to_ndarray(2_to_5(1_to_2(imageVar))), json.loads('[{"colorChannel":"rgb","channelOrder":"channelLast","isMiniBatched":false,"intensityRange":"0-255","device":"cpu"},{"colorChannel":"grayscale","channelOrder":"none","isMiniBatched":false,"intensityRange":"0-255","device":"cpu"}]'));
+pil_img_${now} = Image.fromarray(np_img_${now}['value'], 'RGB' if np_img_${now}['metadata']['colorChannel'] == 'rgb' else 'L');
+capture_image_${now}(comm_${now}, pil_img_${now}, "${imageDomId}")`);
   });
 
   it('should correctly generate the image capture code in the program', () => {
@@ -102,14 +102,14 @@ def convert5_to_5(image, metalist):
 import json
 import value_image_out
 import duplication
-import io
+import io as PythonIO
 import base64
 from PIL import Image
 from comm import create_comm
-comm_1560000000000 = create_comm(target_name='capture_image')}
+comm_1560000000000 = create_comm(target_name='capture_image')
 def capture_image_1560000000000(comm, image, image_dom_id):
   # Save the image to a BytesIO object
-  buf = io.BytesIO()
+  buf = PythonIO.BytesIO()
   image.save(buf, format="PNG")
   buf.seek(0)
   # Encode the buffer contents as base64
@@ -125,12 +125,12 @@ import exec_image_in
 import exec_image_out
 n_1_image = 'output a image'
 n_3_image = "mock image"
-const np_img_1560000000000 = ndarray2ndarray(5_to_ndarray(4_to_5(3_to_4(n_3_image))), json.loads('[{"colorChannel":"rgb","channelOrder":"channelLast","isMiniBatched":false,"intensityRange":"0-255","device":"cpu"},{"colorChannel":"grayscale","channelOrder":"none","isMiniBatched":false,"intensityRange":"0-255","device":"cpu"}]'));
-pil_img_1560000000000 = Image.fromarray(np_img_1560000000000.value, np_img_1560000000000.metadata.colorChannel ==='rgb'? 'RGB', 'L');
-capture_image_1560000000000(comm_1560000000000, pil_img_1560000000000, imageDomId2)
+np_img_1560000000000 = ndarray2ndarray(5_to_ndarray(4_to_5(3_to_4(n_3_image))), json.loads('[{"colorChannel":"rgb","channelOrder":"channelLast","isMiniBatched":false,"intensityRange":"0-255","device":"cpu"},{"colorChannel":"grayscale","channelOrder":"none","isMiniBatched":false,"intensityRange":"0-255","device":"cpu"}]'));
+pil_img_1560000000000 = Image.fromarray(np_img_1560000000000['value'], 'RGB' if np_img_1560000000000['metadata']['colorChannel'] == 'rgb' else 'L');
+capture_image_1560000000000(comm_1560000000000, pil_img_1560000000000, "imageDomId2")
 print(convert5_to_5(4_to_5(3_to_4(n_3_image)), json.loads('[{"colorChannel":"rgb","channelOrder":"channelLast","isMiniBatched":true,"intensityRange":"0-255","device":"cpu"}]')))
-const np_img_1560000000000 = ndarray2ndarray(5_to_ndarray(n_1_image), json.loads('[{"colorChannel":"rgb","channelOrder":"channelLast","isMiniBatched":false,"intensityRange":"0-255","device":"cpu"},{"colorChannel":"grayscale","channelOrder":"none","isMiniBatched":false,"intensityRange":"0-255","device":"cpu"}]'));
-pil_img_1560000000000 = Image.fromarray(np_img_1560000000000.value, np_img_1560000000000.metadata.colorChannel ==='rgb'? 'RGB', 'L');
-capture_image_1560000000000(comm_1560000000000, pil_img_1560000000000, imageDomId)`);
+np_img_1560000000000 = ndarray2ndarray(5_to_ndarray(n_1_image), json.loads('[{"colorChannel":"rgb","channelOrder":"channelLast","isMiniBatched":false,"intensityRange":"0-255","device":"cpu"},{"colorChannel":"grayscale","channelOrder":"none","isMiniBatched":false,"intensityRange":"0-255","device":"cpu"}]'));
+pil_img_1560000000000 = Image.fromarray(np_img_1560000000000['value'], 'RGB' if np_img_1560000000000['metadata']['colorChannel'] == 'rgb' else 'L');
+capture_image_1560000000000(comm_1560000000000, pil_img_1560000000000, "imageDomId")`);
   });
 });

@@ -148,7 +148,7 @@ export class PythonGenerator extends CodeGenerator {
         functionName: `capture_image_${Date.now()}`,
         function: `def ${functionName}(comm, image, image_dom_id):
   # Save the image to a BytesIO object
-  buf = io.BytesIO()
+  buf = PythonIO.BytesIO()
   image.save(buf, format="PNG")
   buf.seek(0)
   # Encode the buffer contents as base64
@@ -162,7 +162,7 @@ export class PythonGenerator extends CodeGenerator {
       const functionName = `comm_${Date.now()}`;
       this.commInJupyterLab = {
         functionName,
-        function: `${functionName} = create_comm(target_name='capture_image')}`,
+        function: `${functionName} = create_comm(target_name='capture_image')`,
       };
     }
     const conversion: IConversion = this.imageTypeConvert!.getConversion(
@@ -192,11 +192,11 @@ export class PythonGenerator extends CodeGenerator {
     const suffix = `${Date.now()}`;
     return new FunctionGenRes(
       undefined,
-      `const np_img_${suffix} = ${conversion.convertCodeStr};
-pil_img_${suffix} = Image.fromarray(np_img_${suffix}.value, np_img_${suffix}.metadata.colorChannel ==='rgb'? 'RGB', 'L');
-${this.captureImageFunction.functionName}(${this.commInJupyterLab.functionName}, pil_img_${suffix}, ${imageDomId})`,
+      `np_img_${suffix} = ${conversion.convertCodeStr};
+pil_img_${suffix} = Image.fromarray(np_img_${suffix}['value'], 'RGB' if np_img_${suffix}['metadata']['colorChannel'] == 'rgb' else 'L');
+${this.captureImageFunction.functionName}(${this.commInJupyterLab.functionName}, pil_img_${suffix}, "${imageDomId}")`,
       new Set([
-        'import io',
+        'import io as PythonIO',
         'import base64',
         'from PIL import Image',
         'from comm import create_comm',
