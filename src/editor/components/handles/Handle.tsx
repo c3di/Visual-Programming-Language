@@ -110,8 +110,8 @@ export default function Handle({
         <img
           style={{
             border: '1px solid #000000',
-            maxWidth: '30px',
-            maxHeight: '30px',
+            maxWidth: '100px',
+            maxHeight: '100px',
           }}
           id={handleData.imageDomId}
           src="Error.src"
