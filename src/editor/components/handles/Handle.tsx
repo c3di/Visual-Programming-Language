@@ -97,7 +97,7 @@ export default function Handle({
     );
   }, [handleData.connection, handleData.dataType, handleData.title]);
 
-  return (
+  const withOutImageVis = (): JSX.Element => (
     <div
       className={className}
       title={`${
@@ -106,17 +106,6 @@ export default function Handle({
           : handleData.dataType) ?? ''
       }\n${handleData.tooltip ?? ''}`}
     >
-      {handleData.beWatched && (
-        <img
-          style={{
-            border: '1px solid #000000',
-            maxWidth: '100px',
-            maxHeight: '100px',
-          }}
-          id={handleData.imageDomId}
-          src="Error.src"
-        />
-      )}
       {label}
       <HandleElement
         id={id}
@@ -126,6 +115,29 @@ export default function Handle({
       />
     </div>
   );
+
+  const withImageVis = (): JSX.Element => (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-end',
+      }}
+    >
+      {withOutImageVis()}
+      <img
+        style={{
+          marginRight: '10px',
+          maxWidth: '100px',
+          maxHeight: '100px',
+        }}
+        id={handleData.imageDomId}
+        src="Error.src"
+      />
+    </div>
+  );
+
+  return handleData.beWatched ? withImageVis() : withOutImageVis();
 }
 
 export const HandleElement = ({
