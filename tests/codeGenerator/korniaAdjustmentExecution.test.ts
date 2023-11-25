@@ -669,336 +669,525 @@ ${returnVar} = {
 }
 ${execTest(inputs, returnVar)}`,
     },
-    /////////////////////////////////////////////////////////////////////
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
       nodeName: 'Adjust_Sigmoid',
+      prepareInput: `import torch
+input_tensor = {
+  'dataType': 'torch.tensor',
+  'value': torch.rand(1, 3, 5, 5, device = 'cpu'),
+  'metadata': {
+    'colorChannel': 'rgb',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': True,
+    'intensityRange': '0-1',
+    'device': 'cpu'
+  }
+}`,
       inputs: ['', 'input_tensor', '0.8', '0', 'True'],
       returnVar: 'image',
+
       execTest: (inputs: any[], returnVar: any) => `import torch
-    from torch import Tensor
-    expected = K.enhance.adjust_sigmoid(input_tensor, ${inputs[2]}, ${inputs[3]}, ${inputs[4]})
-    print(torch.equal(expected, ${returnVar}['value']));`,
-      getExpectedOutput: (
+from torch import Tensor
+expected = K.enhance.adjust_sigmoid(input_tensor['value'], ${inputs
+        .slice(2)
+        .join(', ')})
+print(torch.equal(expected, ${returnVar}['value']));`,
+
+      getExpectedCode: (
         inputs: any[],
+        prepareInput: string,
         returnVar: any,
         execTest: (arg0: any, arg1: any) => any
       ) => `import kornia as K
-      input_tensor = torch.rand(1, 3, 5, 5, device = 'cpu')
-      ${returnVar} = K.enhance.adjust_sigmoid(input_tensor, ${inputs[2]}, ${
-        inputs[3]
-      }, ${inputs[4]})
-      ${returnVar} = {
-      'value': ${returnVar},
-      'dataType': 'torch.tensor',
-      'metadata': {
-        'colorChannel': 'rgb',
-        'channelOrder': 'channelFirst',
-        'isMiniBatched': True,
-        'intensityRange': '0-1',
-        'device': 'cpu'
-      }
-    }
-    ${execTest(inputs, returnVar)}`,
+${prepareInput}
+${returnVar} = K.enhance.adjust_sigmoid(input_tensor['value'], ${inputs
+        .slice(2)
+        .join(', ')})
+${returnVar} = {
+  'value': ${returnVar},
+  'dataType': 'torch.tensor',
+  'metadata': {
+    'colorChannel': 'rgb' if ${
+      inputs[1]
+    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': True,
+    'intensityRange': '0-1',
+    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
+  }
+}
+${execTest(inputs, returnVar)}`,
     },
 
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
       nodeName: 'Adjust_Log',
-      inputs: ['', 'input_tensor', '1', 'False', 'True'],
+      prepareInput: `import torch
+input_tensor = {
+  'dataType': 'torch.tensor',
+  'value': torch.rand(1, 1, 5, 5, device = 'cpu'),
+  'metadata': {
+    'colorChannel': 'grayscale',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': True,
+    'intensityRange': '0-1',
+    'device': 'cpu'
+  }
+}`,
+      inputs: ['', 'input_tensor', '1', 'False', 'False'],
       returnVar: 'image',
+
       execTest: (inputs: any[], returnVar: any) => `import torch
-    from torch import Tensor
-    expected = K.enhance.adjust_log(input_tensor, ${inputs[2]}, ${inputs[3]}, ${inputs[4]})
-    print(torch.equal(expected, ${returnVar}['value']));`,
-      getExpectedOutput: (
+from torch import Tensor
+expected = K.enhance.adjust_log(input_tensor['value'], ${inputs
+        .slice(2)
+        .join(', ')})
+print(torch.equal(expected, ${returnVar}['value']));`,
+
+      getExpectedCode: (
         inputs: any[],
+        prepareInput: string,
         returnVar: any,
         execTest: (arg0: any, arg1: any) => any
       ) => `import kornia as K
-      input_tensor = torch.rand(1, 1, 5, 5, device = 'cpu')
-      ${returnVar} = K.enhance.adjust_log(input_tensor, ${inputs[2]}, ${
-        inputs[3]
-      }, ${inputs[4]})
-      ${returnVar} = {
-      'value': ${returnVar},
-      'dataType': 'torch.tensor',
-      'metadata': {
-        'colorChannel': 'grayscale',
-        'channelOrder': 'channelFirst',
-        'isMiniBatched': True,
-        'intensityRange': '0-1',
-        'device': 'cpu'
-      }
-    }
-    ${execTest(inputs, returnVar)}`,
+${prepareInput}
+${returnVar} = K.enhance.adjust_log(input_tensor['value'], ${inputs
+        .slice(2)
+        .join(', ')})
+${returnVar} = {
+  'value': ${returnVar},
+  'dataType': 'torch.tensor',
+  'metadata': {
+    'colorChannel': 'rgb' if ${
+      inputs[1]
+    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': True,
+    'intensityRange': '0-1',
+    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
+  }
+}
+${execTest(inputs, returnVar)}`,
     },
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
       nodeName: 'Adjust_Log',
+      prepareInput: `import torch
+input_tensor = {
+  'dataType': 'torch.tensor',
+  'value': torch.rand(1, 3, 5, 5, device = 'cpu'),
+  'metadata': {
+    'colorChannel': 'rgb',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': True,
+    'intensityRange': '0-1',
+    'device': 'cpu'
+  }
+}`,
       inputs: ['', 'input_tensor', '3', 'True', 'False'],
       returnVar: 'image',
+
       execTest: (inputs: any[], returnVar: any) => `import torch
-    from torch import Tensor
-    expected = K.enhance.adjust_log(input_tensor, ${inputs[2]}, ${inputs[3]}, ${inputs[4]})
-    print(torch.equal(expected, ${returnVar}['value']));`,
-      getExpectedOutput: (
+from torch import Tensor
+expected = K.enhance.adjust_log(input_tensor['value'], ${inputs
+        .slice(2)
+        .join(', ')})
+print(torch.equal(expected, ${returnVar}['value']));`,
+
+      getExpectedCode: (
         inputs: any[],
+        prepareInput: string,
         returnVar: any,
         execTest: (arg0: any, arg1: any) => any
       ) => `import kornia as K
-      input_tensor = torch.rand(1, 3, 5, 5, device = 'cpu')
-      ${returnVar} = K.enhance.adjust_log(input_tensor, ${inputs[2]}, ${
-        inputs[3]
-      }, ${inputs[4]})
-      ${returnVar} = {
-      'value': ${returnVar},
-      'dataType': 'torch.tensor',
-      'metadata': {
-        'colorChannel': 'rgb',
-        'channelOrder': 'channelFirst',
-        'isMiniBatched': True,
-        'intensityRange': '0-1',
-        'device': 'cpu'
-      }
-    }
-    ${execTest(inputs, returnVar)}`,
+${prepareInput}
+${returnVar} = K.enhance.adjust_log(input_tensor['value'], ${inputs
+        .slice(2)
+        .join(', ')})
+${returnVar} = {
+  'value': ${returnVar},
+  'dataType': 'torch.tensor',
+  'metadata': {
+    'colorChannel': 'rgb' if ${
+      inputs[1]
+    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': True,
+    'intensityRange': '0-1',
+    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
+  }
+}
+${execTest(inputs, returnVar)}`,
     },
+
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
       nodeName: 'Invert',
+      prepareInput: `import torch
+input_tensor = {
+  'dataType': 'torch.tensor',
+  'value': torch.rand(1, 1, 5, 5, device = 'cpu'),
+  'metadata': {
+    'colorChannel': 'grayscale',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': True,
+    'intensityRange': '0-1',
+    'device': 'cpu'
+  }
+}`,
       inputs: ['', 'input_tensor', 'Tensor([1.0])'],
       returnVar: 'image',
+
       execTest: (inputs: any[], returnVar: any) => `import torch
-    from torch import Tensor
-    expected = K.enhance.invert(input_tensor, ${inputs[2]})
-    print(torch.equal(expected, ${returnVar}['value']));`,
-      getExpectedOutput: (
+from torch import Tensor
+expected = K.enhance.invert(input_tensor, ${inputs[2]})
+print(torch.equal(expected, ${returnVar}['value']));`,
+
+      getExpectedCode: (
         inputs: any[],
+        prepareInput: string,
         returnVar: any,
         execTest: (arg0: any, arg1: any) => any
       ) => `import kornia as K
-      input_tensor = torch.rand(1, 1, 5, 5, device = 'cpu')
-      ${returnVar} = K.enhance.invert(input_tensor, ${inputs[2]})
-      ${returnVar} = {
-      'value': ${returnVar},
-      'dataType': 'torch.tensor',
-      'metadata': {
-        'colorChannel': 'grayscale',
-        'channelOrder': 'channelFirst',
-        'isMiniBatched': True,
-        'intensityRange': '0-1',
-        'device': 'cpu'
-      }
-    }
-    ${execTest(inputs, returnVar)}`,
+${prepareInput}
+${returnVar} = K.enhance.invert(input_tensor, ${inputs[2]})
+${returnVar} = {
+  'value': ${returnVar},
+  'dataType': 'torch.tensor',
+  'metadata': {
+    'colorChannel': 'rgb',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': True,
+    'intensityRange': '0-1',
+    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
+  }
+}
+${execTest(inputs, returnVar)}`,
     },
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
       nodeName: 'Invert',
+      prepareInput: `import torch
+input_tensor = {
+  'dataType': 'torch.tensor',
+  'value': torch.rand(1, 3, 5, 5, device = 'cpu'),
+  'metadata': {
+    'colorChannel': 'rgb',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': True,
+    'intensityRange': '0-1',
+    'device': 'cpu'
+  }
+}`,
       inputs: ['', 'input_tensor', 'torch.as_tensor(255.)'],
       returnVar: 'image',
+
       execTest: (inputs: any[], returnVar: any) => `import torch
-    from torch import Tensor
-    expected = K.enhance.invert(input_tensor, ${inputs[2]})
-    print(torch.equal(expected, ${returnVar}['value']));`,
-      getExpectedOutput: (
+from torch import Tensor
+expected = K.enhance.invert(input_tensor, ${inputs[2]})
+print(torch.equal(expected, ${returnVar}['value']));`,
+
+      getExpectedCode: (
         inputs: any[],
+        prepareInput: string,
         returnVar: any,
         execTest: (arg0: any, arg1: any) => any
       ) => `import kornia as K
-      input_tensor = torch.rand(1, 3, 5, 5, device = 'cpu')
-      ${returnVar} = K.enhance.invert(input_tensor, ${inputs[2]})
-      ${returnVar} = {
-      'value': ${returnVar},
-      'dataType': 'torch.tensor',
-      'metadata': {
-        'colorChannel': 'rgb',
-        'channelOrder': 'channelFirst',
-        'isMiniBatched': True,
-        'intensityRange': '0-1',
-        'device': 'cpu'
-      }
-    }
-    ${execTest(inputs, returnVar)}`,
+${prepareInput}
+${returnVar} = K.enhance.invert(input_tensor, ${inputs[2]})
+${returnVar} = {
+  'value': ${returnVar},
+  'dataType': 'torch.tensor',
+  'metadata': {
+    'colorChannel': 'rgb',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': True,
+    'intensityRange': '0-1',
+    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
+  }
+}
+${execTest(inputs, returnVar)}`,
     },
+
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
       nodeName: 'Posterize',
+      prepareInput: `import torch
+input_tensor = {
+  'dataType': 'torch.tensor',
+  'value': torch.rand(1, 1, 5, 5, device = 'cpu'),
+  'metadata': {
+    'colorChannel': 'grayscale',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': True,
+    'intensityRange': '0-1',
+    'device': 'cpu'
+  }
+}`,
       inputs: ['', 'input_tensor', '8'],
       returnVar: 'image',
+
       execTest: (inputs: any[], returnVar: any) => `import torch
-    from torch import Tensor
-    expected = K.enhance.posterize(input_tensor, ${inputs[2]})
-    print(torch.equal(expected, ${returnVar}['value']));`,
-      getExpectedOutput: (
+from torch import Tensor
+expected = K.enhance.posterize(input_tensor, ${inputs[2]})
+print(torch.equal(expected, ${returnVar}['value']));`,
+
+      getExpectedCode: (
         inputs: any[],
+        prepareInput: string,
         returnVar: any,
         execTest: (arg0: any, arg1: any) => any
       ) => `import kornia as K
-      input_tensor = torch.rand(1, 1, 5, 5, device = 'cpu')
-      ${returnVar} = K.enhance.posterize(input_tensor, ${inputs[2]})
-      ${returnVar} = {
-      'value': ${returnVar},
-      'dataType': 'torch.tensor',
-      'metadata': {
-        'colorChannel': 'grayscale',
-        'channelOrder': 'channelFirst',
-        'isMiniBatched': True,
-        'intensityRange': '0-1',
-        'device': 'cpu'
-      }
-    }
-    ${execTest(inputs, returnVar)}`,
+${prepareInput}
+${returnVar} = K.enhance.posterize(input_tensor, ${inputs[2]})
+${returnVar} = {
+  'value': ${returnVar},
+  'dataType': 'torch.tensor',
+  'metadata': {
+    'colorChannel': 'rgb',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': True,
+    'intensityRange': '0-1',
+    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
+  }
+}
+${execTest(inputs, returnVar)}`,
     },
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
       nodeName: 'Posterize',
+      prepareInput: `import torch
+input_tensor = {
+  'dataType': 'torch.tensor',
+  'value': torch.rand(1, 3, 5, 5, device = 'cpu'),
+  'metadata': {
+    'colorChannel': 'rgb',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': True,
+    'intensityRange': '0-1',
+    'device': 'cpu'
+  }
+}`,
       inputs: ['', 'input_tensor', 'torch.tensor([4, 2])'],
       returnVar: 'image',
+
       execTest: (inputs: any[], returnVar: any) => `import torch
-    from torch import Tensor
-    expected = K.enhance.posterize(input_tensor, ${inputs[2]})
-    print(torch.equal(expected, ${returnVar}['value']));`,
-      getExpectedOutput: (
+from torch import Tensor
+expected = K.enhance.posterize(input_tensor, ${inputs[2]})
+print(torch.equal(expected, ${returnVar}['value']));`,
+
+      getExpectedCode: (
         inputs: any[],
+        prepareInput: string,
         returnVar: any,
         execTest: (arg0: any, arg1: any) => any
       ) => `import kornia as K
-      input_tensor = torch.rand(1, 3, 5, 5, device = 'cpu')
-      ${returnVar} = K.enhance.posterize(input_tensor, ${inputs[2]})
-      ${returnVar} = {
-      'value': ${returnVar},
-      'dataType': 'torch.tensor',
-      'metadata': {
-        'colorChannel': 'rgb',
-        'channelOrder': 'channelFirst',
-        'isMiniBatched': True,
-        'intensityRange': '0-1',
-        'device': 'cpu'
-      }
-    }
-    ${execTest(inputs, returnVar)}`,
+${prepareInput}
+${returnVar} = K.enhance.posterize(input_tensor, ${inputs[2]})
+${returnVar} = {
+  'value': ${returnVar},
+  'dataType': 'torch.tensor',
+  'metadata': {
+    'colorChannel': 'rgb',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': True,
+    'intensityRange': '0-1',
+    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
+  }
+}
+${execTest(inputs, returnVar)}`,
     },
+
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
       nodeName: 'Sharpness',
+      prepareInput: `import torch
+input_tensor = {
+  'dataType': 'torch.tensor',
+  'value': torch.rand(1, 1, 5, 5, device = 'cpu'),
+  'metadata': {
+    'colorChannel': 'grayscale',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': True,
+    'intensityRange': '0-1',
+    'device': 'cpu'
+  }
+}`,
       inputs: ['', 'input_tensor', '0.5'],
       returnVar: 'image',
+
       execTest: (inputs: any[], returnVar: any) => `import torch
-    from torch import Tensor
-    expected = K.enhance.sharpness(input_tensor, ${inputs[2]})
-    print(torch.equal(expected, ${returnVar}['value']));`,
-      getExpectedOutput: (
+from torch import Tensor
+expected = K.enhance.sharpness(input_tensor, ${inputs[2]})
+print(torch.equal(expected, ${returnVar}['value']));`,
+
+      getExpectedCode: (
         inputs: any[],
+        prepareInput: string,
         returnVar: any,
         execTest: (arg0: any, arg1: any) => any
       ) => `import kornia as K
-      input_tensor = torch.rand(1, 1, 5, 5, device = 'cpu')
-      ${returnVar} = K.enhance.sharpness(input_tensor, ${inputs[2]})
-      ${returnVar} = {
-      'value': ${returnVar},
-      'dataType': 'torch.tensor',
-      'metadata': {
-        'colorChannel': 'grayscale',
-        'channelOrder': 'channelFirst',
-        'isMiniBatched': True,
-        'intensityRange': '0-1',
-        'device': 'cpu'
-      }
-    }
-    ${execTest(inputs, returnVar)}`,
+${prepareInput}
+${returnVar} = K.enhance.sharpness(input_tensor, ${inputs[2]})
+${returnVar} = {
+  'value': ${returnVar},
+  'dataType': 'torch.tensor',
+  'metadata': {
+    'colorChannel': 'rgb',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': True,
+    'intensityRange': '0-1',
+    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
+  }
+}
+${execTest(inputs, returnVar)}`,
     },
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
       nodeName: 'Sharpness',
+      prepareInput: `import torch
+input_tensor = {
+  'dataType': 'torch.tensor',
+  'value': torch.rand(1, 3, 5, 5, device = 'cpu'),
+  'metadata': {
+    'colorChannel': 'rgb',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': True,
+    'intensityRange': '0-1',
+    'device': 'cpu'
+  }
+}`,
       inputs: ['', 'input_tensor', '1.5'],
       returnVar: 'image',
+
       execTest: (inputs: any[], returnVar: any) => `import torch
-    from torch import Tensor
-    expected = K.enhance.sharpness(input_tensor, ${inputs[2]})
-    print(torch.equal(expected, ${returnVar}['value']));`,
-      getExpectedOutput: (
+from torch import Tensor
+expected = K.enhance.sharpness(input_tensor, ${inputs[2]})
+print(torch.equal(expected, ${returnVar}['value']));`,
+
+      getExpectedCode: (
         inputs: any[],
+        prepareInput: string,
         returnVar: any,
         execTest: (arg0: any, arg1: any) => any
       ) => `import kornia as K
-      input_tensor = torch.rand(1, 3, 5, 5, device = 'cpu')
-      ${returnVar} = K.enhance.sharpness(input_tensor, ${inputs[2]})
-      ${returnVar} = {
-      'value': ${returnVar},
-      'dataType': 'torch.tensor',
-      'metadata': {
-        'colorChannel': 'rgb',
-        'channelOrder': 'channelFirst',
-        'isMiniBatched': True,
-        'intensityRange': '0-1',
-        'device': 'cpu'
-      }
-    }
-    ${execTest(inputs, returnVar)}`,
+${prepareInput}
+${returnVar} = K.enhance.sharpness(input_tensor, ${inputs[2]})
+${returnVar} = {
+  'value': ${returnVar},
+  'dataType': 'torch.tensor',
+  'metadata': {
+    'colorChannel': 'rgb',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': True,
+    'intensityRange': '0-1',
+    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
+  }
+}
+${execTest(inputs, returnVar)}`,
     },
+
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
       nodeName: 'Solarize',
-      inputs: ['', 'input_tensor', '0.5', 'None'],
+      prepareInput: `import torch
+input_tensor = {
+  'dataType': 'torch.tensor',
+  'value': torch.rand(1, 1, 5, 5, device = 'cpu'),
+  'metadata': {
+    'colorChannel': 'grayscale',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': True,
+    'intensityRange': '0-1',
+    'device': 'cpu'
+  }
+}`,
+      inputs: ['', 'input_tensor', '1', '0.5', 'None'],
       returnVar: 'image',
+
       execTest: (inputs: any[], returnVar: any) => `import torch
-    from torch import Tensor
-    expected = K.enhance.solarize(input_tensor, ${inputs[2]}, ${inputs[3]})
-    print(torch.equal(expected, ${returnVar}['value']));`,
-      getExpectedOutput: (
+from torch import Tensor
+expected = K.enhance.solarize(input_tensor['value'], ${inputs
+        .slice(2)
+        .join(', ')})
+print(torch.equal(expected, ${returnVar}['value']));`,
+
+      getExpectedCode: (
         inputs: any[],
+        prepareInput: string,
         returnVar: any,
         execTest: (arg0: any, arg1: any) => any
       ) => `import kornia as K
-      input_tensor = torch.rand(1, 1, 5, 5, device = 'cpu')
-      ${returnVar} = K.enhance.solarize(input_tensor, ${inputs[2]}, ${
-        inputs[3]
-      })
-      ${returnVar} = {
-      'value': ${returnVar},
-      'dataType': 'torch.tensor',
-      'metadata': {
-        'colorChannel': 'grayscale',
-        'channelOrder': 'channelFirst',
-        'isMiniBatched': True,
-        'intensityRange': '0-1',
-        'device': 'cpu'
-      }
-    }
-    ${execTest(inputs, returnVar)}`,
+${prepareInput}
+${returnVar} = K.enhance.solarize(input_tensor['value'], ${inputs
+        .slice(2)
+        .join(', ')})
+${returnVar} = {
+  'value': ${returnVar},
+  'dataType': 'torch.tensor',
+  'metadata': {
+    'colorChannel': 'rgb' if ${
+      inputs[1]
+    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': True,
+    'intensityRange': '0-1',
+    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
+  }
+}
+${execTest(inputs, returnVar)}`,
     },
+
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
       nodeName: 'Solarize',
-      inputs: ['', 'input_tensor', '1.0', '0.5'],
+      prepareInput: `import torch
+input_tensor = {
+  'dataType': 'torch.tensor',
+  'value': torch.rand(1, 3, 5, 5, device = 'cpu'),
+  'metadata': {
+    'colorChannel': 'rgb',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': True,
+    'intensityRange': '0-1',
+    'device': 'cpu'
+  }
+}`,
+      inputs: ['', 'input_tensor', '1', '1.0', '0.5'],
       returnVar: 'image',
+
       execTest: (inputs: any[], returnVar: any) => `import torch
-    from torch import Tensor
-    expected = K.enhance.solarize(input_tensor, ${inputs[2]}, ${inputs[3]})
-    print(torch.equal(expected, ${returnVar}['value']));`,
-      getExpectedOutput: (
+from torch import Tensor
+expected = K.enhance.solarize(input_tensor['value'], ${inputs
+        .slice(2)
+        .join(', ')})
+print(torch.equal(expected, ${returnVar}['value']));`,
+
+      getExpectedCode: (
         inputs: any[],
+        prepareInput: string,
         returnVar: any,
         execTest: (arg0: any, arg1: any) => any
       ) => `import kornia as K
-      input_tensor = torch.rand(1, 3, 5, 5, device = 'cpu')
-      ${returnVar} = K.enhance.solarize(input_tensor, ${inputs[2]}, ${
-        inputs[3]
-      })
-      ${returnVar} = {
-      'value': ${returnVar},
-      'dataType': 'torch.tensor',
-      'metadata': {
-        'colorChannel': 'rgb',
-        'channelOrder': 'channelFirst',
-        'isMiniBatched': True,
-        'intensityRange': '0-1',
-        'device': 'cpu'
-      }
-    }
-    ${execTest(inputs, returnVar)}`,
+${prepareInput}
+${returnVar} = K.enhance.solarize(input_tensor['value'], ${inputs
+        .slice(2)
+        .join(', ')})
+${returnVar} = {
+  'value': ${returnVar},
+  'dataType': 'torch.tensor',
+  'metadata': {
+    'colorChannel': 'rgb' if ${
+      inputs[1]
+    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': True,
+    'intensityRange': '0-1',
+    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
+  }
+}
+${execTest(inputs, returnVar)}`,
     },
   ];
 
