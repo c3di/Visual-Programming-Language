@@ -19,7 +19,7 @@ interface testNodeData {
 describe('Code Execution of node kornia adjustment', () => {
   const testData: testNodeData[] = [
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Add_Weighted',
       prepareInput: `import torch
 input_tensor1 = {
@@ -59,16 +59,14 @@ print(torch.equal(expected, ${returnVar}['value']));`,
         execTest: (arg0: any, arg1: any) => any
       ) => `import kornia as K
 ${prepareInput}
-${returnVar} = K.enhance.add_weighted(input_tensor1['value'], ${
-        inputs[2]
-      }, input_tensor2['value'], ${inputs[4]}, ${inputs[5]})
+${returnVar} = K.enhance.add_weighted(input_tensor1['value'], ${inputs[2]
+        }, input_tensor2['value'], ${inputs[4]}, ${inputs[5]})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'colorChannel': 'rgb' if ${inputs[1]
+        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
     'channelOrder': 'channelFirst',
     'isMiniBatched': True,
     'intensityRange': '0-1',
@@ -78,7 +76,7 @@ ${returnVar} = {
 ${execTest(inputs, returnVar)}`,
     },
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Add_Weighted',
       prepareInput: `import torch
 input_tensor1 = {
@@ -118,16 +116,14 @@ print(torch.equal(expected, ${returnVar}['value']));`,
         execTest: (arg0: any, arg1: any) => any
       ) => `import kornia as K
 ${prepareInput}
-${returnVar} = K.enhance.add_weighted(input_tensor1['value'], ${
-        inputs[2]
-      }, input_tensor2['value'], ${inputs[4]}, ${inputs[5]})
+${returnVar} = K.enhance.add_weighted(input_tensor1['value'], ${inputs[2]
+        }, input_tensor2['value'], ${inputs[4]}, ${inputs[5]})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'colorChannel': 'rgb' if ${inputs[1]
+        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
     'channelOrder': 'channelFirst',
     'isMiniBatched': True,
     'intensityRange': '0-1',
@@ -138,7 +134,7 @@ ${execTest(inputs, returnVar)}`,
     },
 
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Adjust_Brightness',
       prepareInput: `import torch
 input_tensor = {
@@ -172,11 +168,10 @@ ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'colorChannel': 'rgb' if ${inputs[1]
+        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
     'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
+    'isMiniBatched': 'True' if ${inputs[1]}['metadata']['isMiniBatched'] == True else 'False',
     'intensityRange': '0-1',
     'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
   }
@@ -184,7 +179,7 @@ ${returnVar} = {
 ${execTest(inputs, returnVar)}`,
     },
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Adjust_Brightness',
       prepareInput: `import torch
 input_tensor = {
@@ -218,11 +213,10 @@ ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'colorChannel': 'rgb' if ${inputs[1]
+        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
     'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
+    'isMiniBatched': 'True' if ${inputs[1]}['metadata']['isMiniBatched'] == True else 'False',
     'intensityRange': '0-1',
     'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
   }
@@ -231,7 +225,7 @@ ${execTest(inputs, returnVar)}`,
     },
 
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Adjust_Contrast',
       prepareInput: `import torch
 input_tensor = {
@@ -251,8 +245,8 @@ input_tensor = {
       execTest: (inputs: any[], returnVar: any) => `import torch
 from torch import Tensor
 expected = K.enhance.adjust_contrast(input_tensor['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 print(torch.equal(expected, ${returnVar}['value']));`,
 
       getExpectedCode: (
@@ -263,15 +257,14 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.adjust_contrast(input_tensor['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'colorChannel': 'rgb' if ${inputs[1]
+        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
     'channelOrder': 'channelFirst',
     'isMiniBatched': True,
     'intensityRange': '0-1',
@@ -281,7 +274,7 @@ ${returnVar} = {
 ${execTest(inputs, returnVar)}`,
     },
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Adjust_Contrast',
       prepareInput: `import torch
 input_tensor = {
@@ -301,8 +294,8 @@ input_tensor = {
       execTest: (inputs: any[], returnVar: any) => `import torch
 from torch import Tensor
 expected = K.enhance.adjust_contrast(input_tensor['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 print(torch.equal(expected, ${returnVar}['value']));`,
 
       getExpectedCode: (
@@ -313,15 +306,14 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.adjust_contrast(input_tensor['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'colorChannel': 'rgb' if ${inputs[1]
+        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
     'channelOrder': 'channelFirst',
     'isMiniBatched': True,
     'intensityRange': '0-1',
@@ -332,7 +324,7 @@ ${execTest(inputs, returnVar)}`,
     },
 
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Adjust_Contrast_With_Mean_subtraction',
       prepareInput: `import torch
 input_tensor = {
@@ -361,16 +353,14 @@ print(torch.equal(expected, ${returnVar}['value']));`,
         execTest: (arg0: any, arg1: any) => any
       ) => `import kornia as K
 ${prepareInput}
-${returnVar} = K.enhance.adjust_contrast_with_mean_subtraction(input_tensor, ${
-        inputs[2]
-      })
+${returnVar} = K.enhance.adjust_contrast_with_mean_subtraction(input_tensor, ${inputs[2]
+        })
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'colorChannel': 'rgb' if ${inputs[1]
+        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
     'channelOrder': 'channelFirst',
     'isMiniBatched': True,
     'intensityRange': '0-1',
@@ -380,7 +370,7 @@ ${returnVar} = {
 ${execTest(inputs, returnVar)}`,
     },
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Adjust_Contrast_With_Mean_subtraction',
       prepareInput: `import torch
 input_tensor = {
@@ -409,16 +399,14 @@ print(torch.equal(expected, ${returnVar}['value']));`,
         execTest: (arg0: any, arg1: any) => any
       ) => `import kornia as K
 ${prepareInput}
-${returnVar} = K.enhance.adjust_contrast_with_mean_subtraction(input_tensor, ${
-        inputs[2]
-      })
+${returnVar} = K.enhance.adjust_contrast_with_mean_subtraction(input_tensor, ${inputs[2]
+        })
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'colorChannel': 'rgb' if ${inputs[1]
+        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
     'channelOrder': 'channelFirst',
     'isMiniBatched': True,
     'intensityRange': '0-1',
@@ -429,7 +417,7 @@ ${execTest(inputs, returnVar)}`,
     },
 
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Adjust_Gamma',
       prepareInput: `import torch
 input_tensor = {
@@ -449,8 +437,8 @@ input_tensor = {
       execTest: (inputs: any[], returnVar: any) => `import torch
 from torch import Tensor
 expected = K.enhance.adjust_gamma(input_tensor['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 print(torch.equal(expected, ${returnVar}['value']));`,
 
       getExpectedCode: (
@@ -461,15 +449,14 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.adjust_gamma(input_tensor['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'colorChannel': 'rgb' if ${inputs[1]
+        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
     'channelOrder': 'channelFirst',
     'isMiniBatched': True,
     'intensityRange': '0-1',
@@ -479,7 +466,7 @@ ${returnVar} = {
 ${execTest(inputs, returnVar)}`,
     },
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Adjust_Gamma',
       prepareInput: `import torch
 input_tensor = {
@@ -499,8 +486,8 @@ input_tensor = {
       execTest: (inputs: any[], returnVar: any) => `import torch
 from torch import Tensor
 expected = K.enhance.adjust_gamma(input_tensor['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 print(torch.equal(expected, ${returnVar}['value']));`,
 
       getExpectedCode: (
@@ -511,15 +498,14 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.adjust_gamma(input_tensor['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'colorChannel': 'rgb' if ${inputs[1]
+        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
     'channelOrder': 'channelFirst',
     'isMiniBatched': True,
     'intensityRange': '0-1',
@@ -530,7 +516,7 @@ ${execTest(inputs, returnVar)}`,
     },
 
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Adjust_Hue',
       prepareInput: `import torch
 input_tensor = {
@@ -575,7 +561,7 @@ ${execTest(inputs, returnVar)}`,
     },
 
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Adjust_Saturation',
       prepareInput: `import torch
 input_tensor = {
@@ -620,7 +606,7 @@ ${execTest(inputs, returnVar)}`,
     },
 
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Adjust_Sigmoid',
       prepareInput: `import torch
 input_tensor = {
@@ -640,8 +626,8 @@ input_tensor = {
       execTest: (inputs: any[], returnVar: any) => `import torch
 from torch import Tensor
 expected = K.enhance.adjust_sigmoid(input_tensor['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 print(torch.equal(expected, ${returnVar}['value']));`,
 
       getExpectedCode: (
@@ -652,15 +638,14 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.adjust_sigmoid(input_tensor['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'colorChannel': 'rgb' if ${inputs[1]
+        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
     'channelOrder': 'channelFirst',
     'isMiniBatched': True,
     'intensityRange': '0-1',
@@ -670,7 +655,7 @@ ${returnVar} = {
 ${execTest(inputs, returnVar)}`,
     },
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Adjust_Sigmoid',
       prepareInput: `import torch
 input_tensor = {
@@ -690,8 +675,8 @@ input_tensor = {
       execTest: (inputs: any[], returnVar: any) => `import torch
 from torch import Tensor
 expected = K.enhance.adjust_sigmoid(input_tensor['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 print(torch.equal(expected, ${returnVar}['value']));`,
 
       getExpectedCode: (
@@ -702,15 +687,14 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.adjust_sigmoid(input_tensor['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'colorChannel': 'rgb' if ${inputs[1]
+        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
     'channelOrder': 'channelFirst',
     'isMiniBatched': True,
     'intensityRange': '0-1',
@@ -721,7 +705,7 @@ ${execTest(inputs, returnVar)}`,
     },
 
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Adjust_Log',
       prepareInput: `import torch
 input_tensor = {
@@ -741,8 +725,8 @@ input_tensor = {
       execTest: (inputs: any[], returnVar: any) => `import torch
 from torch import Tensor
 expected = K.enhance.adjust_log(input_tensor['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 print(torch.equal(expected, ${returnVar}['value']));`,
 
       getExpectedCode: (
@@ -753,15 +737,14 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.adjust_log(input_tensor['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'colorChannel': 'rgb' if ${inputs[1]
+        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
     'channelOrder': 'channelFirst',
     'isMiniBatched': True,
     'intensityRange': '0-1',
@@ -771,7 +754,7 @@ ${returnVar} = {
 ${execTest(inputs, returnVar)}`,
     },
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Adjust_Log',
       prepareInput: `import torch
 input_tensor = {
@@ -791,8 +774,8 @@ input_tensor = {
       execTest: (inputs: any[], returnVar: any) => `import torch
 from torch import Tensor
 expected = K.enhance.adjust_log(input_tensor['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 print(torch.equal(expected, ${returnVar}['value']));`,
 
       getExpectedCode: (
@@ -803,15 +786,14 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.adjust_log(input_tensor['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'colorChannel': 'rgb' if ${inputs[1]
+        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
     'channelOrder': 'channelFirst',
     'isMiniBatched': True,
     'intensityRange': '0-1',
@@ -822,7 +804,7 @@ ${execTest(inputs, returnVar)}`,
     },
 
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Invert',
       prepareInput: `import torch
 input_tensor = {
@@ -866,7 +848,7 @@ ${returnVar} = {
 ${execTest(inputs, returnVar)}`,
     },
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Invert',
       prepareInput: `import torch
 input_tensor = {
@@ -911,7 +893,7 @@ ${execTest(inputs, returnVar)}`,
     },
 
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Posterize',
       prepareInput: `import torch
 input_tensor = {
@@ -955,7 +937,7 @@ ${returnVar} = {
 ${execTest(inputs, returnVar)}`,
     },
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Posterize',
       prepareInput: `import torch
 input_tensor = {
@@ -1000,7 +982,7 @@ ${execTest(inputs, returnVar)}`,
     },
 
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Sharpness',
       prepareInput: `import torch
 input_tensor = {
@@ -1044,7 +1026,7 @@ ${returnVar} = {
 ${execTest(inputs, returnVar)}`,
     },
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Sharpness',
       prepareInput: `import torch
 input_tensor = {
@@ -1089,7 +1071,7 @@ ${execTest(inputs, returnVar)}`,
     },
 
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Solarize',
       prepareInput: `import torch
 input_tensor = {
@@ -1109,8 +1091,8 @@ input_tensor = {
       execTest: (inputs: any[], returnVar: any) => `import torch
 from torch import Tensor
 expected = K.enhance.solarize(input_tensor['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 print(torch.equal(expected, ${returnVar}['value']));`,
 
       getExpectedCode: (
@@ -1121,15 +1103,14 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.solarize(input_tensor['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'colorChannel': 'rgb' if ${inputs[1]
+        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
     'channelOrder': 'channelFirst',
     'isMiniBatched': True,
     'intensityRange': '0-1',
@@ -1140,7 +1121,7 @@ ${execTest(inputs, returnVar)}`,
     },
 
     {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
+      jsonPath: 'src/NodeTypeExtension/kornia/adjustment.json',
       nodeName: 'Solarize',
       prepareInput: `import torch
 input_tensor = {
@@ -1160,8 +1141,8 @@ input_tensor = {
       execTest: (inputs: any[], returnVar: any) => `import torch
 from torch import Tensor
 expected = K.enhance.solarize(input_tensor['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 print(torch.equal(expected, ${returnVar}['value']));`,
 
       getExpectedCode: (
@@ -1172,15 +1153,14 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.solarize(input_tensor['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'colorChannel': 'rgb' if ${inputs[1]
+        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
     'channelOrder': 'channelFirst',
     'isMiniBatched': True,
     'intensityRange': '0-1',

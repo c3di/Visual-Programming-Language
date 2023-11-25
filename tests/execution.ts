@@ -10,7 +10,7 @@ const unlinkAsync = promisify(unlink);
 const execAsync = promisify(exec);
 
 // todo search the path to your Anaconda installation
-const anacondaPath = 'C:\\Users\\fech01-admin\\anaconda3';
+const anacondaPath = 'C:\\Users\\luwa02\\AppData\\Local\\anaconda3';
 
 const condaEnvName = `temp_conda_env_for_chaldene_test`;
 

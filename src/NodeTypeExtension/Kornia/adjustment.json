@@ -7,7 +7,7 @@
       "title": "add weighted",
       "tooltip": "Calculate the weighted sum of two Tensors.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.enhance.add_weighted(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType':: 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.enhance.add_weighted(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}['value'], ${inputs.slice(4).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -22,7 +22,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": [
@@ -50,7 +53,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": [
@@ -101,7 +107,7 @@
       "title": "adjust brightness",
       "tooltip": "Adjust the brightness of an image tensor.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.enhance.adjust_brightness(${inputs[1]}, ${inputs[2]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType':: 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': False,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.enhance.adjust_brightness(${inputs[1]}, ${inputs[2]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': 'True' if input_tensor['metadata']['isMiniBatched'] == True else 'False',\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -116,7 +122,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": [
@@ -161,7 +170,7 @@
       "title": "adjust contrast",
       "tooltip": "Adjust the brightness of an image tensor.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.enhance.adjust_contrast(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType':: 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': False,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.enhance.adjust_contrast(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': False,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -176,7 +185,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": [
@@ -227,7 +239,7 @@
       "title": "adjust contrast with mean subtraction",
       "tooltip": "Adjust the contrast of an image tensor by subtracting the mean over channels.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.enhance.adjust_contrast_with_mean_subtraction(${inputs[1]}, ${inputs[2]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType':: 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': False,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.enhance.adjust_contrast_with_mean_subtraction(${inputs[1]}, ${inputs[2]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': False,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -242,7 +254,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": [
@@ -287,7 +302,7 @@
       "title": "adjust gamma",
       "tooltip": "Perform gamma correction on an image.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.enhance.adjust_gamma(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType':: 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': False,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.enhance.adjust_gamma(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': False,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -302,7 +317,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": [
@@ -479,7 +497,7 @@
       "title": "adjust sigmoid",
       "tooltip": "Adjust sigmoid correction on the input image tensor.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.enhance.adjust_sigmoid(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType':: 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': False,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.enhance.adjust_sigmoid(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': False,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -494,7 +512,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": [
@@ -551,7 +572,7 @@
       "title": "adjust log",
       "tooltip": "Adjust log correction on the input image tensor.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.enhance.adjust_log(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType':: 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': False,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.enhance.adjust_log(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': False,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -566,7 +587,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": [
@@ -623,7 +647,7 @@
       "title": "invert",
       "tooltip": "Invert the values of an input image tensor by its maximum value.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.enhance.invert(${inputs[1]}, ${inputs[2]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType':: 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.enhance.invert(${inputs[1]}, ${inputs[2]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -638,7 +662,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": [
@@ -683,7 +710,7 @@
       "title": "posterize",
       "tooltip": "Reduce the number of bits for each color channel.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.enhance.posterize(${inputs[1]}, ${inputs[2]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType':: 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': False,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.enhance.posterize(${inputs[1]}, ${inputs[2]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': False,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -698,7 +725,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": [
@@ -743,7 +773,7 @@
       "title": "sharpness",
       "tooltip": "Apply sharpness to the input tensor.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.enhance.sharpness(${inputs[1]}, ${inputs[2]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType':: 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': False,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.enhance.sharpness(${inputs[1]}, ${inputs[2]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': False,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -758,7 +788,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": [
@@ -803,7 +836,7 @@
       "title": "solarize",
       "tooltip": "For each pixel in the image less than threshold,we add 'addition' amount to it and then clip the pixel value to be between 0 and 1.0.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.enhance.solarize(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType':: 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': False,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.enhance.solarize(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': False,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -818,7 +851,10 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": ["rgb", "grayscale"],
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
                 "intensityRange": [
