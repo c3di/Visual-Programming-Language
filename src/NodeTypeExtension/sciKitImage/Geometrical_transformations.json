@@ -7,8 +7,7 @@
       "title": "swirl",
       "tooltip": "Image swirling is a non-linear image deformation that creates a whirlpool effect.",
       "externalImports": "from skimage.transform import swirl",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = swirl({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}},{{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}},{{{inputs.9}}},{{{inputs.10}}},{{{inputs.11}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}, 'dataType': 'numpy.ndarray'}\n{{{outputs.0}}}",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = swirl(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, ${inputs[9]}, ${inputs[10]}, ${inputs[11]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  let outputMetadata;\r\n\r\n  // Assuming inputs[1] contains the metadata of the previous node's output\r\n  const metadata = inputs[1].metadata;\r\n\r\n  if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-1') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-1'};\r\n  } else if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-255') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'rgb') {\r\n    outputMetadata = {'colorChannel': 'rgb', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'bgr') {\r\n    outputMetadata = {'colorChannel': 'bgr', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  }\r\n\r\n  const code = `${outputs[1]} = swirl(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, ${inputs[9]}, ${inputs[10]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': outputMetadata\r\n}\r\n${outputs[0]}`;\r\n\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -20,7 +19,33 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray"
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-1"
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              }
+            ]
           },
           "tooltip": "The input image for swirl"
         },
@@ -79,7 +104,7 @@
           "tooltip": "Whether to clip the output to the range of values of the input image."
         },
         "preserve_range": {
-          "title": "clip",
+          "title": "preserve_range",
           "dataType": "boolean",
           "defaultValue": false,
           "tooltip": "Whether to keep the original range of values."
@@ -96,7 +121,33 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray"
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-1"
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              }
+            ]
           },
           "tooltip": "Swirled version of the input."
         }
@@ -108,8 +159,7 @@
       "title": "rescale",
       "tooltip": "Scale image by a certain factor.",
       "externalImports": "from skimage.transform import rescale",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = rescale({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}},{{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}},{{{inputs.9}}},{{{inputs.10}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}, 'dataType': 'numpy.ndarray'}\n{{{outputs.0}}}",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = rescale(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, ${inputs[9]}, ${inputs[10]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  let outputMetadata;\r\n\r\n  // Assuming inputs[1] contains the metadata of the previous node's output\r\n  const metadata = inputs[1].metadata;\r\n\r\n  if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-1') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-1'};\r\n  } else if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-255') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'rgb') {\r\n    outputMetadata = {'colorChannel': 'rgb', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'bgr') {\r\n    outputMetadata = {'colorChannel': 'bgr', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  }\r\n\r\n  const code = `${outputs[1]} = rescale(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, ${inputs[9]}, ${inputs[10]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': outputMetadata\r\n}\r\n${outputs[0]}`;\r\n\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -121,7 +171,33 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray"
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-1"
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              }
+            ]
           },
           "tooltip": "The input image for rescale"
         },
@@ -190,7 +266,33 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray"
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-1"
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              }
+            ]
           },
           "tooltip": "Scaled version of the input."
         }
@@ -202,8 +304,7 @@
       "title": "resize",
       "tooltip": "Resize image to match a certain size.",
       "externalImports": "from skimage.transform import resize",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = resize({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}},{{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}},{{{inputs.9}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}, 'dataType': 'numpy.ndarray'}\n{{{outputs.0}}}",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = resize(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, ${inputs[9]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  let outputMetadata;\r\n\r\n  // Assuming inputs[1] contains the metadata of the previous node's output\r\n  const metadata = inputs[1].metadata;\r\n\r\n  if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-1') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-1'};\r\n  } else if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-255') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'rgb') {\r\n    outputMetadata = {'colorChannel': 'rgb', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'bgr') {\r\n    outputMetadata = {'colorChannel': 'bgr', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  }\r\n\r\n  const code = `${outputs[1]} = resize(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, ${inputs[9]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': outputMetadata\r\n}\r\n${outputs[0]}`;\r\n\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -215,7 +316,33 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray"
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-1"
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              }
+            ]
           },
           "tooltip": "The input image for resize"
         },
@@ -278,7 +405,33 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray"
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-1"
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              }
+            ]
           },
           "tooltip": "Resized version of the input."
         }
@@ -290,8 +443,7 @@
       "title": "downscale",
       "tooltip": "Down-sample N-dimensional image by local averaging.",
       "externalImports": "from skimage.transform import downscale_local_mean",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = downscale_local_mean({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}, 'dataType': 'numpy.ndarray'}\n{{{outputs.0}}}",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = downscale_local_mean(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  let outputMetadata;\r\n\r\n  // Assuming inputs[1] contains the metadata of the previous node's output\r\n  const metadata = inputs[1].metadata;\r\n\r\n  if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-1') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-1'};\r\n  } else if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-255') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'rgb') {\r\n    outputMetadata = {'colorChannel': 'rgb', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'bgr') {\r\n    outputMetadata = {'colorChannel': 'bgr', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  }\r\n\r\n  const code = `${outputs[1]} = downscale_local_mean(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': outputMetadata\r\n}\r\n${outputs[0]}`;\r\n\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -303,7 +455,33 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray"
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-1"
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              }
+            ]
           },
           "tooltip": "N-dimensional input image for downscale."
         },
@@ -322,7 +500,7 @@
           "title": "clip",
           "dataType": "boolean",
           "defaultValue": true,
-          "tooltip": "Unused, but kept here for API consistency with the other transforms in this module. "
+          "tooltip": "Unused, but kept here for API consistency with the other transforms in this module."
         }
       },
       "outputs": {
@@ -336,7 +514,33 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray"
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-1"
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              }
+            ]
           },
           "tooltip": "Down-sampled image with same number of dimensions as input image."
         }

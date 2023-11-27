@@ -6,8 +6,8 @@
       "category": "function",
       "title": "white top hat",
       "tooltip": "The white top hat of an image is defined as the image minus its morphological opening. ",
-      "externalImports": "from skimage import morphology",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = morphology.white_tophat({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "externalImports": "from skimage.morphology import white_tophat",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  let outputMetadata;\r\n\r\n  // Assuming inputs[1] contains the metadata of the previous node's output\r\n  const metadata = inputs[1].metadata;\r\n\r\n  if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-1') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-1'};\r\n  } else if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-255') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'rgb') {\r\n    outputMetadata = {'colorChannel': 'rgb', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'bgr') {\r\n    outputMetadata = {'colorChannel': 'bgr', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  }\r\n\r\n  const code = `${outputs[1]} = white_tophat(${inputs[1]}, ${inputs[2]}, ${inputs[3]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': outputMetadata\r\n}\r\n${outputs[0]}`;\r\n\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -22,14 +22,44 @@
             "dataType": "numpy.ndarray",
             "metadata": [
               {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
                 "intensityRange": "0-1"
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
               }
             ]
           },
           "tooltip": "Image array."
+        },
+        "footprint": {
+          "title": "footprint",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "The neighborhood expressed as a 2-D array of 1’s and 0’s."
+        },
+        "out": {
+          "title": "out",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "The array to store the result of the morphology."
         }
       },
       "outputs": {
@@ -43,7 +73,33 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray"
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-1"
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              }
+            ]
           },
           "tooltip": "The result of the morphological white top hat."
         }
@@ -53,9 +109,9 @@
       "type": "Black_Tophat",
       "category": "function",
       "title": "black top hat",
-      "tooltip": "The black top hat of an image is defined as its morphological closing minus the original image. ",
-      "externalImports": "from skimage import morphology",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = black_tophat({{{inputs.1}}},{{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "tooltip": "The black top hat of an image is defined as its morphological closing minus the original image.",
+      "externalImports": "from skimage.morphology import black_tophat",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  let outputMetadata;\r\n\r\n  // Assuming inputs[1] contains the metadata of the previous node's output\r\n  const metadata = inputs[1].metadata;\r\n\r\n  if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-1') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-1'};\r\n  } else if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-255') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'rgb') {\r\n    outputMetadata = {'colorChannel': 'rgb', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'bgr') {\r\n    outputMetadata = {'colorChannel': 'bgr', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  }\r\n\r\n  const code = `${outputs[1]} = black_tophat(${inputs[1]}, ${inputs[2]}, ${inputs[3]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': outputMetadata\r\n}\r\n${outputs[0]}`;\r\n\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -70,14 +126,44 @@
             "dataType": "numpy.ndarray",
             "metadata": [
               {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
                 "intensityRange": "0-1"
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
               }
             ]
           },
           "tooltip": "Image array."
+        },
+        "footprint": {
+          "title": "footprint",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "The neighborhood expressed as a 2-D array of 1’s and 0’s."
+        },
+        "out": {
+          "title": "out",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "The array to store the result of the morphology."
         }
       },
       "outputs": {
@@ -91,7 +177,33 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray"
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-1"
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              }
+            ]
           },
           "tooltip": "The result of the morphological black top hat."
         }
@@ -101,9 +213,9 @@
       "type": "Hysteresis_Threshold",
       "category": "function",
       "title": "hysteresis threshold",
-      "tooltip": "Apply hysteresis thresholding to image.",
-      "externalImports": "from skimage import filters",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = filters.apply_hysteresis_threshold({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "tooltip": "Apply hysteresis thresholding to image.",
+      "externalImports": "from skimage.filters import apply_hysteresis_threshold",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = apply_hysteresis_threshold(${inputs[1]}, ${inputs[2]}, ${inputs[3]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -118,10 +230,10 @@
             "dataType": "numpy.ndarray",
             "metadata": [
               {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
               }
             ]
           },
@@ -130,13 +242,11 @@
         "low": {
           "title": "low",
           "dataType": "float",
-          "defaultValue": 1.5,
           "tooltip": "Lower threshold."
         },
         "high": {
           "title": "high",
           "dataType": "float",
-          "defaultValue": 2.5,
           "tooltip": "Higher threshold."
         }
       },
@@ -151,9 +261,17 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray"
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-1"
+              }
+            ]
           },
-          "tooltip": "Array in which True indicates the locations where image was above the hysteresis threshold."
+          "tooltip": "Array in which True indicates the locations where image was above the hysteresis threshold."
         }
       }
     },
@@ -163,7 +281,7 @@
       "title": "unsharp mask",
       "tooltip": "Unsharp masking filter.",
       "externalImports": "from skimage.filters import unsharp_mask",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = unsharp_mask({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  let outputMetadata;\r\n\r\n  // Assuming inputs[1] contains the metadata of the previous node's output\r\n  const metadata = inputs[1].metadata;\r\n\r\n  if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-1') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-1'};\r\n  } else if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-255') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'rgb') {\r\n    outputMetadata = {'colorChannel': 'rgb', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'bgr') {\r\n    outputMetadata = {'colorChannel': 'bgr', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  }\r\n\r\n  const code = `${outputs[1]} = unsharp_mask(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': outputMetadata\r\n}\r\n${outputs[0]}`;\r\n\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -178,26 +296,56 @@
             "dataType": "numpy.ndarray",
             "metadata": [
               {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
                 "intensityRange": "0-1"
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
               }
             ]
           },
           "tooltip": "Image array."
         },
         "radius": {
-          "title": "low",
+          "title": "radius",
           "dataType": "float",
-          "defaultValue": 20.0,
+          "defaultValue": 1.0,
           "tooltip": "The radius is used for all dimensions."
         },
         "amount": {
-          "title": "high",
+          "title": "amount",
           "dataType": "float",
           "defaultValue": 1.0,
           "tooltip": "The details will be amplified with this factor."
+        },
+        "preserve_range": {
+          "title": "preserve_range",
+          "dataType": "boolean",
+          "defaultValue": false,
+          "tooltip": "Whether to keep the original range of values."
+        },
+        "channel_axis": {
+          "title": "channel_axis",
+          "dataType": "integer",
+          "defaultValue": "None",
+          "tooltip": "If None, the image is assumed to be a grayscale (single channel) image. Otherwise, this parameter indicates which axis of the array corresponds to channels."
         }
       },
       "outputs": {
@@ -211,7 +359,33 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray"
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-1"
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              }
+            ]
           },
           "tooltip": "Image with unsharp mask applied."
         }
@@ -222,8 +396,8 @@
       "category": "function",
       "title": "mean percentile",
       "tooltip": "Return local mean of an image.",
-      "externalImports": "from skimage.filters import rank",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = rank.mean_percentile({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}},{{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "externalImports": "from skimage.filters.rank import mean_percentile",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = mean_percentile(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-255',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -238,14 +412,14 @@
             "dataType": "numpy.ndarray",
             "metadata": [
               {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
               }
             ]
           },
-          "tooltip": "Input image."
+          "tooltip": "Input image. (uint8, uint16)"
         },
         "footprint": {
           "title": "footprint",
@@ -268,13 +442,13 @@
         "shift_x": {
           "title": "shift_x",
           "dataType": "integer",
-          "defaultValue": "None",
+          "defaultValue": 0,
           "tooltip": "Offset added to the footprint center point. Shift is bounded to the footprint sizes (center must be inside the given footprint)."
         },
         "shift_y": {
           "title": "shift_y",
           "dataType": "integer",
-          "defaultValue": "None",
+          "defaultValue": 0,
           "tooltip": "Offset added to the footprint center point. Shift is bounded to the footprint sizes (center must be inside the given footprint)."
         },
         "p0": {
@@ -301,9 +475,17 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray"
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              }
+            ]
           },
-          "tooltip": "Image with local mean applied."
+          "tooltip": "Image with local mean applied."
         }
       }
     },
@@ -312,8 +494,8 @@
       "category": "function",
       "title": "mean bilateral",
       "tooltip": "Apply a flat kernel bilateral filter. This is an edge-preserving and noise reducing denoising filter.",
-      "externalImports": "from skimage.filters import rank",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = rank.mean_bilateral({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}},{{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "externalImports": "from skimage.filters.rank import mean_bilateral",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = mean_bilateral(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-255',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -328,14 +510,14 @@
             "dataType": "numpy.ndarray",
             "metadata": [
               {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
               }
             ]
           },
-          "tooltip": "Input image."
+          "tooltip": "Input image.(uint8, uint16)"
         },
         "footprint": {
           "title": "footprint",
@@ -358,25 +540,25 @@
         "shift_x": {
           "title": "shift_x",
           "dataType": "integer",
-          "defaultValue": "None",
+          "defaultValue": 0,
           "tooltip": "Offset added to the footprint center point. Shift is bounded to the footprint sizes (center must be inside the given footprint)."
         },
         "shift_y": {
           "title": "shift_y",
           "dataType": "integer",
-          "defaultValue": "None",
+          "defaultValue": 0,
           "tooltip": "Offset added to the footprint center point. Shift is bounded to the footprint sizes (center must be inside the given footprint)."
         },
         "s0": {
           "title": "s0",
           "dataType": "integer",
-          "defaultValue": 500,
+          "defaultValue": 10,
           "tooltip": "Define the [s0, s1] interval around the grayvalue of the center pixel to be considered for computing the value."
         },
         "s1": {
           "title": "s1",
           "dataType": "integer",
-          "defaultValue": 500,
+          "defaultValue": 10,
           "tooltip": "Define the [s0, s1] interval around the grayvalue of the center pixel to be considered for computing the value."
         }
       },
@@ -391,7 +573,15 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray"
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              }
+            ]
           },
           "tooltip": "Output image."
         }
@@ -402,8 +592,8 @@
       "category": "function",
       "title": "mean",
       "tooltip": "Return local mean of an image.",
-      "externalImports": "from skimage.filters import rank",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = rank.mean({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}},{{{inputs.6}}},{{{inputs.7}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "externalImports": "from skimage.filters.rank import mean",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = mean(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-255',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -418,14 +608,14 @@
             "dataType": "numpy.ndarray",
             "metadata": [
               {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
               }
             ]
           },
-          "tooltip": "Input image."
+          "tooltip": "Input image.(uint8, uint16)"
         },
         "footprint": {
           "title": "footprint",
@@ -448,19 +638,19 @@
         "shift_x": {
           "title": "shift_x",
           "dataType": "integer",
-          "defaultValue": "None",
+          "defaultValue": 0,
           "tooltip": "Offset added to the footprint center point. Shift is bounded to the footprint sizes (center must be inside the given footprint)."
         },
         "shift_y": {
           "title": "shift_y",
           "dataType": "integer",
-          "defaultValue": "None",
+          "defaultValue": 0,
           "tooltip": "Offset added to the footprint center point. Shift is bounded to the footprint sizes (center must be inside the given footprint)."
         },
         "shift_z": {
           "title": "shift_z",
           "dataType": "integer",
-          "defaultValue": "None",
+          "defaultValue": 0,
           "tooltip": "Offset added to the footprint center point. Shift is bounded to the footprint sizes (center must be inside the given footprint)."
         }
       },
@@ -475,7 +665,15 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray"
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              }
+            ]
           },
           "tooltip": "Output image."
         }
@@ -487,7 +685,7 @@
       "title": "denoise tv chambolle",
       "tooltip": "Perform total variation denoising in nD.",
       "externalImports": "from skimage.restoration import denoise_tv_chambolle",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = denoise_tv_chambolle({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  let outputMetadata;\r\n\r\n  // Assuming inputs[1] contains the metadata of the previous node's output\r\n  const metadata = inputs[1].metadata;\r\n\r\n  if (metadata.colorChannel === 'grayscale') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'rgb') {\r\n    outputMetadata = {'colorChannel': 'rgb', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'bgr') {\r\n    outputMetadata = {'colorChannel': 'bgr', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  }\r\n\r\n  const code = `${outputs[1]} = denoise_tv_chambolle(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': outputMetadata\r\n}\r\n${outputs[0]}`;\r\n\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -502,14 +700,32 @@
             "dataType": "numpy.ndarray",
             "metadata": [
               {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
                 "intensityRange": "0-1"
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
               }
             ]
           },
-          "tooltip": "Input image to be denoised."
+          "tooltip": "Input image to be denoised."
         },
         "weight": {
           "title": "weight",
@@ -520,20 +736,20 @@
         "eps": {
           "title": "eps",
           "dataType": "float",
-          "defaultValue": "None",
-          "tooltip": "Tolerance for the stop criterion"
+          "defaultValue": 0.0002,
+          "tooltip": "Tolerance for the stop criterion"
         },
         "max_num_iter": {
           "title": "max_num_iter",
           "dataType": "integer",
-          "defaultValue": 20,
+          "defaultValue": 200,
           "tooltip": "Maximal number of iterations used for the optimization."
         },
         "channel_axis": {
           "title": "channel_axis",
           "dataType": "integer",
-          "defaultValue": -1,
-          "tooltip": "If None, the image is assumed to be grayscale (single-channel). Otherwise, this parameter indicates which axis of the array corresponds to channels."
+          "defaultValue": "None",
+          "tooltip": "If None, the image is assumed to be grayscale (single-channel). Otherwise, this parameter indicates which axis of the array corresponds to channels."
         }
       },
       "outputs": {
@@ -547,7 +763,27 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray"
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              }
+            ]
           },
           "tooltip": "Denoised image."
         }
@@ -559,7 +795,7 @@
       "title": "denoise bilateral filter",
       "tooltip": "Denoise image using bilateral filter.",
       "externalImports": "from skimage.restoration import denoise_bilateral",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = denoise_bilateral({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}},{{{inputs.6}}},{{{inputs.7}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  let outputMetadata;\r\n\r\n  // Assuming inputs[1] contains the metadata of the previous node's output\r\n  const metadata = inputs[1].metadata;\r\n\r\n  if (metadata.colorChannel === 'grayscale') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'rgb') {\r\n    outputMetadata = {'colorChannel': 'rgb', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'bgr') {\r\n    outputMetadata = {'colorChannel': 'bgr', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  }\r\n\r\n  const code = `${outputs[1]} = denoise_bilateral(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': outputMetadata\r\n}\r\n${outputs[0]}`;\r\n\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -574,37 +810,55 @@
             "dataType": "numpy.ndarray",
             "metadata": [
               {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
                 "intensityRange": "0-1"
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
               }
             ]
           },
-          "tooltip": "Input image to be denoised."
+          "tooltip": "Input image to be denoised."
         },
         "win_size": {
           "title": "win_size",
           "dataType": "integer",
           "defaultValue": "None",
-          "tooltip": "Window size for filtering. If win_size is not specified, it is calculated as max(5, 2 * ceil(3 * sigma_spatial) + 1)."
+          "tooltip": "Window size for filtering. If win_size is not specified, it is calculated as max(5, 2 * ceil(3 * sigma_spatial) + 1)."
         },
         "sigma_color": {
           "title": "sigma_color",
           "dataType": "float",
-          "defaultValue": 0.05,
-          "tooltip": "Standard deviation for grayvalue/color distance (radiometric similarity). "
+          "defaultValue": "None",
+          "tooltip": "Standard deviation for grayvalue/color distance (radiometric similarity)."
         },
         "sigma_spatial": {
-          "title": "sigma_color",
+          "title": "sigma_spatial",
           "dataType": "float",
-          "defaultValue": 15.0,
+          "defaultValue": 1.0,
           "tooltip": "Standard deviation for range distance."
         },
         "bins": {
           "title": "bins",
           "dataType": "integer",
-          "defaultValue": "None",
+          "defaultValue": 10000,
           "tooltip": "Number of discrete values for Gaussian weights of color filtering."
         },
         "mode": {
@@ -616,14 +870,14 @@
         "cval": {
           "title": "cval",
           "dataType": "float",
-          "defaultValue": "None",
+          "defaultValue": 0.0,
           "tooltip": "Used in conjunction with mode 'constant', the value outside the image boundaries."
         },
         "channel_axis": {
           "title": "channel_axis",
           "dataType": "integer",
-          "defaultValue": -1,
-          "tooltip": "If None, the image is assumed to be grayscale (single-channel). Otherwise, this parameter indicates which axis of the array corresponds to channels."
+          "defaultValue": "None",
+          "tooltip": "If None, the image is assumed to be grayscale (single-channel). Otherwise, this parameter indicates which axis of the array corresponds to channels."
         }
       },
       "outputs": {
@@ -637,7 +891,27 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray"
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              }
+            ]
           },
           "tooltip": "Denoised image."
         }
@@ -649,7 +923,7 @@
       "title": "denoise wavelet filter",
       "tooltip": "Denoise image using wavelet filter.",
       "externalImports": "from skimage.restoration import denoise_wavelet",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = denoise_wavelet({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}},{{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  let outputMetadata;\r\n\r\n  // Assuming inputs[1] contains the metadata of the previous node's output\r\n  const metadata = inputs[1].metadata;\r\n\r\n  if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-255') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'rgb') {\r\n    outputMetadata = {'colorChannel': 'rgb', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'bgr') {\r\n    outputMetadata = {'colorChannel': 'bgr', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  }\r\n\r\n  const code = `${outputs[1]} = denoise_wavelet(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, ${inputs[9]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': outputMetadata\r\n}\r\n${outputs[0]}`;\r\n\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -664,31 +938,43 @@
             "dataType": "numpy.ndarray",
             "metadata": [
               {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
                 "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
               }
             ]
           },
-          "tooltip": "Input image to be denoised."
-        },
+          "tooltip": "Input image to be denoised."
+        }, 
         "sigma": {
           "title": "sigma",
           "dataType": "float",
           "defaultValue": "None",
-          "tooltip": "The noise standard deviation used when computing the wavelet detail coefficient threshold(s). "
+          "tooltip": "The noise standard deviation used when computing the wavelet detail coefficient threshold(s)."
         },
         "wavelet": {
           "title": "wavelet",
           "dataType": "string",
           "defaultValue": "db1",
-          "tooltip": "The type of wavelet to perform and can be any of the options pywt.wavelist outputs. "
+          "tooltip": "The type of wavelet to perform and can be any of the options pywt.wavelist outputs. "
         },
         "mode": {
           "title": "mode",
           "dataType": "string",
-          "defaultValue": "None",
+          "defaultValue": "soft",
           "tooltip": "An optional argument to choose the type of denoising performed,{'soft', 'hard'},"
         },
         "wavelet_levels": {
@@ -700,8 +986,8 @@
         "convert2ycbcr": {
           "title": "convert2ycbcr",
           "dataType": "boolean",
-          "defaultValue": "None",
-          "tooltip": "If True and channel_axis is set, do the wavelet denoising in the YCbCr colorspace instead of the RGB color space. "
+          "defaultValue": false,
+          "tooltip": "If True and channel_axis is set, do the wavelet denoising in the YCbCr colorspace instead of the RGB color space."
         },
         "method": {
           "title": "method",
@@ -712,14 +998,14 @@
         "rescale_sigma": {
           "title": "rescale_sigma",
           "dataType": "boolean",
-          "defaultValue": "None",
-          "tooltip": "If False, no rescaling of the user-provided sigma will be performed. "
+          "defaultValue": true,
+          "tooltip": "If False, no rescaling of the user-provided sigma will be performed."
         },
         "channel_axis": {
           "title": "channel_axis",
           "dataType": "integer",
-          "defaultValue": -1,
-          "tooltip": "If None, the image is assumed to be grayscale (single-channel). Otherwise, this parameter indicates which axis of the array corresponds to channels."
+          "defaultValue": "None",
+          "tooltip": "If None, the image is assumed to be grayscale (single-channel). Otherwise, this parameter indicates which axis of the array corresponds to channels."
         }
       },
       "outputs": {
@@ -733,7 +1019,27 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray"
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              }
+            ]
           },
           "tooltip": "Denoised image."
         }
@@ -745,7 +1051,7 @@
       "title": "img_as_unit",
       "tooltip": "Convert an image to 16-bit unsigned integer format.",
       "externalImports": "from skimage.util import img_as_uint",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = img_as_uint({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  let outputMetadata;\r\n\r\n  // Assuming inputs[1] contains the metadata of the previous node's output\r\n  const metadata = inputs[1].metadata;\r\n\r\n  if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-1') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': [0, 65535]};\r\n  } else if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-255') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-65535'};\r\n  } else if (metadata.colorChannel === 'rgb') {\r\n    outputMetadata = {'colorChannel': 'rgb', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-65535'};\r\n  } else if (metadata.colorChannel === 'bgr') {\r\n    outputMetadata = {'colorChannel': 'bgr', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-65535'};\r\n  }\r\n\r\n  const code = `${outputs[1]} = img_as_uint(${inputs[1]}, ${inputs[2]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': outputMetadata\r\n}\r\n${outputs[0]}`;\r\n\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -760,14 +1066,38 @@
             "dataType": "numpy.ndarray",
             "metadata": [
               {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
                 "intensityRange": "0-1"
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
               }
             ]
           },
           "tooltip": "Input image"
+        },
+        "force_copy": {
+          "title": "force_copy",
+          "dataType": "boolean",
+          "defaultValue": false,
+          "tooltip": "Force a copy of the data, irrespective of its current dtype."
         }
       },
       "outputs": {
@@ -781,7 +1111,33 @@
           "title": "image",
           "dataType": "image",
           "defaultValue": {
-            "dataType": "numpy.ndarray"
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": [0, 65535]
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-65535"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-65535"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-65535"
+              }
+            ]
           },
           "tooltip": "Output image of uint16."
         }
@@ -793,7 +1149,7 @@
       "title": "morphology_disk",
       "tooltip": "Generates a flat, disk-shaped footprint.",
       "externalImports": "from skimage.morphology import disk",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = disk({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = disk(${inputs[1]}, ${inputs[2]}, ${inputs[3], ${inputs[4]}, ${inputs[4]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",      
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -804,8 +1160,25 @@
         "radius": {
           "title": "radius",
           "dataType": "integer",
-          "defaultValue": "None",
           "tooltip": "The radius of the disk-shaped footprint."
+        },
+        "dtype": {
+          "title": "dtype",
+          "dataType": "anyDataType",
+          "defaultValue": "np.uint8",
+          "tooltip": "The data type of the footprint."
+        },
+        "strict_radius": {
+          "title": "strict_radius",
+          "dataType": "boolean",
+          "defaultValue": true,
+          "tooltip": "If False, extend the radius by 0.5. This allows the circle to expand further within a cube that remains of size 2 * radius + 1 along each axis."
+        },
+        "decomposition": {
+          "title": "decomposition",
+          "dataType": "string",
+          "defaultValue": "None",
+          "tooltip": "If None, a single array is returned. For ‘sequence’, a tuple of smaller footprints is returned."
         }
       },
       "outputs": {
@@ -818,7 +1191,6 @@
         "footprint": {
           "title": "footprint",
           "dataType": "numpy.ndarray",
-          "defaultValue": "None",
           "tooltip": "The footprint where elements of the neighborhood are 1 and 0 otherwise."
         }
       }
