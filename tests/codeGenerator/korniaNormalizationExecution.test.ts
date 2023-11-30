@@ -44,9 +44,9 @@ input_tensor1 = {
       execTest: (inputs: any[], returnVar: any) => `import torch
 from torch import Tensor
 expected = K.enhance.normalize(input_tensor1['value'], ${inputs
-        .slice(2)
-        .join(', ')})
-print(torch.equal(expected[0], ${returnVar}['value'][0]) and torch.equal(expected[1], ${returnVar}['value'][1]));`,
+          .slice(2)
+          .join(', ')})
+print(torch.equal(expected, ${returnVar}['value']));`,
 
       getExpectedCode: (
         inputs: any[],
@@ -56,15 +56,14 @@ print(torch.equal(expected[0], ${returnVar}['value'][0]) and torch.equal(expecte
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.normalize(input_tensor1['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
-    'colorChannel': 'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'colorChannel': 'rgb' if ${inputs[1]
+        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
     'channelOrder': 'channelFirst',
     'isMiniBatched': True,
     'intensityRange': '0-1',
@@ -94,9 +93,9 @@ input_tensor1 = {
       execTest: (inputs: any[], returnVar: any) => `import torch
 from torch import Tensor
 expected = K.enhance.normalize(input_tensor1['value'], ${inputs
-        .slice(2)
-        .join(', ')})
-print(torch.equal(expected[0], ${returnVar}['value'][0]) and torch.equal(expected[1], ${returnVar}['value'][1]));`,
+          .slice(2)
+          .join(', ')})
+print(torch.equal(expected, ${returnVar}['value']));`,
 
       getExpectedCode: (
         inputs: any[],
@@ -106,15 +105,14 @@ print(torch.equal(expected[0], ${returnVar}['value'][0]) and torch.equal(expecte
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.normalize(input_tensor1['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
-    'colorChannel': 'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'colorChannel': 'rgb' if ${inputs[1]
+        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
     'channelOrder': 'channelFirst',
     'isMiniBatched': True,
     'intensityRange': '0-1',
@@ -145,8 +143,8 @@ input_tensor1 = {
       execTest: (inputs: any[], returnVar: any) => `import torch
 from torch import Tensor
 expected = K.enhance.normalize_min_max(input_tensor1['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 print(torch.equal(expected, ${returnVar}['value']));`,
 
       getExpectedCode: (
@@ -157,15 +155,14 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.normalize_min_max(input_tensor1['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'colorChannel': 'rgb' if ${inputs[1]
+        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
     'channelOrder': 'channelFirst',
     'isMiniBatched': True,
     'intensityRange': '0-1',
@@ -195,8 +192,8 @@ input_tensor1 = {
       execTest: (inputs: any[], returnVar: any) => `import torch
 from torch import Tensor
 expected = K.enhance.normalize_min_max(input_tensor1['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 print(torch.equal(expected, ${returnVar}['value']));`,
 
       getExpectedCode: (
@@ -207,15 +204,14 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.normalize_min_max(input_tensor1['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'colorChannel': 'rgb' if ${inputs[1]
+        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
     'channelOrder': 'channelFirst',
     'isMiniBatched': True,
     'intensityRange': '0-1',
@@ -246,8 +242,8 @@ input_tensor1 = {
       execTest: (inputs: any[], returnVar: any) => `import torch
 from torch import Tensor
 expected = K.enhance.denormalize(input_tensor1['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 print(torch.equal(expected, ${returnVar}['value']));`,
 
       getExpectedCode: (
@@ -258,15 +254,14 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.denormalize(input_tensor1['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'colorChannel': 'rgb' if ${inputs[1]
+        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
     'channelOrder': 'channelFirst',
     'isMiniBatched': True,
     'intensityRange': '0-1',
@@ -301,8 +296,8 @@ input_tensor1 = {
       execTest: (inputs: any[], returnVar: any) => `import torch
 from torch import Tensor
 expected = K.enhance.denormalize(input_tensor1['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 print(torch.equal(expected, ${returnVar}['value']));`,
 
       getExpectedCode: (
@@ -313,15 +308,14 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.denormalize(input_tensor1['value'], ${inputs
-        .slice(2)
-        .join(', ')})
+          .slice(2)
+          .join(', ')})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'torch.tensor',
   'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
+    'colorChannel': 'rgb' if ${inputs[1]
+        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
     'channelOrder': 'channelFirst',
     'isMiniBatched': True,
     'intensityRange': '0-1',
