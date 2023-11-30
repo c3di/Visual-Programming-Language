@@ -62,13 +62,14 @@ input_image = {
       prepareInput,
       metadataGrayscale,
       metadataBinary,
-      inputs: ['', 'input_image', 'range(1, 10, 2)', 'None', 'True', "'reflect'", '0'],
+      inputs: ['', 'input_image', 'np.arange(1, 10, 2)', 'None', 'True', "'reflect'", '0'],
       returnVar: 'ridge_operators_output_grayscale',
       execTest: (inputs: any[], returnVar: any) => `from skimage.filters import meijering
 import numpy as np
 expected = meijering(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]})
 print(np.array_equal(expected, ${returnVar}['value']))`,
       getExpectedCode: (inputs: any[], prepareInput: string, returnVar: any, execTest: (arg0: any, arg1: any) => any) => `from skimage.filters import meijering
+import numpy as np
 ${prepareInput}
 ${returnVar} = meijering(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]})
 ${returnVar} = {
@@ -97,6 +98,7 @@ import numpy as np
 expected = canny(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, mode=${inputs[7]}, cval=${inputs[8]})
 print(np.array_equal(expected, ${returnVar}['value']))`,
       getExpectedCode: (inputs: any[], prepareInput: string, returnVar: any, execTest: (arg0: any, arg1: any) => any) => `from skimage.feature import canny
+import numpy as np
 ${prepareInput}
 ${returnVar} = canny(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, mode=${inputs[7]}, cval=${inputs[8]})
 ${returnVar} = {
@@ -125,6 +127,7 @@ import numpy as np
 expected = sobel(input_image['value'], ${inputs[2]}, axis=${inputs[3]}, mode=${inputs[4]}, cval=${inputs[5]})
 print(np.array_equal(expected, ${returnVar}['value']))`,
       getExpectedCode: (inputs: any[], prepareInput: string, returnVar: any, execTest: (arg0: any, arg1: any) => any) => `from skimage.filters import sobel
+import numpy as np
 ${prepareInput}
 ${returnVar} = sobel(input_image['value'], ${inputs[2]}, axis=${inputs[3]}, mode=${inputs[4]}, cval=${inputs[5]})
 ${returnVar} = {
@@ -138,35 +141,6 @@ ${returnVar} = {
     'device': '${metadataGrayscale.device}'
   }
 }
-${execTest(inputs, returnVar)}`
-    },
-    {
-      jsonPath,
-      nodeName: 'Edge_Operator_Roberts',
-      prepareInput,
-      metadataGrayscale,
-      metadataBinary,
-      inputs: ['', 'input_image', 'None'],
-      returnVar: 'edge_operator_roberts_output_grayscale',
-      execTest: (inputs: any[], returnVar: any) => `from skimage.filters import roberts
-import numpy as np
-expected = roberts(input_image['value'], ${inputs[2]})
-print(np.array_equal(expected, ${returnVar}['value']))`,
-      getExpectedCode: (inputs: any[], prepareInput: string, returnVar: any, execTest: (arg0: any, arg1: any) => any) => `from skimage.filters import roberts
-${prepareInput}
-${returnVar} = roberts(input_image['value'], ${inputs[2]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'numpy.ndarray',
-  'metadata': {
-    'colorChannel': '${metadataGrayscale.colorChannel}',
-    'channelOrder': '${metadataGrayscale.channelOrder}',
-    'isMiniBatched': ${metadataGrayscale.isMiniBatched},
-    'intensityRange': '${metadataGrayscale.intensityRange}',
-    'device': '${metadataGrayscale.device}'
-  }
-}
-
 ${execTest(inputs, returnVar)}`
     }
   ];

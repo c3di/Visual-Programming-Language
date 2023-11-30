@@ -93,7 +93,7 @@
       "category": "function",
       "title": "slic segmentation",
       "tooltip": "Segments image using k-means clustering in Color-(x,y,z) space.",
-      "externalImports": "from skimage.segmentation import slic",
+      "externalImports": "from skimage.segmentation import slic\nimport numpy as np",
       "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = slic(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, ${inputs[9]}, ${inputs[10]}, ${inputs[11]}, ${inputs[12]}, ${inputs[13]}, ${inputs[14]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
@@ -333,7 +333,7 @@
       "category": "function",
       "title": "flood fill",
       "tooltip": "Perform flood filling on an image.",
-      "externalImports": "from skimage.segmentation import flood_fill",
+      "externalImports": "from skimage.segmentation import flood_fill\nimport numpy as np",
       "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = flood_fill(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
@@ -418,7 +418,7 @@
       "category": "function",
       "title": "multi_Otsu_thresholding",
       "tooltip": "Applying multi-Otsu threshold for the default value, generating three classes.",
-      "externalImports": "from skimage.filters import threshold_multiotsu",
+      "externalImports": "from skimage.filters import threshold_multiotsu\nimport numpy as np",
       "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = threshold_multiotsu(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
@@ -549,7 +549,7 @@
       "category": "function",
       "title": "peak_local_max",
       "tooltip": "Find peaks in an image as coordinate list.",
-      "externalImports": "from skimage.feature import peak_local_max",
+      "externalImports": "from skimage.feature import peak_local_max\nimport numpy as np",
       "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = peak_local_max(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, ${inputs[9]}, ${inputs[10]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
@@ -654,7 +654,7 @@
       "category": "function",
       "title": "watershed_segmentation",
       "tooltip": "The watershed is a classical algorithm used for segmentation,",
-      "externalImports": "from skimage.segmentation import watershed",
+      "externalImports": "from skimage.segmentation import watershed\nimport numpy as np",
       "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = watershed(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
@@ -688,7 +688,7 @@
         "connectivity": {
           "title": "connectivity",
           "dataType": "numpy.ndarray",
-          "defaultValue": 1,
+          "defaultValue": "np.array(1)",
           "tooltip": "An array with the same number of dimensions as image whose non-zero elements indicate neighbors for connection."
         },
         "offset": {
@@ -735,7 +735,7 @@
       "category": "function",
       "title": "label2rgb",
       "tooltip": "Return an RGB image where color-coded labels are painted over the image.",
-      "externalImports": "from skimage.color import label2rgb",
+      "externalImports": "from skimage.color import label2rgb\nimport numpy as np",
       "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = label2rgb(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, ${inputs[9]}, ${inputs[10]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'rgb',\r\n    'channelOrder': 'channelLast',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-255',\r\n    'device': 'cpu'\r\n  }\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
