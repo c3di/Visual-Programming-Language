@@ -7,7 +7,7 @@
       "title": "normalize",
       "tooltip": "Normalize an image/video tensor with mean and standard deviation.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.enhance.normalize(${inputs[1]}, ${inputs[2]}, ${inputs[3]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': ${input[1]}.device == 'cpu'? 'cpu' : 'gpu'\r\n  }\r\n}\r\n  ${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.enhance.normalize(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -25,7 +25,13 @@
                 "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": [
+                  "0-1"
+                ],
+                "device": [
+                  "cpu",
+                  "gpu"
+                ]
               }
             ]
           },
@@ -67,7 +73,7 @@
       "title": "normalize min max",
       "tooltip": "Normalise an image/video tensor by MinMax and re-scales the value between a range.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.enhance.normalize_min_max(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': ${input[1]}.device == 'cpu'? 'cpu' : 'gpu'\r\n  }\r\n}\r\n  ${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.enhance.normalize_min_max(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -85,7 +91,13 @@
                 "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": [
+                  "0-1"
+                ],
+                "device": [
+                  "cpu",
+                  "gpu"
+                ]
               }
             ]
           },
@@ -133,7 +145,7 @@
       "title": "denormalize",
       "tooltip": "Denormalize an image/video tensor with mean and standard deviation.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.enhance.denormalize(${inputs[1]}, ${inputs[2]}, ${inputs[3]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': ${input[1]}.device == 'cpu'? 'cpu' : 'gpu'\r\n  }\r\n}\r\n  ${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.enhance.denormalize(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -151,7 +163,13 @@
                 "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": [
+                  "0-1"
+                ],
+                "device": [
+                  "cpu",
+                  "gpu"
+                ]
               }
             ]
           },
@@ -184,138 +202,6 @@
             "dataType": "torch.tensor"
           },
           "tooltip": "Denormalised tensor with same size as input (B,C,*)"
-        }
-      }
-    },
-    "Zca_whiten": {
-      "type": "Normalize_Min_Max",
-      "category": "function",
-      "title": "normalize min max",
-      "tooltip": "Normalise an image/video tensor by MinMax and re-scales the value between a range.",
-      "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.enhance.zca_whiten(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': ${input[1]}.device == 'cpu'? 'cpu' : 'gpu'\r\n  }\r\n}\r\n  ${outputs[0]}`;\r\n  return code;\r\n}",
-      "inputs": {
-        "execIn": {
-          "title": "execIn",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "torch.tensor",
-            "metadata": [
-              {
-                "colorChannel": ["rgb", "grayscale"],
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": " input data tensor."
-        },
-        "dim": {
-          "title": "dim",
-          "dataType": "integer",
-          "defaultValue": 0,
-          "tooltip": "Specifies the dimension that serves as the samples dimension."
-        },
-        "unbiased": {
-          "title": "unbiased",
-          "dataType": "bool",
-          "defaultValue": "True",
-          "tooltip": "Whether to use the unbiased estimate of the covariance matrix."
-        },
-        "eps ": {
-          "title": "eps",
-          "dataType": "float",
-          "defaultValue": 1e-6,
-          "tooltip": "a small number used for numerical stability"
-        }
-      },
-      "outputs": {
-        "execOut": {
-          "title": "execOut",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "torch.tensor"
-          },
-          "tooltip": "Whiten Input data"
-        }
-      }
-    },
-    "Linear_Transform": {
-      "type": "Linear_Transform",
-      "category": "function",
-      "title": "linear transform",
-      "tooltip": "Given a transformation matrix and a mean vector, this function will flatten the input tensor along the given dimension and subtract the mean vector from it. Then the dot product with the transformation matrix will be computed and then the resulting tensor is reshaped to the original input shape.",
-      "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const colorChannel = inputs[1].metadata.colorChannel;\r\n  const code = `${outputs[1]} = K.enhance.linear_transform(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]})\r\n ${outputs[1]} = {\r\n   'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': '${colorChannel}',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': ${input[1]}.device == 'cpu'? 'cpu' : 'gpu'\r\n  }\r\n}\r\n  ${outputs[0]}`;\r\n  return code;\r\n}",
-      "inputs": {
-        "execIn": {
-          "title": "execIn",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "torch.tensor",
-            "metadata": [
-              {
-                "colorChannel": ["rgb", "grayscale"],
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": " input data tensor X."
-        },
-        "transform_matrix": {
-          "title": "transform_matrix",
-          "dataType": "torch.tensor",
-          "defaultValue": "None",
-          "tooltip": "Transform matrix T"
-        },
-        "mean_vector": {
-          "title": "mean_vector",
-          "dataType": "torch.tensor",
-          "defaultValue": "None",
-          "tooltip": "mean vector u"
-        },
-        "dim": {
-          "title": "dim",
-          "dataType": "integer",
-          "defaultValue": 0,
-          "tooltip": "Batch dimension"
-        }
-      },
-      "outputs": {
-        "execOut": {
-          "title": "execOut",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "torch.tensor"
-          },
-          "tooltip": "Transformed data."
         }
       }
     }
