@@ -61,7 +61,52 @@ ${returnVar} = {
   }
 }
 ${execTest(inputs, returnVar)}`
+    },
+    {
+      jsonPath: 'src/NodeTypeExtension/sciKitImage/WhiteTopHat_ver1.json',
+      nodeName: 'White_Tophat',
+      prepareInput: `from skimage import data
+input_image = {
+  'dataType': 'numpy.ndarray',
+  'value': data.astronaut(),
+  'metadata': {
+    'colorChannel': 'rgb',
+    'channelOrder': 'channelLast',
+    'isMiniBatched': False,
+    'intensityRange': '0-255',
+    'device': 'cpu'
+  }
+}`,
+      inputs: ['', 'input_image', 'None', 'None'],
+      returnVar: 'result_image',
+
+      execTest: (inputs: any[], returnVar: any) => `from skimage.morphology import white_tophat
+import numpy as np
+expected = white_tophat(input_image['value'], ${inputs[2]}, ${inputs[3]})
+print(np.array_equal(expected, ${returnVar}['value']))`,
+
+      getExpectedCode: (
+        inputs: any[],
+        prepareInput: string,
+        returnVar: any,
+        execTest: (arg0: any, arg1: any) => any
+      ) => `from skimage.morphology import white_tophat
+${prepareInput}
+${returnVar} = white_tophat(input_image['value'], ${inputs[2]}, ${inputs[3]})
+${returnVar} = {
+  'value': ${returnVar},
+  'dataType': 'numpy.ndarray',
+  'metadata': {
+    'colorChannel': 'rgb',
+    'channelOrder': 'channelLast',
+    'isMiniBatched': False,
+    'intensityRange': '0-255',
+    'device': 'cpu'
+  }
+}
+${execTest(inputs, returnVar)}`
     }
+    
   ];
 
   test.each(testData)(

@@ -90,15 +90,15 @@ ${execTest(inputs, returnVar)}`
       prepareInput,
       metadataGrayscale,
       metadataBinary,
-      inputs: ['', 'input_image', '1.0', 'None', 'None', 'None', 'False', "mode='constant'", 'cval=0.0'],
+      inputs: ['', 'input_image', '1.0', 'None', 'None', 'None', 'False', "'constant'", '0.0'],
       returnVar: 'canny_edge_detector_output_binary',
       execTest: (inputs: any[], returnVar: any) => `from skimage.feature import canny
 import numpy as np
-expected = canny(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]})
+expected = canny(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, mode=${inputs[7]}, cval=${inputs[8]})
 print(np.array_equal(expected, ${returnVar}['value']))`,
       getExpectedCode: (inputs: any[], prepareInput: string, returnVar: any, execTest: (arg0: any, arg1: any) => any) => `from skimage.feature import canny
 ${prepareInput}
-${returnVar} = canny(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]})
+${returnVar} = canny(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, mode=${inputs[7]}, cval=${inputs[8]})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'numpy.ndarray',
@@ -118,15 +118,15 @@ ${execTest(inputs, returnVar)}`
       prepareInput,
       metadataGrayscale,
       metadataBinary,
-      inputs: ['', 'input_image', 'None', 'axis=None', "mode='reflect'", 'cval=0.0'],
+      inputs: ['', 'input_image', 'None', 'None', "'reflect'", '0.0'],
       returnVar: 'edge_operator_sobel_output_grayscale',
       execTest: (inputs: any[], returnVar: any) => `from skimage.filters import sobel
 import numpy as np
-expected = sobel(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]})
+expected = sobel(input_image['value'], ${inputs[2]}, axis=${inputs[3]}, mode=${inputs[4]}, cval=${inputs[5]})
 print(np.array_equal(expected, ${returnVar}['value']))`,
       getExpectedCode: (inputs: any[], prepareInput: string, returnVar: any, execTest: (arg0: any, arg1: any) => any) => `from skimage.filters import sobel
 ${prepareInput}
-${returnVar} = sobel(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]})
+${returnVar} = sobel(input_image['value'], ${inputs[2]}, axis=${inputs[3]}, mode=${inputs[4]}, cval=${inputs[5]})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'numpy.ndarray',
