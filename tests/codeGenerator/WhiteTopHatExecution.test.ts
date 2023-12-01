@@ -19,7 +19,7 @@ interface testNodeData {
 describe('Code Execution of node White_Tophat', () => {
   const testData: testNodeData[] = [
     {
-      jsonPath: 'src/NodeTypeExtension/sciKitImage/WhiteTopHat_ver1.json',
+      jsonPath: 'src/NodeTypeExtension/sciKitImage/WhiteTopHat_ver2.json',
       nodeName: 'White_Tophat',
       prepareInput: `from skimage import data
 input_image = {
