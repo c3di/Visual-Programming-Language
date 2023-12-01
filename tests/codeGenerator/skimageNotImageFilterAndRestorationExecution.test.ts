@@ -32,24 +32,17 @@ describe('Code Execution of Filter_and_restoration functions with Input not-a-im
     {
       jsonPath,
       nodeName: 'Morphology_disk',
-      prepareInput: `import numpy as np
-input = {
-  'dataType': 'integer',
-  'value': 3,
-  'metadata': {
-  'device': 'cpu'
-  }
-}`,
+      prepareInput: `import numpy as np`,
       metadataNotImage,
-      inputs: ['', 'input', 'np.uint8', 'True', 'None'],
+      inputs: ['', '3', 'np.uint8', 'True', 'None'],
       returnVar: 'morphology_disk_output',
       execTest: (inputs, returnVar) => `from skimage.morphology import disk
 import numpy as np
-expected = disk(input['value'], ${inputs[2]}, strict_radius=${inputs[3]}, decomposition=${inputs[4]})
+expected = disk(${inputs[1]}, ${inputs[2]}, strict_radius=${inputs[3]}, decomposition=${inputs[4]})
 print(np.array_equal(expected, ${returnVar}['value']))`,
       getExpectedCode: (inputs, prepareInput, returnVar, execTest) => `from skimage.morphology import disk
 ${prepareInput}
-${returnVar} = disk(input['value'], ${inputs[2]}, strict_radius=${inputs[3]}, decomposition=${inputs[4]})
+${returnVar} = disk(${inputs[1]}, ${inputs[2]}, strict_radius=${inputs[3]}, decomposition=${inputs[4]})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'numpy.ndarray',
