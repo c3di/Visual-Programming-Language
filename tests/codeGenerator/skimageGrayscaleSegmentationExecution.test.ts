@@ -10,7 +10,7 @@ interface testNodeData {
   nodeName: string;
   prepareInput: string;
   metadataNotImage: MetadataNotImage;
-  inputs: any[];
+  inputs: string[];
   returnVar: string;
   execTest: (inputs: any[], returnVar: any) => string;
   getExpectedCode: (
@@ -70,7 +70,7 @@ ${execTest(inputs, returnVar)}`
       nodeName: 'Multi_Otsu_Thresholding',
       prepareInput,
       metadataNotImage,
-      inputs: ['', 'input_image', 3, 256, 'None'],
+      inputs: ['', 'input_image', '3', '256', 'None'],
       returnVar: 'multi_otsu_output',
       execTest: (inputs, returnVar) => `from skimage.filters import threshold_multiotsu
 import numpy as np
@@ -94,7 +94,7 @@ ${execTest(inputs, returnVar)}`
       nodeName: 'Peak_local_max',
       prepareInput,
       metadataNotImage,
-      inputs: ['', 'input_image', 1, 'None', 'None', 'True', 'np.inf', 'None', 'None', 'np.inf', 'np.inf'],
+      inputs: ['', 'input_image', '1', 'None', 'None', 'True', 'np.inf', 'None', 'None', 'np.inf', 'np.inf'],
       returnVar: 'peak_local_max_output',
       execTest: (inputs, returnVar) => `from skimage.feature import peak_local_max
 import numpy as np
@@ -118,7 +118,7 @@ ${execTest(inputs, returnVar)}`
       nodeName: 'Watershed_segmentation',
       prepareInput,
       metadataNotImage,
-      inputs: ['', 'input_image', 'None', 1, 'None', 'None', 0.0, 'False'],
+      inputs: ['', 'input_image', 'None', '1', 'None', 'None', '0.0', 'False'],
       returnVar: 'watershed_output',
       execTest: (inputs, returnVar) => `from skimage.segmentation import watershed
 import numpy as np
@@ -132,7 +132,7 @@ ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'numpy.ndarray',
   'metadata': {
-    'device': '${ metadataNotImage.device}'
+    'device': '${metadataNotImage.device}'
   }
 }
 ${execTest(inputs, returnVar)}`

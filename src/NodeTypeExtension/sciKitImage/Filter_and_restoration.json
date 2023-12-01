@@ -1145,8 +1145,8 @@
       "category": "function",
       "title": "morphology_disk",
       "tooltip": "Generates a flat, disk-shaped footprint.",
-      "externalImports": "from skimage.morphology import disk\nimport numpy as np",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = disk(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3], ${inputs[4]}, ${inputs[4]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",      
+      "externalImports": "from skimage.morphology import disk",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = disk(${inputs[1]}['value'], ${inputs[2]}, strict_radius=${inputs[3]}, decomposition=${inputs[4]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
