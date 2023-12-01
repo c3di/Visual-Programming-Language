@@ -29,6 +29,8 @@ interface testNodeData {
 describe('Code Execution of Filter_and_restoration functions with Input Grayscale only', () => {
   const jsonPath = 'src/NodeTypeExtension/sciKitImage/Filter_and_restoration.json';
   const prepareInput = `from skimage import data
+from skimage.morphology import disk
+import numpy as np
 input_image = {
   'dataType': 'numpy.ndarray',
   'value': data.brick()[0:127, 0:131],
@@ -90,14 +92,13 @@ ${execTest(inputs, returnVar)}`
       prepareInput,
       metadataGrayscale,
       metadataBinary,
-      inputs: ['', 'input_image', 'np.put(a := np.ones((7, 7), dtype=np.uint8), [*range(0, 3), *range(4, 7), 7, 13, 14, 20, 28, 34, 35, 41, *range(42, 45), *range(46, 49)], 0) or a', 'None', 'None', '0', '0', '0.0', '1.0'],  // np.put<...> == disc(3)
+      inputs: ['', 'input_image', 'disk(3)', 'None', 'None', '0', '0', '0.0', '1.0'],
       returnVar: 'mean_percentile_output_grayscale',
       execTest: (inputs: any[], returnVar: any) => `from skimage.filters.rank import mean_percentile
 import numpy as np
 expected = mean_percentile(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]})
 print(np.array_equal(expected, ${returnVar}['value']))`,
       getExpectedCode: (inputs: any[], prepareInput: string, returnVar: any, execTest: (arg0: any, arg1: any) => any) => `from skimage.filters.rank import mean_percentile
-import numpy as np
 ${prepareInput}
 ${returnVar} = mean_percentile(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]})
 ${returnVar} = {
@@ -119,14 +120,13 @@ ${execTest(inputs, returnVar)}`
       prepareInput,
       metadataGrayscale,
       metadataBinary,
-      inputs: ['', 'input_image', 'np.put(a := np.ones((7, 7), dtype=np.uint8), [*range(0, 3), *range(4, 7), 7, 13, 14, 20, 28, 34, 35, 41, *range(42, 45), *range(46, 49)], 0) or a', 'None', 'None', '0', '0', '10', '10'], // np.put<...> == disc(3)
+      inputs: ['', 'input_image', 'disk(3)', 'None', 'None', '0', '0', '10', '10'],
       returnVar: 'mean_bilateral_output_grayscale',
       execTest: (inputs: any[], returnVar: any) => `from skimage.filters.rank import mean_bilateral
 import numpy as np
 expected = mean_bilateral(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]})
 print(np.array_equal(expected, ${returnVar}['value']))`,
       getExpectedCode: (inputs: any[], prepareInput: string, returnVar: any, execTest: (arg0: any, arg1: any) => any) => `from skimage.filters.rank import mean_bilateral
-import numpy as np
 ${prepareInput}
 ${returnVar} = mean_bilateral(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]})
 ${returnVar} = {
@@ -148,14 +148,13 @@ ${execTest(inputs, returnVar)}`
       prepareInput,
       metadataGrayscale,
       metadataBinary,
-      inputs: ['', 'input_image', 'np.put(a := np.ones((7, 7), dtype=np.uint8), [*range(0, 3), *range(4, 7), 7, 13, 14, 20, 28, 34, 35, 41, *range(42, 45), *range(46, 49)], 0) or a', 'None', 'None', '0', '0', '0'], // np.put<...> == disc(3)
+      inputs: ['', 'input_image', 'disk(3)', 'None', 'None', '0', '0', '0'],
       returnVar: 'mean_output_grayscale',
       execTest: (inputs: any[], returnVar: any) => `from skimage.filters.rank import mean
 import numpy as np
 expected = mean(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]})
 print(np.array_equal(expected, ${returnVar}['value']))`,
       getExpectedCode: (inputs: any[], prepareInput: string, returnVar: any, execTest: (arg0: any, arg1: any) => any) => `from skimage.filters.rank import mean
-import numpy as np
 ${prepareInput}
 ${returnVar} = mean(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]})
 ${returnVar} = {

@@ -29,6 +29,7 @@ interface testNodeData {
 describe('Code Execution of Edge_and_Lines.json functions with Input Grayscale only', () => {
   const jsonPath = 'src/NodeTypeExtension/sciKitImage/Edge_and_Lines.json';
   const prepareInput = `from skimage import data
+import numpy as np
 input_image = {
   'dataType': 'numpy.ndarray',
   'value': data.brick()[0:127, 0:131],
@@ -69,7 +70,6 @@ import numpy as np
 expected = meijering(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]})
 print(np.array_equal(expected, ${returnVar}['value']))`,
       getExpectedCode: (inputs: any[], prepareInput: string, returnVar: any, execTest: (arg0: any, arg1: any) => any) => `from skimage.filters import meijering
-import numpy as np
 ${prepareInput}
 ${returnVar} = meijering(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]})
 ${returnVar} = {
@@ -98,7 +98,6 @@ import numpy as np
 expected = canny(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, mode=${inputs[7]}, cval=${inputs[8]})
 print(np.array_equal(expected, ${returnVar}['value']))`,
       getExpectedCode: (inputs: any[], prepareInput: string, returnVar: any, execTest: (arg0: any, arg1: any) => any) => `from skimage.feature import canny
-import numpy as np
 ${prepareInput}
 ${returnVar} = canny(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, mode=${inputs[7]}, cval=${inputs[8]})
 ${returnVar} = {
@@ -127,7 +126,6 @@ import numpy as np
 expected = sobel(input_image['value'], ${inputs[2]}, axis=${inputs[3]}, mode=${inputs[4]}, cval=${inputs[5]})
 print(np.array_equal(expected, ${returnVar}['value']))`,
       getExpectedCode: (inputs: any[], prepareInput: string, returnVar: any, execTest: (arg0: any, arg1: any) => any) => `from skimage.filters import sobel
-import numpy as np
 ${prepareInput}
 ${returnVar} = sobel(input_image['value'], ${inputs[2]}, axis=${inputs[3]}, mode=${inputs[4]}, cval=${inputs[5]})
 ${returnVar} = {
@@ -156,7 +154,6 @@ import numpy as np
 expected = roberts(input_image['value'], ${inputs[2]})
 print(np.array_equal(expected, ${returnVar}['value']))`,
       getExpectedCode: (inputs: any[], prepareInput: string, returnVar: any, execTest: (arg0: any, arg1: any) => any) => `from skimage.filters import roberts
-import numpy as np
 ${prepareInput}
 ${returnVar} = roberts(input_image['value'], ${inputs[2]})
 ${returnVar} = {

@@ -6,7 +6,7 @@
       "category": "function",
       "title": "white top hat",
       "tooltip": "The white top hat of an image is defined as the image minus its morphological opening. ",
-      "externalImports": "from skimage.morphology import white_tophat\nimport numpy as np",
+      "externalImports": "from skimage.morphology import white_tophat",
       "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  let outputMetadata;\r\n\r\n  // Assuming inputs[1] contains the metadata of the previous node's output\r\n  const metadata = inputs[1].metadata;\r\n\r\n  if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-1') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-1'};\r\n  } else if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-255') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'rgb') {\r\n    outputMetadata = {'colorChannel': 'rgb', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'bgr') {\r\n    outputMetadata = {'colorChannel': 'bgr', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  }\r\n\r\n  const code = `${outputs[1]} = white_tophat(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': outputMetadata\r\n}\r\n${outputs[0]}`;\r\n\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
@@ -110,7 +110,7 @@
       "category": "function",
       "title": "black top hat",
       "tooltip": "The black top hat of an image is defined as its morphological closing minus the original image.",
-      "externalImports": "from skimage.morphology import black_tophat\nimport numpy as np",
+      "externalImports": "from skimage.morphology import black_tophat",
       "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  let outputMetadata;\r\n\r\n  // Assuming inputs[1] contains the metadata of the previous node's output\r\n  const metadata = inputs[1].metadata;\r\n\r\n  if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-1') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-1'};\r\n  } else if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-255') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'rgb') {\r\n    outputMetadata = {'colorChannel': 'rgb', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'bgr') {\r\n    outputMetadata = {'colorChannel': 'bgr', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  }\r\n\r\n  const code = `${outputs[1]} = black_tophat(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': outputMetadata\r\n}\r\n${outputs[0]}`;\r\n\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
@@ -396,7 +396,7 @@
       "category": "function",
       "title": "mean percentile",
       "tooltip": "Return local mean of an image.",
-      "externalImports": "from skimage.filters.rank import mean_percentile\nimport numpy as np",
+      "externalImports": "from skimage.filters.rank import mean_percentile",
       "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = mean_percentile(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-255',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
@@ -493,7 +493,7 @@
       "category": "function",
       "title": "mean bilateral",
       "tooltip": "Apply a flat kernel bilateral filter. This is an edge-preserving and noise reducing denoising filter.",
-      "externalImports": "from skimage.filters.rank import mean_bilateral\nimport numpy as np",
+      "externalImports": "from skimage.filters.rank import mean_bilateral",
       "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = mean_bilateral(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-255',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
@@ -590,7 +590,7 @@
       "category": "function",
       "title": "mean",
       "tooltip": "Return local mean of an image.",
-      "externalImports": "from skimage.filters.rank import mean\nimport numpy as np",
+      "externalImports": "from skimage.filters.rank import mean",
       "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = mean(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-255',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {

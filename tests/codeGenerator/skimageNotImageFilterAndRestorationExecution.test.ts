@@ -32,8 +32,7 @@ describe('Code Execution of Filter_and_restoration functions with Input not-a-im
     {
       jsonPath,
       nodeName: 'Morphology_disk',
-      prepareInput: `from skimage import data
-import numpy as np
+      prepareInput: `import numpy as np
 input = {
   'dataType': 'integer',
   'value': 3,
