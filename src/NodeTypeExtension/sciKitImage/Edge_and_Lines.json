@@ -205,9 +205,9 @@
         },
         "sigmas": {
           "title": "sigmas",
-          "dataType": "numpy.ndarray",
-          "defaultValue": "np.arange(1, 10, 2)",
-          "tooltip": "optional iterable of floats indicating scales for the filter."
+          "dataType": "anyDataType",
+          "defaultValue": "range(1, 10, 2)",
+          "tooltip": "optional iterable of floats indicating scales for the filter. default from doc: range(1, 10, 2) but possible also np.arange(1, 10, 2)"
         },
         "alpha": {
           "title": "alpha",
