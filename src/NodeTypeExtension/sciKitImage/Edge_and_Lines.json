@@ -265,7 +265,7 @@
       "title": "Approximate polygon",
       "tooltip": "Approximate a polygonal chain using the Douglas-Peucker algorithm.",
       "externalImports": "from skimage.measure import approximate_polygon",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = approximate_polygon(${inputs[1]}, ${inputs[2]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = approximate_polygon(${inputs[1]}, ${inputs[2]})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -304,7 +304,7 @@
       "title": "Subdivide polygon",
       "tooltip": "Subdivide a polygonal chain using B-Splines.",
       "externalImports": "from skimage.measure import subdivide_polygon",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = subdivide_polygon(${inputs[1]}, ${inputs[2]}, ${inputs[3]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = subdivide_polygon(${inputs[1]}, ${inputs[2]}, ${inputs[3]})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",

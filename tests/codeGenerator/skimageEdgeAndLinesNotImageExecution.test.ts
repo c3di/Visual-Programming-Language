@@ -9,7 +9,6 @@ interface testNodeData {
   jsonPath: string;
   nodeName: string;
   prepareInput: string;
-  metadataNotImage: MetadataNotImage;
   inputs: string[];
   returnVar: string;
   execTest: (inputs: any[], returnVar: any) => string;
@@ -21,11 +20,8 @@ interface testNodeData {
   ) => string;
 }
 
-describe('Code Execution of Edge_and_Lines.json functions with Input Grayscale only', () => {
+describe('Code Execution of Edge_and_Lines.json functions with not-a-image Input only', () => {
   const jsonPath = 'src/NodeTypeExtension/sciKitImage/Edge_and_Lines.json';
-  const metadataNotImage = {
-    'device': 'cpu'
-  };
 
 
   const testData: testNodeData[] = [
@@ -55,23 +51,15 @@ hand = np.array([[1.64516129, 1.16145833],
                  [2.41532258, 2.1875],
                  [2.1733871, 1.703125],
                  [2.07782258, 1.16666667]])`,
-      metadataNotImage,
       inputs: ['', 'hand', '0.02'],
       returnVar: 'approximate_polygon_output',
       execTest: (inputs, returnVar) => `from skimage.measure import approximate_polygon
 import numpy as np
 expected = approximate_polygon(${inputs[1]}, ${inputs[2]})
-print(np.array_equal(expected, ${returnVar}['value']))`,
+print(np.array_equal(expected, ${returnVar}))`,
       getExpectedCode: (inputs, prepareInput, returnVar, execTest) => `from skimage.measure import approximate_polygon
 ${prepareInput}
 ${returnVar} = approximate_polygon(${inputs[1]}, ${inputs[2]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'numpy.ndarray',
-  'metadata': {
-    'device': '${metadataNotImage.device}'
-  }
-}
 ${execTest(inputs, returnVar)}`
     },
     {
@@ -100,23 +88,15 @@ hand = np.array([[1.64516129, 1.16145833],
                  [2.41532258, 2.1875],
                  [2.1733871, 1.703125],
                  [2.07782258, 1.16666667]])`,
-      metadataNotImage,
       inputs: ['', 'hand', '2', 'False'],
       returnVar: 'subdivide_polygon_output',
       execTest: (inputs, returnVar) => `from skimage.measure import subdivide_polygon
 import numpy as np
 expected = subdivide_polygon(${inputs[1]}, ${inputs[2]}, ${inputs[3]})
-print(np.array_equal(expected, ${returnVar}['value']))`,
+print(np.array_equal(expected, ${returnVar}))`,
       getExpectedCode: (inputs, prepareInput, returnVar, execTest) => `from skimage.measure import subdivide_polygon
 ${prepareInput}
 ${returnVar} = subdivide_polygon(${inputs[1]}, ${inputs[2]}, ${inputs[3]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'numpy.ndarray',
-  'metadata': {
-    'device': '${metadataNotImage.device}'
-  }
-}
 ${execTest(inputs, returnVar)}`
     }
   ];

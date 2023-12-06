@@ -9,7 +9,6 @@ interface testNodeData {
   jsonPath: string;
   nodeName: string;
   prepareInput: string;
-  metadataNotImage: MetadataNotImage;
   inputs: string[];
   returnVar: string;
   execTest: (inputs: any[], returnVar: any) => string;
@@ -21,11 +20,8 @@ interface testNodeData {
   ) => string;
 }
 
-describe('Code Execution of Filter_and_restoration functions with Input not-a-image only', () => {
+describe('Code Execution of Filter_and_restoration functions with not-a-image Input only', () => {
   const jsonPath = 'src/NodeTypeExtension/sciKitImage/Filter_and_restoration.json';
-  const metadataNotImage = {
-    'device': 'cpu'
-  };
 
 
   const testData: testNodeData[] = [
@@ -33,23 +29,15 @@ describe('Code Execution of Filter_and_restoration functions with Input not-a-im
       jsonPath,
       nodeName: 'Morphology_disk',
       prepareInput: `import numpy as np`,
-      metadataNotImage,
       inputs: ['', '3', 'np.uint8', 'True', 'None'],
       returnVar: 'morphology_disk_output',
       execTest: (inputs, returnVar) => `from skimage.morphology import disk
 import numpy as np
 expected = disk(${inputs[1]}, ${inputs[2]}, strict_radius=${inputs[3]}, decomposition=${inputs[4]})
-print(np.array_equal(expected, ${returnVar}['value']))`,
+print(np.array_equal(expected, ${returnVar}))`,
       getExpectedCode: (inputs, prepareInput, returnVar, execTest) => `from skimage.morphology import disk
 ${prepareInput}
 ${returnVar} = disk(${inputs[1]}, ${inputs[2]}, strict_radius=${inputs[3]}, decomposition=${inputs[4]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'numpy.ndarray',
-  'metadata': {
-    'device': '${metadataNotImage.device}'
-  }
-}
 ${execTest(inputs, returnVar)}`
     }
   ];

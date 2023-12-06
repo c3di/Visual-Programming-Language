@@ -9,7 +9,6 @@ interface testNodeData {
   jsonPath: string;
   nodeName: string;
   prepareInput: string;
-  metadataNotImage: MetadataNotImage;
   inputs: string[];
   returnVar: string;
   execTest: (inputs: any[], returnVar: any) => string;
@@ -36,9 +35,6 @@ input_image = {
     'device': 'cpu'
   }
 }`;
-  const metadataNotImage = {
-    'device': 'cpu'
-  };
 
 
   const testData: testNodeData[] = [
@@ -46,92 +42,60 @@ input_image = {
       jsonPath,
       nodeName: 'Flood Fill',
       prepareInput,
-      metadataNotImage,
       inputs: ['', 'input_image', '(50, 50)', '2', 'None', 'None', 'None', 'False'],
       returnVar: 'flood_fill_output',
       execTest: (inputs, returnVar) => `from skimage.segmentation import flood_fill
 import numpy as np
 expected = flood_fill(input_image['value'], ${inputs[2]}, ${inputs[3]}, footprint=${inputs[4]}, connectivity=${inputs[5]}, tolerance=${inputs[6]}, in_place=${inputs[7]})
-print(np.array_equal(expected, ${returnVar}['value']))`,
+print(np.array_equal(expected, ${returnVar}))`,
       getExpectedCode: (inputs, prepareInput, returnVar, execTest) => `from skimage.segmentation import flood_fill
 ${prepareInput}
 ${returnVar} = flood_fill(input_image['value'], ${inputs[2]}, ${inputs[3]}, footprint=${inputs[4]}, connectivity=${inputs[5]}, tolerance=${inputs[6]}, in_place=${inputs[7]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'numpy.ndarray',
-  'metadata': {
-    'device': '${ metadataNotImage.device}'
-  }
-}
 ${execTest(inputs, returnVar)}`
     },
     {
       jsonPath,
       nodeName: 'Multi_Otsu_Thresholding',
       prepareInput,
-      metadataNotImage,
       inputs: ['', 'input_image', '3', '256', 'None'],
       returnVar: 'multi_otsu_output',
       execTest: (inputs, returnVar) => `from skimage.filters import threshold_multiotsu
 import numpy as np
 expected = threshold_multiotsu(input_image['value'], ${inputs[2]}, ${inputs[3]}, hist=${inputs[4]})
-print(np.array_equal(expected, ${returnVar}['value']))`,
+print(np.array_equal(expected, ${returnVar}))`,
       getExpectedCode: (inputs, prepareInput, returnVar, execTest) => `from skimage.filters import threshold_multiotsu
 ${prepareInput}
 ${returnVar} = threshold_multiotsu(input_image['value'], ${inputs[2]}, ${inputs[3]}, hist=${inputs[4]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'numpy.ndarray',
-  'metadata': {
-    'device': '${metadataNotImage.device}'
-  }
-}
 ${execTest(inputs, returnVar)}`
     },
     {
       jsonPath,
       nodeName: 'Peak_local_max',
       prepareInput,
-      metadataNotImage,
       inputs: ['', 'input_image', '1', 'None', 'None', 'True', 'np.inf', 'None', 'None', 'np.inf', 'np.inf'],
       returnVar: 'peak_local_max_output',
       execTest: (inputs, returnVar) => `from skimage.feature import peak_local_max
 import numpy as np
 expected = peak_local_max(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, ${inputs[9]}, ${inputs[10]})
-print(np.array_equal(expected, ${returnVar}['value']))`,
+print(np.array_equal(expected, ${returnVar}))`,
       getExpectedCode: (inputs, prepareInput, returnVar, execTest) => `from skimage.feature import peak_local_max
 ${prepareInput}
 ${returnVar} = peak_local_max(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, ${inputs[9]}, ${inputs[10]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'numpy.ndarray',
-  'metadata': {
-    'device': '${metadataNotImage.device}'
-  }
-}
 ${execTest(inputs, returnVar)}`
     },
     {
       jsonPath,
       nodeName: 'Watershed_segmentation',
       prepareInput,
-      metadataNotImage,
       inputs: ['', 'input_image', 'None', '1', 'None', 'None', '0.0', 'False'],
       returnVar: 'watershed_output',
       execTest: (inputs, returnVar) => `from skimage.segmentation import watershed
 import numpy as np
 expected = watershed(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]})
-print(np.array_equal(expected, ${returnVar}['value']))`,
+print(np.array_equal(expected, ${returnVar}))`,
       getExpectedCode: (inputs, prepareInput, returnVar, execTest) => `from skimage.segmentation import watershed
 ${prepareInput}
 ${returnVar} = watershed(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'numpy.ndarray',
-  'metadata': {
-    'device': '${metadataNotImage.device}'
-  }
-}
 ${execTest(inputs, returnVar)}`
     }
   ];
