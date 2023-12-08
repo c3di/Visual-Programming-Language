@@ -17,9 +17,18 @@ print(f"Sample Pixel Value: {sample_pixel}")
 data = asarray(image)
 print(f"As array: {data.shape}")
 
-for tag_id in exif_data:
-    # get the tag name, instead of human unreadable tag id
-    tag = ExifTags.TAGS.get(tag_id, tag_id)
-    data = exif_data.get(tag_id)
-    # print out readable info
-    print(f"{tag}: {data}")
+
+grayscale_image = Image.open(
+    "/Users/alo/Visual-Programming-React-Component-Suite/src/editor/Grayscale_8bits_palette_sample_image.png"
+)
+
+image_mode = grayscale_image.mode
+print(f"Image Mode: {image_mode}")
+exif_data = grayscale_image._getexif()
+
+sample_pixel = grayscale_image.getpixel((100, 75))
+print(f"Sample Pixel Value: {sample_pixel}")
+
+# convert to numpy array
+data = asarray(grayscale_image)
+print(f"As array: {data.shape}")
