@@ -1,13 +1,6 @@
 import { nodeExecCheck } from '../execution';
 import { loadNode } from '../loader';
 
-type Metadata = {
-  colorChannel: string;
-  channelOrder: string;
-  isMiniBatched: string;
-  intensityRange: string;
-  device: string;
-};
 
 interface testNodeData {
   jsonPath: string;

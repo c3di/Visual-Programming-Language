@@ -1,9 +1,6 @@
 import { nodeExecCheck } from '../execution';
 import { loadNode } from '../loader';
 
-type MetadataNotImage = {
-  device: string;
-};
 
 interface testNodeData {
   jsonPath: string;

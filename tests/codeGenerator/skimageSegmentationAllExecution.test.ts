@@ -1,13 +1,6 @@
 import { nodeExecCheck } from '../execution';
 import { loadNode } from '../loader';
 
-type Metadata = {
-  colorChannel: string;
-  channelOrder: string;
-  isMiniBatched: string;
-  intensityRange: string;
-  device: string;
-};
 
 interface testNodeData {
   jsonPath: string;
@@ -60,7 +53,7 @@ input_image = {
   'metadata': {
     'colorChannel': 'rgb',
     'channelOrder': 'channelLast',
-    'isMiniBatched': 'False',
+    'isMiniBatched': False,
     'intensityRange': '0-255',
     'device': 'cpu'
   }
@@ -73,7 +66,7 @@ input_image = {
   'metadata': {
     'colorChannel': 'gbr',
     'channelOrder': 'channelLast',
-    'isMiniBatched': 'False',
+    'isMiniBatched': False,
     'intensityRange': '0-255',
     'device': 'cpu'
   }

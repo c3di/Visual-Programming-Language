@@ -1,19 +1,11 @@
 import { nodeExecCheck } from '../execution';
 import { loadNode } from '../loader';
 
-type Metadata = {
-  colorChannel: string;
-  channelOrder: string;
-  isMiniBatched: string;
-  intensityRange: string;
-  device: string;
-};
 
 interface testNodeData {
   jsonPath: string;
   nodeName: string;
   prepareInput: string;
-  metadataRGB: Metadata;
   inputs: string[];
   returnVar: string;
   execTest: (inputs: any[], returnVar: any) => string;
@@ -26,20 +18,8 @@ interface testNodeData {
 }
 
 describe('Code Execution of Segmentation.json Label2RGB function', () => {
-  const jsonPath = 'src/NodeTypeExtension/sciKitImage/Segmentation.json';
-  const metadataRGB = {
-    'colorChannel': 'rgb',
-    'channelOrder': 'channelLast',
-    'isMiniBatched': 'False',
-    'intensityRange': '0-255',
-    'device': 'cpu'
-  };
-
-  const testData: testNodeData[] = [
-    {
-      jsonPath,
-      nodeName: 'Label2rgb',
-      prepareInput: `from skimage import data
+    const jsonPath = 'src/NodeTypeExtension/sciKitImage/Segmentation.json';
+    const prepareInputBinary = `from skimage import data
 from skimage.measure import label
 import numpy as np
 input_image = {
@@ -53,34 +33,8 @@ input_image = {
     'device': 'cpu'
   }
 }
-input_label = label(data.binary_blobs(length=512, blob_size_fraction=0.1, n_dim=2, volume_fraction=0.5, rng=42))`,
-      metadataRGB,
-      inputs: ['', 'input_label', 'input_image', 'None', '0.3', '0', '(0, 0, 0)', '1.0', '"overlay"', '0.0', '-1'],
-      returnVar: 'label2rgb_output_rgb',
-      execTest: (inputs: any[], returnVar: any) => `from skimage.color import label2rgb
-import numpy as np
-expected = label2rgb(${inputs[1]}, ${inputs[2]}['value'], ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, saturation=${inputs[9]}, channel_axis=${inputs[10]})
-print(np.array_equal(expected, ${returnVar}['value']))`,
-      getExpectedCode: (inputs: any[], prepareInput: string, returnVar: any, execTest: (arg0: any, arg1: any) => any) => `from skimage.color import label2rgb
-${prepareInput}
-${returnVar} = label2rgb(${inputs[1]}, ${inputs[2]}['value'], ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, saturation=${inputs[9]}, channel_axis=${inputs[10]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'numpy.ndarray',
-  'metadata': {
-    'colorChannel': '${metadataRGB.colorChannel}',
-    'channelOrder': '${metadataRGB.channelOrder}',
-    'isMiniBatched': ${metadataRGB.isMiniBatched},
-    'intensityRange': '${metadataRGB.intensityRange}',
-    'device': '${metadataRGB.device}'
-  }
-}
-${execTest(inputs, returnVar)}`
-    },
-    {
-      jsonPath,
-      nodeName: 'Label2rgb',
-      prepareInput: `from skimage import data
+input_label = label(data.binary_blobs(length=512, blob_size_fraction=0.1, n_dim=2, volume_fraction=0.5, rng=42))`;
+    const prepareInputGrayscale = `from skimage import data
 from skimage.measure import label
 import numpy as np
 input_image = {
@@ -94,34 +48,8 @@ input_image = {
     'device': 'cpu'
   }
 }
-input_label = label(data.brick()[0:127, 0:131])`,
-      metadataRGB,
-      inputs: ['', 'input_label', 'input_image', 'None', '0.3', '0', '(0, 0, 0)', '1.0', '"overlay"', '0.0', '-1'],
-      returnVar: 'label2rgb_output_rgb',
-      execTest: (inputs: any[], returnVar: any) => `from skimage.color import label2rgb
-import numpy as np
-expected = label2rgb(${inputs[1]}, ${inputs[2]}['value'], ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, saturation=${inputs[9]}, channel_axis=${inputs[10]})
-print(np.array_equal(expected, ${returnVar}['value']))`,
-      getExpectedCode: (inputs: any[], prepareInput: string, returnVar: any, execTest: (arg0: any, arg1: any) => any) => `from skimage.color import label2rgb
-${prepareInput}
-${returnVar} = label2rgb(${inputs[1]}, ${inputs[2]}['value'], ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, saturation=${inputs[9]}, channel_axis=${inputs[10]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'numpy.ndarray',
-  'metadata': {
-    'colorChannel': '${metadataRGB.colorChannel}',
-    'channelOrder': '${metadataRGB.channelOrder}',
-    'isMiniBatched': ${metadataRGB.isMiniBatched},
-    'intensityRange': '${metadataRGB.intensityRange}',
-    'device': '${metadataRGB.device}'
-  }
-}
-${execTest(inputs, returnVar)}`
-    },
-    {
-      jsonPath,
-      nodeName: 'Label2rgb',
-      prepareInput: `from skimage import data
+input_label = label(data.brick()[0:127, 0:131])`;
+    const prepareInputRGB = `from skimage import data
 from skimage.measure import label
 import numpy as np
 input_image = {
@@ -130,39 +58,13 @@ input_image = {
   'metadata': {
     'colorChannel': 'rgb',
     'channelOrder': 'channelLast',
-    'isMiniBatched': 'False',
+    'isMiniBatched': False,
     'intensityRange': '0-255',
     'device': 'cpu'
   }
 }
-input_label = label(data.rocket()[296:427, 275:402])`,
-      metadataRGB,
-      inputs: ['', 'input_label', 'input_image', 'None', '0.3', '0', '(0, 0, 0)', '1.0', '"overlay"', '0.0', '-1'],
-      returnVar: 'label2rgb_output_rgb',
-      execTest: (inputs: any[], returnVar: any) => `from skimage.color import label2rgb
-import numpy as np
-expected = label2rgb(${inputs[1]}, ${inputs[2]}['value'], ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, saturation=${inputs[9]}, channel_axis=${inputs[10]})
-print(np.array_equal(expected, ${returnVar}['value']))`,
-      getExpectedCode: (inputs: any[], prepareInput: string, returnVar: any, execTest: (arg0: any, arg1: any) => any) => `from skimage.color import label2rgb
-${prepareInput}
-${returnVar} = label2rgb(${inputs[1]}, ${inputs[2]}['value'], ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, saturation=${inputs[9]}, channel_axis=${inputs[10]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'numpy.ndarray',
-  'metadata': {
-    'colorChannel': '${metadataRGB.colorChannel}',
-    'channelOrder': '${metadataRGB.channelOrder}',
-    'isMiniBatched': ${metadataRGB.isMiniBatched},
-    'intensityRange': '${metadataRGB.intensityRange}',
-    'device': '${metadataRGB.device}'
-  }
-}
-${execTest(inputs, returnVar)}`
-    },
-    {
-      jsonPath,
-      nodeName: 'Label2rgb',
-      prepareInput: `from skimage import data
+input_label = label(data.rocket()[296:427, 275:402])`;
+    const prepareInputGBR = `from skimage import data
 from skimage.measure import label
 import numpy as np
 input_image = {
@@ -171,13 +73,25 @@ input_image = {
   'metadata': {
     'colorChannel': 'gbr',
     'channelOrder': 'channelLast',
-    'isMiniBatched': 'False',
+    'isMiniBatched': False,
     'intensityRange': '0-255',
     'device': 'cpu'
   }
 }
-input_label = label(data.rocket()[296:427, 275:402, [1, 2, 0]])`,
-      metadataRGB,
+input_label = label(data.rocket()[296:427, 275:402, [1, 2, 0]])`;
+  const metadataRGB = `'metadata': {
+    'colorChannel': 'rgb',
+    'channelOrder': 'channelLast',
+    'isMiniBatched': False,
+    'intensityRange': '0-255',
+    'device': 'cpu'
+  }`;
+
+  const testData: testNodeData[] = [
+    {
+      jsonPath,
+      nodeName: 'Label2rgb',
+      prepareInput: prepareInputBinary,
       inputs: ['', 'input_label', 'input_image', 'None', '0.3', '0', '(0, 0, 0)', '1.0', '"overlay"', '0.0', '-1'],
       returnVar: 'label2rgb_output_rgb',
       execTest: (inputs: any[], returnVar: any) => `from skimage.color import label2rgb
@@ -190,13 +104,67 @@ ${returnVar} = label2rgb(${inputs[1]}, ${inputs[2]}['value'], ${inputs[3]}, ${in
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'numpy.ndarray',
-  'metadata': {
-    'colorChannel': '${metadataRGB.colorChannel}',
-    'channelOrder': '${metadataRGB.channelOrder}',
-    'isMiniBatched': ${metadataRGB.isMiniBatched},
-    'intensityRange': '${metadataRGB.intensityRange}',
-    'device': '${metadataRGB.device}'
-  }
+  ${metadataRGB}
+}
+${execTest(inputs, returnVar)}`
+    },
+    {
+      jsonPath,
+      nodeName: 'Label2rgb',
+      prepareInput: prepareInputGrayscale,
+      inputs: ['', 'input_label', 'input_image', 'None', '0.3', '0', '(0, 0, 0)', '1.0', '"overlay"', '0.0', '-1'],
+      returnVar: 'label2rgb_output_rgb',
+      execTest: (inputs: any[], returnVar: any) => `from skimage.color import label2rgb
+import numpy as np
+expected = label2rgb(${inputs[1]}, ${inputs[2]}['value'], ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, saturation=${inputs[9]}, channel_axis=${inputs[10]})
+print(np.array_equal(expected, ${returnVar}['value']))`,
+      getExpectedCode: (inputs: any[], prepareInput: string, returnVar: any, execTest: (arg0: any, arg1: any) => any) => `from skimage.color import label2rgb
+${prepareInput}
+${returnVar} = label2rgb(${inputs[1]}, ${inputs[2]}['value'], ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, saturation=${inputs[9]}, channel_axis=${inputs[10]})
+${returnVar} = {
+  'value': ${returnVar},
+  'dataType': 'numpy.ndarray',
+  ${metadataRGB}
+}
+${execTest(inputs, returnVar)}`
+    },
+    {
+      jsonPath,
+      nodeName: 'Label2rgb',
+      prepareInput: prepareInputRGB,
+      inputs: ['', 'input_label', 'input_image', 'None', '0.3', '0', '(0, 0, 0)', '1.0', '"overlay"', '0.0', '-1'],
+      returnVar: 'label2rgb_output_rgb',
+      execTest: (inputs: any[], returnVar: any) => `from skimage.color import label2rgb
+import numpy as np
+expected = label2rgb(${inputs[1]}, ${inputs[2]}['value'], ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, saturation=${inputs[9]}, channel_axis=${inputs[10]})
+print(np.array_equal(expected, ${returnVar}['value']))`,
+      getExpectedCode: (inputs: any[], prepareInput: string, returnVar: any, execTest: (arg0: any, arg1: any) => any) => `from skimage.color import label2rgb
+${prepareInput}
+${returnVar} = label2rgb(${inputs[1]}, ${inputs[2]}['value'], ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, saturation=${inputs[9]}, channel_axis=${inputs[10]})
+${returnVar} = {
+  'value': ${returnVar},
+  'dataType': 'numpy.ndarray',
+  ${metadataRGB}
+}
+${execTest(inputs, returnVar)}`
+    },
+    {
+      jsonPath,
+      nodeName: 'Label2rgb',
+      prepareInput: prepareInputGBR,
+      inputs: ['', 'input_label', 'input_image', 'None', '0.3', '0', '(0, 0, 0)', '1.0', '"overlay"', '0.0', '-1'],
+      returnVar: 'label2rgb_output_rgb',
+      execTest: (inputs: any[], returnVar: any) => `from skimage.color import label2rgb
+import numpy as np
+expected = label2rgb(${inputs[1]}, ${inputs[2]}['value'], ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, saturation=${inputs[9]}, channel_axis=${inputs[10]})
+print(np.array_equal(expected, ${returnVar}['value']))`,
+      getExpectedCode: (inputs: any[], prepareInput: string, returnVar: any, execTest: (arg0: any, arg1: any) => any) => `from skimage.color import label2rgb
+${prepareInput}
+${returnVar} = label2rgb(${inputs[1]}, ${inputs[2]}['value'], ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, saturation=${inputs[9]}, channel_axis=${inputs[10]})
+${returnVar} = {
+  'value': ${returnVar},
+  'dataType': 'numpy.ndarray',
+  ${metadataRGB}
 }
 ${execTest(inputs, returnVar)}`
     }

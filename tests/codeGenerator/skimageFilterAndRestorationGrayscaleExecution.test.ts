@@ -1,20 +1,11 @@
 import { nodeExecCheck } from '../execution';
 import { loadNode } from '../loader';
 
-type Metadata = {
-  colorChannel: string;
-  channelOrder: string;
-  isMiniBatched: string;
-  intensityRange: string;
-  device: string;
-};
 
 interface testNodeData {
   jsonPath: string;
   nodeName: string;
   prepareInput: string;
-  metadataGrayscale: Metadata;
-  metadataBinary: Metadata;
   inputs: string[];
   returnVar: string;
   execTest: (inputs: any[], returnVar: any) => string;
@@ -42,28 +33,26 @@ input_image = {
     'device': 'cpu'
   }
 }`;
-  const metadataGrayscale = {
+  const metadataBinary = `'metadata': {
     'colorChannel': 'grayscale',
     'channelOrder': 'none',
-    'isMiniBatched': 'False',
-    'intensityRange': '0-255',
-    'device': 'cpu'
-  };
-  const metadataBinary = {
-    'colorChannel': 'grayscale',
-    'channelOrder': 'none',
-    'isMiniBatched': 'False',
+    'isMiniBatched': False,
     'intensityRange': '0-1',
     'device': 'cpu'
-  };
+  }`;
+  const metadataGrayscale = `'metadata': {
+    'colorChannel': 'grayscale',
+    'channelOrder': 'none',
+    'isMiniBatched': False,
+    'intensityRange': '0-255',
+    'device': 'cpu'
+  }`;
 
   const testData: testNodeData[] = [
     {
       jsonPath,
       nodeName: 'Hysteresis_Threshold',
       prepareInput,
-      metadataGrayscale,
-      metadataBinary,
       inputs: ['', 'input_image', '1.5', '2.5'],
       returnVar: 'hysteresis_threshold_output_binary',
       execTest: (inputs: any[], returnVar: any) => `from skimage.filters import apply_hysteresis_threshold
@@ -76,13 +65,7 @@ ${returnVar} = apply_hysteresis_threshold(input_image['value'], ${inputs[2]}, ${
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'numpy.ndarray',
-  'metadata': {
-    'colorChannel': '${metadataBinary.colorChannel}',
-    'channelOrder': '${metadataBinary.channelOrder}',
-    'isMiniBatched': ${metadataBinary.isMiniBatched},
-    'intensityRange': '${metadataBinary.intensityRange}',
-    'device': '${metadataBinary.device}'
-  }
+  ${metadataBinary}
 }
 ${execTest(inputs, returnVar)}`
     },
@@ -90,8 +73,6 @@ ${execTest(inputs, returnVar)}`
       jsonPath,
       nodeName: 'Mean_Percentile',
       prepareInput,
-      metadataGrayscale,
-      metadataBinary,
       inputs: ['', 'input_image', 'disk(3)', 'None', 'None', '0', '0', '0.0', '1.0'],
       returnVar: 'mean_percentile_output_grayscale',
       execTest: (inputs: any[], returnVar: any) => `from skimage.filters.rank import mean_percentile
@@ -104,13 +85,7 @@ ${returnVar} = mean_percentile(input_image['value'], ${inputs[2]}, ${inputs[3]},
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'numpy.ndarray',
-  'metadata': {
-    'colorChannel': '${metadataGrayscale.colorChannel}',
-    'channelOrder': '${metadataGrayscale.channelOrder}',
-    'isMiniBatched': ${metadataGrayscale.isMiniBatched},
-    'intensityRange': '${metadataGrayscale.intensityRange}',
-    'device': '${metadataGrayscale.device}'
-  }
+  ${metadataGrayscale}
 }
 ${execTest(inputs, returnVar)}`
     },
@@ -118,8 +93,6 @@ ${execTest(inputs, returnVar)}`
       jsonPath,
       nodeName: 'Mean_Bilateral',
       prepareInput,
-      metadataGrayscale,
-      metadataBinary,
       inputs: ['', 'input_image', 'disk(3)', 'None', 'None', '0', '0', '10', '10'],
       returnVar: 'mean_bilateral_output_grayscale',
       execTest: (inputs: any[], returnVar: any) => `from skimage.filters.rank import mean_bilateral
@@ -132,13 +105,7 @@ ${returnVar} = mean_bilateral(input_image['value'], ${inputs[2]}, ${inputs[3]}, 
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'numpy.ndarray',
-  'metadata': {
-    'colorChannel': '${metadataGrayscale.colorChannel}',
-    'channelOrder': '${metadataGrayscale.channelOrder}',
-    'isMiniBatched': ${metadataGrayscale.isMiniBatched},
-    'intensityRange': '${metadataGrayscale.intensityRange}',
-    'device': '${metadataGrayscale.device}'
-  }
+  ${metadataGrayscale}
 }
 ${execTest(inputs, returnVar)}`
     },
@@ -146,8 +113,6 @@ ${execTest(inputs, returnVar)}`
       jsonPath,
       nodeName: 'Mean',
       prepareInput,
-      metadataGrayscale,
-      metadataBinary,
       inputs: ['', 'input_image', 'disk(3)', 'None', 'None', '0', '0', '0'],
       returnVar: 'mean_output_grayscale',
       execTest: (inputs: any[], returnVar: any) => `from skimage.filters.rank import mean
@@ -160,13 +125,7 @@ ${returnVar} = mean(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'numpy.ndarray',
-  'metadata': {
-    'colorChannel': '${metadataGrayscale.colorChannel}',
-    'channelOrder': '${metadataGrayscale.channelOrder}',
-    'isMiniBatched': ${metadataGrayscale.isMiniBatched},
-    'intensityRange': '${metadataGrayscale.intensityRange}',
-    'device': '${metadataGrayscale.device}'
-  }
+  ${metadataGrayscale}
 }
 ${execTest(inputs, returnVar)}`
     }
