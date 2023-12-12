@@ -1,5 +1,5 @@
-number_of_inputs = 4
-function = "downscale_local_mean"
+number_of_inputs = 8
+function = "denoise_tv_chambolle"
 values = True
 
 codeGenerator = """function code(inputs, outputs, node, generator) {

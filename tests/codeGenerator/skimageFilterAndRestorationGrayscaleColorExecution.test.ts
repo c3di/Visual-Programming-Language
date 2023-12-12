@@ -24,21 +24,8 @@ interface testNodeData {
   ) => string;
 }
 
-describe('Code Execution of WhiteTopHat_ver3.json functions with Input Binary, Grayscale & Color', () => { //TODO
-  const jsonPath = 'src/NodeTypeExtension/sciKitImage/WhiteTopHat_ver3.json'; //TODO
-    const prepareInputBinary = `from skimage import data
-import numpy as np
-input_image = {
-  'dataType': 'numpy.ndarray',
-  'value': data.binary_blobs(length=512, blob_size_fraction=0.1, n_dim=2, volume_fraction=0.5, rng=42),
-  'metadata': {
-    'colorChannel': 'grayscale',
-    'channelOrder': 'none',
-    'isMiniBatched': False,
-    'intensityRange': '0-1',
-    'device': 'cpu'
-  }
-}`;
+describe('Code Execution of Filter_and_restoration.json functions with Input Grayscale & Color', () => {
+  const jsonPath = 'src/NodeTypeExtension/sciKitImage/Filter_and_restoration.json';
     const prepareInputGrayscale = `from skimage import data
 import numpy as np
 input_image = {
@@ -78,7 +65,6 @@ input_image = {
     'device': 'cpu'
   }
 }`;
-    const checkSkimageBinary = `(convert_metadata().get('colorChannel') == 'grayscale') and (convert_metadata().get('channelOrder') == 'none') and (convert_metadata().get('isMiniBatched') == False) and (convert_metadata().get('intensityRange') == '0-1'))`
     const checkSkimageGrayscale = `(convert_metadata().get('colorChannel') == 'grayscale') and (convert_metadata().get('channelOrder') == 'none') and (convert_metadata().get('isMiniBatched') == False) and (convert_metadata().get('intensityRange') == '0-255'))`
     const checkSkimageRGB = `(convert_metadata().get('colorChannel') == 'rgb') and (convert_metadata().get('channelOrder') == 'channelLast') and (convert_metadata().get('isMiniBatched') == False) and (convert_metadata().get('intensityRange') == '0-255'))`
     const checkSkimageGBR = `(convert_metadata().get('colorChannel') == 'gbr') and (convert_metadata().get('channelOrder') == 'channelLast') and (convert_metadata().get('isMiniBatched') == False) and (convert_metadata().get('intensityRange') == '0-255'))`
@@ -90,12 +76,6 @@ output_device = 'cpu'
 
 # Enums for different image metadata configurations
 class ImageMetadata(Enum):
-    BINARY = {
-        'colorChannel': 'grayscale',
-        'channelOrder': 'none',
-        'isMiniBatched': False,
-        'intensityRange': '0-1'
-    }
     GRAYSCALE = {
         'colorChannel': 'grayscale',
         'channelOrder': 'none',
@@ -142,9 +122,7 @@ def convert_metadata():`
         raise ValueError('Error: None value encountered for metadata type')
 
     output_meta = None
-    if metadata_type == ImageMetadata.BINARY:
-        output_meta = ImageMetadata.BINARY.value
-    elif metadata_type == ImageMetadata.GRAYSCALE:
+    if metadata_type == ImageMetadata.GRAYSCALE:
         output_meta = ImageMetadata.GRAYSCALE.value
     elif metadata_type == ImageMetadata.RGB:
         output_meta = ImageMetadata.RGB.value
@@ -169,49 +147,14 @@ def convert_metadata():`
   const testData: testNodeData[] = [
     {
       jsonPath,
-      nodeName: 'White_Tophat',
-      prepareInput: prepareInputBinary,
-      inputs: ['', 'input_image', 'None', 'None'],
-      returnVar: 'result_image',
-
-      execTest: (inputs: any[], returnVar: any) => `from skimage.morphology import white_tophat
-import numpy as np
-expected = white_tophat(input_image['value'], footprint=${inputs[2]}, out=${inputs[3]})
-print(np.array_equal(expected, ${returnVar}['value']) and ${checkSkimageBinary}`,
-
-      getExpectedCode: (
-        inputs: any[],
-        prepareInput: string,
-        returnVar: any,
-        execTest: (arg0: any, arg1: any) => any
-      ) => `from skimage.morphology import white_tophat
-${prepareInput}
-${prepareCodePart1}
-    # Replace these placeholders with the actual values from your other script
-    color_channel = ${inputs[1]}['metadata']['colorChannel']
-    channel_order = ${inputs[1]}['metadata']['channelOrder']
-    is_mini_batched = ${inputs[1]}['metadata']['isMiniBatched']
-    intensity_range = ${inputs[1]}['metadata']['intensityRange']
-    device = ${inputs[1]}['metadata']['device']
-${prepareCodePart2}
-${returnVar} = white_tophat(input_image['value'], footprint=${inputs[2]}, out=${inputs[3]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'numpy.ndarray',
-  ${metadata}
-}
-${execTest(inputs, returnVar)}`
-    },
-    {
-      jsonPath,
-      nodeName: 'White_Tophat',
+      nodeName: 'Denoise_wavelet',
       prepareInput: prepareInputGrayscale,
-      inputs: ['', 'input_image', 'None', 'None'],
-      returnVar: 'result_image',
+      inputs: ['', 'input_image', 'None', '"db1"', '"soft"', 'None', 'False', '"BayesShrink"', 'True', 'None'],
+      returnVar: 'denoise_wavelet_output_grayscale',
 
-      execTest: (inputs: any[], returnVar: any) => `from skimage.morphology import white_tophat
+      execTest: (inputs: any[], returnVar: any) => `from skimage.restoration import denoise_wavelet
 import numpy as np
-expected = white_tophat(input_image['value'], footprint=${inputs[2]}, out=${inputs[3]})
+expected = denoise_wavelet(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, channel_axis=${inputs[9]})
 print(np.array_equal(expected, ${returnVar}['value']) and ${checkSkimageGrayscale}`,
 
       getExpectedCode: (
@@ -219,7 +162,7 @@ print(np.array_equal(expected, ${returnVar}['value']) and ${checkSkimageGrayscal
         prepareInput: string,
         returnVar: any,
         execTest: (arg0: any, arg1: any) => any
-      ) => `from skimage.morphology import white_tophat
+      ) => `from skimage.restoration import denoise_wavelet
 ${prepareInput}
 ${prepareCodePart1}
     # Replace these placeholders with the actual values from your other script
@@ -229,7 +172,7 @@ ${prepareCodePart1}
     intensity_range = ${inputs[1]}['metadata']['intensityRange']
     device = ${inputs[1]}['metadata']['device']
 ${prepareCodePart2}
-${returnVar} = white_tophat(input_image['value'], footprint=${inputs[2]}, out=${inputs[3]})
+${returnVar} = denoise_wavelet(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, channel_axis=${inputs[9]})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'numpy.ndarray',
@@ -239,14 +182,14 @@ ${execTest(inputs, returnVar)}`
     },
     {
       jsonPath,
-      nodeName: 'White_Tophat',
+      nodeName: 'Denoise_wavelet',
       prepareInput: prepareInputRGB,
-      inputs: ['', 'input_image', 'None', 'None'],
-      returnVar: 'result_image',
+      inputs: ['', 'input_image', 'None', '"db1"', '"soft"', 'None', 'False', '"BayesShrink"', 'True', '-1'],
+      returnVar: 'denoise_wavelet_output_rgb',
 
-      execTest: (inputs: any[], returnVar: any) => `from skimage.morphology import white_tophat
+      execTest: (inputs: any[], returnVar: any) => `from skimage.restoration import denoise_wavelet
 import numpy as np
-expected = white_tophat(input_image['value'], footprint=${inputs[2]}, out=${inputs[3]})
+expected = denoise_wavelet(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, channel_axis=${inputs[9]})
 print(np.array_equal(expected, ${returnVar}['value']) and ${checkSkimageRGB}`,
 
       getExpectedCode: (
@@ -254,7 +197,7 @@ print(np.array_equal(expected, ${returnVar}['value']) and ${checkSkimageRGB}`,
         prepareInput: string,
         returnVar: any,
         execTest: (arg0: any, arg1: any) => any
-      ) => `from skimage.morphology import white_tophat
+      ) => `from skimage.restoration import denoise_wavelet
 ${prepareInput}
 ${prepareCodePart1}
     # Replace these placeholders with the actual values from your other script
@@ -264,7 +207,7 @@ ${prepareCodePart1}
     intensity_range = ${inputs[1]}['metadata']['intensityRange']
     device = ${inputs[1]}['metadata']['device']
 ${prepareCodePart2}
-${returnVar} = white_tophat(input_image['value'], footprint=${inputs[2]}, out=${inputs[3]})
+${returnVar} = denoise_wavelet(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, channel_axis=${inputs[9]})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'numpy.ndarray',
@@ -274,14 +217,14 @@ ${execTest(inputs, returnVar)}`
     },
     {
       jsonPath,
-      nodeName: 'White_Tophat',
+      nodeName: 'Denoise_wavelet',
       prepareInput: prepareInputGBR,
-      inputs: ['', 'input_image', 'None', 'None'],
-      returnVar: 'result_image',
+      inputs: ['', 'input_image', 'None', '"db1"', '"soft"', 'None', 'False', '"BayesShrink"', 'True', '-1'],
+      returnVar: 'denoise_wavelet_output_gbr',
 
-      execTest: (inputs: any[], returnVar: any) => `from skimage.morphology import white_tophat
+      execTest: (inputs: any[], returnVar: any) => `from skimage.restoration import denoise_wavelet
 import numpy as np
-expected = white_tophat(input_image['value'], footprint=${inputs[2]}, out=${inputs[3]})
+expected = denoise_wavelet(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, channel_axis=${inputs[9]})
 print(np.array_equal(expected, ${returnVar}['value']) and ${checkSkimageGBR}`,
 
       getExpectedCode: (
@@ -289,7 +232,7 @@ print(np.array_equal(expected, ${returnVar}['value']) and ${checkSkimageGBR}`,
         prepareInput: string,
         returnVar: any,
         execTest: (arg0: any, arg1: any) => any
-      ) => `from skimage.morphology import white_tophat
+      ) => `from skimage.restoration import denoise_wavelet
 ${prepareInput}
 ${prepareCodePart1}
     # Replace these placeholders with the actual values from your other script
@@ -299,14 +242,14 @@ ${prepareCodePart1}
     intensity_range = ${inputs[1]}['metadata']['intensityRange']
     device = ${inputs[1]}['metadata']['device']
 ${prepareCodePart2}
-${returnVar} = white_tophat(input_image['value'], footprint=${inputs[2]}, out=${inputs[3]})
+${returnVar} = denoise_wavelet(input_image['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, channel_axis=${inputs[9]})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'numpy.ndarray',
   ${metadata}
 }
 ${execTest(inputs, returnVar)}`
-    } 
+    }
   ];
 
   test.each(testData)(
