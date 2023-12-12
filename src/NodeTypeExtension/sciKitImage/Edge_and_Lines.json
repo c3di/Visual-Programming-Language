@@ -81,7 +81,7 @@
       "title": "Canny edge detector",
       "tooltip": "The Canny filter is a multi-stage edge detector. It uses a filter based on the derivative of a Gaussian in order to compute the intensity of the gradients.",
       "externalImports": "from skimage.feature import canny",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = canny(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = canny(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, mode=${inputs[7]}, cval=${inputs[8]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -205,8 +205,9 @@
         },
         "sigmas": {
           "title": "sigmas",
-          "dataType": "numpy.ndarray",
-          "tooltip": "optional iterable of floats indicating scales for the filter."
+          "dataType": "anyDataType",
+          "defaultValue": "range(1, 10, 2)",
+          "tooltip": "optional iterable of floats indicating scales for the filter. default from doc: range(1, 10, 2) but possible also np.arange(1, 10, 2)"
         },
         "alpha": {
           "title": "alpha",
@@ -264,7 +265,7 @@
       "title": "Approximate polygon",
       "tooltip": "Approximate a polygonal chain using the Douglas-Peucker algorithm.",
       "externalImports": "from skimage.measure import approximate_polygon",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = approximate_polygon(${inputs[1]}, ${inputs[2]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = approximate_polygon(${inputs[1]}, ${inputs[2]})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -303,7 +304,7 @@
       "title": "Subdivide polygon",
       "tooltip": "Subdivide a polygonal chain using B-Splines.",
       "externalImports": "from skimage.measure import subdivide_polygon",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = subdivide_polygon(${inputs[1]}, ${inputs[2]}, ${inputs[3]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = subdivide_polygon(${inputs[1]}, ${inputs[2]}, ${inputs[3]})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -411,7 +412,7 @@
       "title": "edge operator sobel",
       "tooltip": "Find edges in an image using the Sobel filter.",
       "externalImports": "from skimage.filters import sobel",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = sobel(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-255',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = sobel(${inputs[1]}['value'], ${inputs[2]}, axis=${inputs[3]}, mode=${inputs[4]}, cval=${inputs[5]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-255',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",

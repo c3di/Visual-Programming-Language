@@ -1,19 +1,11 @@
 import { nodeExecCheck } from '../execution';
 import { loadNode } from '../loader';
 
-type Metadata = {
-  colorChannel: string;
-  channelOrder: string;
-  isMiniBatched: string;
-  intensityRange: string;
-  device: string;
-};
 
 interface testNodeData {
   jsonPath: string;
   nodeName: string;
   prepareInput: string;
-  metadataBinary: Metadata;
   inputs: string[];
   returnVar: string;
   execTest: (inputs: any[], returnVar: any) => string;
@@ -39,20 +31,19 @@ input_image = {
     'device': 'cpu'
   }
 }`;
-  const metadataBinary = {
+  const metadataBinary = `'metadata': {
     'colorChannel': 'grayscale',
     'channelOrder': 'none',
-    'isMiniBatched': 'False',
+    'isMiniBatched': False,
     'intensityRange': '0-1',
     'device': 'cpu'
-  };
+  }`;
 
   const testData: testNodeData[] = [
     {
       jsonPath,
       nodeName: 'Convex_Hull',
       prepareInput,
-      metadataBinary,
       inputs: ['', 'input_image', 'True', '1e-10', 'True'],
       returnVar: 'convex_hull_output_binary',
       execTest: (inputs: any[], returnVar: any) => `from skimage.morphology import convex_hull_image
@@ -65,13 +56,7 @@ ${returnVar} = convex_hull_image(input_image['value'], ${inputs[2]}, ${inputs[3]
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'numpy.ndarray',
-  'metadata': {
-    'colorChannel': '${metadataBinary.colorChannel}',
-    'channelOrder': '${metadataBinary.channelOrder}',
-    'isMiniBatched': ${metadataBinary.isMiniBatched},
-    'intensityRange': '${metadataBinary.intensityRange}',
-    'device': '${metadataBinary.device}'
-  }
+  ${metadataBinary}
 }
 ${execTest(inputs, returnVar)}`
     },
@@ -79,7 +64,6 @@ ${execTest(inputs, returnVar)}`
       jsonPath,
       nodeName: 'Skeletonize',
       prepareInput,
-      metadataBinary,
       inputs: ['', 'input_image', 'method=None'],
       returnVar: 'skeletonize_output_binary',
       execTest: (inputs: any[], returnVar: any) => `from skimage.morphology import skeletonize
@@ -92,13 +76,7 @@ ${returnVar} = skeletonize(input_image['value'], ${inputs[2]})
 ${returnVar} = {
   'value': ${returnVar},
   'dataType': 'numpy.ndarray',
-  'metadata': {
-    'colorChannel': '${metadataBinary.colorChannel}',
-    'channelOrder': '${metadataBinary.channelOrder}',
-    'isMiniBatched': ${metadataBinary.isMiniBatched},
-    'intensityRange': '${metadataBinary.intensityRange}',
-    'device': '${metadataBinary.device}'
-  }
+  ${metadataBinary}
 }
 ${execTest(inputs, returnVar)}`
     }
