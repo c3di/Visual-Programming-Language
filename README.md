@@ -1,8 +1,11 @@
-# VPRCS: Visual Programming React Component Suite
+# Visual Programming Language
 
 [![build](https://github.com/Max-ChenFei/Visual-Programming-React-Component-Suite/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Max-ChenFei/Visual-Programming-React-Component-Suite/actions/workflows/build.yml)
 
-VPRCS (Visual Programming React Component Suite) includes React components—namely `VPEditor` and `NodelibraryPanel`—tailored for node-based visual programming. It's built for users to interactively construct visual workflows and experimental prototypes rapidly.
+
+**Code Generation please check generators folder**
+
+**Knowledge Graph please check ImageTypeConversion folder.**
 
 ![image-20230823172210509](./doc/screenshots/VPRCS.jpg)
 
