@@ -4,19 +4,19 @@
  * ---> Graph (nodes: Node[] + edges: Edge[])
  */
 import type {
-  SerializedGraphNode,
-  SerializedGraph,
+  Edge,
+  Graph,
   GraphEdgeConfig,
   GraphNodeConfig,
-  Edge,
-  Node,
-  Graph,
   HandleData,
+  Node,
+  SerializedGraph,
   SerializedGraphEdge,
+  SerializedGraphNode,
 } from './types';
 // import { MarkerType } from 'reactflow';
-import { nodeConfigRegistry } from './extension';
 import { MarkerType } from 'reactflow';
+import { nodeConfigRegistry } from './extension';
 
 export class Deserializer {
   private static instance: Deserializer;
@@ -190,17 +190,16 @@ export class Deserializer {
         outputs,
         configType: type,
         nodeRef,
-        sourceCode: config.sourceCode,
-        breakExecution: config.breakExecution,
+        codeGenerator: config.codeGenerator,
         externalImports: config.externalImports,
-        functionName: config.functionName,
         enableAddNewOne: config.enableAddNewOne,
       },
     };
   };
 
   private readonly defaultConfigToEdge = (config: GraphEdgeConfig): Edge => {
-    const { id, input, output, inputHandle, outputHandle, dataType } = config;
+    const { id, input, output, inputHandle, outputHandle, dataType, style } =
+      config;
     return {
       id,
       source: output,
@@ -213,18 +212,21 @@ export class Deserializer {
               type: MarkerType.Arrow,
               width: 15,
               height: 15,
-              color: getComputedStyle(document.body).getPropertyValue(
-                '--vp-exec-color'
-              ),
+              color: `${
+                typeof window !== 'undefined' &&
+                typeof window.getComputedStyle === 'function'
+                  ? getComputedStyle(document.body).getPropertyValue(
+                      '--vp-exec-color'
+                    )
+                  : '#808080'
+              }`,
             }
           : undefined,
       data: {
         dataType,
       },
-      className: dataType,
-      style: {
-        strokeWidth: 2,
-      },
+      className: Array.isArray(dataType) ? dataType.join(' ') : dataType,
+      style,
     };
   };
 

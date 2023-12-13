@@ -7,7 +7,7 @@
       "title": "felzenszwalb segmentation",
       "tooltip": "Computes Felsenszwalb’s efficient graph based image segmentation.",
       "externalImports": "from skimage.segmentation import felzenszwalb",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = felzenszwalb({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = felzenszwalb(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, channel_axis=${inputs[5]})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -22,10 +22,28 @@
             "dataType": "numpy.ndarray",
             "metadata": [
               {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
                 "intensityRange": "0-1"
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
               }
             ]
           },
@@ -34,26 +52,26 @@
         "scale": {
           "title": "scale",
           "dataType": "float",
-          "defaultValue": 100,
+          "defaultValue": 1.0,
           "tooltip": "Free parameter. Higher means larger clusters."
         },
         "sigma": {
           "title": "sigma",
           "dataType": "float",
-          "defaultValue": 0.5,
+          "defaultValue": 0.8,
           "tooltip": "Width (standard deviation) of Gaussian kernel used in preprocessing."
         },
         "min_size": {
-          "title": "output",
+          "title": "min_size",
           "dataType": "integer",
-          "defaultValue": 50,
+          "defaultValue": 20,
           "tooltip": "Minimum component size. Enforced using postprocessing."
         },
         "channel_axis": {
           "title": "channel_axis",
           "dataType": "integer",
           "defaultValue": -1,
-          "tooltip": "If None, the image is assumed to be grayscale (single-channel). Otherwise, this parameter indicates which axis of the array corresponds to channels."
+          "tooltip": "If None, the image is assumed to be grayscale (single-channel). Otherwise, this parameter indicates which axis of the array corresponds to channels."
         }
       },
       "outputs": {
@@ -63,12 +81,9 @@
           "showWidget": false,
           "showTitle": false
         },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "numpy.ndarray"
-          },
+        "segment_mask": {
+          "title": "segment_mask",
+          "dataType": "numpy.ndarray",
           "tooltip": "Integer mask indicating segment labels."
         }
       }
@@ -79,7 +94,7 @@
       "title": "slic segmentation",
       "tooltip": "Segments image using k-means clustering in Color-(x,y,z) space.",
       "externalImports": "from skimage.segmentation import slic",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = slic({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}},{{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}},{{{inputs.9}}},{{{inputs.10}}},{{{inputs.11}}},{{{inputs.12}}},{{{inputs.13}}},{{{inputs.14}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = slic(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, ${inputs[9]}, ${inputs[10]}, ${inputs[11]}, ${inputs[12]}, ${inputs[13]}, channel_axis=${inputs[14]})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -94,10 +109,28 @@
             "dataType": "numpy.ndarray",
             "metadata": [
               {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
                 "intensityRange": "0-1"
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
               }
             ]
           },
@@ -106,61 +139,61 @@
         "n_segments": {
           "title": "n_segments",
           "dataType": "integer",
-          "defaultValue": 200,
+          "defaultValue": 100,
           "tooltip": "The (approximate) number of labels in the segmented output image."
         },
         "compactness": {
           "title": "compactness",
           "dataType": "float",
-          "defaultValue": 10,
+          "defaultValue": 10.0,
           "tooltip": "Balances color proximity and space proximity.We recommend exploring possible values on a log scale, e.g., 0.01, 0.1, 1, 10, 100, before refining around a chosen value"
         },
         "max_num_iter": {
           "title": "max_num_iter",
           "dataType": "integer",
-          "defaultValue": "None",
+          "defaultValue": 10,
           "tooltip": "Maximum number of iterations of k-means."
         },
         "sigma": {
           "title": "sigma",
           "dataType": "float",
-          "defaultValue": 1.0,
+          "defaultValue": 0.0,
           "tooltip": "Width (standard deviation) of Gaussian kernel used in preprocessing."
         },
         "spacing": {
           "title": "spacing",
-          "dataType": "float",
+          "dataType": "numpy.ndarray",
           "defaultValue": "None",
           "tooltip": "The voxel spacing along each spatial dimension."
         },
         "convert2lab": {
           "title": "convert2lab",
           "dataType": "boolean",
-          "defaultValue": "True",
-          "tooltip": "Whether the input should be converted to Lab colorspace prior to segmentation. "
+          "defaultValue": "None",
+          "tooltip": "Whether the input should be converted to Lab colorspace prior to segmentation."
         },
         "enforce_connectivity": {
           "title": "enforce_connectivity",
           "dataType": "boolean",
-          "defaultValue": "None",
+          "defaultValue": true,
           "tooltip": "Whether the generated segments are connected or not"
         },
         "min_size_factor": {
           "title": "min_size_factor",
           "dataType": "float",
-          "defaultValue": "None",
-          "tooltip": "Proportion of the minimum segment size to be removed with respect to the supposed segment size `depth*width*height/n_segments`"
+          "defaultValue": 0.5,
+          "tooltip": "Proportion of the minimum segment size to be removed with respect to the supposed segment size`depth*width*height/n_segments`"
         },
         "max_size_factor": {
           "title": "max_size_factor",
           "dataType": "float",
-          "defaultValue": 3,
-          "tooltip": "Proportion of the maximum connected segment size. "
+          "defaultValue": 3.0,
+          "tooltip": "Proportion of the maximum connected segment size."
         },
         "slic_zero": {
           "title": "slic_zero",
           "dataType": "boolean",
-          "defaultValue": "True",
+          "defaultValue": false,
           "tooltip": "Run SLIC-zero, the zero-parameter mode of SLIC."
         },
         "start_label": {
@@ -173,287 +206,13 @@
           "title": "mask",
           "dataType": "numpy.ndarray",
           "defaultValue": "None",
-          "tooltip": "If provided, superpixels are computed only where mask is True, and seed points are homogeneously distributed over the mask using a k-means clustering strategy. "
+          "tooltip": "If provided, superpixels are computed only where mask is True, and seed points are homogeneously distributed over the mask using a k-means clustering strategy."
         },
         "channel_axis": {
           "title": "channel_axis",
           "dataType": "integer",
-          "defaultValue": "None",
+          "defaultValue": -1,
           "tooltip": "If None, the image is assumed to be a grayscale (single channel) image. Otherwise, this parameter indicates which axis of the array corresponds to channels."
-        }
-      },
-      "outputs": {
-        "execOut": {
-          "title": "execOut",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "numpy.ndarray"
-          },
-          "tooltip": "Integer mask indicating segment labels."
-        }
-      }
-    },
-    "Quickshift_Segmentation": {
-      "type": "Quickshift_Segmentation",
-      "category": "function",
-      "title": "quickshift segmentation",
-      "tooltip": "Segment image using quickshift clustering in Color-(x,y) space.",
-      "externalImports": "from skimage.segmentation import quickshift",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = quickshift({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}},{{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}},{{{inputs.9}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
-      "inputs": {
-        "execIn": {
-          "title": "execIn",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "numpy.ndarray",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "Input image to be segmented"
-        },
-        "ratio": {
-          "title": "ratio",
-          "dataType": "float",
-          "defaultValue": 0.5,
-          "tooltip": "Balances color-space proximity and image-space proximity, between 0 and 1"
-        },
-        "kernel_size": {
-          "title": "kernel_size",
-          "dataType": "float",
-          "defaultValue": 3.0,
-          "tooltip": "Width of Gaussian kernel used in smoothing the sample density. Higher means fewer clusters."
-        },
-        "max_dist": {
-          "title": "max_dist",
-          "dataType": "float",
-          "defaultValue": 6.0,
-          "tooltip": "Cut-off point for data distances. Higher means fewer clusters."
-        },
-        "return_tree": {
-          "title": "return_tree",
-          "dataType": "bool",
-          "defaultValue": "None",
-          "tooltip": "Whether to return the full segmentation hierarchy tree and distances."
-        },
-        "sigma": {
-          "title": "sigma",
-          "dataType": "float",
-          "defaultValue": 1.0,
-          "tooltip": "Width (standard deviation) of Gaussian kernel used in preprocessing."
-        },
-        "convert2lab": {
-          "title": "convert2lab",
-          "dataType": "boolean",
-          "defaultValue": "True",
-          "tooltip": "Whether the input should be converted to Lab colorspace prior to segmentation. "
-        },
-        "rng": {
-          "title": "rng",
-          "dataType": "integer",
-          "defaultValue": 42,
-          "tooltip": "Pseudo-random number generator. By default, a PCG64 generator is used"
-        },
-        "channel_axis": {
-          "title": "channel_axis",
-          "dataType": "integer",
-          "defaultValue": "None",
-          "tooltip": "The axis of image corresponding to color channels"
-        }
-      },
-      "outputs": {
-        "execOut": {
-          "title": "execOut",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "numpy.ndarray"
-          },
-          "tooltip": "Integer mask indicating segment labels."
-        }
-      }
-    },
-    "Flood Fill": {
-      "type": "Flood Fill",
-      "category": "function",
-      "title": "flood fill",
-      "tooltip": "Perform flood filling on an image.",
-      "externalImports": "from skimage.segmentation import flood_fill",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = quickshift({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}},{{{inputs.5}}},{{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}},{{{inputs.9}}},{{{inputs.10}}},{{{inputs.11}}},{{{inputs.12}}},{{{inputs.13}}},{{{inputs.14}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
-      "inputs": {
-        "execIn": {
-          "title": "execIn",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "numpy.ndarray",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "Input image to be segmented"
-        },
-        "seed_point": {
-          "title": "seed_point",
-          "dataType": "tuple",
-          "defaultValue": "(155,150)",
-          "tooltip": "The point in image used as the starting point for the flood fill."
-        },
-        "new_value": {
-          "title": "new_value",
-          "dataType": "integer",
-          "defaultValue": 255,
-          "tooltip": "New value to set the entire fill."
-        },
-        "footprint": {
-          "title": "footprint",
-          "dataType": "numpy.ndarray",
-          "defaultValue": "None",
-          "tooltip": "The footprint (structuring element) used to determine the neighborhood of each evaluated pixel. It must contain only 1’s and 0’s, have the same number of dimensions as image."
-        },
-        "connectivity": {
-          "title": "connectivity",
-          "dataType": "integer",
-          "defaultValue": "None",
-          "tooltip": "A number used to determine the neighborhood of each evaluated pixel."
-        },
-        "tolerance": {
-          "title": "tolerance",
-          "dataType": "float",
-          "defaultValue": 10.0,
-          "tooltip": " If a tolerance is provided, adjacent points with values within plus or minus tolerance from the seed point are filled (inclusive)."
-        },
-        "in_place": {
-          "title": "in_place",
-          "dataType": "boolean",
-          "defaultValue": "False",
-          "tooltip": "If True, flood filling is applied to image in place. If False, the flood filled result is returned without modifying the input image (default)."
-        }
-      },
-      "outputs": {
-        "execOut": {
-          "title": "execOut",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "numpy.ndarray"
-          },
-          "tooltip": "An array with the same shape as image is returned, with values in areas connected to and equal (or within tolerance of) the seed point replaced with new_value."
-        }
-      }
-    },
-    "Multi_Otsu_Thresholding_thresholds": {
-      "type": "Multi_Otsu_Thresholding_thresholds",
-      "category": "function",
-      "title": "multi_Otsu_thresholding_thresholds",
-      "tooltip": "Applying multi-Otsu threshold for the default value, generating three classes.",
-      "externalImports": "from skimage.filters import threshold_multiotsu",
-      "sourceCode": "{{indent}}{{{outputs.1}}} =  threshold_multiotsu({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
-      "inputs": {
-        "execIn": {
-          "title": "execIn",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "numpy.ndarray",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "Input image"
-        }
-      },
-      "outputs": {
-        "execOut": {
-          "title": "execOut",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "thresholds": {
-          "title": "thresholds",
-          "dataType": "numpy.ndarray",
-          "defaultValue": "None",
-          "tooltip": "The threshold that applying multi-Otsu and generating some classes."
-        }
-      }
-    },
-    "Measure_label": {
-      "type": "Measure_label",
-      "category": "function",
-      "title": "measure_label",
-      "tooltip": "Label connected regions of an integer array.",
-      "externalImports": "from skimage import measure",
-      "sourceCode": "{{indent}}{{{outputs.1}}} =  measure.label({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
-      "inputs": {
-        "execIn": {
-          "title": "execIn",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "numpy.ndarray",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "Image to label."
         }
       },
       "outputs": {
@@ -466,18 +225,17 @@
         "labels": {
           "title": "labels",
           "dataType": "numpy.ndarray",
-          "defaultValue": "None",
-          "tooltip": "Labeled array, where all connected regions are assigned the same integer value."
+          "tooltip": "Integer mask indicating segment labels."
         }
       }
     },
-    "Peak_local_max": {
-      "type": "Peak_local_max",
+    "Quickshift_Segmentation": {
+      "type": "Quickshift_Segmentation",
       "category": "function",
-      "title": "peak_local_max",
-      "tooltip": "Find peaks in an image as coordinate list.",
-      "externalImports": "from skimage import feature",
-      "sourceCode": "{{indent}}{{{outputs.1}}} =  feature.peak_local_max({{{inputs.1}}},{{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "title": "quickshift segmentation",
+      "tooltip": "Segment image using quickshift clustering in Color-(x,y) space.",
+      "externalImports": "from skimage.segmentation import quickshift",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = quickshift(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, channel_axis=${inputs[9]})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -493,9 +251,330 @@
             "metadata": [
               {
                 "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              }
+            ]
+          },
+          "tooltip": "Input image to be segmented"
+        },
+        "ratio": {
+          "title": "ratio",
+          "dataType": "float",
+          "defaultValue": 1.0,
+          "tooltip": "Balances color-space proximity and image-space proximity, between 0 and 1"
+        },
+        "kernel_size": {
+          "title": "kernel_size",
+          "dataType": "float",
+          "defaultValue": 5.0,
+          "tooltip": "Width of Gaussian kernel used in smoothing the sample density. Higher means fewer clusters."
+        },
+        "max_dist": {
+          "title": "max_dist",
+          "dataType": "float",
+          "defaultValue": 10.0,
+          "tooltip": "Cut-off point for data distances. Higher means fewer clusters."
+        },
+        "return_tree": {
+          "title": "return_tree",
+          "dataType": "boolean",
+          "defaultValue": false,
+          "tooltip": "Whether to return the full segmentation hierarchy tree and distances."
+        },
+        "sigma": {
+          "title": "sigma",
+          "dataType": "float",
+          "defaultValue": 0.0,
+          "tooltip": "Width (standard deviation) of Gaussian kernel used in preprocessing."
+        },
+        "convert2lab": {
+          "title": "convert2lab",
+          "dataType": "boolean",
+          "defaultValue": true,
+          "tooltip": "Whether the input should be converted to Lab colorspace prior to segmentation."
+        },
+        "rng": {
+          "title": "rng",
+          "dataType": "integer",
+          "defaultValue": 42,
+          "tooltip": "Pseudo-random number generator. By default, a PCG64 generator is used"
+        },
+        "channel_axis": {
+          "title": "channel_axis",
+          "dataType": "integer",
+          "defaultValue": -1,
+          "tooltip": "The axis of image corresponding to color channels"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "segment_mask": {
+          "title": "segment_mask",
+          "dataType": "numpy.ndarray",
+          "tooltip": "Integer mask indicating segment labels."
+        }
+      }
+    },
+    "Flood Fill": {
+      "type": "Flood Fill",
+      "category": "function",
+      "title": "flood fill",
+      "tooltip": "Perform flood filling on an image.",
+      "externalImports": "from skimage.segmentation import flood_fill",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = flood_fill(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, footprint=${inputs[4]}, connectivity=${inputs[5]}, tolerance=${inputs[6]}, in_place=${inputs[7]})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
                 "intensityRange": "0-1"
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              }
+            ]
+          },
+          "tooltip": "Input image to be segmented (do not support color images)"
+        },
+        "seed_point": {
+          "title": "seed_point",
+          "dataType": "tuple",
+          "tooltip": "The point in image used as the starting point for the flood fill."
+        },
+        "new_value": {
+          "title": "new_value",
+          "dataType": "integer",
+          "tooltip": "New value to set the entire fill."
+        },
+        "footprint": {
+          "title": "footprint",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "The footprint (structuring element) used to determine the neighborhood of each evaluated pixel. It must contain only 1’s and 0’s, have the same number of dimensions as image."
+        },
+        "connectivity": {
+          "title": "connectivity",
+          "dataType": "integer",
+          "defaultValue": "None",
+          "tooltip": "A number used to determine the neighborhood of each evaluated pixel."
+        },
+        "tolerance": {
+          "title": "tolerance",
+          "dataType": "float",
+          "defaultValue": "None",
+          "tooltip": "If a tolerance is provided, adjacent points with values within plus or minus tolerance from the seed point are filled (inclusive)."
+        },
+        "in_place": {
+          "title": "in_place",
+          "dataType": "boolean",
+          "defaultValue": false,
+          "tooltip": "If True, flood filling is applied to image in place. If False, the flood filled result is returned without modifying the input image (default)."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "filled": {
+          "title": "filled",
+          "dataType": "numpy.ndarray",
+          "tooltip": "An array with the same shape as image is returned, with values in areas connected to and equal (or within tolerance of) the seed point replaced with new_value."
+        }
+      }
+    },
+    "Multi_Otsu_Thresholding": {
+      "type": "Multi_Otsu_Thresholding",
+      "category": "function",
+      "title": "multi_Otsu_thresholding",
+      "tooltip": "Applying multi-Otsu threshold for the default value, generating three classes.",
+      "externalImports": "from skimage.filters import threshold_multiotsu",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = threshold_multiotsu(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, hist=${inputs[4]})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              }
+            ]
+          },
+          "tooltip": "Grayscale input image."
+        },
+        "classes": {
+          "title": "classes",
+          "dataType": "integer",
+          "defaultValue": 3,
+          "tooltip": "Number of classes to be thresholded, i.e. the number of resulting regions."
+        },
+        "nbins": {
+          "title": "nbins",
+          "dataType": "integer",
+          "defaultValue": 256,
+          "tooltip": "Number of bins used to calculate the histogram. This value is ignored for integer arrays."
+        },
+        "hist": {
+          "title": "hist",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "Histogram from which to determine the threshold"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "thresholds": {
+          "title": "thresholds",
+          "dataType": "numpy.ndarray",
+          "tooltip": "The threshold that applying multi-Otsu and generating some classes."
+        }
+      }
+    },
+    "Measure_label": {
+      "type": "Measure_label",
+      "category": "function",
+      "title": "measure_label",
+      "tooltip": "Label connected regions of an integer array.",
+      "externalImports": "from skimage.measure import label",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]}, ${outputs[2]} = label(${inputs[1]}['value'], ${inputs[2]}, True, ${inputs[4]})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Image to label."
+        },
+        "background": {
+          "title": "background",
+          "dataType": "integer",
+          "defaultValue": "None",
+          "tooltip": "Consider all pixels with this value as background pixels"
+        },
+        "return_num": {
+          "title": "return_num",
+          "dataType": "boolean",
+          "defaultValue": true,
+          "tooltip": "Whether to return the number of assigned labels. (always true by design, so it return always 2 outputs)"
+        },
+        "connectivity": {
+          "title": "connectivity",
+          "dataType": "integer",
+          "defaultValue": "None",
+          "tooltip": "Maximum number of orthogonal hops to consider a pixel/voxel as a neighbor (values range from 1 to input.ndim & None = input.ndim)."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "labels": {
+          "title": "labels",
+          "dataType": "numpy.ndarray",
+          "tooltip": "Labeled array, where all connected regions are assigned the same integer value."
+        },
+        "num": {
+          "title": "num",
+          "dataType": "integer",
+          "tooltip": "Number of labels, which equals the maximum label index and is only returned if return_num is True."
+        }
+      }
+    },
+    "Peak_local_max": {
+      "type": "Peak_local_max",
+      "category": "function",
+      "title": "peak_local_max",
+      "tooltip": "Find peaks in an image as coordinate list.",
+      "externalImports": "from skimage.feature import peak_local_max",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = peak_local_max(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, ${inputs[9]}, ${inputs[10]})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-1"
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
               }
             ]
           },
@@ -504,8 +583,56 @@
         "min_distance": {
           "title": "min_distance",
           "dataType": "integer",
+          "defaultValue": 1,
+          "tooltip": "The minimal allowed distance separating peaks."
+        },
+        "threshold_abs": {
+          "title": "threshold_abs",
+          "dataType": "float",
           "defaultValue": "None",
-          "tooltip": "The minimal allowed distance separating peaks. "
+          "tooltip": "Minimum intensity of peaks (default: minimum intensity of the image)."
+        },
+        "threshold_rel": {
+          "title": "threshold_rel",
+          "dataType": "float",
+          "defaultValue": "None",
+          "tooltip": "Minimum intensity of peaks, calculated as max(image) * threshold_rel."
+        },
+        "exclude_border": {
+          "title": "exclude_border",
+          "dataType": "boolean",
+          "defaultValue": true,
+          "tooltip": "If True, takes the min_distance parameter as value. If zero or False, peaks are identified regardless of their distance from the border."
+        },
+        "num_peaks": {
+          "title": "num_peaks",
+          "dataType": "anyDataType",
+          "defaultValue": "np.inf",
+          "tooltip": "(integer) Maximum number of peaks."
+        },
+        "footprint": {
+          "title": "footprint",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "If provided, footprint == 1 represents the local region within which to search for peaks at every point in image."
+        },
+        "labels": {
+          "title": "labels",
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "tooltip": "If provided, each unique region labels == value represents a unique region to search for peaks. Zero is reserved for background."
+        },
+        "num_peaks_per_label": {
+          "title": "num_peaks_per_label",
+          "dataType": "anyDataType",
+          "defaultValue": "np.inf",
+          "tooltip": "(integer) Maximum number of peaks for each label."
+        },
+        "p_norm": {
+          "title": "p_norm",
+          "dataType": "anyDataType",
+          "defaultValue": "np.inf",
+          "tooltip": "(float) Which Minkowski p-norm to use. Should be in the range [1, inf]. inf corresponds to the Chebyshev distance and 2 to the Euclidean distance."
         }
       },
       "outputs": {
@@ -518,7 +645,6 @@
         "coordinates": {
           "title": "coordinates",
           "dataType": "numpy.ndarray",
-          "defaultValue": "None",
           "tooltip": "The coordinates of the peaks."
         }
       }
@@ -527,9 +653,9 @@
       "type": "Watershed_segmentation",
       "category": "function",
       "title": "watershed_segmentation",
-      "tooltip": "The watershed is a classical algorithm used for segmentation,",
+      "tooltip": "The watershed is a classical algorithm used for segmentation,",
       "externalImports": "from skimage.segmentation import watershed",
-      "sourceCode": "{{indent}}{{{outputs.1}}} =  watershed({{{-inputs.1}}},{{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = watershed(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -544,14 +670,14 @@
             "dataType": "numpy.ndarray",
             "metadata": [
               {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
               }
             ]
           },
-          "tooltip": "Input image"
+          "tooltip": "Data array where the lowest value points are labeled first."
         },
         "markers": {
           "title": "markers",
@@ -559,11 +685,35 @@
           "defaultValue": "None",
           "tooltip": "The desired number of markers, or an array marking the basins with the values to be assigned in the label matrix."
         },
+        "connectivity": {
+          "title": "connectivity",
+          "dataType": ["integer", "numpy.ndarray"],
+          "defaultValue": 1,
+          "tooltip": "An array with the same number of dimensions as image whose non-zero elements indicate neighbors for connection. Scalar value '1' means 4-connectivity, and '2' would mean 8-connectivity in a 2D spaace."
+        },
+        "offset": {
+          "title": "offset",
+          "dataType": "tuple",
+          "defaultValue": "None",
+          "tooltip": "offset of the connectivity (one offset per dimension)"
+        },
         "mask": {
           "title": "mask",
           "dataType": "numpy.ndarray",
           "defaultValue": "None",
-          "tooltip": "ndarray of bools or 0s and 1s"
+          "tooltip": "Array of same shape as image. Only points at which mask == True will be labeled."
+        },
+        "compactness": {
+          "title": "compactness",
+          "dataType": "float",
+          "defaultValue": 0.0,
+          "tooltip": "Use compact watershed with given compactness parameter. Higher values result in more regularly-shaped watershed basins."
+        },
+        "watershed_line": {
+          "title": "watershed_line",
+          "dataType": "boolean",
+          "defaultValue": false,
+          "tooltip": "If watershed_line is True, a one-pixel wide line separates the regions obtained by the watershed algorithm. The line has the label 0."
         }
       },
       "outputs": {
@@ -573,20 +723,9 @@
           "showWidget": false,
           "showTitle": false
         },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "numpy.ndarray",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
+        "labeled_matrix": {
+          "title": "labeled_matrix",
+          "dataType": "numpy.ndarray",
           "tooltip": "A labeled matrix of the same type and shape as markers"
         }
       }
@@ -597,7 +736,7 @@
       "title": "label2rgb",
       "tooltip": "Return an RGB image where color-coded labels are painted over the image.",
       "externalImports": "from skimage.color import label2rgb",
-      "sourceCode": "{{indent}}{{{outputs.1}}} =  label2rgb({{{inputs.1}}},{{{inputs.2}}},{{{alpha=inputs.3}}},{{{bg_color=inputs.4}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = label2rgb(${inputs[1]}, ${inputs[2]}['value'], ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, saturation=${inputs[9]}, channel_axis=${inputs[10]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'rgb',\r\n    'channelOrder': 'channelLast',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-255',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -606,20 +745,9 @@
           "showTitle": false
         },
         "label": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "numpy.ndarray",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "Integer array of labels with the same shape as image."
+          "title": "label",
+          "dataType": "numpy.ndarray",
+          "tooltip": "Integer array of labels with the same shape as image."
         },
         "image": {
           "title": "image",
@@ -628,26 +756,80 @@
             "dataType": "numpy.ndarray",
             "metadata": [
               {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
                 "intensityRange": "0-1"
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
               }
             ]
           },
-          "tooltip": "Image used as underlay for labels. "
+          "tooltip": "Image used as underlay for labels."
+        },
+        "colors": {
+          "title": "colors",
+          "dataType": "list",
+          "defaultValue": "None",
+          "tooltip": "List of colors. If the number of labels exceeds the number of colors, then the colors are cycled."
         },
         "alpha": {
           "title": "alpha",
           "dataType": "float",
-          "defaultValue": "None",
+          "defaultValue": 0.3,
           "tooltip": "Opacity of colorized labels, [0,1]"
+        },
+        "bg_label": {
+          "title": "bg_label",
+          "dataType": "integer",
+          "defaultValue":  0,
+          "tooltip": "Label that’s treated as the background. If bg_label is specified, bg_color is None, and kind is overlay."
         },
         "bg_color": {
           "title": "bg_color",
-          "dataType": "string",
-          "defaultValue": "None",
+          "dataType": "tuple",
+          "defaultValue": "(0, 0, 0)",
           "tooltip": "Background color"
+        },
+        "image_alpha": {
+          "title": "image_alpha",
+          "dataType": "float",
+          "defaultValue":  1.0,
+          "tooltip": "Opacity of the image."
+        },
+        "kind": {
+          "title": "kind",
+          "dataType": "string",
+          "defaultValue": "overlay",
+          "tooltip": "The kind of color image desired. ‘overlay’ cycles over defined colors and overlays the colored labels over the original image. ‘avg’ replaces each labeled segment with its average color, for a stained-class or pastel painting appearance."
+        },
+        "saturation": {
+          "title": "saturation",
+          "dataType": "float",
+          "defaultValue": 0.0,
+          "tooltip": "Parameter to control the saturation applied to the original image between fully saturated (original RGB, saturation=1) and fully unsaturated (grayscale, saturation=0). Only applies when kind=’overlay’."
+        },
+        "channel_axis": {
+          "title": "channel_axis",
+          "dataType": "integer",
+          "defaultValue": -1,
+          "tooltip": "This parameter indicates which axis of the output array will correspond to channels. If image is provided, this must also match the axis of image that corresponds to channels."
         }
       },
       "outputs": {
@@ -665,13 +847,13 @@
             "metadata": [
               {
                 "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
               }
             ]
           },
-          "tooltip": "The result of blending a cycling colormap (colors) for each distinct value in label with the image, at a certain alpha value."
+          "tooltip": "The result of blending a cycling colormap (colors) for each distinct value in label with the image, at a certain alpha value."
         }
       }
     }

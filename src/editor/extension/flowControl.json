@@ -2,12 +2,12 @@
   "description": "Flow control nodes are used to control the execution order of a program. They include sequence, for loop, if, and other nodes that can alter the flow based on conditions or iterations. ",
   "enable": true,
   "nodes": {
-    "Execute Start": {
-      "type": "Execute Start",
+    "main": {
+      "type": "main",
       "category": "function",
-      "title": "Execute Start",
-      "tooltip": "The execute start point of the program",
-      "sourceCode": "{{{outputs.0}}}",
+      "title": "main",
+      "tooltip": "The execute entry point of the program",
+      "codeGenerator": "function code(inputs, outputs, options, generator) {\n    return `${outputs[0]}`;\n}",
       "outputs": {
         "execOut": {
           "tooltip": "exec out",
@@ -17,10 +17,10 @@
         }
       }
     },
-    "Sequence": {
-      "type": "Sequence",
+    "sequence": {
+      "type": "sequence",
       "category": "sequence",
-      "title": "Sequence",
+      "title": "sequence",
       "tooltip": "Execute a series of nodes in order",
       "inputs": {
         "execIn": {
@@ -43,12 +43,12 @@
           "deletable": true
         }
       },
-      "sourceCode": "{{#outputs}}{{{.}}}\n{{/outputs}}"
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\n  return `${outputs.filter(str => str !== '').join('\\n')}`;\n}"
     },
-    "If Else": {
-      "type": "If Else",
+    "if else": {
+      "type": "if else",
       "category": "function",
-      "title": "If Else",
+      "title": "if else",
       "tooltip": "If-Else Statement. If Condition is true, execution goes to True, otherwise it goes to False",
       "inputs": {
         "execIn": {
@@ -66,27 +66,27 @@
         }
       },
       "outputs": {
-        "True": {
-          "title": "True",
+        "true": {
+          "title": "true",
           "tooltip": "True",
           "dataType": "exec",
           "showWidget": false,
           "showTitle": true
         },
-        "False": {
-          "title": "False",
+        "false": {
+          "title": "false",
           "tooltip": "False",
           "dataType": "exec",
           "showWidget": false,
           "showTitle": true
         }
       },
-      "sourceCode": "{{indent}}if {{inputs.1}}:\n{{{outputs.0}}}\n{{indent}}{{#outputs.1}}else:\n{{{outputs.1}}}{{/outputs.1}}"
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\n    let code = `if ${inputs[1]}:\\n${generator.indentLines(outputs[0] !== '' ? outputs[0] : 'pass')}`;\n    if (outputs[1] !== '')\n        code = `${code}\\nelse:\\n${generator.indentLines(outputs[1])}`;\n    return code;\n}"
     },
-    "For Each Loop": {
-      "type": "For Each Loop",
+    "for each loop": {
+      "type": "for each loop",
       "category": "function",
-      "title": "For Each Loop",
+      "title": "for each loop",
       "tooltip": "Executes LoopBody for each element in Array",
       "inputs": {
         "execIn": {
@@ -96,8 +96,8 @@
           "showWidget": false,
           "showTitle": false
         },
-        "Array": {
-          "title": "List",
+        "list": {
+          "title": "list1",
           "tooltip": "List",
           "dataType": "list",
           "showWidget": false,
@@ -106,85 +106,39 @@
       },
       "outputs": {
         "loopBody": {
-          "title": "Loop Body",
+          "title": "loop body",
           "dataType": "exec",
           "showWidget": false,
           "showTitle": true,
           "tooltip": "Exec Out"
         },
-        "ArrayElement": {
-          "title": "Array Element",
+        "index": {
+          "title": "index",
+          "dataType": "integer",
+          "showWidget": false,
+          "showTitle": true
+        },
+        "element": {
+          "title": "element",
           "tooltip": "Array Element",
           "dataType": "anyDataType",
           "showWidget": false,
           "showTitle": true
         },
-        "arrayIndex": {
-          "title": "Array Index",
-          "dataType": "integer",
-          "showWidget": false,
-          "showTitle": true
-        },
         "complete": {
-          "title": "Completed",
+          "title": "completed",
           "tooltip": "exec out",
           "dataType": "exec",
           "showWidget": false,
           "showTitle": true
         }
       },
-      "sourceCode": "{{indent}}for {{outputs.2}}, {{outputs.1}} in enumerate({{{inputs.1}}}):\n{{{outputs.0}}}\n{{{outputs.3}}}"
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\n    return `for ${outputs[1]}, ${outputs[2]} in enumerate(${inputs[1] !== '' ? inputs[1] : '[]'}):\\n${generator.indentLines(outputs[0] !== '' ? outputs[0] : 'pass')}${'\\n'.repeat(Number(outputs[3] !== '')) + outputs[3]}`;\n}"
     },
-    "For Iterator Loop": {
-      "type": "For Iterator Loop",
+    "for loop": {
+      "type": "for loop",
       "category": "function",
-      "title": "For Iterator Loop",
-      "tooltip": "Executes LoopBody for each element in an iterator",
-      "inputs": {
-        "execIn": {
-          "title": "execIn",
-          "tooltip": "execIn",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "Iterator": {
-          "title": "Iterator",
-          "tooltip": "Iterator",
-          "dataType": "iterator",
-          "showWidget": false,
-          "showTitle": true
-        }
-      },
-      "outputs": {
-        "loopBody": {
-          "title": "Loop Body",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": true,
-          "tooltip": "Exec Out"
-        },
-        "ArrayElement": {
-          "title": "Element",
-          "tooltip": "Element",
-          "dataType": "anyDataType",
-          "showWidget": false,
-          "showTitle": true
-        },
-        "complete": {
-          "title": "Completed",
-          "tooltip": "exec out",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": true
-        }
-      },
-      "sourceCode": "{{indent}}for {{outputs.1}} in {{{inputs.1}}}:\n{{{outputs.0}}}\n{{{outputs.2}}}"
-    },
-    "For Loop": {
-      "type": "For Loop",
-      "category": "function",
-      "title": "For Loop",
+      "title": "for loop",
       "tooltip": "Executes LoopBody for each Index from StartIndex to StopIndex, inclusive",
       "inputs": {
         "execIn": {
@@ -194,13 +148,13 @@
           "showWidget": false,
           "showTitle": false
         },
-        "First Index": {
-          "title": "First Index",
+        "first Index": {
+          "title": "first index",
           "tooltip": "First Index",
           "dataType": "integer",
           "defaultValue": 0
         },
-        "Last Index": {
+        "last index": {
           "title": "Last Index",
           "tooltip": "Last Index",
           "dataType": "integer",
@@ -215,80 +169,21 @@
           "showTitle": true,
           "tooltip": "Exec Out"
         },
-        "Index": {
-          "title": "Index",
+        "index": {
+          "title": "index",
           "dataType": "integer",
           "showWidget": false,
           "showTitle": true
         },
         "complete": {
-          "title": "Completed",
+          "title": "completed",
           "tooltip": "exec out",
           "dataType": "exec",
           "showWidget": false,
           "showTitle": true
         }
       },
-      "sourceCode": "{{indent}}for {{outputs.1}} in range({{inputs.1}}, {{inputs.2}}):\n{{{outputs.0}}}\n{{{outputs.2}}}"
-    },
-    "For Loop with Break": {
-      "type": "For Loop with Break",
-      "category": "function",
-      "title": "For Loop with Break",
-      "breakExecution": ["break"],
-      "sourceCode": {
-        "execIn": "{{indent}}for {{outputs.1}} in range({{inputs.1}}, {{inputs.2}}):\n{{{outputs.0}}}\n{{{outputs.2}}}",
-        "break": "{{indent}}break"
-      },
-      "tooltip": "Executes LoopBody for each index FirstIndex to lastIndex, inclusive. If execution goes in to break the loop will exit without executing the remaining indices",
-      "inputs": {
-        "execIn": {
-          "title": "execIn",
-          "tooltip": "execIn",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "First Index": {
-          "title": "First Index",
-          "tooltip": "First Index",
-          "dataType": "integer"
-        },
-        "Last Index": {
-          "title": "Last Index",
-          "tooltip": "Last Index",
-          "dataType": "integer"
-        },
-        "break": {
-          "title": "Break",
-          "tooltip": "Break",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": true
-        }
-      },
-      "outputs": {
-        "loopBody": {
-          "title": "Loop Body",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": true,
-          "tooltip": "Exec Out"
-        },
-        "Index": {
-          "title": "Index",
-          "dataType": "integer",
-          "showWidget": false,
-          "showTitle": true
-        },
-        "complete": {
-          "title": "Completed",
-          "tooltip": "exec out",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": true
-        }
-      }
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\n    return `for ${outputs[1]} in range(${inputs[1]}, ${inputs[2]}):\\n${generator.indentLines(outputs[0] !== '' ? outputs[0] : 'pass')}${'\\n'.repeat(Number(outputs[2] !== '')) + outputs[2]}`;\n}"
     }
   }
 }

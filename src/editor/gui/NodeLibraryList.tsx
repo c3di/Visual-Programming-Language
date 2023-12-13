@@ -28,7 +28,7 @@ function nodeConfigsToItemList(
   const data: INodeLibraryItem[] = [];
   for (const name in nodeConfigs) {
     const config = nodeConfigs[name];
-    if (config.notShowInMenu) continue;
+    // if (config.notShowInMenu) continue;
     if (keyword && keyword !== '' && !name.includes(keyword)) continue;
     data.push({
       title: name,

@@ -45,7 +45,7 @@ function MathNode({
     const value = {
       title: `${Object.values(data.inputs!)[0].title ?? 'input'}`,
       dataType: data.dataType,
-      showTitle: true,
+      showTitle: false,
       showWidget: true,
       deletable: true,
     };

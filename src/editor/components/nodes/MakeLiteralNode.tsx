@@ -39,10 +39,7 @@ function MakeLiteralNode({
   return (
     <div title={data.tooltip} className="vp-node-container">
       <div className="node__header" style={{ textAlign: 'center' }}>
-        <strong>
-          Make Literal&nbsp;
-          {data.dataType[0].toUpperCase() + data.dataType.slice(1)}{' '}
-        </strong>
+        <strong>new literal</strong>
       </div>
       <div className="node__body">
         <div className="vp-node-handles-container">{inputHandles}</div>

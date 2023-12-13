@@ -7,7 +7,7 @@
       "title": "canny edge detection",
       "tooltip": "Find edges of the input image and filters them using the Canny algorithm.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.canny({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}},{{{inputs.7}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.filters.canny(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -22,10 +22,19 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": [
+                  "0-1"
+                ],
+                "device": [
+                  "cpu",
+                  "gpu"
+                ]
               }
             ]
           },
@@ -75,7 +84,7 @@
           "showWidget": false,
           "showTitle": false
         },
-        "image": {
+        "outputImage": {
           "title": "image",
           "dataType": "image",
           "defaultValue": {
@@ -91,7 +100,7 @@
       "title": "bilateral blur",
       "tooltip": "The operator is an edge-preserving image smoothing bilateral filter",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.bilateral_blur({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}})\n{{indent}}{{{outputs.}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) { \n  const code = `${outputs[1]} = K.filters.bilateral_blur(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\n${outputs[1]} = {\n  'value': ${outputs[1]},\n  'dataType': 'torch.tensor',\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -106,10 +115,19 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": [
+                  "0-1"
+                ],
+                "device": [
+                  "cpu",
+                  "gpu"
+                ]
               }
             ]
           },
@@ -153,7 +171,7 @@
           "showWidget": false,
           "showTitle": false
         },
-        "image": {
+        "outputImage": {
           "title": "image",
           "dataType": "image",
           "defaultValue": {
@@ -169,7 +187,7 @@
       "title": "blur pool2d",
       "tooltip": "Compute blurs and downsample a given feature map.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.blur_pool2d({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.filters.blur_pool2d(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -184,10 +202,19 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": [
+                  "0-1"
+                ],
+                "device": [
+                  "cpu",
+                  "gpu"
+                ]
               }
             ]
           },
@@ -195,14 +222,17 @@
         },
         "kernel_size": {
           "title": "kernel_size",
-          "dataType": "tuple",
+          "dataType": [
+            "tuple",
+            "int"
+          ],
           "defaultValue": "(5, 5)",
           "tooltip": "the kernel size for max pooling."
         },
-        "ceil_mode": {
-          "title": "ceil_mode",
-          "dataType": "boolean",
-          "defaultValue": true,
+        "stride": {
+          "title": "stride",
+          "dataType": "int",
+          "defaultValue": 2,
           "tooltip": "should be true to match output size of conv2d with same kernel size."
         }
       },
@@ -213,7 +243,7 @@
           "showWidget": false,
           "showTitle": false
         },
-        "image": {
+        "outputImage": {
           "title": "image",
           "dataType": "image",
           "defaultValue": {
@@ -229,7 +259,7 @@
       "title": "box blur",
       "tooltip": "Blur an image using the box filter.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.box_blur({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.filters.box_blur(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -244,10 +274,19 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": [
+                  "0-1"
+                ],
+                "device": [
+                  "cpu",
+                  "gpu"
+                ]
               }
             ]
           },
@@ -279,7 +318,7 @@
           "showWidget": false,
           "showTitle": false
         },
-        "image": {
+        "outputImage": {
           "title": "image",
           "dataType": "image",
           "defaultValue": {
@@ -295,7 +334,7 @@
       "title": "gaussian blur2d",
       "tooltip": "The operator smooths the given tensor with a gaussian kernel by convolving it to each channel.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.gaussian_blur2d({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.filters.gaussian_blur2d(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -310,10 +349,19 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": [
+                  "0-1"
+                ],
+                "device": [
+                  "cpu",
+                  "gpu"
+                ]
               }
             ]
           },
@@ -351,7 +399,7 @@
           "showWidget": false,
           "showTitle": false
         },
-        "image": {
+        "outputImage": {
           "title": "image",
           "dataType": "image",
           "defaultValue": {
@@ -367,7 +415,7 @@
       "title": "guided blur",
       "tooltip": "The operator is an edge-preserving image smoothing filter",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.guided_blur({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.filters.guided_blur(${inputs[1]}['value'], ${inputs[2]}['value'], ${inputs.slice(3).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb' if ${inputs[2]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[2]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -382,10 +430,19 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": [
+                  "0-1"
+                ],
+                "device": [
+                  "cpu",
+                  "gpu"
+                ]
               }
             ]
           },
@@ -398,10 +455,19 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": [
+                  "0-1"
+                ],
+                "device": [
+                  "cpu",
+                  "gpu"
+                ]
               }
             ]
           },
@@ -439,7 +505,7 @@
           "showWidget": false,
           "showTitle": false
         },
-        "image": {
+        "outputImage": {
           "title": "image",
           "dataType": "image",
           "defaultValue": {
@@ -455,7 +521,7 @@
       "title": "joint bilateral blur",
       "tooltip": "This operator is almost identical to a Bilateral filter. The only difference is that the color Gaussian kernel is computed based on another image called a guidance image",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.joint_bilateral_blur({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}},{{{input.7}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.filters.joint_bilateral_blur(${inputs[1]}['value'], ${inputs[2]}['value'], ${inputs.slice(3).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -470,10 +536,19 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": [
+                  "0-1"
+                ],
+                "device": [
+                  "cpu",
+                  "gpu"
+                ]
               }
             ]
           },
@@ -486,10 +561,19 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": [
+                  "0-1"
+                ],
+                "device": [
+                  "cpu",
+                  "gpu"
+                ]
               }
             ]
           },
@@ -533,7 +617,7 @@
           "showWidget": false,
           "showTitle": false
         },
-        "image": {
+        "outputImage": {
           "title": "image",
           "dataType": "image",
           "defaultValue": {
@@ -549,7 +633,7 @@
       "title": "max blur pool2d",
       "tooltip": "Compute pools and blurs and downsample a given feature map.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.max_blur_pool2d({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.filters.max_blur_pool2d(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -564,10 +648,19 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": [
+                  "0-1"
+                ],
+                "device": [
+                  "cpu",
+                  "gpu"
+                ]
               }
             ]
           },
@@ -605,7 +698,7 @@
           "showWidget": false,
           "showTitle": false
         },
-        "image": {
+        "outputImage": {
           "title": "image",
           "dataType": "image",
           "defaultValue": {
@@ -621,7 +714,7 @@
       "title": "Median_Blur",
       "tooltip": "Blur an image using the median filter.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.median_blur({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.filters.median_blur(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -636,10 +729,19 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": [
+                  "0-1"
+                ],
+                "device": [
+                  "cpu",
+                  "gpu"
+                ]
               }
             ]
           },
@@ -659,7 +761,7 @@
           "showWidget": false,
           "showTitle": false
         },
-        "image": {
+        "outputImage": {
           "title": "image",
           "dataType": "image",
           "defaultValue": {
@@ -675,7 +777,7 @@
       "title": "motion blur",
       "tooltip": "Perform motion blur on tensor images.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.motion_blur({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.filters.motion_blur(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -690,10 +792,19 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": [
+                  "0-1"
+                ],
+                "device": [
+                  "cpu",
+                  "gpu"
+                ]
               }
             ]
           },
@@ -737,7 +848,7 @@
           "showWidget": false,
           "showTitle": false
         },
-        "image": {
+        "outputImage": {
           "title": "image",
           "dataType": "image",
           "defaultValue": {
@@ -753,7 +864,7 @@
       "title": "unsharp mask",
       "tooltip": "Create an operator that sharpens a tensor by applying operation out = 2 * image - gaussian_blur2d(image).",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.unsharp_mask({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.filters.unsharp_mask(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -768,10 +879,19 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": [
+                  "0-1"
+                ],
+                "device": [
+                  "cpu",
+                  "gpu"
+                ]
               }
             ]
           },
@@ -803,7 +923,7 @@
           "showWidget": false,
           "showTitle": false
         },
-        "image": {
+        "outputImage": {
           "title": "image",
           "dataType": "image",
           "defaultValue": {
@@ -819,7 +939,7 @@
       "title": "laplacian",
       "tooltip": "The operator smooths the given tensor with a laplacian kernel by convolving it to each channel",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.laplacian({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.filters.laplacian(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -834,10 +954,19 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": [
+                  "0-1"
+                ],
+                "device": [
+                  "cpu",
+                  "gpu"
+                ]
               }
             ]
           },
@@ -869,7 +998,7 @@
           "showWidget": false,
           "showTitle": false
         },
-        "image": {
+        "outputImage": {
           "title": "image",
           "dataType": "image",
           "defaultValue": {
@@ -885,7 +1014,7 @@
       "title": "sobel",
       "tooltip": "Compute the Sobel operator and returns the magnitude per channel.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.sobel({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.filters.sobel(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -900,10 +1029,19 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": [
+                  "0-1"
+                ],
+                "device": [
+                  "cpu",
+                  "gpu"
+                ]
               }
             ]
           },
@@ -929,7 +1067,7 @@
           "showWidget": false,
           "showTitle": false
         },
-        "image": {
+        "outputImage": {
           "title": "image",
           "dataType": "image",
           "defaultValue": {
@@ -945,7 +1083,7 @@
       "title": "spatial gradient",
       "tooltip": "Compute the first order image derivative in both x and y using a Sobel operator.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.spatial_gradient({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.filters.spatial_gradient(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -960,10 +1098,19 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": [
+                  "0-1"
+                ],
+                "device": [
+                  "cpu",
+                  "gpu"
+                ]
               }
             ]
           },
@@ -995,73 +1142,13 @@
           "showWidget": false,
           "showTitle": false
         },
-        "image": {
+        "outputImage": {
           "title": "image",
           "dataType": "image",
           "defaultValue": {
             "dataType": "torch.tensor"
           },
           "tooltip": "image: the derivatives of the input feature map with shape , shape of (B, C, 2, H, W)"
-        }
-      }
-    },
-    "Spatial_Gradient3d": {
-      "type": "Spatial_Gradient3d",
-      "category": "function",
-      "title": "spatial gradient3d",
-      "tooltip": "Compute the first and second order volume derivative in x, y and d using a diff operator.",
-      "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.filters.spatial_gradient3d({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
-      "inputs": {
-        "execIn": {
-          "title": "execIn",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "torch.tensor",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "input image tensor with shape (B, C,D, H, W) and intensity from [0, 1]."
-        },
-        "mode": {
-          "title": "mode",
-          "dataType": "string",
-          "defaultValue": "diff",
-          "tooltip": "derivatives modality, can be: sobel or diff. "
-        },
-        "order": {
-          "title": "order",
-          "dataType": "integer",
-          "defaultValue": 1,
-          "tooltip": "the order of the derivatives."
-        }
-      },
-      "outputs": {
-        "execOut": {
-          "title": "execOut",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "torch.tensor"
-          },
-          "tooltip": "image: the spatial gradients of the input feature map with shape math , shape of (B, C, 3, H, W) or (B, C, 6, H, W)"
         }
       }
     }

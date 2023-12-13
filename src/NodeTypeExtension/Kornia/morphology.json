@@ -7,7 +7,7 @@
       "title": "dilation",
       "tooltip": "Return the dilated image applying the same kernel in each channel.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.morphology.dilation({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.morphology.dilation(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\n${outputs[1]} = {\n  'value': ${outputs[1]},\n  'dataType': 'torch.tensor',\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -22,30 +22,20 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
               }
             ]
           },
           "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
         },
         "kernel": {
-          "title": "kernel",
+          "title": "kernel (2-dim tensor)",
           "dataType": "torch.tensor",
-          "defaultValue": {
-            "dataType": "torch.tensor",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky) "
+          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky), must be a 2-dim tensor with odd sides, i.e. 3x3."
         },
         "structuring_element": {
           "title": "structuring_element",
@@ -107,7 +97,7 @@
       "title": "erosion",
       "tooltip": "Return the eroded image applying the same kernel in each channel.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.morphology.erosion({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.morphology.erosion(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\n${outputs[1]} = {\n  'value': ${outputs[1]},\n  'dataType': 'torch.tensor',\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -122,30 +112,20 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
               }
             ]
           },
           "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
         },
         "kernel": {
-          "title": "kernel",
+          "title": "kernel (2-dim tensor)",
           "dataType": "torch.tensor",
-          "defaultValue": {
-            "dataType": "torch.tensor",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky) "
+          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky), must be a 2-dim tensor with odd sides, i.e. 3x3."
         },
         "structuring_element": {
           "title": "structuring_element",
@@ -207,7 +187,7 @@
       "title": "opening",
       "tooltip": "Return the opened image, (that means, dilation after an erosion) applying the same kernel in each channel.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.morphology.opening({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.morphology.opening(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\n${outputs[1]} = {\n  'value': ${outputs[1]},\n  'dataType': 'torch.tensor',\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -222,30 +202,20 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
               }
             ]
           },
           "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
         },
         "kernel": {
-          "title": "kernel",
+          "title": "kernel (2-dim tensor)",
           "dataType": "torch.tensor",
-          "defaultValue": {
-            "dataType": "torch.tensor",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky) "
+          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky), must be a 2-dim tensor with odd sides, i.e. 3x3."
         },
         "structuring_element": {
           "title": "structuring_element",
@@ -307,7 +277,7 @@
       "title": "closing",
       "tooltip": "Return the closed image, (that means, erosion after a dilation) applying the same kernel in each channel.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.morphology.closing({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.morphology.closing(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\n${outputs[1]} = {\n  'value': ${outputs[1]},\n  'dataType': 'torch.tensor',\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -322,30 +292,20 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
               }
             ]
           },
           "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
         },
         "kernel": {
-          "title": "kernel",
+          "title": "kernel (2-dim tensor)",
           "dataType": "torch.tensor",
-          "defaultValue": {
-            "dataType": "torch.tensor",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky) "
+          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky), must be a 2-dim tensor with odd sides, i.e. 3x3."
         },
         "structuring_element": {
           "title": "structuring_element",
@@ -407,7 +367,7 @@
       "title": "gradient",
       "tooltip": "Return the morphological gradient of an image.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.morphology.gradient({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.morphology.gradient(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\n${outputs[1]} = {\n  'value': ${outputs[1]},\n  'dataType': 'torch.tensor',\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -422,30 +382,20 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
               }
             ]
           },
           "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
         },
         "kernel": {
-          "title": "kernel",
+          "title": "kernel (2-dim tensor)",
           "dataType": "torch.tensor",
-          "defaultValue": {
-            "dataType": "torch.tensor",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky) "
+          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky), must be a 2-dim tensor with odd sides, i.e. 3x3."
         },
         "structuring_element": {
           "title": "structuring_element",
@@ -507,7 +457,7 @@
       "title": "top hat",
       "tooltip": "Return the top hat transformation of an image.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.morphology.top_hat({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.morphology.top_hat(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\n${outputs[1]} = {\n  'value': ${outputs[1]},\n  'dataType': 'torch.tensor',\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -522,30 +472,20 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
               }
             ]
           },
           "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
         },
         "kernel": {
-          "title": "kernel",
+          "title": "kernel (2-dim tensor)",
           "dataType": "torch.tensor",
-          "defaultValue": {
-            "dataType": "torch.tensor",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky) "
+          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky), must be a 2-dim tensor with odd sides, i.e. 3x3."
         },
         "structuring_element": {
           "title": "structuring_element",
@@ -607,7 +547,7 @@
       "title": "bottom hat",
       "tooltip": "Return the bottom hat transformation of an image.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.morphology.bottom_hat({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}}, {{{inputs.4}}},{{{inputs.5}}}, {{{inputs.6}}},{{{inputs.7}}},{{{inputs.8}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.morphology.bottom_hat(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\n${outputs[1]} = {\n  'value': ${outputs[1]},\n  'dataType': 'torch.tensor',\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -622,30 +562,20 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
               }
             ]
           },
           "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
         },
         "kernel": {
-          "title": "kernel",
+          "title": "kernel (2-dim tensor)",
           "dataType": "torch.tensor",
-          "defaultValue": {
-            "dataType": "torch.tensor",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky) "
+          "tooltip": "Positions of non-infinite elements of a flat structuring element with shape (kx,ky), must be a 2-dim tensor with odd sides, i.e. 3x3."
         },
         "structuring_element": {
           "title": "structuring_element",

@@ -7,7 +7,7 @@
       "title": "gftt response",
       "tooltip": "Compute the Shi-Tomasi cornerness function.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.feature.gftt_response({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.feature.gftt_response(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -22,10 +22,19 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": [
+                  "0-1"
+                ],
+                "device": [
+                  "cpu",
+                  "gpu"
+                ]
               }
             ]
           },
@@ -67,7 +76,7 @@
       "title": "harris response",
       "tooltip": "Compute the harris response",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.feature.harris_response({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}},{{{inputs.4}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.feature.harris_response(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -82,10 +91,19 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": [
+                  "0-1"
+                ],
+                "device": [
+                  "cpu",
+                  "gpu"
+                ]
               }
             ]
           },
@@ -133,7 +151,7 @@
       "title": "hessian response",
       "tooltip": "Compute the absolute of determinant of the Hessian matrix.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.feature.hessian_response({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.feature.hessian_response(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -148,10 +166,19 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": [
+                  "0-1"
+                ],
+                "device": [
+                  "cpu",
+                  "gpu"
+                ]
               }
             ]
           },
@@ -187,61 +214,13 @@
         }
       }
     },
-    "Dog_Response": {
-      "type": "Dog_Response",
-      "category": "function",
-      "title": "dog response",
-      "tooltip": "Compute the Difference-of-Gaussian response.",
-      "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.feature.dog_response({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
-      "inputs": {
-        "execIn": {
-          "title": "execIn",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "torch.tensor",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "a given the gaussian 5d tensor  (B,C,D,H,W)"
-        }
-      },
-      "outputs": {
-        "execOut": {
-          "title": "execOut",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "torch.tensor"
-          },
-          "tooltip": "the response map per channel with shape (B,C,D-1,H,W) "
-        }
-      }
-    },
     "Dog_Response_Single": {
       "type": "Dog_Response_Single",
       "category": "function",
       "title": "dog response single",
       "tooltip": "Compute the Difference-of-Gaussian response.",
       "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.feature.dog_response_single({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.feature.dog_response_single(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -256,286 +235,19 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": "rgb",
+                "colorChannel": [
+                  "rgb",
+                  "grayscale"
+                ],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "a given the gaussian 4d tensor (B,C,H,W)"
-        },
-        "sigma1": {
-          "title": "sigma1",
-          "dataType": "float",
-          "defaultValue": 1.0,
-          "tooltip": "lower gaussian sigma"
-        },
-        "sigma2": {
-          "title": "sigma2",
-          "dataType": "float",
-          "defaultValue": 1.6,
-          "tooltip": "bigger gaussian sigma"
-        }
-      },
-      "outputs": {
-        "execOut": {
-          "title": "execOut",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "torch.tensor"
-          },
-          "tooltip": "the response map per channel with shape (B,C,H,W) "
-        }
-      }
-    },
-    "BlobHessian": {
-      "type": "BlobHessian",
-      "category": "function",
-      "title": "blob hessian",
-      "tooltip": "Module that calculates Hessian blobs.",
-      "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.feature.BlobHessian({{{inputs.1}}}, {{{inputs.2}}},)\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
-      "inputs": {
-        "execIn": {
-          "title": "execIn",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "torch.tensor",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "input image with shape (B,C,H,W)"
-        },
-        "grads_mode": {
-          "title": "grads_mode",
-          "dataType": "string",
-          "defaultValue": "sobel",
-          "tooltip": "can be 'sobel' for standalone use or 'diff' for use on Gaussian pyramid."
-        }
-      },
-      "outputs": {
-        "execOut": {
-          "title": "execOut",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "torch.tensor"
-          },
-          "tooltip": "the response map per channel with shape (B,C,H,W) "
-        }
-      }
-    },
-    "CornerGFTT": {
-      "type": "CornerGFTT",
-      "category": "function",
-      "title": "corner GFTT",
-      "tooltip": "Module that calculates Shi-Tomasi corners.",
-      "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.feature.CornerGFTT({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
-      "inputs": {
-        "execIn": {
-          "title": "execIn",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "torch.tensor",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "input image with shape (B,C,H,W)"
-        },
-        "grads_mode": {
-          "title": "grads_mode",
-          "dataType": "string",
-          "defaultValue": "sobel",
-          "tooltip": "can be 'sobel' for standalone use or 'diff' for use on Gaussian pyramid."
-        }
-      },
-      "outputs": {
-        "execOut": {
-          "title": "execOut",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "torch.tensor"
-          },
-          "tooltip": "the response map per channel with shape (B,C,H,W) "
-        }
-      }
-    },
-    "CornerHarris": {
-      "type": "CornerHarris",
-      "category": "function",
-      "title": "corner harris",
-      "tooltip": "Module that calculates Harris corners.",
-      "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.feature.CornerHarris({{{inputs.1}}}, {{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
-      "inputs": {
-        "execIn": {
-          "title": "execIn",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "torch.tensor",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "input image with shape (B,C,H,W)"
-        },
-        "k": {
-          "title": "k",
-          "dataType": "float",
-          "defaultValue": 0.04,
-          "tooltip": "the Harris detector free parameter"
-        },
-        "grads_mode": {
-          "title": "grads_mode",
-          "dataType": "string",
-          "defaultValue": "sobel",
-          "tooltip": "can be 'sobel' for standalone use or 'diff' for use on Gaussian pyramid."
-        }
-      },
-      "outputs": {
-        "execOut": {
-          "title": "execOut",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "torch.tensor"
-          },
-          "tooltip": "the response map per channel with shape (B,C,H,W) "
-        }
-      }
-    },
-    "BlobDoG": {
-      "type": "BlobDoG",
-      "category": "function",
-      "title": "blob DoG",
-      "tooltip": "Module that calculates Difference-of-Gaussians blobs.",
-      "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.feature.BlobDoG({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
-      "inputs": {
-        "execIn": {
-          "title": "execIn",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "torch.tensor",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
-              }
-            ]
-          },
-          "tooltip": "a given the gaussian 5d tensor  (B,C,D,H,W)"
-        }
-      },
-      "outputs": {
-        "execOut": {
-          "title": "execOut",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "torch.tensor"
-          },
-          "tooltip": "the response map per channel with shape (B,C,D-1,H,W) "
-        }
-      }
-    },
-    "BlobDoGSingle": {
-      "type": "BlobDoGSingle",
-      "category": "function",
-      "title": "blob DoG single",
-      "tooltip": "Module that calculates Difference-of-Gaussians blobs.",
-      "externalImports": "import kornia as K",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = K.feature.BlobDoGSingle({{{inputs.1}}},{{{inputs.2}}},{{{inputs.3}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
-      "inputs": {
-        "execIn": {
-          "title": "execIn",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-        "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "torch.tensor",
-            "metadata": [
-              {
-                "colorChannel": "rgb",
-                "isMiniBatched": true,
-                "channelOrder": "channelFirst",
-                "intensityRange": "0-1"
+                "intensityRange": [
+                  "0-1"
+                ],
+                "device": [
+                  "cpu",
+                  "gpu"
+                ]
               }
             ]
           },

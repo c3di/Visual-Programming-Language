@@ -10,12 +10,12 @@ import { createSvgIcon } from '@mui/material/utils';
 import React, { memo, useCallback, useEffect, useState } from 'react';
 import { type Connection } from 'reactflow';
 import { nodeConfigRegistry } from '../extension';
+import { type GenResult } from '../generators';
 import { type Command } from '../hooks';
 import {
   isDataTypeMatch,
   type Node,
   type OnConnectStartParams,
-  type SourceCodeExec,
 } from '../types';
 import {
   SearchedTreeView,
@@ -53,10 +53,11 @@ const SearchMenu = memo(function SearchMenu({
   moreCommands,
   startHandleInfo,
   addEdge,
+  toJSONString,
 }: {
   onClose: () => void;
   anchorPosition: { top: number; left: number };
-  getSourceCode?: () => SourceCodeExec;
+  getSourceCode?: () => GenResult;
   addNodeWithSceneCoord?: (
     configType: string,
     anchorPosition: { top: number; left: number }
@@ -66,6 +67,7 @@ const SearchMenu = memo(function SearchMenu({
   moreCommands?: Command[];
   startHandleInfo?: OnConnectStartParams;
   addEdge?: (params: Connection) => void;
+  toJSONString?: () => string;
 }): JSX.Element {
   const [commands, setCommand] = useState<Command[]>([
     {
@@ -117,10 +119,22 @@ const SearchMenu = memo(function SearchMenu({
       labelIcon: FitScreen,
     },
     {
+      name: 'Copy Serialized Visual Code ',
+      action: () => {
+        const clipboardStr = toJSONString?.();
+        if (!clipboardStr) return;
+        navigator.clipboard.writeText(clipboardStr).catch((err) => {
+          console.error('Could not copy text: ', err);
+        });
+      },
+      labelIcon: Notes,
+      tooltip: 'Copy JSON string of visual code to clipboard',
+    },
+    {
       name: 'Copy Textual Code',
       action: () => {
         const code = getSourceCode?.();
-        const clipboardStr = code?.result ?? '';
+        const clipboardStr = code?.code ?? '';
         navigator.clipboard.writeText(clipboardStr).catch((err) => {
           console.error('Could not copy text: ', err);
         });

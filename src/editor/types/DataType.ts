@@ -42,14 +42,9 @@ export interface DataType {
   shownInColor: string;
   widget?: string;
   options?: any;
-  isStruct?: boolean;
 }
 
 export const DataTypes: Record<string, DataType> = {
-  DataType: {
-    shownInColor: `${hsl(154, 26, 44)}`,
-    defaultValue: 'boolean',
-  },
   float: {
     defaultValue: 0.0,
     widget: 'NumberInput',
@@ -67,12 +62,17 @@ export const DataTypes: Record<string, DataType> = {
   },
   string: {
     defaultValue: '',
+    widget: 'StringInput',
+    shownInColor: `${hsl(60)}`,
+  },
+  text: {
+    defaultValue: '',
     widget: 'TextInput',
     shownInColor: `${hsl(60)}`,
   },
   exec: { shownInColor: `${hsl(0, 0, 0)}` },
   any: { shownInColor: `${hsl(0, 0, 50)}` },
-  anyDataType: { widget: 'TextInput', shownInColor: `${hsl(0, 0, 86)}` },
+  anyDataType: { widget: 'TextInput', shownInColor: `${hsl(0, 0, 50)}` },
   list: {
     defaultValue: '[]',
     widget: 'TextInput',
@@ -83,14 +83,8 @@ export const DataTypes: Record<string, DataType> = {
     widget: 'TextInput',
     shownInColor: `${hsl(200, 200, 25)}`,
   },
-  iterator: {
-    defaultValue: '[]',
-    widget: 'TextInput',
-    shownInColor: `${hsl(300, 100, 25)}`,
-  },
   image: {
     shownInColor: `${hsl(300, 200, 25)}`,
-    isStruct: true,
     defaultValue: {
       dataType: 'None',
       value: 'None',
@@ -111,14 +105,25 @@ export function addNewType(type: string, options: any): void {
     getNewColor(Object.values(DataTypes).map((dt) => dt.shownInColor));
 }
 
-export function isDataTypeMatch(type1: string, type2: string): boolean {
-  return (
-    type1 === type2 ||
-    type1 === 'any' ||
-    type2 === 'any' ||
-    type1 === 'anyDataType' ||
-    type2 === 'anyDataType'
-  );
+export function isDataTypeMatch(
+  type1: string | string[],
+  type2: string | string[]
+): boolean {
+  const match = (t1: string, t2: string): boolean => {
+    return (
+      t1 === t2 ||
+      t1 === 'any' ||
+      t2 === 'any' ||
+      t1 === 'anyDataType' ||
+      t2 === 'anyDataType'
+    );
+  };
+  for (const t1 of Array.isArray(type1) ? type1 : [type1]) {
+    for (const t2 of Array.isArray(type2) ? type2 : [type2]) {
+      if (match(t1, t2)) return true;
+    }
+  }
+  return false;
 }
 
 export const getMaxConnection = (

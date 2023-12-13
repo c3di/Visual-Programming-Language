@@ -8,7 +8,7 @@
       "title": "read_image",
       "tooltip": "Reads a JPEG or PNG image into a 3 dimensional RGB or grayscale Tensor. Optionally converts the image to the desired format. The values of the output tensor are uint8 in [0, 255].",
       "externalImports": "from torchvision import io\nfrom torchvision.io import ImageReadMode",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = io.read_image({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}, 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': False, 'intensityRange': '0-255', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\n    if (inputs[2] === 'ImageReadMode.RGB')\n        return `${outputs[1]} = io.read_image(${inputs[1]}, ${inputs[2]})\\n${outputs[1]} = {\\n  'value': ${outputs[1]},\\n  'dataType': 'torch.tensor',\\n  'metadata': {\\n    'colorChannel': 'rgb',\\n    'channelOrder': 'channelFirst',\\n    'isMiniBatched': False,\\n    'intensityRange': '0-255',\\n    'device': 'cpu'\\n  }\\n}\\n${outputs[0]}`;\n    if (inputs[2] === 'ImageReadMode.GRAY')\n        return `${outputs[1]} = {\\n  'value': ${outputs[1]},\\n  'dataType': 'torch.tensor',\\n  'metadata': {\\n    'colorChannel': 'grayscale',\\n    'channelOrder': 'channelFirst',\\n    'isMiniBatched': False,\\n    'intensityRange': '0-255',\\n    'device': 'cpu'\\n  }\\n}\\n${outputs[0]}`;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -25,7 +25,7 @@
         "mode": {
           "title": "mode",
           "dataType": "imageio.ImageReadMode",
-          "default": "ImageReadMode.UNCHANGED",
+          "defaultValue": "ImageReadMode.RGB",
           "tooltip": "mode(ImageReadMode) - The read mode used for optionally converting the image. Default: ImageReadMode.UNCHANGED."
         }
       },
@@ -95,13 +95,10 @@
   "types": {
     "ImageReadMode": {
       "options": {
-        "UNCHANGED": "ImageReadMode.UNCHANGED",
-        "GRAY ": " ImageReadMode.GRAY",
-        "GRAY_ALPHA": "ImageReadMode.GRAY_ALPHA",
-        "RGB": "ImageReadMode.RGB",
-        "RGB_ALPHA": "ImageReadMode.RGB_ALPHA"
+        "GRAY": "ImageReadMode.GRAY",
+        "RGB": "ImageReadMode.RGB"
       },
-      "default": "UNCHANGED",
+      "default": "RGB",
       "widget": "EnumSelect"
     }
   }

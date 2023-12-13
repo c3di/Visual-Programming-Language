@@ -146,6 +146,12 @@ Employ automated layout adjustments for optimal node alignment and view fitting.
   - **Action**: Arrange nodes on the canvas via the context menu.
   - **How-to**: Right-click on the canvas background to open the context menu and select "Auto Arrange"
 
+
+
+**Build-in Fields Inputs**
+
+boolean, number, 
+
 ## **JSON-based specification for Node Library**
 
 We've established a JSON-based configuration specifically crafted to define a node library within our node-based programming interface. The configuration encompasses several pivotal components:

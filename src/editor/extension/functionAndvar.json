@@ -2,12 +2,12 @@
   "description": "A library for creating variables and functions",
   "enable": true,
   "nodes": {
-    "Create Variable": {
-      "type": "Create Variable",
+    "new variable": {
+      "type": "new variable",
       "category": "createVariable",
-      "title": "New Variable",
+      "title": "new variable",
       "tooltip": "Create a new variable",
-      "sourceCode": "{{indent}}{{{inputs.1}}}: {{{inputs.2}}} = {{{inputs.3}}}\n{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {  \r\n  let code = `${inputs[1]} =`;\r\n  if(inputs[2] === '')\r\n    code = code +  ' None'\r\n  else\r\n    code = code +  ` ${inputs[2]}`\r\n  code = code + `\\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "dataType": "exec",
@@ -16,19 +16,12 @@
         "name": {
           "title": "name",
           "tooltip": "name of the variable",
-          "dataType": "string"
-        },
-        "type": {
-          "title": "type",
-          "tooltip": "type of the variable",
-          "dataType": "DataType",
-          "defaultValue": "boolean"
+          "dataType": "anyDataType"
         },
         "value": {
           "title": "value",
           "tooltip": "value of the variable",
-          "dataType": "boolean",
-          "defaultValue": "false"
+          "dataType": "anyDataType"
         }
       },
       "outputs": {
@@ -38,28 +31,28 @@
       }
     },
 
-    "Setter": {
+    "setter": {
       "notShowInMenu": true,
       "type": "setter",
       "category": "setter",
-      "sourceCode": "{{indent}}{{{inputsTitle.1}}} = {{{inputs.1}}}\n{{{outputs.0}}}"
+      "codeGenerator": "function code(inputs, outputs, node, generator) {  \r\n  let code = `${node.data.inputs['setter'].title} = ${inputs[1]}\r\n${outputs[1]} = ${node.data.inputs['setter'].title}\r\n${outputs[0]}`;\r\n  return code;\r\n}"
     },
 
-    "Getter": {
+    "getter": {
       "notShowInMenu": true,
       "type": "getter",
       "category": "getter",
       "tooltip": "Return the value",
-      "sourceCode": "",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {  \r\n  let code = `${outputs[0]} = ${node.data.outputs['getter'].title}`;\r\n  return code;\r\n}",
       "outputs": {
         "getter": {}
       }
     },
 
-    "Create Function": {
-      "type": "Create Function",
+    "new function": {
+      "type": "new function",
       "category": "createFunction",
-      "sourceCode": "{{{outputs.0}}}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\n  let code = `def ${node.data.title}(${(outputs.slice(1)).join(', ')}):\\n`;\n  return code + generator.indentLines(outputs[0] === ''?'pass':outputs[0])\n}",
       "outputs": {
         "execOut": {
           "title": "execOut",
@@ -67,18 +60,19 @@
         }
       }
     },
-    "functionCall": {
+    "function call": {
       "notShowInMenu": true,
-      "type": "functionCall",
-      "category": "functionCall"
+      "type": "function call",
+      "category": "functionCall",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\n  let code = '';\n  const returns = outputs.slice(1);\n  code = code + returns.join(', ') + `${returns.length===0? \"\":\" = \"}`\n  const args = inputs.slice(1);\n  code = code + `${node.data.title}(` + `${args.length===0? '':args.join(', ')}` +')' + `\\n${outputs[0]}`\n  return code;\n}"
     },
-    "Return": {
-      "title": "Return",
-      "type": "Return",
+    "return": {
+      "title": "return",
+      "type": "return",
       "category": "return",
       "showLabel": true,
-      "tooltip": "Return",
-      "sourceCode": "{{indent}}return {{#inputs}}{{#.}}{{{.}}}, {{/.}}{{/inputs}}",
+      "tooltip": "return",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\n  const values = inputs.slice(1)\n  if(values.length === 0)\n    return 'return'\n  return `return ${values.join(', ')}`\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",

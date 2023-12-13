@@ -1,40 +1,40 @@
 import {
-  type Node,
-  type Edge,
-  type Graph,
-  type SerializedGraph,
-  type HandleData,
-  type ConnectionStatus,
-  type selectedElementsCounts,
-  isDataTypeMatch,
-  getMaxConnection,
-  ConnectionAction,
-  DataTypes,
-} from '../types';
-import {
-  useNodesState,
-  useEdgesState,
-  type Connection,
-  addEdge as rcAddEdge,
-  type NodeChange,
-  type EdgeChange,
-  type Node as RcNode,
-  MarkerType,
-  getConnectedEdges,
-  getOutgoers,
-  getIncomers,
-  useReactFlow,
-} from 'reactflow';
-import {
-  type Dispatch,
-  type SetStateAction,
   useCallback,
   useEffect,
   useRef,
   useState,
+  type Dispatch,
+  type SetStateAction,
 } from 'react';
-import { serializer } from '../Serializer';
+import {
+  MarkerType,
+  getConnectedEdges,
+  getIncomers,
+  getOutgoers,
+  addEdge as rcAddEdge,
+  useEdgesState,
+  useNodesState,
+  useReactFlow,
+  type Connection,
+  type EdgeChange,
+  type NodeChange,
+  type Node as RcNode,
+} from 'reactflow';
 import { deserializer } from '../Deserializer';
+import { serializer } from '../Serializer';
+import {
+  ConnectionAction,
+  DataTypes,
+  getMaxConnection,
+  isDataTypeMatch,
+  type ConnectionStatus,
+  type Edge,
+  type Graph,
+  type HandleData,
+  type Node,
+  type SerializedGraph,
+  type selectedElementsCounts,
+} from '../types';
 import { deepCopy } from '../util';
 
 type OnChange<ChangesType> = (changes: ChangesType[]) => void;
@@ -85,8 +85,8 @@ export interface GraphState {
   getHandleConnectionCounts: (nodeId: string, handleId: string) => number;
   anyConnectableNodeSelected: boolean;
   anyConnectionToSelectedNode: boolean;
-  toString: () => string;
-  fromJSON: (graph: SerializedGraph | undefined | null) => {
+  toJSONString: () => string;
+  fromSerializedGraph: (graph: SerializedGraph | undefined | null) => {
     nodes: Node[];
     edges: Edge[];
   };
@@ -171,7 +171,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
   );
 
   const setDataTypeOfGraph = useCallback(
-    (nodeIds: string[], dataType: string, defaultValue?: any) => {
+    (nodeIds: string[], dataType: string | string[], defaultValue?: any) => {
       const edgeIds: string[] = [];
       setNodes((nds) => {
         const newNodes = nds.map((n) => {
@@ -199,7 +199,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
               ...n,
               data: {
                 ...n.data,
-                dataType: `${dataType}`,
+                dataType,
                 inputs,
                 outputs,
               },
@@ -250,7 +250,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
   );
 
   const setDataTypeInGraphWithRerouteNode = useCallback(
-    (node: Node, dataType: string, defaultValue?: any): void => {
+    (node: Node, dataType: string | string[], defaultValue?: any): void => {
       const visitedNode: string[] = [];
       graphIncludeNodeWithType(node, 'reroute', 'any', visitedNode);
       if (visitedNode.length === 0) return;
@@ -259,43 +259,46 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     []
   );
 
-  const updateDatatypeInGraph = useCallback((params: Connection): string => {
-    const sourceHandle = getNode(params.source!)?.data.outputs?.[
-      params.sourceHandle!
-    ] as HandleData;
-    const targetHandle = getNode(params.target!)?.data.inputs?.[
-      params.targetHandle!
-    ] as HandleData;
-    let dataType = 'any';
-    if (sourceHandle.dataType && sourceHandle.dataType !== 'any')
-      if (targetHandle.dataType && targetHandle.dataType !== 'any')
-        dataType = targetHandle.dataType;
+  const updateDatatypeInGraph = useCallback(
+    (params: Connection): string | string[] => {
+      const sourceHandle = getNode(params.source!)?.data.outputs?.[
+        params.sourceHandle!
+      ] as HandleData;
+      const targetHandle = getNode(params.target!)?.data.inputs?.[
+        params.targetHandle!
+      ] as HandleData;
+      let dataType: string | string[] = 'any';
+      if (sourceHandle.dataType && sourceHandle.dataType !== 'any')
+        if (targetHandle.dataType && targetHandle.dataType !== 'any')
+          dataType = targetHandle.dataType;
+        else {
+          dataType = sourceHandle.dataType;
+          const defaultValue = dataType.includes('image')
+            ? sourceHandle.defaultValue
+            : undefined;
+          setDataTypeInGraphWithRerouteNode(
+            getNode(params.target!)!,
+            dataType,
+            defaultValue
+          );
+        }
       else {
-        dataType = sourceHandle.dataType;
-        const defaultValue = dataType.includes('image')
-          ? sourceHandle.defaultValue
-          : undefined;
-        setDataTypeInGraphWithRerouteNode(
-          getNode(params.target!)!,
-          dataType,
-          defaultValue
-        );
+        if (targetHandle.dataType && targetHandle.dataType !== 'any') {
+          dataType = targetHandle.dataType;
+          const defaultValue = dataType.includes('image')
+            ? sourceHandle.defaultValue
+            : undefined;
+          setDataTypeInGraphWithRerouteNode(
+            getNode(params.source!)!,
+            dataType,
+            defaultValue
+          );
+        }
       }
-    else {
-      if (targetHandle.dataType && targetHandle.dataType !== 'any') {
-        dataType = targetHandle.dataType;
-        const defaultValue = dataType.includes('image')
-          ? sourceHandle.defaultValue
-          : undefined;
-        setDataTypeInGraphWithRerouteNode(
-          getNode(params.source!)!,
-          dataType,
-          defaultValue
-        );
-      }
-    }
-    return dataType;
-  }, []);
+      return dataType;
+    },
+    []
+  );
 
   const isConnectToNonRerouteNodes = useCallback(
     (node: Node, visited: string[] = []): boolean => {
@@ -367,7 +370,11 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
           },
           style: {
             strokeWidth: 2,
-            stroke: `${DataTypes[dataType].shownInColor}`,
+            stroke: `${
+              Array.isArray(dataType)
+                ? DataTypes.any.shownInColor
+                : DataTypes[dataType].shownInColor
+            }`,
           },
         },
         eds
@@ -571,7 +578,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     );
   }, []);
 
-  const toString = useCallback((): string => {
+  const toJSONString = useCallback((): string => {
     if (getNodes().length === 0) return '';
     const graph = serializer.serialize({
       nodes: deepCopy(getNodes()),
@@ -580,7 +587,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     return JSON.stringify(graph);
   }, []);
 
-  const fromJSON = useCallback(
+  const fromSerializedGraph = useCallback(
     (
       graph: SerializedGraph | undefined | null
     ): { nodes: Node[]; edges: Edge[] } => {
@@ -627,9 +634,10 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     const createFunNodeWithoutRef: string[] = [];
     // the connection will affect the whole graph, so we need to update the whole graph
     let allNodes = getNodes();
-    let found = false;
+    // find the return node for each createFunction node
     allNodes = allNodes.map((n) => {
       if (n.type === 'createFunction') {
+        let found = false;
         let thisNode = n;
         const queue: Node[] = [thisNode];
         while (queue.length > 0 && !found) {
@@ -683,6 +691,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
 
     const toBeUpdated = Object.keys(createFunNodeWithRef);
     allNodes = allNodes.map((n) => {
+      // update the signature of the function call node
       if (toBeUpdated.includes(n.data.nodeRef)) {
         const returnNode = getNode(createFunNodeWithRef[n.data.nodeRef]);
         if (
@@ -690,11 +699,15 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
           Object.keys(n.data.outputs).length !==
             Object.keys(returnNode.data.inputs).length
         ) {
-          const inputsWithoutExec: Record<string, any> = {};
+          const inputsWithoutExec: Record<string, HandleData> = {};
           for (const [name, input] of Object.entries(returnNode.data.inputs)) {
-            if ((input as any).dataType !== 'exec') {
-              (input as any).showTitle = true;
-              inputsWithoutExec[name] = input;
+            const handle = input as HandleData;
+            if (handle.dataType !== 'exec') {
+              handle.showTitle = true;
+              inputsWithoutExec[name] = {
+                ...handle,
+                connection: n.data.outputs[name]?.connection ?? 0,
+              };
             }
           }
           n.data.outputs = {
@@ -705,6 +718,7 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
       }
       return n;
     });
+    // at least keep the exec output for non-return-value function
     for (const node of Object.values(allNodes)) {
       if (createFunNodeWithoutRef.includes(node.data.nodeRef as string)) {
         node.data.outputs = {
@@ -713,6 +727,127 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
       }
     }
     setNodes(allNodes);
+  }, [edges]);
+
+  const updateDataTypeInImageOfFunctionCallNode = (nds: any[]): any[] => {
+    const newNodes = nds.map((n) => {
+      if (n.type === 'functionCall') {
+        let index = -1;
+        const nodeRef = getNode(n.data.nodeRef as string)!;
+        for (const input of Object.values(n.data.inputs)) {
+          index += 1;
+          if ((input as any).dataType === 'exec') continue;
+          // the default value is the default value of the input that connect to the output in the nodeRef node with same index
+          const outputHandle = Object.keys(nodeRef.data.outputs)[index];
+          const { nodes, connectedHandlesId } = getConnectedInfo(
+            nodeRef.id,
+            outputHandle
+          );
+          if (nodes.length === 0) {
+            if ((input as any).dataType === 'image') {
+              (input as any).defaultValue = null;
+              (input as any).dataType = 'anyDataType';
+            }
+            continue;
+          }
+          const connectedHandle = nodes[0].data.inputs[connectedHandlesId[0]];
+          if (connectedHandle.dataType === 'image') {
+            (input as any).dataType = 'image';
+            (input as any).defaultValue = connectedHandle.defaultValue;
+          }
+        }
+
+        index = -1;
+        for (const output of Object.values(n.data.outputs)) {
+          index += 1;
+          if ((output as any).dataType === 'exec') continue;
+          // the default value is the default value of the output that connect to the input in the `return node` with same index
+          const funcDef = getNode(n.data.nodeRef as string)!;
+          const returnNode = getNode(funcDef.data.nodeRef as string)!;
+          const inputHandle = Object.keys(returnNode.data.inputs)[index];
+          const { nodes, connectedHandlesId } = getConnectedInfo(
+            returnNode.id,
+            inputHandle
+          );
+          if (nodes.length === 0) {
+            if ((output as any).dataType === 'image') {
+              (output as any).defaultValue = null;
+              (output as any).dataType = 'anyDataType';
+            }
+            continue;
+          }
+          const connectedHandle = nodes[0].data.outputs[connectedHandlesId[0]];
+          if (connectedHandle.dataType === 'image') {
+            (output as any).dataType = 'image';
+            (output as any).defaultValue = connectedHandle.defaultValue;
+          }
+        }
+
+        n.data = {
+          ...n.data,
+          inputs: {
+            ...n.data.inputs,
+          },
+        };
+      } else if (n.type === 'createFunction') {
+        // if any output connected to a value whose dataType is image, then change the dataType of the output to image and set the default value
+        for (const [name, output] of Object.entries(n.data.outputs)) {
+          if ((output as any).dataType === 'exec') continue;
+          const { nodes, connectedHandlesId } = getConnectedInfo(n.id, name);
+          if (nodes.length === 0) {
+            if ((output as any).dataType === 'image') {
+              (output as any).defaultValue = null;
+              (output as any).dataType = 'anyDataType';
+            }
+            continue;
+          }
+          const connectedHandle = nodes[0].data.inputs[connectedHandlesId[0]];
+          if (connectedHandle.dataType === 'image') {
+            (output as any).dataType = 'image';
+            (output as any).defaultValue = connectedHandle.defaultValue;
+          }
+        }
+        n.data = {
+          ...n.data,
+          outputs: {
+            ...n.data.outputs,
+          },
+        };
+      } else if (n.type === 'return') {
+        // if any output connected to a value whose dataType is image, then change the dataType of the output to image and set the default value
+
+        for (const [name, input] of Object.entries(n.data.inputs)) {
+          if ((input as any).dataType === 'exec') continue;
+          const { nodes, connectedHandlesId } = getConnectedInfo(n.id, name);
+          if (nodes.length === 0) {
+            if ((input as any).dataType === 'image') {
+              (input as any).defaultValue = null;
+              (input as any).dataType = 'anyDataType';
+            }
+            continue;
+          }
+          const connectedHandle = nodes[0].data.outputs[connectedHandlesId[0]];
+          if (connectedHandle.dataType === 'image') {
+            (input as any).dataType = 'image';
+            (input as any).defaultValue = connectedHandle.defaultValue;
+          }
+        }
+        n.data = {
+          ...n.data,
+          outputs: {
+            ...n.data.outputs,
+          },
+        };
+      }
+      return n;
+    });
+    return newNodes;
+  };
+
+  useEffect(() => {
+    setNodes((nds) => {
+      return updateDataTypeInImageOfFunctionCallNode(nds);
+    });
   }, [edges]);
 
   const getConnectedInfo = (
@@ -793,8 +928,8 @@ export default function useGraph(graph?: SerializedGraph | null): GraphState {
     getHandleConnectionCounts,
     anyConnectableNodeSelected,
     anyConnectionToSelectedNode,
-    toString,
-    fromJSON,
+    toJSONString,
+    fromSerializedGraph,
     getConnectedInfo,
     findFunctionCallNodes,
   };

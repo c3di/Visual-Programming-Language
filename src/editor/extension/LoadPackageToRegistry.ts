@@ -1,18 +1,18 @@
-import buildin from './buildin.json';
-import flowControl from './flowControl.json';
-import log from './log.json';
-import {
-  type TypeConversionRule,
-  nodeConfigRegistry,
-} from './NodeConfigRegistry';
-import stringPkg from './string.json';
-import floatPkg from './float.json';
-import functionAndvar from './functionAndvar.json';
+import builtin from './builtin.json';
 import collections from './collections.json';
+import flowControl from './flowControl.json';
+import functionAndvar from './functionAndvar.json';
 import list from './list.json';
+import log from './log.json';
+import mockNodeExtension from './mockNodeExtension.json';
+import {
+  nodeConfigRegistry,
+  type KnowledgeGraphExtension,
+} from './NodeConfigRegistry';
+import operators from './operators.json';
 import tuple from './tuple.json';
 
-import { addNewType, type NodePackage, type NodeConfig } from '../types';
+import { addNewType, type NodeConfig, type NodePackage } from '../types';
 /*
  * A module is a json file that contains nodes and types.
  * A package is a folder that contains libraries and other packages.
@@ -25,7 +25,7 @@ export interface INodeModule {
   href?: string;
   description?: string;
   enable?: boolean;
-  imageTypeConversion?: Record<string, Record<string, TypeConversionRule>>;
+  imageTypeConversion?: KnowledgeGraphExtension;
 }
 
 /*
@@ -35,6 +35,7 @@ export interface INodeModule {
 export const ParseModule = (m: INodeModule, relativePath: string): any => {
   const returnModule: INodeModule = {};
   const notShowInMenu = m.notShowInMenu === undefined ? false : m.notShowInMenu;
+  returnModule.notShowInMenu = notShowInMenu;
   returnModule.href = m.href;
   returnModule.description = m.description;
   returnModule.enable = m.enable;
@@ -64,16 +65,9 @@ export const ParseModule = (m: INodeModule, relativePath: string): any => {
       }
     );
   }
-  if (m.imageTypeConversion) {
-    Object.entries(m.imageTypeConversion).forEach(
-      ([name, rules]: [
-        name: string,
-        rules: Record<string, TypeConversionRule>
-      ]) => {
-        nodeConfigRegistry.registerImageTypeConversion(name, rules);
-      }
-    );
-  }
+
+  nodeConfigRegistry.addKnowledgeGraphExtension(m.imageTypeConversion);
+
   return returnModule;
 };
 
@@ -84,18 +78,19 @@ const loadModule = (
 ): any | undefined => {
   const m = ParseModule(obj, relativePath);
   if (name === '__init__' || name === '') return { ...m.nodes };
-  else if (m.nodes) {
-    return {
-      [`${name}`]: {
-        isPackage: true,
-        nodes: m.nodes,
-        type: relativePath,
-        href: m.href,
-        description: m.description,
-        enable: m.enable,
-      },
-    };
-  }
+  // else if (m.nodes || m.imageTypeConversion) {
+  return {
+    [`${name}`]: {
+      isPackage: true,
+      nodes: m.nodes ?? {},
+      type: relativePath,
+      href: m.href,
+      description: m.description,
+      enable: m.enable,
+      notShowInMenu: m.notShowInMenu,
+    },
+    // };
+  };
 };
 
 export interface INodePackageDir {
@@ -158,13 +153,13 @@ export const LoadPackageToRegistry = (
 };
 
 export const LoadDefaultModule = (): void => {
-  LoadPackageToRegistry('', buildin);
-  LoadPackageToRegistry('Float', floatPkg);
-  LoadPackageToRegistry('String', stringPkg);
+  LoadPackageToRegistry('', builtin);
   LoadPackageToRegistry('Flow Control', flowControl);
   LoadPackageToRegistry('Collections', collections);
   LoadPackageToRegistry('List', list);
   LoadPackageToRegistry('Tuple', tuple);
   LoadPackageToRegistry('Function & Variable Creation', functionAndvar);
   LoadPackageToRegistry('Log', log);
+  LoadPackageToRegistry('Operators', operators);
+  LoadPackageToRegistry('Mock Node Extension', mockNodeExtension);
 };

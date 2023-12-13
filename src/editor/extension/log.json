@@ -2,43 +2,12 @@
   "description": "This library provides functions for printing string.",
   "enable": true,
   "nodes": {
-    "Print String": {
-      "type": "Print String",
-      "category": "function",
-      "title": "Print String",
-      "tooltip": "Prints a string",
-      "sourceCode": "{{indent}}print({{{inputs.1}}})\n{{{outputs.0}}}",
-      "inputs": {
-        "execIn": {
-          "title": "execIn",
-          "tooltip": "execIn",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        },
-
-        "input": {
-          "title": "In String",
-          "tooltip": "The string to print",
-          "dataType": "string",
-          "defaultValue": "Hello"
-        }
-      },
-      "outputs": {
-        "execOut": {
-          "tooltip": "exec out",
-          "dataType": "exec",
-          "showWidget": false,
-          "showTitle": false
-        }
-      }
-    },
-    "Print": {
-      "type": "Print",
+    "print": {
+      "type": "print",
       "category": "function",
       "title": "Print",
-      "tooltip": "Prints to the console",
-      "sourceCode": "{{indent}}print({{{inputs.1}}})\n{{{outputs.0}}}",
+      "tooltip": "Print to the console",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\n  return `print(${inputs[1]})\n${outputs[0]}`\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -48,10 +17,10 @@
           "showTitle": false
         },
         "input": {
-          "title": "Any in",
+          "title": "objects",
           "tooltip": "The content to print",
           "dataType": "anyDataType",
-          "defaultValue": "Hello"
+          "defaultValue": ""
         }
       },
       "outputs": {

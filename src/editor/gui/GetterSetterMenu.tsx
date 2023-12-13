@@ -1,6 +1,6 @@
 import { useSceneState } from '../Context';
 import { type NodeConfig } from '../types';
-import { type IMenuItem, CreateMenu } from './elements';
+import { CreateMenu, type IMenuItem } from './elements';
 
 export default function GetterSetterMenu({
   onClose,
@@ -20,17 +20,16 @@ export default function GetterSetterMenu({
   const handleData = {
     title:
       node?.data?.inputs.name?.value ?? node?.data?.inputs.name?.defaultValue,
-    dataType:
-      node?.data?.inputs.type?.value ?? node?.data?.inputs.type?.defaultValue,
     value:
       node?.data?.inputs.value?.value ?? node?.data?.inputs.value?.defaultValue,
+    dataType: 'anyDataType',
   };
 
   const items: IMenuItem[] = [
     {
       title: 'Get',
       action: () => {
-        addNode?.('Function & Variable Creation.Getter', undefined, {
+        addNode?.('Function & Variable Creation.getter', undefined, {
           nodeRef: createVarNodeRef,
           outputs: {
             getter: handleData,
@@ -42,7 +41,7 @@ export default function GetterSetterMenu({
     {
       title: 'Set',
       action: () => {
-        addNode?.('Function & Variable Creation.Setter', undefined, {
+        addNode?.('Function & Variable Creation.setter', undefined, {
           nodeRef: createVarNodeRef,
           inputs: {
             execIn: { title: 'execIn', dataType: 'exec', tooltip: 'exec in' },

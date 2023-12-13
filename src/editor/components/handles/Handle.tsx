@@ -68,9 +68,14 @@ export default function Handle({
         value:
           handleData.value ??
           handleData.defaultValue ??
-          DataTypes[handleData.dataType]?.defaultValue ??
-          '',
-        className: `nodrag handle-widget ${handleData.dataType}`,
+          (Array.isArray(handleData.dataType)
+            ? DataTypes[handleData.dataType[0]]?.defaultValue
+            : DataTypes[handleData.dataType]?.defaultValue ?? ''),
+        className: `nodrag handle-widget ${
+          Array.isArray(handleData.dataType)
+            ? handleData.dataType.join(' ')
+            : handleData.dataType
+        }`,
         onChange: changeValue,
       });
     let title: null | JSX.Element = null;
@@ -92,10 +97,14 @@ export default function Handle({
     );
   }, [handleData.connection, handleData.dataType, handleData.title]);
 
-  return (
+  const withOutImageVis = (): JSX.Element => (
     <div
       className={className}
-      title={`${handleData.dataType ?? ''}\n${handleData.tooltip ?? ''}`}
+      title={`${
+        (Array.isArray(handleData.dataType)
+          ? handleData.dataType.join(' ')
+          : handleData.dataType) ?? ''
+      }\n${handleData.tooltip ?? ''}`}
     >
       {label}
       <HandleElement
@@ -106,6 +115,29 @@ export default function Handle({
       />
     </div>
   );
+
+  const withImageVis = (): JSX.Element => (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-end',
+      }}
+    >
+      {withOutImageVis()}
+      <img
+        style={{
+          marginRight: '10px',
+          maxWidth: '100px',
+          maxHeight: '100px',
+        }}
+        id={handleData.imageDomId}
+        src="Error.src"
+      />
+    </div>
+  );
+
+  return handleData.beWatched ? withImageVis() : withOutImageVis();
 }
 
 export const HandleElement = ({
@@ -120,12 +152,20 @@ export const HandleElement = ({
   handleData: HandleData;
 }): JSX.Element => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-  const color = `${DataTypes[handleData.dataType!].shownInColor as string}`;
+  const config =
+    DataTypes[
+      (Array.isArray(handleData.dataType)
+        ? 'anyDataType'
+        : handleData.dataType) ?? 'any'
+    ] ?? DataTypes.any;
+  const color = `${config.shownInColor}`;
   return (
     <RCHandle
-      className={`vp-rc-handle-${handleData.dataType ?? 'default'} ${
-        handleData.connection ? 'handle_connected' : 'handle_not_connected'
-      }`}
+      className={`vp-rc-handle-${
+        (Array.isArray(handleData.dataType)
+          ? handleData.dataType.join(' ')
+          : handleData.dataType) ?? 'default'
+      } ${handleData.connection ? 'handle_connected' : 'handle_not_connected'}`}
       id={id}
       type={handleType}
       position={handlePosition}

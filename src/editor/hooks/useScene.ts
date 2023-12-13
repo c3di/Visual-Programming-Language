@@ -1,42 +1,35 @@
-import {
-  type Dispatch,
-  type SetStateAction,
-  useCallback,
-  useRef,
-  useState,
-} from 'react';
-import type {
-  Node,
-  ClipboardInfo,
-  ConnectionStatus,
-  Edge,
-  selectedElementsCounts,
-  Graph,
-  SourceCodeExec,
-  ISourceImage,
-  ITargetImage,
-} from '../types';
-import { isCommentNode } from '../types';
-import { type GraphState } from './useGraph';
-import { deserializer } from '../Deserializer';
-import useGui, { type IGui, type Command } from './useGui';
 import ContentPaste from '@mui/icons-material/ContentPaste';
 import ELK from 'elkjs/lib/elk.bundled.js';
 import {
-  useReactFlow,
+  useCallback,
+  useRef,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from 'react';
+import {
   getRectOfNodes,
+  useReactFlow,
   type Connection,
-  type XYPosition,
   type Node as RcNode,
   type ReactFlowInstance,
+  type XYPosition,
 } from 'reactflow';
-import { UniqueNamePool, type IUniqueNamePool } from '../utils';
+import { deserializer } from '../Deserializer';
+import { VisualProgram, pythonGenerator, type GenResult } from '../generators';
+import type {
+  ClipboardInfo,
+  ConnectionStatus,
+  Edge,
+  Graph,
+  Node,
+  selectedElementsCounts,
+} from '../types';
+import { isCommentNode } from '../types';
 import { copy, deepCopy, fromClientCoordToScene } from '../util';
-import Mustache from 'mustache';
-import { type Handle } from '../types/Handle';
-import toposort from 'toposort';
-import { nodeConfigRegistry } from '../extension';
-import { type TypeConversionRule } from '../extension/NodeConfigRegistry';
+import { UniqueNamePool, type IUniqueNamePool } from '../utils';
+import { type GraphState } from './useGraph';
+import useGui, { type Command, type IGui } from './useGui';
 
 function nodeInsideOfNode(n: Node, containter: Node): boolean {
   return (
@@ -90,7 +83,7 @@ export interface ISceneActions {
   sortZIndexOfComments: (nodes: Node[]) => Node[];
   autoLayout: () => void;
   deleteHandle: (nodeId: string, nodeType: string, handleId: string) => void;
-  sourceCode: () => SourceCodeExec;
+  sourceCode: () => GenResult;
   closeMenu?: () => void;
 }
 export interface ISceneState {
@@ -329,15 +322,14 @@ export default function useScene(
         });
 
         const execStartNodeKey = Object.keys(newNodes).find(
-          (key) =>
-            newNodes[key].data.configType === 'Flow Control.Execute Start'
+          (key) => newNodes[key].data.configType === 'Flow Control.main'
         );
 
         if (execStartNodeKey) {
           const execStartNode = newNodes[execStartNodeKey];
           const config = deserializer.serializedToGraphNodeConfig({
             id: execStartNode.id,
-            type: 'Function & Variable Creation.Create Function',
+            type: 'Function & Variable Creation.new function',
             position: execStartNode.position,
             selected: true,
           });
@@ -384,12 +376,12 @@ export default function useScene(
         position.x += positionOffset.x;
         position.y += positionOffset.y;
       }
-      if (configType === 'Flow Control.Execute Start') {
+      if (configType === 'Flow Control.main') {
         const existingExecStartNode = graphState
           .getNodes()
-          .find((n) => n.data.configType === 'Flow Control.Execute Start');
+          .find((n) => n.data.configType === 'Flow Control.main');
         if (existingExecStartNode) {
-          configType = 'Function & Variable Creation.Create Function';
+          configType = 'Function & Variable Creation.new function';
         }
       }
       const config = deserializer.serializedToGraphNodeConfig({
@@ -430,11 +422,11 @@ export default function useScene(
     configType: string,
     handleId: string
   ): void => {
-    if (configType.includes('CreateFunction')) {
+    if (configType.includes('new function')) {
       deleteOutputHandleOfCreateFunction(nodeId, handleId);
-    } else if (configType.includes('Return')) {
+    } else if (configType.includes('return')) {
       deleteInputHandleOfReturnNode(nodeId, handleId);
-    } else if (configType.includes('Sequence')) {
+    } else if (configType.includes('sequence')) {
       deleteHandleOfSequenceNode(nodeId, handleId);
     } else {
       deleteHandleOfNormalNode(nodeId, handleId);
@@ -482,13 +474,16 @@ export default function useScene(
     nodeId: string,
     handleId: string
   ): void => {
+    const nodeIds: string[] = [];
     graphState.setNodes((nds) => {
       return nds.map((nd) => {
         if (nd.id === nodeId) {
+          nodeIds.push(nd.id);
           const { [handleId]: _, ...remained } = nd.data.outputs;
           nd.data.outputs = remained;
         }
         if (nd.data.nodeRef === nodeId) {
+          nodeIds.push(nd.id);
           const { [handleId]: _, ...remained } = nd.data.inputs;
           nd = {
             ...nd,
@@ -501,18 +496,24 @@ export default function useScene(
         return nd;
       });
     });
+    nodeIds.forEach((id) => {
+      graphState.deleteAllEdgesOfHandle(id, handleId);
+    });
   };
 
   const deleteInputHandleOfReturnNode = useCallback(
     (nodeId: string, handleId: string) => {
+      const nodeIds: string[] = [];
       graphState.setNodes((nds) => {
         return nds.map((nd) => {
           if (nd.id === nodeId) {
+            nodeIds.push(nd.id);
             const { [handleId]: _, ...remained } = nd.data.inputs;
             nd.data.inputs = remained;
           }
           const ref = graphState.getNodeById(nd.data.nodeRef);
           if (ref?.data.nodeRef === nodeId) {
+            nodeIds.push(nd.id);
             const { [handleId]: _, ...remained } = nd.data.outputs;
             nd = {
               ...nd,
@@ -525,6 +526,9 @@ export default function useScene(
           return nd;
         });
       });
+      nodeIds.forEach((id) => {
+        graphState.deleteAllEdgesOfHandle(id, handleId);
+      });
     },
     []
   );
@@ -536,7 +540,7 @@ export default function useScene(
           !node.data.inputs.name.value &&
           !node.data.inputs.name.defaultValue
         ) {
-          node.data.inputs.name.defaultValue =
+          node.data.inputs.name.value =
             varsNamePool.current.createNew('newVar');
         }
         varsNamePool.current.add(
@@ -611,7 +615,7 @@ export default function useScene(
                 }
               );
 
-              addNode('Function & Variable Creation.functionCall', undefined, {
+              addNode('Function & Variable Creation.function call', undefined, {
                 title: latest.data.title,
                 nodeRef: node.id,
                 inputs: latest.data.outputs,
@@ -776,562 +780,10 @@ export default function useScene(
     });
   }, []);
 
-  const object2PythonDict = (source: object): string => {
-    return `{
-      ${Object.entries(source)
-        .map(([key, value]) => {
-          return `'${key}': ${
-            // use variable name directly for value property
-            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands, @typescript-eslint/restrict-template-expressions
-            key !== 'value'
-              ? mapToLanguageDefinition(typeof value, value)
-              : value === ''
-              ? 'None'
-              : value
-          }`;
-        })
-        .join(', ')}
-    }`;
-  };
-  const indentFunStr = (indentLevel: number, fun: string): string => {
-    return (
-      '  '.repeat(indentLevel) +
-      fun.replaceAll('\n', '\n' + '  '.repeat(indentLevel))
+  const sourceCode = (): GenResult => {
+    return pythonGenerator.programToCode(
+      new VisualProgram(graphState.getNodes(), graphState.getEdges())
     );
-  };
-  /**
-   * @returns {string} python function of conversion rules
-   * @example
-   * ```
-   *  def convert_tensor_to_ndarray(source, target):
-   *    def tensor2ndarray(source):
-   *        ...
-   *    def ndarray2ndarray(source, target):
-   *        ...
-   *    return ndarray2ndarray(tensor2numpy(source), target)
-   * ```
-   */
-  const createImageConversionFunction = (
-    functionName: string,
-    sourceDataType: string,
-    targetDataType: string
-  ): string => {
-    const path = nodeConfigRegistry.findConversionPath(
-      sourceDataType,
-      targetDataType
-    );
-
-    if (path == null || path.length === 0) return 'return None';
-    let conversionRules: string = '';
-    let rule: TypeConversionRule | null = null;
-    let callStack = 'source';
-
-    for (let i = 0; i < path.length - 1; i++) {
-      const rule: TypeConversionRule | null =
-        nodeConfigRegistry.getConversionRule(path[i], path[i + 1]);
-      conversionRules += rule ? `\n${rule.function_definition}` : '';
-      callStack = rule ? `${rule.function_name}(${callStack})` : '';
-    }
-    rule = nodeConfigRegistry.getConversionRule(
-      path[path.length - 1],
-      path[path.length - 1]
-    );
-    conversionRules += rule ? `\n${rule.function_definition}` : '';
-    callStack = rule ? `${rule.function_name}(${callStack}, target)` : '';
-
-    const functionBody = conversionRules + `\nreturn ${callStack}`;
-    return `def ${functionName}(source, target):\n${indentFunStr(
-      1,
-      functionBody
-    )}`;
-  };
-
-  /*
-   * @example
-   * ```
-   * def convert_source_to_target(source, target):
-   *   ...
-   * convert_source_to_target(source, target)['value']
-   * ```
-   */
-  const imageTypeConversionCode = (
-    sourceName: string,
-    source: ISourceImage,
-    target: ITargetImage
-  ): { fun: string; targetValue: string } => {
-    const functionName = `convert_${sourceName}_to_${target.dataType.replace(
-      /\./g,
-      ''
-    )}`;
-    const fun = createImageConversionFunction(
-      functionName,
-      source.dataType,
-      target.dataType
-    );
-    const targetDict = mapToLanguageDefinition(
-      typeof target.metadata,
-      target.metadata
-    );
-    return {
-      fun,
-      targetValue: `${functionName}(${sourceName}, ${targetDict as string})`,
-    };
-  };
-
-  const sourceCode = (): SourceCodeExec => {
-    const startNode = graphState
-      .getNodes()
-      .find((n) => n.data.configType.includes('Start'));
-    if (!startNode) {
-      return { hasError: true, result: 'No "Execute Start" found' };
-    }
-
-    const sourceCodeFrom = topoSortOfFunctionDependencies([startNode]);
-    if (typeof sourceCodeFrom === 'string') {
-      return { hasError: true, result: sourceCodeFrom };
-    }
-
-    let sourceBody = '';
-    const imports = new Set<string>();
-    for (const node of sourceCodeFrom) {
-      if (node.id === startNode.id) {
-        const indentLevel = 0;
-        const execTrace: Array<{ nodeId: string; handleId: string }> = [];
-        const externalImports = new Set<string>();
-        const result = sourceCodeWithStartNode(
-          startNode,
-          undefined,
-          indentLevel,
-          execTrace,
-          externalImports
-        );
-        if (result.hasError) return result;
-        sourceBody +=
-          // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-          '\n'.repeat(Number(result.result !== '' && sourceBody !== '')) +
-          result.result;
-        externalImports.forEach((externalImport) => {
-          imports.add(externalImport);
-        });
-      } else {
-        const externalImports = new Set<string>();
-        const sourceCodeExec = sourceCodeForFunction(node, externalImports);
-        if (sourceCodeExec.hasError) return sourceCodeExec;
-        sourceBody +=
-          // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-          '\n\n'.repeat(
-            Number(sourceCodeExec.result !== '' && sourceBody !== '')
-          ) + sourceCodeExec.result;
-        externalImports.forEach((externalImport) => {
-          imports.add(externalImport);
-        });
-      }
-    }
-
-    return {
-      hasError: false,
-      result:
-        Array.from(imports).join('\n') +
-        '\n\n'.repeat(Number(Array.from(imports).length !== 0)) +
-        sourceBody,
-    };
-  };
-
-  const isExecNode = (node: Node): boolean => {
-    return (
-      !!Object.values(node.data.inputs ?? {}).find(
-        (input: any) => input.dataType === 'exec'
-      ) ||
-      !!Object.values(node.data.outputs ?? {}).find(
-        (output: any) => output.dataType === 'exec'
-      )
-    );
-  };
-
-  const getSourceCodeOfInputDataHandle = (
-    node: Node,
-    nodeId: string,
-    handleId: string,
-    handle: Handle,
-    indentLevel: number
-  ): { prerequisites: string | null; source: string } => {
-    if (!handle.connection) {
-      let value: string = handle.value ?? handle.defaultValue ?? '';
-      value = mapToLanguageDefinition(handle.dataType, value);
-      return {
-        prerequisites: null,
-        source: value,
-      };
-    }
-    const { nodes: outputNodes, connectedHandlesId } =
-      graphState.getConnectedInfo(nodeId, handleId);
-    let outputHandleName = getUniqueNameOfHandle(
-      outputNodes[0],
-      connectedHandlesId[0]
-    );
-    let prerequisites = '';
-    if (handle.dataType?.includes('image')) {
-      const outputHandle = outputNodes[0].data.outputs[connectedHandlesId[0]];
-      const input = handle.defaultValue;
-      const convert = imageTypeConversionCode(
-        outputHandleName,
-        outputHandle.defaultValue,
-        input
-      );
-      if (node.type !== 'reroute')
-        convert.targetValue = `${convert.targetValue}['value']`;
-
-      prerequisites +=
-        '\n'.repeat(Number(prerequisites !== '')) +
-        indentFunStr(indentLevel, convert.fun);
-      outputHandleName = convert.targetValue;
-    }
-    if (isExecNode(outputNodes[0]))
-      return {
-        prerequisites,
-        source: outputHandleName,
-      };
-
-    const inputs: string[] = [];
-    const connectedNode = outputNodes[0];
-    for (const id in connectedNode.data.inputs ?? {}) {
-      const { prerequisites: prerequisitesOfInput, source } =
-        getSourceCodeOfInputDataHandle(
-          connectedNode,
-          connectedNode.id,
-          id,
-          connectedNode.data.inputs[id],
-          indentLevel
-        );
-      if (prerequisitesOfInput)
-        prerequisites +=
-          '\n'.repeat(Number(prerequisites !== '')) + prerequisitesOfInput;
-      inputs.push(source);
-    }
-    const outputs: string[] = [];
-    for (const id in connectedNode.data.outputs ?? {}) {
-      outputs.push(getUniqueNameOfHandle(connectedNode, id));
-    }
-    const template = connectedNode.data.sourceCode;
-    if (template === undefined)
-      console.error(
-        `no source code found for node ${connectedNode.data.title as string}`
-      );
-    else {
-      prerequisites +=
-        '\n'.repeat(Number(prerequisites !== '')) +
-        Mustache.render(
-          typeof template === 'string'
-            ? template
-            : template[connectedHandlesId[0]],
-          {
-            inputs,
-            outputs,
-            indent: '  '.repeat(indentLevel),
-          }
-        );
-    }
-    return { prerequisites, source: outputHandleName };
-  };
-
-  const sourceCodeWithStartNode = (
-    node: Node | undefined,
-    execInId: string | undefined,
-    indentLevel: number,
-    execTrace: Array<{ nodeId: string; handleId: string }>,
-    externalImports: Set<string>
-  ): SourceCodeExec => {
-    if (!node?.data) return { hasError: false, result: '' };
-    let source = '';
-    execTrace.push({ nodeId: node.id, handleId: execInId ?? '' });
-    const template = node.data.sourceCode;
-    if (
-      !template &&
-      !node.data.functionName &&
-      !node.data.configType.includes('functionCall')
-    ) {
-      return {
-        hasError: true,
-        result: `No source code found for '${node.data.configType as string}'`,
-      };
-    }
-    const inputs: string[] = [];
-    for (const id in node.data.inputs ?? {}) {
-      const input = node.data.inputs[id];
-      if (input.dataType === 'exec') inputs.push('');
-      else {
-        const { prerequisites, source: inputSource } =
-          getSourceCodeOfInputDataHandle(node, node.id, id, input, indentLevel);
-        if (prerequisites)
-          source += '\n'.repeat(Number(source !== '')) + prerequisites;
-        inputs.push(inputSource);
-      }
-    }
-    const outputs: string[] = [];
-    if (!node.data.breakExecution?.includes(execInId)) {
-      for (const id in node.data.outputs ?? {}) {
-        const output = node.data.outputs[id];
-        if (output.dataType === 'exec') {
-          const { nodes, connectedHandlesId } = graphState.getConnectedInfo(
-            node.id,
-            id
-          );
-          if (
-            nodes?.length &&
-            isAcyclic(nodes[0].id, connectedHandlesId[0], execTrace)
-          )
-            return {
-              hasError: true,
-              result: `An Infinite Loop when connecting '${
-                node.data.title as string
-              }' to '${nodes[0].data.title as string}'`,
-            };
-          const result = sourceCodeWithStartNode(
-            nodes[0],
-            connectedHandlesId[0],
-            indentLevel + getIndentOfNode(node, id),
-            execTrace.slice(),
-            externalImports
-          );
-          if (result.hasError) return result;
-          outputs.push(result.result);
-        } else outputs.push(getUniqueNameOfHandle(node, id));
-      }
-    }
-    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-    if (node.data.configType.includes('functionCall')) {
-      node.data.functionName = node.data.title;
-    }
-
-    const fromFunctionName = createCodeTemplateFromFunctionName(node);
-    // temp fix
-    if (node.data.configType.includes('Create Variable') && !fromFunctionName) {
-      // eslint-disable-next-line prettier/prettier
-      inputs[1] = inputs[1].replace(/'/g, '');
-      inputs[2] = mapToLanguageTypeKeyword(inputs[2]);
-    }
-    source +=
-      '\n'.repeat(Number(source !== '')) +
-      Mustache.render(
-        fromFunctionName ??
-          (typeof template === 'string' ? template : template[execInId!]),
-        {
-          inputs,
-          outputs,
-          indent: '  '.repeat(indentLevel),
-          inputsTitle: Object.values(node.data.inputs ?? {}).map(
-            (handle: any) => {
-              return handle.title;
-            }
-          ),
-        }
-      )
-        .trimEnd()
-        .replace(/,\s*$/, '');
-    if (node.data.externalImports)
-      for (const externalImport of node.data.externalImports.split('\n'))
-        externalImports.add(externalImport);
-
-    return { hasError: false, result: source };
-  };
-
-  const getIndentOfNode = (
-    node: Node | undefined,
-    handleId: string
-  ): number => {
-    if (!node) return 0;
-    if (
-      node.data.configType.includes('If Else') ||
-      ((node.data.configType.includes('For Each Loop') ||
-        node.data.configType.includes('For Loop') ||
-        node.data.configType.includes('For Iterator Loop')) &&
-        handleId === 'loopBody')
-    )
-      return 1;
-    return 0;
-  };
-
-  const getUniqueNameOfHandle = (node: Node, handleId: string): string => {
-    if (node.type === 'setter' || node.type === 'getter')
-      return `${
-        (node.data.outputs.setter_out?.title ??
-          node.data.outputs.getter?.title) as string
-      }`;
-    return `Node_${node.id}_${handleId}_Handle`;
-  };
-
-  const createCodeTemplateFromFunctionName = (
-    node: Node
-  ): string | undefined => {
-    if (!node.data.functionName) return undefined;
-    let outputsTemplate = '';
-    if (node.data.outputs && Object.keys(node.data.outputs).length > 1) {
-      outputsTemplate = Object.keys(node.data.outputs)
-        .slice(1)
-        .map((key, index) => {
-          return `{{{outputs.${index + 1}}}}`;
-        })
-        .join(', ');
-      outputsTemplate += ' = ';
-    }
-    let inputsTemplate = '';
-    if (node.data.inputs && Object.keys(node.data.inputs).length > 1) {
-      inputsTemplate = Object.keys(node.data.inputs)
-        .slice(1)
-        .map((key, index) => {
-          return `{{{inputs.${index + 1}}}}`;
-        })
-        .join(', ');
-    }
-    return `{{indent}}${outputsTemplate}${
-      node.data.functionName as string
-    }(${inputsTemplate})\n{{{outputs.0}}}`;
-  };
-
-  const isAcyclic = (
-    nextNode: string,
-    nextHandle: string,
-    execTrace: Array<{ nodeId: string; handleId: string }>
-  ): boolean => {
-    const index = execTrace.findIndex(
-      (trace) => trace.nodeId === nextNode && trace.handleId === nextHandle
-    );
-    return index !== -1;
-  };
-
-  const topoSortOfFunctionDependencies = (
-    startNodes: Node[]
-  ): Node[] | string => {
-    const queue: string[] = startNodes.map((n) => n.id);
-    const visited: string[] = [];
-    const dependencies: Array<[string, string]> = [];
-    while (queue.length) {
-      const nodeId = queue.shift();
-      if (nodeId === undefined) continue;
-      visited.push(nodeId);
-      const functionCallNodes: Node[] = [];
-      graphState.findFunctionCallNodes(
-        graphState.getNodeById(nodeId)!,
-        functionCallNodes,
-        []
-      );
-      functionCallNodes.forEach((n) => {
-        const createFunctionNodeId = n.data.nodeRef as string;
-        dependencies.push([createFunctionNodeId, nodeId]);
-        if (
-          !visited.includes(createFunctionNodeId) &&
-          !queue.includes(createFunctionNodeId)
-        )
-          queue.push(createFunctionNodeId);
-      });
-    }
-    let sorted: string[] = [];
-    try {
-      sorted = toposort(dependencies);
-    } catch (e: any) {
-      if (e.message.includes('node was:')) {
-        const nodeId = e.message.match(/\d+/);
-        return e.message.replace(
-          `node was:"${nodeId[0] as string}"`,
-          `node was:"${
-            graphState.getNodeById(nodeId[0])!.data.title as string
-          }"`
-        );
-      }
-      return e.message;
-    }
-
-    if (!sorted || sorted.length === 0) sorted = startNodes.map((n) => n.id);
-    return sorted.map((id) => graphState.getNodeById(id)!);
-  };
-
-  const sourceCodeForFunction = (
-    createFunctionNode: Node,
-    externalImports: Set<string>
-  ): SourceCodeExec => {
-    const indentLevel = 1;
-    const execTrace: Array<{ nodeId: string; handleId: string }> = [];
-    const result = sourceCodeWithStartNode(
-      createFunctionNode,
-      undefined,
-      indentLevel,
-      execTrace,
-      externalImports
-    );
-    if (result.hasError) return result;
-    const dataArgs: Array<{
-      name: string;
-      dataType: string | undefined;
-      defaultValue: string | undefined;
-    }> = [];
-    Object.entries(createFunctionNode.data.outputs ?? {}).forEach(
-      ([key, output]) => {
-        if ((output as any).dataType !== 'exec')
-          dataArgs.push({
-            name: getUniqueNameOfHandle(createFunctionNode, key),
-            dataType: (output as Handle).dataType,
-            defaultValue: mapToLanguageDefinition(
-              (output as Handle).dataType,
-              (output as Handle).value ?? (output as Handle).defaultValue
-            ),
-          });
-      }
-    );
-    result.result = functionDefinition(
-      createFunctionNode.data.title as string,
-      dataArgs,
-      result.result
-    );
-    return result;
-  };
-
-  const mapToLanguageDefinition = (
-    dataType: string | undefined,
-    value: any
-  ): any => {
-    if (value === undefined || value === null) return `None`;
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    if (dataType === 'string') return `'${value}'`;
-    if (dataType === 'boolean') return value ? 'True' : 'False';
-    if (dataType === 'image') return object2PythonDict(value);
-    if (Array.isArray(value))
-      return `[${value
-        .map((v: any) => mapToLanguageDefinition(typeof v, v))
-        .join(', ')}]`;
-    if (dataType === 'object' && !Array.isArray(value))
-      return object2PythonDict(value);
-    return value;
-  };
-
-  const mapToLanguageTypeKeyword = (dataType: string): string => {
-    if (dataType === 'string') return 'str';
-    if (dataType === 'boolean') return 'bool';
-    if (dataType === 'number') return 'int';
-    if (dataType === 'integer') return 'int';
-    else return dataType;
-  };
-
-  const functionDefinition = (
-    title: string,
-    args: Array<{
-      name: string;
-      dataType: string | undefined;
-      defaultValue: string | undefined;
-    }>,
-    functionBody: string
-  ): string => {
-    const argsStr = args
-      .map(
-        (arg) =>
-          `${arg.name}${
-            arg.dataType ? ' :' + mapToLanguageTypeKeyword(arg.dataType) : ''
-          }${arg.defaultValue ? ' =' + arg.defaultValue : ''}`
-      )
-      .join(',');
-
-    return `def ${title}(${argsStr}):\n${
-      functionBody !== '' ? functionBody : '  pass'
-    }`;
   };
 
   const closeMenu = (): void => {
