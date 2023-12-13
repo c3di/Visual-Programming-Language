@@ -1,8 +1,5 @@
 # Visual Programming Language
 
-[![build](https://github.com/Max-ChenFei/Visual-Programming-React-Component-Suite/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Max-ChenFei/Visual-Programming-React-Component-Suite/actions/workflows/build.yml)
-
-
 **Code Generation please check generators folder**
 
 **Knowledge Graph please check ImageTypeConversion folder.**
