@@ -4,6 +4,9 @@
 
 **Knowledge Graph please check ImageTypeConversion folder.**
 
+Mode detail could found in the doc folder
+
+
 ![image-20230823172210509](./doc/screenshots/VPRCS.jpg)
 
 ## Features
