@@ -20,55 +20,7 @@ describe('Code Execution of node kornia filter', () => {
   const testData: testNodeData[] = [
     {
       jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
-      nodeName: 'Canny_magnitude',
-      prepareInput: `import torch
-input_tensor1 = {
-  'dataType': 'torch.tensor',
-  'value': torch.rand(1, 3, 5, 5, device = 'cpu'),
-  'metadata': {
-    'colorChannel': 'rgb',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu'
-  }
-}`,
-      inputs: ['', 'input_tensor1', '(5, 5)', '(1, 1)', '1e-6'],
-      returnVar: 'image',
-
-      execTest: (inputs: any[], returnVar: any) => `import torch
-from torch import Tensor
-expected = K.filters.canny(input_tensor1['value'], ${inputs
-        .slice(2)
-        .join(', ')})
-print(torch.equal(expected, ${returnVar}['value']));`,
-
-      getExpectedCode: (
-        inputs: any[],
-        prepareInput: string,
-        returnVar: any,
-        execTest: (arg0: any, arg1: any) => any
-      ) => `import kornia as K
-${prepareInput}
-${returnVar} = K.filters.canny(input_tensor1['value'], ${inputs
-        .slice(2)
-        .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
-${execTest(inputs, returnVar)}`,
-    },
-    {
-      jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
-      nodeName: 'Canny_filtered',
+      nodeName: 'Canny',
       prepareInput: `import torch
 input_tensor1 = {
   'dataType': 'torch.tensor',
@@ -95,23 +47,39 @@ input_tensor1 = {
 
       execTest: (inputs: any[], returnVar: any) => `import torch
 from torch import Tensor
-expected = K.filters.canny(input_tensor1['value'], ${inputs
+expected_magnitude = K.filters.canny(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-print(torch.equal(expected, ${returnVar}['value']));`,
+expected_edges = K.filters.canny(input_tensor1['value'], ${inputs
+        .slice(2)
+        .join(', ')})
+print(torch.equal(expected_magnitude, ${
+        returnVar[0]
+      }['value']) and torch.equal(expected_edges, ${returnVar[1]}['value']));`,
 
       getExpectedCode: (
         inputs: any[],
         prepareInput: string,
-        returnVar: any,
+        returnVar: any[],
         execTest: (arg0: any, arg1: any) => any
       ) => `import kornia as K
 ${prepareInput}
-${returnVar} = K.filters.canny(input_tensor1['value'], ${inputs
+${returnVar[0]} = K.filters.canny(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
+${returnVar[0]} = {
+  'value': ${returnVar[0]},
+  'dataType': 'torch.tensor',
+  'metadata': {
+    'colorChannel': 'grayscale',
+    'channelOrder': 'channelFirst',
+    'isMiniBatched': True,
+    'intensityRange': '0-1',
+    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
+  }
+}
+${returnVar[1]} = {
+  'value': ${returnVar[1]},
   'dataType': 'torch.tensor',
   'metadata': {
     'colorChannel': 'grayscale',
@@ -123,6 +91,7 @@ ${returnVar} = {
 }
 ${execTest(inputs, returnVar)}`,
     },
+
     {
       jsonPath: 'src/NodeTypeExtension/kornia/filters.json',
       nodeName: 'Bilateral_Blur',
