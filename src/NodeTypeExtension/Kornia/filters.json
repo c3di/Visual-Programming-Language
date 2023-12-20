@@ -1,8 +1,8 @@
 {
   "enable": true,
   "nodes": {
-    "Canny": {
-      "type": "Canny",
+    "Canny_magnitude": {
+      "type": "Canny_magnitude",
       "category": "function",
       "title": "canny edge detection",
       "tooltip": "Find edges of the input image and filters them using the Canny algorithm.",
@@ -22,19 +22,78 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": [
-                  "rgb",
-                  "grayscale"
-                ],
+                "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": [
-                  "0-1"
-                ],
-                "device": [
-                  "cpu",
-                  "gpu"
-                ]
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
+              }
+            ]
+          },
+          "tooltip": "input image tensor with shape (B, C, H, W) and intensity from [0, 1]."
+        },
+        "kernel_size": {
+          "title": "kernel_size",
+          "dataType": "tuple",
+          "defaultValue": "(5, 5)",
+          "tooltip": "the size of the kernel for the gaussian blur."
+        },
+        "sigma": {
+          "title": "sigma",
+          "dataType": "tuple",
+          "defaultValue": "(1, 1)",
+          "tooltip": "the standard deviation of the kernel for the gaussian blur."
+        },
+        "eps": {
+          "title": "eps",
+          "dataType": "float",
+          "defaultValue": "1e-6",
+          "tooltip": "regularization number to avoid NaN during backprop."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "outputImage": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor"
+          },
+          "tooltip": "image: the canny edge magnitudes map, shape of (B, 1, H, W)."
+        }
+      }
+    },
+    "Canny_filtered": {
+      "type": "Canny_filtered",
+      "category": "function",
+      "title": "canny edge detection",
+      "tooltip": "Find edges of the input image and filters them using the Canny algorithm.",
+      "externalImports": "import kornia as K",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.filters.canny(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "torch.tensor",
+            "metadata": [
+              {
+                "colorChannel": ["rgb", "grayscale"],
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
               }
             ]
           },
@@ -90,7 +149,7 @@
           "defaultValue": {
             "dataType": "torch.tensor"
           },
-          "tooltip": "image: the canny edge magnitudes map, shape of (B, 1, H, W)."
+          "tooltip": "image: the canny edge detection filtered by thresholds and hysteresis, shape of (B, 1, H, W)."
         }
       }
     },
@@ -115,19 +174,11 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": [
-                  "rgb",
-                  "grayscale"
-                ],
+                "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": [
-                  "0-1"
-                ],
-                "device": [
-                  "cpu",
-                  "gpu"
-                ]
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
               }
             ]
           },
@@ -202,19 +253,11 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": [
-                  "rgb",
-                  "grayscale"
-                ],
+                "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": [
-                  "0-1"
-                ],
-                "device": [
-                  "cpu",
-                  "gpu"
-                ]
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
               }
             ]
           },
@@ -222,10 +265,7 @@
         },
         "kernel_size": {
           "title": "kernel_size",
-          "dataType": [
-            "tuple",
-            "int"
-          ],
+          "dataType": ["tuple", "int"],
           "defaultValue": "(5, 5)",
           "tooltip": "the kernel size for max pooling."
         },
@@ -274,19 +314,11 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": [
-                  "rgb",
-                  "grayscale"
-                ],
+                "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": [
-                  "0-1"
-                ],
-                "device": [
-                  "cpu",
-                  "gpu"
-                ]
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
               }
             ]
           },
@@ -349,19 +381,11 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": [
-                  "rgb",
-                  "grayscale"
-                ],
+                "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": [
-                  "0-1"
-                ],
-                "device": [
-                  "cpu",
-                  "gpu"
-                ]
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
               }
             ]
           },
@@ -430,19 +454,11 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": [
-                  "rgb",
-                  "grayscale"
-                ],
+                "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": [
-                  "0-1"
-                ],
-                "device": [
-                  "cpu",
-                  "gpu"
-                ]
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
               }
             ]
           },
@@ -455,19 +471,11 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": [
-                  "rgb",
-                  "grayscale"
-                ],
+                "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": [
-                  "0-1"
-                ],
-                "device": [
-                  "cpu",
-                  "gpu"
-                ]
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
               }
             ]
           },
@@ -536,19 +544,11 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": [
-                  "rgb",
-                  "grayscale"
-                ],
+                "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": [
-                  "0-1"
-                ],
-                "device": [
-                  "cpu",
-                  "gpu"
-                ]
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
               }
             ]
           },
@@ -561,19 +561,11 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": [
-                  "rgb",
-                  "grayscale"
-                ],
+                "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": [
-                  "0-1"
-                ],
-                "device": [
-                  "cpu",
-                  "gpu"
-                ]
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
               }
             ]
           },
@@ -648,19 +640,11 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": [
-                  "rgb",
-                  "grayscale"
-                ],
+                "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": [
-                  "0-1"
-                ],
-                "device": [
-                  "cpu",
-                  "gpu"
-                ]
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
               }
             ]
           },
@@ -729,19 +713,11 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": [
-                  "rgb",
-                  "grayscale"
-                ],
+                "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": [
-                  "0-1"
-                ],
-                "device": [
-                  "cpu",
-                  "gpu"
-                ]
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
               }
             ]
           },
@@ -792,19 +768,11 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": [
-                  "rgb",
-                  "grayscale"
-                ],
+                "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": [
-                  "0-1"
-                ],
-                "device": [
-                  "cpu",
-                  "gpu"
-                ]
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
               }
             ]
           },
@@ -879,19 +847,11 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": [
-                  "rgb",
-                  "grayscale"
-                ],
+                "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": [
-                  "0-1"
-                ],
-                "device": [
-                  "cpu",
-                  "gpu"
-                ]
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
               }
             ]
           },
@@ -954,19 +914,11 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": [
-                  "rgb",
-                  "grayscale"
-                ],
+                "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": [
-                  "0-1"
-                ],
-                "device": [
-                  "cpu",
-                  "gpu"
-                ]
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
               }
             ]
           },
@@ -1029,19 +981,11 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": [
-                  "rgb",
-                  "grayscale"
-                ],
+                "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": [
-                  "0-1"
-                ],
-                "device": [
-                  "cpu",
-                  "gpu"
-                ]
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
               }
             ]
           },
@@ -1098,19 +1042,11 @@
             "dataType": "torch.tensor",
             "metadata": [
               {
-                "colorChannel": [
-                  "rgb",
-                  "grayscale"
-                ],
+                "colorChannel": ["rgb", "grayscale"],
                 "isMiniBatched": true,
                 "channelOrder": "channelFirst",
-                "intensityRange": [
-                  "0-1"
-                ],
-                "device": [
-                  "cpu",
-                  "gpu"
-                ]
+                "intensityRange": ["0-1"],
+                "device": ["cpu", "gpu"]
               }
             ]
           },
