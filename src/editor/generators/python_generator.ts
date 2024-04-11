@@ -87,17 +87,13 @@ export class PythonGenerator extends CodeGenerator {
     );
     result.code = this._getUniqueNameOfHandle(incomingNode, outputHandle!);
     if (input.dataType === 'image') {
-      const conversion = this.imageTypeConvert!.getConversion(
-        this.getDataTypeInImageOutput(
-          incomingNode,
-          outputHandle!,
-          node,
-          program
-        ),
-        input.defaultValue,
+      const output = incomingNode.data.outputs[outputHandle!];
+      const conversion = this.imageTypeConvert!.getConversion_v2(
         result.code,
-        this
+        this.imageTypeDesc(output),
+        this.imageTypeDesc(input)
       );
+
       result.code = conversion.convertCodeStr;
       result.addImports(new Set(conversion.convertFunctions));
     }
@@ -256,5 +252,14 @@ ${this.captureImageFunction.functionName}(${this.commInJupyterLab.functionName},
     }
     if (dataType === 'boolean') return value ? 'True' : 'False';
     return value;
+  }
+
+  imageTypeDesc(handle: Handle, inputs?: string[], outputs?: string[]): string {
+    const imageType: string = (handle as any).image_type!;
+
+    // eslint-disable-next-line no-eval
+    const func = eval(`(${imageType})`);
+    // remove the trailing new line
+    return func(inputs, outputs).replace(/\n+$/, '');
   }
 }

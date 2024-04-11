@@ -1,0 +1,384 @@
+{
+  "enable": true,
+  "nodes": {
+    "ndarray * float": {
+      "type": "ndarray * float",
+      "category": "math",
+      "title": "*",
+      "enableAddNewOne": true,
+      "sourceCode": "{{indent}}{{{outputs.0}}}=sum([{{{inputs}}}])",
+      "inputs": {
+        "input1": {
+          "dataType": "numpy.ndarray",
+          "title": "ndarray",
+          "showTitle": true
+        },
+        "input2": {
+          "dataType": "float",
+          "defaultValue": 0,
+          "title": "float",
+          "showTitle": true
+        }
+      },
+      "outputs": {
+        "string": {
+          "dataType": "numpy.ndarray",
+          "title": "ndarray",
+          "showTitle": true
+        }
+      }
+    },
+    "astype": {
+      "type": "astype",
+      "category": "math",
+      "title": "->",
+      "sourceCode": "{{indent}}{{{outputs.0}}}=float({{{inputs.0}}})",
+      "inputs": {
+        "ndarray": {
+          "dataType": "numpy.ndarray",
+          "title": "ndarray",
+          "showTitle": true
+        },
+        "type": {
+          "dataType": "numpy.numpytype",
+          "title": "type",
+          "default": "numpytype.uint8"
+        }
+      },
+      "outputs": {
+        "ndarray2": {
+          "dataType": "numpy.ndarray",
+          "title": "ndarray",
+          "showTitle": true
+        }
+      }
+    },
+    "image To ndarray": {
+      "type": "image To ndarray",
+      "category": "math",
+      "title": "->",
+      "sourceCode": "{{indent}}{{{outputs.0}}}=str({{{inputs.0}}})",
+      "inputs": {
+        "image": {
+          "dataType": "image",
+          "title": "image",
+          "showTitle": true
+        }
+      },
+      "outputs": {
+        "string": {
+          "dataType": "numpy.ndarray",
+          "title": "ndarray",
+          "showTitle": true
+        }
+      }
+    },
+    "ndarray To image": {
+      "type": "ndarray To image",
+      "category": "math",
+      "title": "->",
+      "sourceCode": "{{indent}}{{{outputs.0}}}=str({{{inputs.0}}})",
+      "inputs": {
+        "ndarray": {
+          "dataType": "numpy.ndarray",
+          "title": "ndarray",
+          "showTitle": true
+        }
+      },
+      "outputs": {
+        "image": {
+          "dataType": "image",
+          "title": "image",
+          "showTitle": true
+        }
+      }
+    },
+    "shape": {
+      "type": "shape",
+      "category": "math",
+      "title": "shape",
+      "sourceCode": "{{indent}}{{{outputs.0}}} = {{{inputs.0}}}.shape",
+      "inputs": {
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "isMiniBatched": false,
+                "channelOrder": "none",
+                "intensityRange": "0-255"
+              }
+            ]
+          }
+        }
+      },
+      "outputs": {
+        "shape": {
+          "title": "max ",
+          "dataType": "tuple"
+        }
+      }
+    },
+    "zeros": {
+      "type": "zeros",
+      "category": "function",
+      "title": "zeros",
+      "tooltip": "Return a new array of given shape and type, filled with zeros.",
+      "dataType": "numpy.ndarray",
+      "externalImports": "import numpy as np",
+      "sourceCode": "{{indent}}{{{outputs.0}}}=np.zeros([{{{inputs}}}])",
+      "inputs": {
+        "input1": {
+          "dataType": "tuple",
+          "defaultValue": "(2, 2)",
+          "title": "shape",
+          "showTitle": true
+        },
+        "dtype": {
+          "dataType": "anyDataType",
+          "defaultValue": "bool",
+          "title": "dtype",
+          "showTitle": true
+        }
+      },
+      "outputs": {
+        "array": {
+          "dataType": "numpy.ndarray",
+          "defaultValue": "None",
+          "title": "Array of zeros with the given shape",
+          "showTitle": true
+        }
+      }
+    },
+    "max": {
+      "type": "max",
+      "category": "math",
+      "title": "max",
+      "sourceCode": "{{indent}}{{{outputs.0}}} = {{{inputs.0}}}.max()",
+      "inputs": {
+        "ndarray": {
+          "title": "ndarray",
+          "dataType": "numpy.ndarray"
+        }
+      },
+      "outputs": {
+        "max": {
+          "title": "max ",
+          "dataType": "integer"
+        }
+      }
+    },
+    "transpose": {
+      "type": "transpose",
+      "category": "math",
+      "title": "transpose",
+      "sourceCode": "{{indent}}{{{outputs.0}}} = {{{inputs.0}}}.max()",
+      "inputs": {
+        "ndarray": {
+          "title": "ndarray",
+          "dataType": "numpy.ndarray"
+        }
+      },
+      "outputs": {
+        "transpose": {
+          "title": "transpose",
+          "dataType": "numpy.ndarray"
+        }
+      }
+    },
+    "binarize": {
+      "type": "binarize",
+      "category": "function",
+      "title": "binarize",
+      "externalImports": "import numpy as np",
+      "sourceCode": "{{indent}}{{{outputs.0}}}= ({{{inputs.0}}} > {{{inputs.1}}}) * 255",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "isMiniBatched": false,
+                "channelOrder": "none",
+                "intensityRange": "0-255"
+              }
+            ]
+          }
+        },
+        "threshold": {
+          "title": "threshold",
+          "dataType": "integer",
+          "defaultValue": 128
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "binarized": {
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "isMiniBatched": false,
+                "channelOrder": "none",
+                "intensityRange": "0-1"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "binarize_normalized": {
+      "type": "binarize_normalized",
+      "category": "function",
+      "title": "binarize_normalized",
+      "externalImports": "import numpy as np",
+      "sourceCode": "{{indent}}{{{outputs.0}}}= ({{{inputs.0}}} > {{{inputs.1}}}) * 255",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "isMiniBatched": false,
+                "channelOrder": "none",
+                "intensityRange": "0-255"
+              }
+            ]
+          }
+        },
+        "threshold": {
+          "title": "threshold",
+          "dataType": "float",
+          "defaultValue": 0.5
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "binarized": {
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "isMiniBatched": false,
+                "channelOrder": "none",
+                "intensityRange": "0-1"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "digitize": {
+      "type": "digitize",
+      "category": "function",
+      "title": "digitize",
+      "externalImports": "import numpy as np",
+      "sourceCode": "{{indent}}{{{outputs.1}}} =  np.digitize({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "isMiniBatched": false,
+                "channelOrder": "none",
+                "intensityRange": "0-255"
+              }
+            ]
+          }
+        },
+        "nbins": {
+          "title": "nbins",
+          "dataType": "list"
+        },
+        "right": {
+          "title": "right",
+          "dataType": "boolean",
+          "defaultValue": false
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "isMiniBatched": false,
+                "channelOrder": "none",
+                "intensityRange": "0-1"
+              }
+            ]
+          },
+          "tooltip": "Output array of indices, of same shape as x."
+        }
+      }
+    }
+  },
+  "types": {
+    "ndarray": {
+      "default": "",
+      "shownInColor": "hsl(80, 50%, 50%)"
+    },
+    "numpytype": {
+      "options": {
+        "uint8": "ImageReadMode.UNCHANGED",
+        "float32 ": " ImageReadMode.GRAY"
+      },
+      "default": "uint8",
+      "widget": "EnumSelect"
+    }
+  }
+}

@@ -7,7 +7,7 @@
       "title": "white top hat",
       "tooltip": "The white top hat of an image is defined as the image minus its morphological opening. ",
       "externalImports": "from skimage.morphology import white_tophat",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `from enum import Enum\r\n\r\n# Variable for specifying the output device\r\noutput_device = 'cpu'\r\n\r\n# Enums for different image metadata configurations\r\nclass ImageMetadata(Enum):\r\n    BINARY = {\r\n        'colorChannel': 'grayscale',\r\n        'channelOrder': 'none',\r\n        'isMiniBatched': False,\r\n        'intensityRange': '0-1'\r\n    }\r\n    GRAYSCALE = {\r\n        'colorChannel': 'grayscale',\r\n        'channelOrder': 'none',\r\n        'isMiniBatched': False,\r\n        'intensityRange': '0-255'\r\n    }\r\n    RGB = {\r\n        'colorChannel': 'rgb',\r\n        'channelOrder': 'channelLast',\r\n        'isMiniBatched': False,\r\n        'intensityRange': '0-255'\r\n    }\r\n    GBR = {\r\n        'colorChannel': 'gbr',\r\n        'channelOrder': 'channelLast',\r\n        'isMiniBatched': False,\r\n        'intensityRange': '0-255'\r\n    }\r\n\r\n# Function to determine the type of image metadata\r\ndef determine_metadata(meta):\r\n    for metadata in ImageMetadata:\r\n        if all(meta.get(key) == metadata.value.get(key) for key in metadata.value if key != 'device'):\r\n            return metadata\r\n    raise ValueError('Error: Unsupported or invalid image metadata configuration')\r\n\r\n# Function to extract and convert metadata\r\ndef convert_metadata():\r\n    # Replace these placeholders with the actual values from your other script\r\n    color_channel = ${inputs[1]}['metadata']['colorChannel']\r\n    channel_order = ${inputs[1]}['metadata']['channelOrder']\r\n    is_mini_batched = ${inputs[1]}['metadata']['isMiniBatched']\r\n    intensity_range = ${inputs[1]}['metadata']['intensityRange']\r\n    device = ${inputs[1]}['metadata']['device']\r\n\r\n    meta = {\r\n        'colorChannel': color_channel,\r\n        'channelOrder': channel_order,\r\n        'isMiniBatched': is_mini_batched,\r\n        'intensityRange': intensity_range,\r\n        'device': device\r\n    }\r\n\r\n    # Overwrite the device with the output device\r\n    meta['device'] = output_device\r\n\r\n    metadata_type = determine_metadata(meta)\r\n    if metadata_type is None:\r\n        raise ValueError('Error: None value encountered for metadata type')\r\n\r\n    output_meta = None\r\n    if metadata_type == ImageMetadata.BINARY:\r\n        output_meta = ImageMetadata.BINARY.value\r\n    elif metadata_type == ImageMetadata.GRAYSCALE:\r\n        output_meta = ImageMetadata.GRAYSCALE.value\r\n    elif metadata_type == ImageMetadata.RGB:\r\n        output_meta = ImageMetadata.RGB.value\r\n    elif metadata_type == ImageMetadata.GBR:\r\n        output_meta = ImageMetadata.GBR.value\r\n    else:\r\n        raise ValueError('Error: Unhandled image metadata type')\r\n\r\n    # Ensure the output metadata uses the output device\r\n    output_meta['device'] = output_device\r\n    return output_meta\r\n${outputs[1]} = white_tophat(${inputs[1]}['value'], footprint=${inputs[2]}, out=${inputs[3]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': convert_metadata().get('colorChannel'),\r\n    'channelOrder': convert_metadata().get('channelOrder'),\r\n    'isMiniBatched': convert_metadata().get('isMiniBatched'),\r\n    'intensityRange': convert_metadata().get('intensityRange'),\r\n    'device': convert_metadata().get('device')\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  let outputMetadata;\r\n\r\n  // Assuming inputs[1] contains the metadata of the previous node's output\r\n  const metadata = inputs[1].metadata;\r\n\r\n  if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-1') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-1'};\r\n  } else if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-255') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'rgb') {\r\n    outputMetadata = {'colorChannel': 'rgb', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'bgr') {\r\n    outputMetadata = {'colorChannel': 'bgr', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  }\r\n\r\n  const code = `${outputs[1]} = white_tophat(${inputs[1]}, ${inputs[2]}, ${inputs[3]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': outputMetadata\r\n}\r\n${outputs[0]}`;\r\n\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -111,7 +111,7 @@
       "title": "black top hat",
       "tooltip": "The black top hat of an image is defined as its morphological closing minus the original image.",
       "externalImports": "from skimage.morphology import black_tophat",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `from enum import Enum\r\n\r\n# Variable for specifying the output device\r\noutput_device = 'cpu'\r\n\r\n# Enums for different image metadata configurations\r\nclass ImageMetadata(Enum):\r\n    BINARY = {\r\n        'colorChannel': 'grayscale',\r\n        'channelOrder': 'none',\r\n        'isMiniBatched': False,\r\n        'intensityRange': '0-1'\r\n    }\r\n    GRAYSCALE = {\r\n        'colorChannel': 'grayscale',\r\n        'channelOrder': 'none',\r\n        'isMiniBatched': False,\r\n        'intensityRange': '0-255'\r\n    }\r\n    RGB = {\r\n        'colorChannel': 'rgb',\r\n        'channelOrder': 'channelLast',\r\n        'isMiniBatched': False,\r\n        'intensityRange': '0-255'\r\n    }\r\n    GBR = {\r\n        'colorChannel': 'gbr',\r\n        'channelOrder': 'channelLast',\r\n        'isMiniBatched': False,\r\n        'intensityRange': '0-255'\r\n    }\r\n\r\n# Function to determine the type of image metadata\r\ndef determine_metadata(meta):\r\n    for metadata in ImageMetadata:\r\n        if all(meta.get(key) == metadata.value.get(key) for key in metadata.value if key != 'device'):\r\n            return metadata\r\n    raise ValueError('Error: Unsupported or invalid image metadata configuration')\r\n\r\n# Function to extract and convert metadata\r\ndef convert_metadata():\r\n    # Replace these placeholders with the actual values from your other script\r\n    color_channel = ${inputs[1]}['metadata']['colorChannel']\r\n    channel_order = ${inputs[1]}['metadata']['channelOrder']\r\n    is_mini_batched = ${inputs[1]}['metadata']['isMiniBatched']\r\n    intensity_range = ${inputs[1]}['metadata']['intensityRange']\r\n    device = ${inputs[1]}['metadata']['device']\r\n\r\n    meta = {\r\n        'colorChannel': color_channel,\r\n        'channelOrder': channel_order,\r\n        'isMiniBatched': is_mini_batched,\r\n        'intensityRange': intensity_range,\r\n        'device': device\r\n    }\r\n\r\n    # Overwrite the device with the output device\r\n    meta['device'] = output_device\r\n\r\n    metadata_type = determine_metadata(meta)\r\n    if metadata_type is None:\r\n        raise ValueError('Error: None value encountered for metadata type')\r\n\r\n    output_meta = None\r\n    if metadata_type == ImageMetadata.BINARY:\r\n        output_meta = ImageMetadata.BINARY.value\r\n    elif metadata_type == ImageMetadata.GRAYSCALE:\r\n        output_meta = ImageMetadata.GRAYSCALE.value\r\n    elif metadata_type == ImageMetadata.RGB:\r\n        output_meta = ImageMetadata.RGB.value\r\n    elif metadata_type == ImageMetadata.GBR:\r\n        output_meta = ImageMetadata.GBR.value\r\n    else:\r\n        raise ValueError('Error: Unhandled image metadata type')\r\n\r\n    # Ensure the output metadata uses the output device\r\n    output_meta['device'] = output_device\r\n    return output_meta\r\n${outputs[1]} = black_tophat(${inputs[1]}['value'], footprint=${inputs[2]}, out=${inputs[3]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': convert_metadata().get('colorChannel'),\r\n    'channelOrder': convert_metadata().get('channelOrder'),\r\n    'isMiniBatched': convert_metadata().get('isMiniBatched'),\r\n    'intensityRange': convert_metadata().get('intensityRange'),\r\n    'device': convert_metadata().get('device')\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  let outputMetadata;\r\n\r\n  // Assuming inputs[1] contains the metadata of the previous node's output\r\n  const metadata = inputs[1].metadata;\r\n\r\n  if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-1') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-1'};\r\n  } else if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-255') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'rgb') {\r\n    outputMetadata = {'colorChannel': 'rgb', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'bgr') {\r\n    outputMetadata = {'colorChannel': 'bgr', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  }\r\n\r\n  const code = `${outputs[1]} = black_tophat(${inputs[1]}, ${inputs[2]}, ${inputs[3]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': outputMetadata\r\n}\r\n${outputs[0]}`;\r\n\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -215,7 +215,7 @@
       "title": "hysteresis threshold",
       "tooltip": "Apply hysteresis thresholding to image.",
       "externalImports": "from skimage.filters import apply_hysteresis_threshold",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = apply_hysteresis_threshold(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = apply_hysteresis_threshold(${inputs[1]}, ${inputs[2]}, ${inputs[3]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -281,7 +281,7 @@
       "title": "unsharp mask",
       "tooltip": "Unsharp masking filter.",
       "externalImports": "from skimage.filters import unsharp_mask",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `from enum import Enum\r\n\r\n# Variable for specifying the output device\r\noutput_device = 'cpu'\r\n\r\n# Enums for different image metadata configurations\r\nclass ImageMetadata(Enum):\r\n    BINARY = {\r\n        'colorChannel': 'grayscale',\r\n        'channelOrder': 'none',\r\n        'isMiniBatched': False,\r\n        'intensityRange': '0-1'\r\n    }\r\n    GRAYSCALE = {\r\n        'colorChannel': 'grayscale',\r\n        'channelOrder': 'none',\r\n        'isMiniBatched': False,\r\n        'intensityRange': '0-255'\r\n    }\r\n    RGB = {\r\n        'colorChannel': 'rgb',\r\n        'channelOrder': 'channelLast',\r\n        'isMiniBatched': False,\r\n        'intensityRange': '0-255'\r\n    }\r\n    GBR = {\r\n        'colorChannel': 'gbr',\r\n        'channelOrder': 'channelLast',\r\n        'isMiniBatched': False,\r\n        'intensityRange': '0-255'\r\n    }\r\n\r\n# Function to determine the type of image metadata\r\ndef determine_metadata(meta):\r\n    for metadata in ImageMetadata:\r\n        if all(meta.get(key) == metadata.value.get(key) for key in metadata.value if key != 'device'):\r\n            return metadata\r\n    raise ValueError('Error: Unsupported or invalid image metadata configuration')\r\n\r\n# Function to extract and convert metadata\r\ndef convert_metadata():\r\n    # Replace these placeholders with the actual values from your other script\r\n    color_channel = ${inputs[1]}['metadata']['colorChannel']\r\n    channel_order = ${inputs[1]}['metadata']['channelOrder']\r\n    is_mini_batched = ${inputs[1]}['metadata']['isMiniBatched']\r\n    intensity_range = ${inputs[1]}['metadata']['intensityRange']\r\n    device = ${inputs[1]}['metadata']['device']\r\n\r\n    meta = {\r\n        'colorChannel': color_channel,\r\n        'channelOrder': channel_order,\r\n        'isMiniBatched': is_mini_batched,\r\n        'intensityRange': intensity_range,\r\n        'device': device\r\n    }\r\n\r\n    # Overwrite the device with the output device\r\n    meta['device'] = output_device\r\n\r\n    metadata_type = determine_metadata(meta)\r\n    if metadata_type is None:\r\n        raise ValueError('Error: None value encountered for metadata type')\r\n\r\n    output_meta = None\r\n    if metadata_type == ImageMetadata.BINARY:\r\n        output_meta = ImageMetadata.BINARY.value\r\n    elif metadata_type == ImageMetadata.GRAYSCALE:\r\n        output_meta = ImageMetadata.GRAYSCALE.value\r\n    elif metadata_type == ImageMetadata.RGB:\r\n        output_meta = ImageMetadata.RGB.value\r\n    elif metadata_type == ImageMetadata.GBR:\r\n        output_meta = ImageMetadata.GBR.value\r\n    else:\r\n        raise ValueError('Error: Unhandled image metadata type')\r\n\r\n    # Ensure the output metadata uses the output device\r\n    output_meta['device'] = output_device\r\n    return output_meta\r\n${outputs[1]} = unsharp_mask(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, channel_axis=${inputs[5]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': convert_metadata().get('colorChannel'),\r\n    'channelOrder': convert_metadata().get('channelOrder'),\r\n    'isMiniBatched': convert_metadata().get('isMiniBatched'),\r\n    'intensityRange': convert_metadata().get('intensityRange'),\r\n    'device': convert_metadata().get('device')\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  let outputMetadata;\r\n\r\n  // Assuming inputs[1] contains the metadata of the previous node's output\r\n  const metadata = inputs[1].metadata;\r\n\r\n  if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-1') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-1'};\r\n  } else if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-255') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'rgb') {\r\n    outputMetadata = {'colorChannel': 'rgb', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'bgr') {\r\n    outputMetadata = {'colorChannel': 'bgr', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  }\r\n\r\n  const code = `${outputs[1]} = unsharp_mask(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': outputMetadata\r\n}\r\n${outputs[0]}`;\r\n\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -397,7 +397,7 @@
       "title": "mean percentile",
       "tooltip": "Return local mean of an image.",
       "externalImports": "from skimage.filters.rank import mean_percentile",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = mean_percentile(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-255',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = mean_percentile(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-255',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -424,6 +424,7 @@
         "footprint": {
           "title": "footprint",
           "dataType": "numpy.ndarray",
+          "defaultValue": "None",
           "tooltip": "The neighborhood expressed as a 2-D array of 1’s and 0’s"
         },
         "out": {
@@ -494,7 +495,7 @@
       "title": "mean bilateral",
       "tooltip": "Apply a flat kernel bilateral filter. This is an edge-preserving and noise reducing denoising filter.",
       "externalImports": "from skimage.filters.rank import mean_bilateral",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = mean_bilateral(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-255',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = mean_bilateral(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-255',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -521,6 +522,7 @@
         "footprint": {
           "title": "footprint",
           "dataType": "numpy.ndarray",
+          "defaultValue": "None",
           "tooltip": "The neighborhood expressed as a 2-D array of 1’s and 0’s"
         },
         "out": {
@@ -591,7 +593,7 @@
       "title": "mean",
       "tooltip": "Return local mean of an image.",
       "externalImports": "from skimage.filters.rank import mean",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = mean(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-255',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = mean(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'grayscale',\r\n    'channelOrder': 'none',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-255',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -618,6 +620,7 @@
         "footprint": {
           "title": "footprint",
           "dataType": "numpy.ndarray",
+          "defaultValue": "None",
           "tooltip": "The neighborhood expressed as a 2-D array of 1’s and 0’s"
         },
         "out": {
@@ -682,7 +685,7 @@
       "title": "denoise tv chambolle",
       "tooltip": "Perform total variation denoising in nD.",
       "externalImports": "from skimage.restoration import denoise_tv_chambolle",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `from enum import Enum\r\n\r\n# Variable for specifying the output device\r\noutput_device = 'cpu'\r\n\r\n# Enums for different image metadata configurations\r\nclass ImageMetadata(Enum):\r\n    BINARY = {\r\n        'colorChannel': 'grayscale',\r\n        'channelOrder': 'none',\r\n        'isMiniBatched': False,\r\n        'intensityRange': '0-1'\r\n    }\r\n    GRAYSCALE = {\r\n        'colorChannel': 'grayscale',\r\n        'channelOrder': 'none',\r\n        'isMiniBatched': False,\r\n        'intensityRange': '0-255'\r\n    }\r\n    RGB = {\r\n        'colorChannel': 'rgb',\r\n        'channelOrder': 'channelLast',\r\n        'isMiniBatched': False,\r\n        'intensityRange': '0-255'\r\n    }\r\n    GBR = {\r\n        'colorChannel': 'gbr',\r\n        'channelOrder': 'channelLast',\r\n        'isMiniBatched': False,\r\n        'intensityRange': '0-255'\r\n    }\r\n\r\n# Function to determine the type of image metadata\r\ndef determine_metadata(meta):\r\n    for metadata in ImageMetadata:\r\n        if all(meta.get(key) == metadata.value.get(key) for key in metadata.value if key != 'device'):\r\n            return metadata\r\n    raise ValueError('Error: Unsupported or invalid image metadata configuration')\r\n\r\n# Function to extract and convert metadata\r\ndef convert_metadata():\r\n    # Replace these placeholders with the actual values from your other script\r\n    color_channel = ${inputs[1]}['metadata']['colorChannel']\r\n    channel_order = ${inputs[1]}['metadata']['channelOrder']\r\n    is_mini_batched = ${inputs[1]}['metadata']['isMiniBatched']\r\n    intensity_range = ${inputs[1]}['metadata']['intensityRange']\r\n    device = ${inputs[1]}['metadata']['device']\r\n\r\n    meta = {\r\n        'colorChannel': color_channel,\r\n        'channelOrder': channel_order,\r\n        'isMiniBatched': is_mini_batched,\r\n        'intensityRange': intensity_range,\r\n        'device': device\r\n    }\r\n\r\n    # Overwrite the device with the output device\r\n    meta['device'] = output_device\r\n\r\n    metadata_type = determine_metadata(meta)\r\n    if metadata_type is None:\r\n        raise ValueError('Error: None value encountered for metadata type')\r\n\r\n    output_meta = None\r\n    if metadata_type == ImageMetadata.BINARY:\r\n        output_meta = ImageMetadata.BINARY.value\r\n    elif metadata_type == ImageMetadata.GRAYSCALE:\r\n        output_meta = ImageMetadata.GRAYSCALE.value\r\n    elif metadata_type == ImageMetadata.RGB:\r\n        output_meta = ImageMetadata.RGB.value\r\n    elif metadata_type == ImageMetadata.GBR:\r\n        output_meta = ImageMetadata.GBR.value\r\n    else:\r\n        raise ValueError('Error: Unhandled image metadata type')\r\n\r\n    # Ensure the output metadata uses the output device\r\n    output_meta['device'] = output_device\r\n    return output_meta\r\n${outputs[1]} = denoise_tv_chambolle(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, channel_axis=${inputs[5]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': convert_metadata().get('colorChannel'),\r\n    'channelOrder': convert_metadata().get('channelOrder'),\r\n    'isMiniBatched': convert_metadata().get('isMiniBatched'),\r\n    'intensityRange': convert_metadata().get('intensityRange'),\r\n    'device': convert_metadata().get('device')\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  let outputMetadata;\r\n\r\n  // Assuming inputs[1] contains the metadata of the previous node's output\r\n  const metadata = inputs[1].metadata;\r\n\r\n  if (metadata.colorChannel === 'grayscale') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'rgb') {\r\n    outputMetadata = {'colorChannel': 'rgb', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'bgr') {\r\n    outputMetadata = {'colorChannel': 'bgr', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  }\r\n\r\n  const code = `${outputs[1]} = denoise_tv_chambolle(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': outputMetadata\r\n}\r\n${outputs[0]}`;\r\n\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -792,7 +795,7 @@
       "title": "denoise bilateral filter",
       "tooltip": "Denoise image using bilateral filter.",
       "externalImports": "from skimage.restoration import denoise_bilateral",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `from enum import Enum\r\n\r\n# Variable for specifying the output device\r\noutput_device = 'cpu'\r\n\r\n# Enums for different image metadata configurations\r\nclass ImageMetadata(Enum):\r\n    BINARY = {\r\n        'colorChannel': 'grayscale',\r\n        'channelOrder': 'none',\r\n        'isMiniBatched': False,\r\n        'intensityRange': '0-1'\r\n    }\r\n    GRAYSCALE = {\r\n        'colorChannel': 'grayscale',\r\n        'channelOrder': 'none',\r\n        'isMiniBatched': False,\r\n        'intensityRange': '0-255'\r\n    }\r\n    RGB = {\r\n        'colorChannel': 'rgb',\r\n        'channelOrder': 'channelLast',\r\n        'isMiniBatched': False,\r\n        'intensityRange': '0-255'\r\n    }\r\n    GBR = {\r\n        'colorChannel': 'gbr',\r\n        'channelOrder': 'channelLast',\r\n        'isMiniBatched': False,\r\n        'intensityRange': '0-255'\r\n    }\r\n\r\n# Function to determine the type of image metadata\r\ndef determine_metadata(meta):\r\n    for metadata in ImageMetadata:\r\n        if all(meta.get(key) == metadata.value.get(key) for key in metadata.value if key != 'device'):\r\n            return metadata\r\n    raise ValueError('Error: Unsupported or invalid image metadata configuration')\r\n\r\n# Function to extract and convert metadata\r\ndef convert_metadata():\r\n    # Replace these placeholders with the actual values from your other script\r\n    color_channel = ${inputs[1]}['metadata']['colorChannel']\r\n    channel_order = ${inputs[1]}['metadata']['channelOrder']\r\n    is_mini_batched = ${inputs[1]}['metadata']['isMiniBatched']\r\n    intensity_range = ${inputs[1]}['metadata']['intensityRange']\r\n    device = ${inputs[1]}['metadata']['device']\r\n\r\n    meta = {\r\n        'colorChannel': color_channel,\r\n        'channelOrder': channel_order,\r\n        'isMiniBatched': is_mini_batched,\r\n        'intensityRange': intensity_range,\r\n        'device': device\r\n    }\r\n\r\n    # Overwrite the device with the output device\r\n    meta['device'] = output_device\r\n\r\n    metadata_type = determine_metadata(meta)\r\n    if metadata_type is None:\r\n        raise ValueError('Error: None value encountered for metadata type')\r\n\r\n    output_meta = None\r\n    if metadata_type == ImageMetadata.BINARY:\r\n        output_meta = ImageMetadata.BINARY.value\r\n    elif metadata_type == ImageMetadata.GRAYSCALE:\r\n        output_meta = ImageMetadata.GRAYSCALE.value\r\n    elif metadata_type == ImageMetadata.RGB:\r\n        output_meta = ImageMetadata.RGB.value\r\n    elif metadata_type == ImageMetadata.GBR:\r\n        output_meta = ImageMetadata.GBR.value\r\n    else:\r\n        raise ValueError('Error: Unhandled image metadata type')\r\n\r\n    # Ensure the output metadata uses the output device\r\n    output_meta['device'] = output_device\r\n    return output_meta\r\n${outputs[1]} = denoise_bilateral(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, channel_axis=${inputs[8]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': convert_metadata().get('colorChannel'),\r\n    'channelOrder': convert_metadata().get('channelOrder'),\r\n    'isMiniBatched': convert_metadata().get('isMiniBatched'),\r\n    'intensityRange': convert_metadata().get('intensityRange'),\r\n    'device': convert_metadata().get('device')\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  let outputMetadata;\r\n\r\n  // Assuming inputs[1] contains the metadata of the previous node's output\r\n  const metadata = inputs[1].metadata;\r\n\r\n  if (metadata.colorChannel === 'grayscale') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'rgb') {\r\n    outputMetadata = {'colorChannel': 'rgb', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'bgr') {\r\n    outputMetadata = {'colorChannel': 'bgr', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  }\r\n\r\n  const code = `${outputs[1]} = denoise_bilateral(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': outputMetadata\r\n}\r\n${outputs[0]}`;\r\n\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -920,7 +923,7 @@
       "title": "denoise wavelet filter",
       "tooltip": "Denoise image using wavelet filter.",
       "externalImports": "from skimage.restoration import denoise_wavelet",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `from enum import Enum\r\n\r\n# Variable for specifying the output device\r\noutput_device = 'cpu'\r\n\r\n# Enums for different image metadata configurations\r\nclass ImageMetadata(Enum):\r\n    GRAYSCALE = {\r\n        'colorChannel': 'grayscale',\r\n        'channelOrder': 'none',\r\n        'isMiniBatched': False,\r\n        'intensityRange': '0-255'\r\n    }\r\n    RGB = {\r\n        'colorChannel': 'rgb',\r\n        'channelOrder': 'channelLast',\r\n        'isMiniBatched': False,\r\n        'intensityRange': '0-255'\r\n    }\r\n    GBR = {\r\n        'colorChannel': 'gbr',\r\n        'channelOrder': 'channelLast',\r\n        'isMiniBatched': False,\r\n        'intensityRange': '0-255'\r\n    }\r\n\r\n# Function to determine the type of image metadata\r\ndef determine_metadata(meta):\r\n    for metadata in ImageMetadata:\r\n        if all(meta.get(key) == metadata.value.get(key) for key in metadata.value if key != 'device'):\r\n            return metadata\r\n    raise ValueError('Error: Unsupported or invalid image metadata configuration')\r\n\r\n# Function to extract and convert metadata\r\ndef convert_metadata():\r\n    # Replace these placeholders with the actual values from your other script\r\n    color_channel = ${inputs[1]}['metadata']['colorChannel']\r\n    channel_order = ${inputs[1]}['metadata']['channelOrder']\r\n    is_mini_batched = ${inputs[1]}['metadata']['isMiniBatched']\r\n    intensity_range = ${inputs[1]}['metadata']['intensityRange']\r\n    device = ${inputs[1]}['metadata']['device']\r\n\r\n    meta = {\r\n        'colorChannel': color_channel,\r\n        'channelOrder': channel_order,\r\n        'isMiniBatched': is_mini_batched,\r\n        'intensityRange': intensity_range,\r\n        'device': device\r\n    }\r\n\r\n    # Overwrite the device with the output device\r\n    meta['device'] = output_device\r\n\r\n    metadata_type = determine_metadata(meta)\r\n    if metadata_type is None:\r\n        raise ValueError('Error: None value encountered for metadata type')\r\n\r\n    output_meta = None\r\n    if metadata_type == ImageMetadata.GRAYSCALE:\r\n        output_meta = ImageMetadata.GRAYSCALE.value\r\n    elif metadata_type == ImageMetadata.RGB:\r\n        output_meta = ImageMetadata.RGB.value\r\n    elif metadata_type == ImageMetadata.GBR:\r\n        output_meta = ImageMetadata.GBR.value\r\n    else:\r\n        raise ValueError('Error: Unhandled image metadata type')\r\n\r\n    # Ensure the output metadata uses the output device\r\n    output_meta['device'] = output_device\r\n    return output_meta\r\n${outputs[1]} = denoise_wavelet(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, channel_axis=${inputs[9]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': convert_metadata().get('colorChannel'),\r\n    'channelOrder': convert_metadata().get('channelOrder'),\r\n    'isMiniBatched': convert_metadata().get('isMiniBatched'),\r\n    'intensityRange': convert_metadata().get('intensityRange'),\r\n    'device': convert_metadata().get('device')\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  let outputMetadata;\r\n\r\n  // Assuming inputs[1] contains the metadata of the previous node's output\r\n  const metadata = inputs[1].metadata;\r\n\r\n  if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-255') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'rgb') {\r\n    outputMetadata = {'colorChannel': 'rgb', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  } else if (metadata.colorChannel === 'bgr') {\r\n    outputMetadata = {'colorChannel': 'bgr', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-255'};\r\n  }\r\n\r\n  const code = `${outputs[1]} = denoise_wavelet(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, ${inputs[9]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': outputMetadata\r\n}\r\n${outputs[0]}`;\r\n\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -1042,13 +1045,111 @@
         }
       }
     },
+    "Img_as_unit": {
+      "type": "Img_as_unit",
+      "category": "function",
+      "title": "img_as_unit",
+      "tooltip": "Convert an image to 16-bit unsigned integer format.",
+      "externalImports": "from skimage.util import img_as_uint",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  let outputMetadata;\r\n\r\n  // Assuming inputs[1] contains the metadata of the previous node's output\r\n  const metadata = inputs[1].metadata;\r\n\r\n  if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-1') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': [0, 65535]};\r\n  } else if (metadata.colorChannel === 'grayscale' && metadata.intensityRange === '0-255') {\r\n    outputMetadata = {'colorChannel': 'grayscale', 'channelOrder': 'none', 'isMiniBatched': false, 'intensityRange': '0-65535'};\r\n  } else if (metadata.colorChannel === 'rgb') {\r\n    outputMetadata = {'colorChannel': 'rgb', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-65535'};\r\n  } else if (metadata.colorChannel === 'bgr') {\r\n    outputMetadata = {'colorChannel': 'bgr', 'channelOrder': 'channelLast', 'isMiniBatched': false, 'intensityRange': '0-65535'};\r\n  }\r\n\r\n  const code = `${outputs[1]} = img_as_uint(${inputs[1]}, ${inputs[2]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': outputMetadata\r\n}\r\n${outputs[0]}`;\r\n\r\n  return code;\r\n}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-1"
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-255"
+              }
+            ]
+          },
+          "tooltip": "Input image"
+        },
+        "force_copy": {
+          "title": "force_copy",
+          "dataType": "boolean",
+          "defaultValue": false,
+          "tooltip": "Force a copy of the data, irrespective of its current dtype."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": [0, 65535]
+              },
+              {
+                "colorChannel": "grayscale",
+                "channelOrder": "none",
+                "isMiniBatched": false,
+                "intensityRange": "0-65535"
+              },
+              {
+                "colorChannel": "rgb",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-65535"
+              },
+              {
+                "colorChannel": "gbr",
+                "channelOrder": "channelLast",
+                "isMiniBatched": false,
+                "intensityRange": "0-65535"
+              }
+            ]
+          },
+          "tooltip": "Output image of uint16."
+        }
+      }
+    },
     "Morphology_disk": {
       "type": "Morphology_disk",
       "category": "function",
       "title": "morphology_disk",
       "tooltip": "Generates a flat, disk-shaped footprint.",
       "externalImports": "from skimage.morphology import disk",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = disk(${inputs[1]}, ${inputs[2]}, strict_radius=${inputs[3]}, decomposition=${inputs[4]})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = disk(${inputs[1]}, ${inputs[2]}, ${inputs[3], ${inputs[4]}, ${inputs[4]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",      
       "inputs": {
         "execIn": {
           "title": "execIn",

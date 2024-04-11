@@ -13,6 +13,17 @@ export class ImageTypeConverter {
     this.cvtGraph = cvtGraph;
   }
 
+  getConversion_v2(
+    sourceImage: string,
+    sourceImageDesc: string,
+    targetImageDesc: string
+  ): IConversion {
+    return {
+      convertCodeStr: `im2im(${sourceImage}, ${sourceImageDesc}, ${targetImageDesc})`,
+      convertFunctions: ['from im2im import im2im'],
+    };
+  }
+
   getConversion(
     startDataType: string,
     goalImage: IImageConfig | undefined,

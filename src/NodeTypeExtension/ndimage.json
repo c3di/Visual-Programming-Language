@@ -1,0 +1,87 @@
+{
+  "enable": true,
+  "nodes": {
+    "binary_fill_holes": {
+      "type": "binary_fill_holes",
+      "category": "function",
+      "title": "binary_fill_holes",
+      "externalImports": "from skimage.peak_local_max import peak_local_max",
+      "sourceCode": "{{indent}}{{{outputs.1}}} =  peak_local_max({{{inputs.1}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}[0], 'dataType': 'numpy.ndarray', 'metadata': {'colorChannel': 'grayscale', 'channelOrder': 'channelFirst', 'isMiniBatched': True, 'intensityRange': '0-1', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-255"
+              },
+               {
+                "colorChannel": "grayscale",
+                "isMiniBatched": false,
+                "channelOrder": "none",
+                "intensityRange": "0-255"
+              }
+            ]
+          },
+          "tooltip": "Input image."
+        },
+        "structure": {
+          "title": "structure",
+          "dataType": "anyDataType",
+          "defaultValue": "None"
+        },
+        "output": {
+          "title": "output",
+          "dataType": "anyDataType",
+          "defaultValue": "None"
+        },
+        "origin": {
+          "title": "origin",
+          "dataType": "integer",
+          "defaultValue": 0
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": true,
+                "channelOrder": "channelFirst",
+                "intensityRange": "0-255"
+              },
+               {
+                "colorChannel": "grayscale",
+                "isMiniBatched": false,
+                "channelOrder": "none",
+                "intensityRange": "0-255"
+              }
+            ]
+          },
+          "tooltip": "Input image."
+        }
+      }
+    }
+  }
+}

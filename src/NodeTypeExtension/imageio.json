@@ -2,13 +2,54 @@
   "description": "Image read and write functions from torchvision.io",
   "enable": true,
   "nodes": {
+    "paths_to_images_in_folder": {
+      "type": "paths_to_images_in_folder",
+      "category": "function",
+      "title": "paths_to_images_in_folder",
+      "tooltip": "Returns a list of paths to images in a given folder.",
+      "externalImports": "from torchvision import io\nfrom torchvision.io import ImageReadMode",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = io.read_image({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}, 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': False, 'intensityRange': '0-255', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "path": {
+          "title": "path",
+          "dataType": "string",
+          "tooltip": "path(str) - path of the folder."
+        },
+        "format": {
+          "title": "format",
+          "dataType": "imageio.ImageFileFormat",
+          "default": "ImageFileFormat.JPG"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "tooltip": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "paths": {
+          "title": "paths",
+          "dataType": "list",
+          "defaultValue": []
+        }
+      }
+    },
     "read_image": {
       "type": "read_image",
       "category": "function",
       "title": "read_image",
       "tooltip": "Reads a JPEG or PNG image into a 3 dimensional RGB or grayscale Tensor. Optionally converts the image to the desired format. The values of the output tensor are uint8 in [0, 255].",
       "externalImports": "from torchvision import io\nfrom torchvision.io import ImageReadMode",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\n    if (inputs[2] === 'ImageReadMode.RGB')\n        return `${outputs[1]} = io.read_image(${inputs[1]}, ${inputs[2]})\\n${outputs[1]} = {\\n  'value': ${outputs[1]},\\n  'dataType': 'torch.tensor',\\n  'metadata': {\\n    'colorChannel': 'rgb',\\n    'channelOrder': 'channelFirst',\\n    'isMiniBatched': False,\\n    'intensityRange': '0-255',\\n    'device': 'cpu'\\n  }\\n}\\n${outputs[0]}`;\n    if (inputs[2] === 'ImageReadMode.GRAY')\n        return `${outputs[1]} = {\\n  'value': ${outputs[1]},\\n  'dataType': 'torch.tensor',\\n  'metadata': {\\n    'colorChannel': 'grayscale',\\n    'channelOrder': 'channelFirst',\\n    'isMiniBatched': False,\\n    'intensityRange': '0-255',\\n    'device': 'cpu'\\n  }\\n}\\n${outputs[0]}`;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\n    if (inputs[2] === 'ImageReadMode.RGB')\n        return `${outputs[1]} = io.read_image(${inputs[1]}, ${inputs[2]})\\n${outputs[0]}`;\n    if (inputs[2] === 'ImageReadMode.GRAY')\n        return `${outputs[1]} = io.read_image(${inputs[1]}, ${inputs[2]})\\n${outputs[0]}`;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -43,6 +84,7 @@
           "defaultValue": {
             "dataType": "torch.tensor"
           },
+          "image_type": "function image_type_desc(node_inputs) {\n  return \"{'lib': 'torch', 'color_channel': 'rgb'}\"\n}",
           "tooltip": "{dataType: torch.tensor, value, layout: [chw], colorMode: [rgb, grayscale], intensityRange: 0-255' device: cpu}"
         }
       }
@@ -99,6 +141,16 @@
         "RGB": "ImageReadMode.RGB"
       },
       "default": "RGB",
+      "widget": "EnumSelect"
+    },
+    "ImageFileFormat": {
+      "options": {
+        "JPG": "ImageFileFormat.JPG",
+        "JPEG": "ImageFileFormat.JPEG",
+        "PNG ": "ImageFileFormat.PNG",
+        "TIFF": "ImageFileFormat.TIFF"
+      },
+      "default": "UNCHANGED",
       "widget": "EnumSelect"
     }
   }
