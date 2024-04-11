@@ -1,4 +1,3 @@
-import { Node, imageTypeConversionGraph } from '../ImageTypeConversion';
 import { type NodeConfig, type NodePackage } from '../types';
 
 export type config = NodeConfig | NodePackage;
@@ -29,50 +28,6 @@ export class NodeConfigRegistry {
   private readonly registry: Record<string, config> = {};
 
   private constructor() {}
-
-  public addKnowledgeGraphExtension(
-    extension: KnowledgeGraphExtension | undefined
-  ): void {
-    if (!extension) return;
-    const { imageTypes, ImageTypeConversions } = extension;
-    for (const imageType of imageTypes ?? []) {
-      imageTypeConversionGraph.addNode(
-        new Node(imageType.name, {
-          functionName: imageType.functionName,
-          function: imageType.function,
-        })
-      );
-    }
-
-    for (const conversion of ImageTypeConversions ?? []) {
-      let from = imageTypeConversionGraph.getNode(conversion.from);
-      if (!from) {
-        console.log(
-          `Node ${conversion.from} does not exist in graph, will be added.`
-        );
-        from = new Node(conversion.from, { functionName: '', function: '' });
-        imageTypeConversionGraph.addNode(from);
-      }
-      let to = imageTypeConversionGraph.getNode(conversion.to);
-      if (!to) {
-        console.log(
-          `Node ${conversion.to} does not exist in graph, will be added.`
-        );
-        to = new Node(conversion.to, { functionName: '', function: '' });
-        imageTypeConversionGraph.addNode(to);
-      }
-
-      imageTypeConversionGraph.addDirectedEdge(
-        from,
-        to,
-        {
-          functionName: conversion.functionName,
-          function: conversion.function,
-        },
-        1
-      );
-    }
-  }
 
   public static getInstance(): NodeConfigRegistry {
     if (!NodeConfigRegistry.instance) {
