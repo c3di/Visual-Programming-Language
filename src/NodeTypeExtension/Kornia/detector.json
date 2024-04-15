@@ -7,7 +7,7 @@
       "title": "gftt response",
       "tooltip": "Compute the Shi-Tomasi cornerness function.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.feature.gftt_response(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.feature.gftt_response(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -18,6 +18,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor",
             "metadata": [
@@ -63,6 +64,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor"
           },
@@ -76,7 +78,7 @@
       "title": "harris response",
       "tooltip": "Compute the harris response",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.feature.harris_response(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.feature.harris_response(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -87,6 +89,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor",
             "metadata": [
@@ -138,6 +141,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor"
           },
@@ -151,7 +155,7 @@
       "title": "hessian response",
       "tooltip": "Compute the absolute of determinant of the Hessian matrix.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.feature.hessian_response(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.feature.hessian_response(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -162,6 +166,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor",
             "metadata": [
@@ -207,6 +212,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor"
           },
@@ -220,7 +226,7 @@
       "title": "dog response single",
       "tooltip": "Compute the Difference-of-Gaussian response.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.feature.dog_response_single(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': True,\r\n    'intensityRange': '0-1',\r\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.feature.dog_response_single(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[0]}`;\n  return code;\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -231,6 +237,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor",
             "metadata": [
@@ -276,6 +283,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor"
           },

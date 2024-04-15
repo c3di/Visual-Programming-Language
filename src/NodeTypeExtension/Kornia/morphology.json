@@ -7,7 +7,7 @@
       "title": "dilation",
       "tooltip": "Return the dilated image applying the same kernel in each channel.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.morphology.dilation(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\n${outputs[1]} = {\n  'value': ${outputs[1]},\n  'dataType': 'torch.tensor',\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.morphology.dilation(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -18,6 +18,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor",
             "metadata": [
@@ -84,6 +85,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor"
           },
@@ -97,7 +99,7 @@
       "title": "erosion",
       "tooltip": "Return the eroded image applying the same kernel in each channel.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.morphology.erosion(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\n${outputs[1]} = {\n  'value': ${outputs[1]},\n  'dataType': 'torch.tensor',\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.morphology.erosion(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -108,6 +110,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor",
             "metadata": [
@@ -174,6 +177,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor"
           },
@@ -187,7 +191,7 @@
       "title": "opening",
       "tooltip": "Return the opened image, (that means, dilation after an erosion) applying the same kernel in each channel.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.morphology.opening(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\n${outputs[1]} = {\n  'value': ${outputs[1]},\n  'dataType': 'torch.tensor',\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.morphology.opening(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -198,6 +202,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor",
             "metadata": [
@@ -264,6 +269,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor"
           },
@@ -277,7 +283,7 @@
       "title": "closing",
       "tooltip": "Return the closed image, (that means, erosion after a dilation) applying the same kernel in each channel.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.morphology.closing(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\n${outputs[1]} = {\n  'value': ${outputs[1]},\n  'dataType': 'torch.tensor',\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.morphology.closing(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -288,6 +294,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor",
             "metadata": [
@@ -354,6 +361,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor"
           },
@@ -367,7 +375,7 @@
       "title": "gradient",
       "tooltip": "Return the morphological gradient of an image.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.morphology.gradient(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\n${outputs[1]} = {\n  'value': ${outputs[1]},\n  'dataType': 'torch.tensor',\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.morphology.gradient(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -378,6 +386,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor",
             "metadata": [
@@ -444,6 +453,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor"
           },
@@ -457,7 +467,7 @@
       "title": "top hat",
       "tooltip": "Return the top hat transformation of an image.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.morphology.top_hat(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\n${outputs[1]} = {\n  'value': ${outputs[1]},\n  'dataType': 'torch.tensor',\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.morphology.top_hat(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -468,6 +478,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor",
             "metadata": [
@@ -534,6 +545,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor"
           },
@@ -547,7 +559,7 @@
       "title": "bottom hat",
       "tooltip": "Return the bottom hat transformation of an image.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.morphology.bottom_hat(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\n${outputs[1]} = {\n  'value': ${outputs[1]},\n  'dataType': 'torch.tensor',\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.morphology.bottom_hat(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -558,6 +570,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor",
             "metadata": [
@@ -624,6 +637,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor"
           },

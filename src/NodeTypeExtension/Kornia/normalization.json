@@ -7,7 +7,7 @@
       "title": "normalize",
       "tooltip": "Normalize an image/video tensor with mean and standard deviation.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.enhance.normalize(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.enhance.normalize(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -18,6 +18,7 @@
         "data": {
           "title": "data",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor",
             "metadata": [
@@ -60,6 +61,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor"
           },
@@ -73,7 +75,7 @@
       "title": "normalize min max",
       "tooltip": "Normalise an image/video tensor by MinMax and re-scales the value between a range.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.enhance.normalize_min_max(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.enhance.normalize_min_max(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -84,6 +86,7 @@
         "x": {
           "title": "x",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor",
             "metadata": [
@@ -132,6 +135,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor"
           },
@@ -145,7 +149,7 @@
       "title": "denormalize",
       "tooltip": "Denormalize an image/video tensor with mean and standard deviation.",
       "externalImports": "import kornia as K",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.enhance.denormalize(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\n    'colorChannel': 'rgb' if ${inputs[1]}['metadata']['colorChannel'] == 'rgb' else 'grayscale',\n    'channelOrder': 'channelFirst',\n    'isMiniBatched': True,\n    'intensityRange': '0-1',\n    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'\n  }\n}\n${outputs[0]}`;\n  return code;\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  const code = `${outputs[1]} = K.enhance.denormalize(${inputs[1]}['value'], ${inputs.slice(2).join(', ')})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -156,6 +160,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor",
             "metadata": [
@@ -198,6 +203,7 @@
         "image": {
           "title": "image",
           "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) (\n return \"{'lib': 'kornia'}\"\n}",
           "defaultValue": {
             "dataType": "torch.tensor"
           },
