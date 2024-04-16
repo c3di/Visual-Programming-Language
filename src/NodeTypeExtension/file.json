@@ -1,0 +1,45 @@
+{
+  "enable": true,
+  "nodes": {
+    "save_to_csv": {
+      "type": "save_to_csv",
+      "category": "function",
+      "title": "save_to_csv",
+      "externalImports": "from torchvision import io",
+      "functionName": "io.write_jpeg",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "path": {
+          "title": "path",
+          "dataType": "string",
+          "defaultValue": "untitled.csv"
+        },
+        "pandas.dataframe": {
+          "title": "pandas dataframe",
+          "dataType": "anyDataType",
+          "defaultValue": ""
+        },
+        "sep": {
+          "title": "sep",
+          "dataType": "string",
+          "defaultValue": "'\t'"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "tooltip": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        }
+      }
+    }
+  }
+}

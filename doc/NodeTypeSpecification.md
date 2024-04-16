@@ -15,13 +15,10 @@ To facilitate code generation for a node:
 1. The required import statements (`externalImports`).
 2. Specify the text-based programming language target for code generation (**codeGenerator**).
 
-    The **code generator** is a typescript function that should do:
+   The **code generator** is a typescript function that should do:
 
-    - Translate the node's logic into executable code.
-
-    - Attach metadata to outputs when dealing with image data.
-
-    - Ensure the correct execution order of the subsequent code when dealing with Exec Node.
+   - Translate the node's logic into executable code.
+   - Ensure the correct execution order of the subsequent code when dealing with Exec Node.
 
 ## Node Example
 
@@ -70,20 +67,8 @@ For the purpose of demonstration, we ignore the different templates for differen
  */
 function code(inputs, outputs, node, generator) {  
  // 1. Read an image and assign it to an output variable.
- // 2. Create a metadata dictionary and attach when dealing with image data.
- // 3. Prepare the execution sequence for the subsequent code.
+ // 2. Prepare the execution sequence for the subsequent code.
   const code = `${outputs[1]} = io.read_image(${inputs[1]}, ${inputs[2]})
-${outputs[1]} = {
-  'value': ${outputs[1]},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': false,
-    'intensityRange': '0-255',
-    'device': 'cpu'
-  }
-}
 ${outputs[0]}`;
   return code;
 }
@@ -106,7 +91,7 @@ console.log(jsonFormattedString);
         "title": "read_image",
         "tooltip": "Reads a JPEG or PNG image into a 3 dimensional RGB or grayscale Tensor. Optionally converts the image to the desired format. The values of the output tensor are uint8 in [0, 255].",
         "externalImports": "from torchvision import io\nfrom torchvision.io import ImageReadMode",
-      	"codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = io.read_image(${inputs[1]}, ${inputs[2]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'torch.tensor',\r\n  'metadata': {\r\n    'colorChannel': 'rgb',\r\n    'channelOrder': 'channelFirst',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-255',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      	"codeGenerator": "function code(inputs, outputs, node, generator) {\n    if (inputs[2] === 'ImageReadMode.RGB')\n        return `${outputs[1]} = io.read_image(${inputs[1]}, ${inputs[2]})\\n${outputs[0]}`;\n    if (inputs[2] === 'ImageReadMode.GRAY')\n        return `${outputs[1]} = io.read_image(${inputs[1]}, ${inputs[2]})\\n${outputs[0]}`;\n}",
         "inputs": {
             "execIn": {
                 "title": "execIn",
@@ -173,7 +158,7 @@ the default plus is supported, no need to import anything.
  */
 function code(inputs, outputs, node, generator) {
  // Perfom plus operation.
- // *NOT NEED deal with execution sequence for the subsequent code, so the index starts   from the 0.
+ // *NOT NEED deal with execution sequence for the subsequent code, so the index starts from the 0.
   const code = `${outputs[0]} = ${inputs.filter(s => s.length > 0).join(' + ')}`;
   return code;
 }
@@ -219,3 +204,14 @@ console.log(jsonFormattedString);
 ```
 
 ![image-20231118222818801](screenshots/value_node.png)
+
+
+
+To support auto image type conversion, please provide one attribute that return the image type desc. More information please check  [c3di/im2im: im2im: Automatically converting in-memory representations of images using a knowledge graph of type description (github.com)](https://github.com/c3di/im2im)
+
+for example:
+
+```json
+"image_type": "function image_type_desc(node_inputs) {\n  return \"{'lib': 'torch', 'color_channel': 'rgb'}\"\n}",
+```
+

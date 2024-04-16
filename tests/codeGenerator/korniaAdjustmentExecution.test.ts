@@ -49,7 +49,7 @@ input_tensor2 = {
 
       execTest: (inputs: any[], returnVar: any) => `import torch
 from torch import Tensor
-expected = K.enhance.add_weighted(input_tensor1['value'], ${inputs[2]}, input_tensor2['value'], ${inputs[4]}, ${inputs[5]})
+expected = K.enhance.add_weighted(input_tensor1, ${inputs[2]}, input_tensor2, ${inputs[4]}, ${inputs[5]})
 print(torch.equal(expected, ${returnVar}['value']));`,
 
       getExpectedCode: (
@@ -59,20 +59,8 @@ print(torch.equal(expected, ${returnVar}['value']));`,
         execTest: (arg0: any, arg1: any) => any
       ) => `import kornia as K
 ${prepareInput}
-${returnVar} = K.enhance.add_weighted(input_tensor1['value'], ${inputs[2]
-        }, input_tensor2['value'], ${inputs[4]}, ${inputs[5]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
+${returnVar} = K.enhance.add_weighted(input_tensor1, ${inputs[2]
+        }, input_tensor2, ${inputs[4]}, ${inputs[5]})
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -118,18 +106,6 @@ print(torch.equal(expected, ${returnVar}['value']));`,
 ${prepareInput}
 ${returnVar} = K.enhance.add_weighted(input_tensor1['value'], ${inputs[2]
         }, input_tensor2['value'], ${inputs[4]}, ${inputs[5]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
 
@@ -164,18 +140,6 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.adjust_brightness(input_tensor['value'], ${inputs[2]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True if ${inputs[1]}['metadata']['isMiniBatched'] == True else False,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -209,18 +173,6 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.adjust_brightness(input_tensor['value'], ${inputs[2]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True if ${inputs[1]}['metadata']['isMiniBatched'] == True else False,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
 
@@ -259,18 +211,6 @@ ${prepareInput}
 ${returnVar} = K.enhance.adjust_contrast(input_tensor['value'], ${inputs
           .slice(2)
           .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True if ${inputs[1]}['metadata']['isMiniBatched'] == True else False,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -308,18 +248,6 @@ ${prepareInput}
 ${returnVar} = K.enhance.adjust_contrast(input_tensor['value'], ${inputs
           .slice(2)
           .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True if ${inputs[1]}['metadata']['isMiniBatched'] == True else False,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
 
@@ -355,18 +283,6 @@ print(torch.equal(expected, ${returnVar}['value']));`,
 ${prepareInput}
 ${returnVar} = K.enhance.adjust_contrast_with_mean_subtraction(input_tensor['value'], ${inputs[2]
         })
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True if ${inputs[1]}['metadata']['isMiniBatched'] == True else False,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -401,18 +317,6 @@ print(torch.equal(expected, ${returnVar}['value']));`,
 ${prepareInput}
 ${returnVar} = K.enhance.adjust_contrast_with_mean_subtraction(input_tensor['value'], ${inputs[2]
         })
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True if ${inputs[1]}['metadata']['isMiniBatched'] == True else False,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
 
@@ -451,18 +355,6 @@ ${prepareInput}
 ${returnVar} = K.enhance.adjust_gamma(input_tensor['value'], ${inputs
           .slice(2)
           .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True if ${inputs[1]}['metadata']['isMiniBatched'] == True else False,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -500,18 +392,6 @@ ${prepareInput}
 ${returnVar} = K.enhance.adjust_gamma(input_tensor['value'], ${inputs
           .slice(2)
           .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True if ${inputs[1]}['metadata']['isMiniBatched'] == True else False,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
 
@@ -546,17 +426,6 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.adjust_hue(input_tensor['value'], ${inputs[2]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True if ${inputs[1]}['metadata']['isMiniBatched'] == True else False,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
 
@@ -591,17 +460,6 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.adjust_saturation(input_tensor['value'], ${inputs[2]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True if ${inputs[1]}['metadata']['isMiniBatched'] == True else False,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
 
@@ -640,18 +498,6 @@ ${prepareInput}
 ${returnVar} = K.enhance.adjust_sigmoid(input_tensor['value'], ${inputs
           .slice(2)
           .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True if ${inputs[1]}['metadata']['isMiniBatched'] == True else False,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -689,18 +535,6 @@ ${prepareInput}
 ${returnVar} = K.enhance.adjust_sigmoid(input_tensor['value'], ${inputs
           .slice(2)
           .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True if ${inputs[1]}['metadata']['isMiniBatched'] == True else False,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
 
@@ -739,18 +573,6 @@ ${prepareInput}
 ${returnVar} = K.enhance.adjust_log(input_tensor['value'], ${inputs
           .slice(2)
           .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True if ${inputs[1]}['metadata']['isMiniBatched'] == True else False,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -788,18 +610,6 @@ ${prepareInput}
 ${returnVar} = K.enhance.adjust_log(input_tensor['value'], ${inputs
           .slice(2)
           .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True if ${inputs[1]}['metadata']['isMiniBatched'] == True else False,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
 
@@ -834,18 +644,6 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.invert(input_tensor['value'], ${inputs[2]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -879,18 +677,6 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.invert(input_tensor['value'], ${inputs[2]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
 
@@ -925,18 +711,6 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.posterize(input_tensor['value'], ${inputs[2]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True if ${inputs[1]}['metadata']['isMiniBatched'] == True else False,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -970,18 +744,6 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.posterize(input_tensor['value'], ${inputs[2]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True if ${inputs[1]}['metadata']['isMiniBatched'] == True else False,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
 
@@ -1016,18 +778,6 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.sharpness(input_tensor['value'], ${inputs[2]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True if ${inputs[1]}['metadata']['isMiniBatched'] == True else False,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -1061,18 +811,6 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.sharpness(input_tensor['value'], ${inputs[2]})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True if ${inputs[1]}['metadata']['isMiniBatched'] == True else False,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
 
@@ -1111,18 +849,6 @@ ${prepareInput}
 ${returnVar} = K.enhance.solarize(input_tensor['value'], ${inputs
           .slice(2)
           .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True if ${inputs[1]}['metadata']['isMiniBatched'] == True else False,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
 
@@ -1161,18 +887,6 @@ ${prepareInput}
 ${returnVar} = K.enhance.solarize(input_tensor['value'], ${inputs
           .slice(2)
           .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True if ${inputs[1]}['metadata']['isMiniBatched'] == True else False,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
   ];

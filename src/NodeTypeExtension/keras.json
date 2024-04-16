@@ -1,0 +1,131 @@
+{
+  "description": "Tensorflow Keras",
+  "enable": true,
+  "nodes": {
+    "load_pytorch_model": {
+      "type": "load_pytorch_model",
+      "category": "function",
+      "title": "load_pytorch_model",
+      "externalImports": "from torchvision import io\nfrom torchvision.io import ImageReadMode",
+      "sourceCode": "{{indent}}{{{outputs.1}}} = io.read_image({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}, 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': False, 'intensityRange': '0-255', 'device': 'cpu'}}\n{{{outputs.0}}}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "tooltip": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "path": {
+          "title": "path",
+          "dataType": "string",
+          "tooltip": "path(str) - path of the model."
+        },
+        "eval": {
+          "title": "eval",
+          "dataType": "boolean",
+          "defaultValue": true
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "tooltip": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "model": {
+          "title": "model",
+          "dataType": "keras.model"
+        }
+      }
+    },
+    "predict_image": {
+      "type": "predict_image",
+      "category": "function",
+      "title": "predict_image",
+      "externalImports": "",
+      "functionName": "",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "keras_model": {
+          "title": "model",
+          "dataType": "keras.model"
+        },
+        "input_image": {
+          "title": "input_image",
+          "dataType": "image"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "tooltip": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "predicted": {
+          "title": "predicted",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "keras.tensor"
+          }
+        }
+      }
+    },
+    "predict_as_string": {
+      "type": "predict_as_string",
+      "category": "function",
+      "title": "predict_as_string",
+      "externalImports": "",
+      "functionName": "",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "keras_model": {
+          "title": "model",
+          "dataType": "keras.model"
+        },
+        "input_image": {
+          "title": "input_image",
+          "dataType": "image"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "tooltip": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "predicted": {
+          "title": "predicted",
+          "dataType": "string"
+          
+        }
+      }
+    }
+  },
+  "types": {
+    "model": {
+      "default": "",
+      "shownInColor": "hsl(60, 20%, 80%)"
+    },
+    "tensor": {
+      "default": "",
+      "shownInColor": "hsl(10, 50%, 20%)"
+    }
+  }
+}

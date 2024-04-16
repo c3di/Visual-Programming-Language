@@ -1,0 +1,69 @@
+{
+  "enable": true,
+  "nodes": {
+    "equalizeAdapthist": {
+      "type": "equalizeAdapthist",
+      "category": "function",
+      "title": "equalize_adapthist",
+      "tooltip": "Contrast Limited Adaptive Histogram Equalization (CLAHE).",
+      "externalImports": "from skimage import exposure",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {  \r\n  const code = `${outputs[1]} = exposure.equalize_adapthist(${inputs[1]})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "image_type": "function image_type_desc(node_inputs) {\n  return \"{'lib': 'scikit-image'}\"\n}",
+          "defaultValue": {
+            "dataType": "numpy.ndarray",
+            "metadata": [
+              {
+                "colorChannel": "rgb",
+                "isMiniBatched": false,
+                "channelOrder": "channelLast",
+                "intensityRange": "0-255",
+                "device": "cpu"
+              }
+            ]
+          }
+        },
+        "kernel_size": {
+          "title": "kernel_size",
+          "dataType": "anyDataType",
+          "tooltip": "int or array_like, optional, Clipping limit, Defines the shape of contextual regions used in the algorithm."
+        },
+        "clip_limit": {
+          "title": "clip_limit",
+          "dataType": "anyDataType",
+          "tooltip": "float, optional, Clipping limit, normalized between 0 and 1 (higher values give more contrast)."
+        },
+        "nbins": {
+          "title": "nbins",
+          "dataType": "anyDataType",
+          "tooltip": "int, optional, Number of gray bins for histogram ('data range')."
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "image": {
+          "title": "image",
+          "dataType": "image",
+          "defaultValue": {
+            "dataType": "numpy.ndarray"
+          },
+          "tooltip": "Equalized image with float64 dtype."
+        }
+      }
+    }
+  }
+}

@@ -7,7 +7,7 @@
       "title": "felzenszwalb segmentation",
       "tooltip": "Computes Felsenszwalb’s efficient graph based image segmentation.",
       "externalImports": "from skimage.segmentation import felzenszwalb",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = felzenszwalb(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, channel_axis=${inputs[5]})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = felzenszwalb(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -52,7 +52,7 @@
         "scale": {
           "title": "scale",
           "dataType": "float",
-          "defaultValue": 1.0,
+          "defaultValue": 1,
           "tooltip": "Free parameter. Higher means larger clusters."
         },
         "sigma": {
@@ -94,7 +94,7 @@
       "title": "slic segmentation",
       "tooltip": "Segments image using k-means clustering in Color-(x,y,z) space.",
       "externalImports": "from skimage.segmentation import slic",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = slic(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, ${inputs[9]}, ${inputs[10]}, ${inputs[11]}, ${inputs[12]}, ${inputs[13]}, channel_axis=${inputs[14]})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = slic(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, ${inputs[9]}, ${inputs[10]}, ${inputs[11]}, ${inputs[12]}, ${inputs[13]}, ${inputs[14]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -235,7 +235,7 @@
       "title": "quickshift segmentation",
       "tooltip": "Segment image using quickshift clustering in Color-(x,y) space.",
       "externalImports": "from skimage.segmentation import quickshift",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = quickshift(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, channel_axis=${inputs[9]})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = quickshift(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, ${inputs[9]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -334,7 +334,7 @@
       "title": "flood fill",
       "tooltip": "Perform flood filling on an image.",
       "externalImports": "from skimage.segmentation import flood_fill",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = flood_fill(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, footprint=${inputs[4]}, connectivity=${inputs[5]}, tolerance=${inputs[6]}, in_place=${inputs[7]})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = flood_fill(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -419,7 +419,7 @@
       "title": "multi_Otsu_thresholding",
       "tooltip": "Applying multi-Otsu threshold for the default value, generating three classes.",
       "externalImports": "from skimage.filters import threshold_multiotsu",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = threshold_multiotsu(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, hist=${inputs[4]})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = threshold_multiotsu(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -482,7 +482,7 @@
       "title": "measure_label",
       "tooltip": "Label connected regions of an integer array.",
       "externalImports": "from skimage.measure import label",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]}, ${outputs[2]} = label(${inputs[1]}['value'], ${inputs[2]}, True, ${inputs[4]})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  let code = `${outputs[1]} = label(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]})\r\n`;\r\n  code += `${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}`;\r\n  if (${inputs[3]} === true) {\r\n    code += `\r\n${outputs[2]} = {\r\n  'value': ${outputs[1]}.num,\r\n  'dataType': 'integer'\r\n}`;\r\n  }\r\n  code += `\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -515,8 +515,8 @@
         "return_num": {
           "title": "return_num",
           "dataType": "boolean",
-          "defaultValue": true,
-          "tooltip": "Whether to return the number of assigned labels. (always true by design, so it return always 2 outputs)"
+          "defaultValue": false,
+          "tooltip": "Whether to return the number of assigned labels."
         },
         "connectivity": {
           "title": "connectivity",
@@ -550,7 +550,7 @@
       "title": "peak_local_max",
       "tooltip": "Find peaks in an image as coordinate list.",
       "externalImports": "from skimage.feature import peak_local_max",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = peak_local_max(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, ${inputs[9]}, ${inputs[10]})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = peak_local_max(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, ${inputs[9]}, ${inputs[10]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -606,9 +606,9 @@
         },
         "num_peaks": {
           "title": "num_peaks",
-          "dataType": "anyDataType",
+          "dataType": "integer",
           "defaultValue": "np.inf",
-          "tooltip": "(integer) Maximum number of peaks."
+          "tooltip": "Maximum number of peaks."
         },
         "footprint": {
           "title": "footprint",
@@ -624,15 +624,15 @@
         },
         "num_peaks_per_label": {
           "title": "num_peaks_per_label",
-          "dataType": "anyDataType",
+          "dataType": "integer",
           "defaultValue": "np.inf",
-          "tooltip": "(integer) Maximum number of peaks for each label."
+          "tooltip": "Maximum number of peaks for each label."
         },
         "p_norm": {
           "title": "p_norm",
-          "dataType": "anyDataType",
+          "dataType": "float",
           "defaultValue": "np.inf",
-          "tooltip": "(float) Which Minkowski p-norm to use. Should be in the range [1, inf]. inf corresponds to the Chebyshev distance and 2 to the Euclidean distance."
+          "tooltip": "Which Minkowski p-norm to use. Should be in the range [1, inf]. inf corresponds to the Chebyshev distance and 2 to the Euclidean distance."
         }
       },
       "outputs": {
@@ -655,7 +655,7 @@
       "title": "watershed_segmentation",
       "tooltip": "The watershed is a classical algorithm used for segmentation,",
       "externalImports": "from skimage.segmentation import watershed",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = watershed(${inputs[1]}['value'], ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]})\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = watershed(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray'\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -687,9 +687,9 @@
         },
         "connectivity": {
           "title": "connectivity",
-          "dataType": ["integer", "numpy.ndarray"],
+          "dataType": "numpy.ndarray",
           "defaultValue": 1,
-          "tooltip": "An array with the same number of dimensions as image whose non-zero elements indicate neighbors for connection. Scalar value '1' means 4-connectivity, and '2' would mean 8-connectivity in a 2D spaace."
+          "tooltip": "An array with the same number of dimensions as image whose non-zero elements indicate neighbors for connection."
         },
         "offset": {
           "title": "offset",
@@ -736,7 +736,7 @@
       "title": "label2rgb",
       "tooltip": "Return an RGB image where color-coded labels are painted over the image.",
       "externalImports": "from skimage.color import label2rgb",
-      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = label2rgb(${inputs[1]}, ${inputs[2]}['value'], ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, saturation=${inputs[9]}, channel_axis=${inputs[10]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'rgb',\r\n    'channelOrder': 'channelLast',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-255',\r\n    'device': 'cpu'\r\n  }\r\n}\r\n${outputs[0]}`;\r\n  return code;\r\n}",
+      "codeGenerator": "function code(inputs, outputs, node, generator) {\r\n  // Begin Python code generation\r\n  const code = `${outputs[1]} = label2rgb(${inputs[1]}, ${inputs[2]}, ${inputs[3]}, ${inputs[4]}, ${inputs[5]}, ${inputs[6]}, ${inputs[7]}, ${inputs[8]}, ${inputs[9]}, ${inputs[10]})\r\n${outputs[1]} = {\r\n  'value': ${outputs[1]},\r\n  'dataType': 'numpy.ndarray',\r\n  'metadata': {\r\n    'colorChannel': 'rgb',\r\n    'channelOrder': 'channelLast',\r\n    'isMiniBatched': False,\r\n    'intensityRange': '0-255',\r\n    'device': 'cpu'\r\n  }\r\n${outputs[0]}`;\r\n  return code;\r\n}",
       "inputs": {
         "execIn": {
           "title": "execIn",

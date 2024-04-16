@@ -1,8 +1,8 @@
-import { type IConversion } from '../ImageTypeConversion';
 import { type Handle } from '../types/Handle';
 import { type Node } from './../types';
 import { CodeGenerator } from './code_generator';
 import { FunctionGenRes, InputGenRes, NodeGenRes } from './generation_result';
+import { im2imCodeGen, type IConversion } from './im2imCodeGen';
 import { type VisualProgram } from './visual_program';
 
 export class PythonGenerator extends CodeGenerator {
@@ -57,8 +57,8 @@ export class PythonGenerator extends CodeGenerator {
       if (!output.beWatched) continue;
       result.add(
         this.captureImageCode(
-          output.defaultValue.dataType,
           outputs[index],
+          this.imageTypeDesc(output, inputs, outputs),
           output.imageDomId ?? ''
         )
       );
@@ -87,17 +87,13 @@ export class PythonGenerator extends CodeGenerator {
     );
     result.code = this._getUniqueNameOfHandle(incomingNode, outputHandle!);
     if (input.dataType === 'image') {
-      const conversion = this.imageTypeConvert!.getConversion(
-        this.getDataTypeInImageOutput(
-          incomingNode,
-          outputHandle!,
-          node,
-          program
-        ),
-        input.defaultValue,
+      const output = incomingNode.data.outputs[outputHandle!];
+      const conversion = im2imCodeGen(
         result.code,
-        this
+        this.imageTypeDesc(output),
+        this.imageTypeDesc(input)
       );
+
       result.code = conversion.convertCodeStr;
       result.addImports(new Set(conversion.convertFunctions));
     }
@@ -138,8 +134,8 @@ export class PythonGenerator extends CodeGenerator {
   }
 
   captureImageCode(
-    startDataType: string,
     imageVar: string,
+    imageTypeDesc: string,
     imageDomId: string
   ): FunctionGenRes {
     if (!this.captureImageFunction) {
@@ -165,29 +161,16 @@ export class PythonGenerator extends CodeGenerator {
         function: `${functionName} = create_comm(target_name='capture_image')`,
       };
     }
-    const conversion: IConversion = this.imageTypeConvert!.getConversion(
-      startDataType,
-      {
-        dataType: 'numpy.ndarray',
-        metadata: [
-          {
-            colorChannel: ['rgb'],
-            channelOrder: 'channelLast',
-            isMiniBatched: false,
-            intensityRange: ['0-255'],
-            device: ['cpu'],
-          },
-          {
-            colorChannel: ['grayscale'],
-            channelOrder: 'none',
-            isMiniBatched: false,
-            intensityRange: ['0-255'],
-            device: ['cpu'],
-          },
-        ],
-      },
+    let targetImageDesc = '';
+    if (imageTypeDesc.includes('rgb')) {
+      targetImageDesc = "{'lib': 'scikit-image'}";
+    } else {
+      targetImageDesc = "{'lib': 'scikit-image','color_channel': 'gray'}";
+    }
+    const conversion: IConversion = im2imCodeGen(
       imageVar,
-      this
+      imageTypeDesc,
+      targetImageDesc
     );
     const suffix = `${Date.now()}`;
     return new FunctionGenRes(
@@ -256,5 +239,14 @@ ${this.captureImageFunction.functionName}(${this.commInJupyterLab.functionName},
     }
     if (dataType === 'boolean') return value ? 'True' : 'False';
     return value;
+  }
+
+  imageTypeDesc(handle: Handle, inputs?: string[], outputs?: string[]): string {
+    const imageType: string = (handle as any).image_type!;
+
+    // eslint-disable-next-line no-eval
+    const func = eval(`(${imageType})`);
+    // remove the trailing new line
+    return func(inputs, outputs).replace(/\n+$/, '');
   }
 }

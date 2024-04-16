@@ -40,6 +40,7 @@ dependencies:
     - scipy==1.11.3
     - sympy==1.12
     - tifffile==2023.9.26
+    - --find-links https://download.pytorch.org/whl/torch_stable.html
     - torch==2.1.0+cu118
     - torchvision==0.16.0+cu118
     - typing-extensions==4.4.0

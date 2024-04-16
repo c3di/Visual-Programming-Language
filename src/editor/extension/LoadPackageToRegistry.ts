@@ -66,8 +66,6 @@ export const ParseModule = (m: INodeModule, relativePath: string): any => {
     );
   }
 
-  nodeConfigRegistry.addKnowledgeGraphExtension(m.imageTypeConversion);
-
   return returnModule;
 };
 

@@ -146,11 +146,9 @@ Employ automated layout adjustments for optimal node alignment and view fitting.
   - **Action**: Arrange nodes on the canvas via the context menu.
   - **How-to**: Right-click on the canvas background to open the context menu and select "Auto Arrange"
 
-
-
 **Build-in Fields Inputs**
 
-boolean, number, 
+boolean, number,
 
 ## **JSON-based specification for Node Library**
 
@@ -277,101 +275,10 @@ With this structured approach, our goal is to foster a clear, transparent, and a
 }
 ```
 
-## **Automatic Image Data Transitions via a Configurable Knowledge Graph**
+## **Automatic Image Data Transitions**
 
 Different software libraries and tools (such as TensorFlow, PyTorch, and OpenCV) have their distinct ways of representing and working with images. By having a unified image representation, you allow seamless interaction between these tools. We've developed a unified, abstract representation for image data, paired with a Knowledge Graph. This system facilitates automatic data type conversion based on predefined transition rules, streamlining the process and eliminating the need for cumbersome manual conversions.
 
-![automatic image data transitions](./screenshots/Automatic_Image_Data_Transitions_via_a_Configurable_Knowledge_Graph.jpg)
+![automatic image data transitions](./screenshots/Automatic_Image_Data_Transitions.jpg)
 
-### **Image Representation**
-
-``````typescript
-interface ImageMetadata {
-  colorChannel: 'rgb' | 'gbr' | 'grayscale';
-  channelOrder: 'none' | 'channelFirst' | 'channelLast';
-  isMiniBatched: boolean;
-  intensityRange: '0-255' | '0-1';
-  device: 'cpu' | 'gpu';
-}
-
-export interface ISourceImage {
-  dataType: string;
-  value: any;
-  metadata: ImageMetadata;
-}
-
-export interface ITargetImage {
-  dataType: string;
-  value: any;
-  metadata: ImageMetadata[];
-}
-
-export type IImage = ISourceImage | ITargetImage;
-``````
-
-### **How-to**
-
-In the output handle, define the default value for that specific handle and then return the image representation in the source code. Here are some examples:
-
-```json
-{
-    "image": {
-          "title": "image",
-          "dataType": "image",
-          "defaultValue": {
-            "dataType": "torch.tensor"
-          },
-	}
-}
-```
-
-```json
-{
-"sourceCode": "{{indent}}{{{outputs.1}}} = io.read_image({{{inputs.1}}}, {{{inputs.2}}})\n{{indent}}{{{outputs.1}}} = {'value': {{{outputs.1}}}, 'dataType': 'torch.tensor', 'metadata': {'colorChannel': 'rgb', 'channelOrder': 'channelFirst', 'isMiniBatched': False, 'intensityRange': '0-255', 'device': 'cpu'}}\n{{{outputs.0}}}"
-...
-}
-```
-
-In the output handle, define the default value for that specific handle.
-
-```json
-{ 
-  "image": {
-      "title": "image",
-      "dataType": "image",
-      "defaultValue": {
-        "dataType": "numpy.ndarray",
-        "metadata": [
-          {
-            "colorChannel": "rgb",
-            "isMiniBatched": false,
-            "channelOrder": "channelLast",
-            "intensityRange": "0-255"
-          },
-          {
-            "colorChannel": "grayscale",
-            "isMiniBatched": false,
-            "channelOrder": "none",
-            "intensityRange": "0-255"
-          }
-        ]
-      },
- }
-```
-
-The conversion rule can be configured using a JSON file. For instance, here's how you can define a conversion from `torch.tensor` to `numpy.ndarray`:
-
-```json
-{
-  "imageTypeConversion": {
-    "torch.tensor": {
-      "numpy.ndarray": {
-        "function_definition": "def tensor2ndarray(src_image):\n  import copy\n  numpy_image = copy.deepcopy(src_image['value'].cpu().numpy())\n  return {\n       'dataType': 'numpy.ndarray',\n       'value': numpy_image,\n       'metadata': src_image['metadata']\n  }",
-        "function_name": "tensor2ndarray"
-      }
-    }
-  }  
-}
-```
-
-For more conversion rules please check [Automatic_Image_Data Transitions_via_a_Configurable_Knowledge_Graph.ipynb](https://github.com/Max-ChenFei/Visual-Programming-React-Component-Suite/blob/main/doc/Automatic_Image_Data_Transitions_via_a_Configurable_Knowledge_Graph.ipynb)
+For more conversion rules please check [c3di/im2im: im2im: Automatically converting in-memory representations of images using a knowledge graph of type description (github.com)](https://github.com/c3di/im2im)

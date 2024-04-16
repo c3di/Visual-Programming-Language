@@ -90,37 +90,12 @@
         }
       }
     },
-    "Float - Tensor": {
-      "type": "Float - Tensor",
-      "category": "math",
-      "title": "-",
-      "tooltip": "A scalar minus a Tensor",
-      "sourceCode": "{{indent}}{{{outputs.0}}} = {{{inputs.0}}} - {{{inputs.1}}}",
-      "inputs": {
-        "float": {
-          "title": "float",
-          "dataType": "float",
-          "defaultValue": "1.0"
-        },
-        "input": {
-          "title": "tensor",
-          "dataType": "torch.tensor"
-        }
-      },
-      "outputs": {
-        "output": {
-          "title": "tensor",
-          "dataType": "torch.tensor"
-        }
-      }
-    },
-    "Unsqueeze": {
-      "type": "Unsqueeze",
+    "unsqueeze": {
+      "type": "unsqueeze",
       "category": "function",
-      "title": "Unsqueeze",
+      "title": "unsqueeze",
       "tooltip": "Returns a new tensor with a dimension of size one inserted at the specified position.",
       "externalImports": "import torch",
-      "sourceCode": "{{indent}}{{{outputs.1}}} = torch.unsqueeze({{{inputs.1}}}, {{{inputs.2}}})\n{{{outputs.0}}}",
       "inputs": {
         "execIn": {
           "title": "execIn",
@@ -136,6 +111,70 @@
           "title": "dim",
           "dataType": "integer",
           "defaultValue": "0"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "output": {
+          "title": "output",
+          "dataType": "torch.tensor"
+        }
+      }
+    },
+    "permute": {
+      "type": "permute",
+      "category": "function",
+      "title": "permute",
+      "externalImports": "import torch",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "input": {
+          "title": "input",
+          "dataType": "torch.tensor"
+        },
+        "dim": {
+          "title": "dim",
+          "dataType": "tuple"
+        }
+      },
+      "outputs": {
+        "execOut": {
+          "title": "execOut",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "output": {
+          "title": "output",
+          "dataType": "torch.tensor"
+        }
+      }
+    },
+    "from_numpy": {
+      "type": "from_numpy",
+      "category": "function",
+      "title": "from_numpy",
+      "externalImports": "import torch",
+      "inputs": {
+        "execIn": {
+          "title": "execIn",
+          "dataType": "exec",
+          "showWidget": false,
+          "showTitle": false
+        },
+        "input": {
+          "title": "input",
+          "dataType": "numpy.ndarray"
         }
       },
       "outputs": {
