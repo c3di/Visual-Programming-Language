@@ -67,28 +67,6 @@ ${prepareInput}
 ${returnVar[0]} = K.filters.canny(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-${returnVar[0]} = {
-  'value': ${returnVar[0]},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
-${returnVar[1]} = {
-  'value': ${returnVar[1]},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
 
@@ -135,19 +113,6 @@ ${prepareInput}
 ${returnVar} = K.filters.bilateral_blur(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -193,19 +158,6 @@ ${prepareInput}
 ${returnVar} = K.filters.bilateral_blur(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -243,19 +195,6 @@ ${prepareInput}
 ${returnVar} = K.filters.blur_pool2d(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -293,19 +232,6 @@ ${prepareInput}
 ${returnVar} = K.filters.blur_pool2d(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -343,19 +269,6 @@ ${prepareInput}
 ${returnVar} = K.filters.box_blur(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -393,19 +306,6 @@ ${prepareInput}
 ${returnVar} = K.filters.box_blur(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -450,19 +350,6 @@ ${prepareInput}
 ${returnVar} = K.filters.gaussian_blur2d(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -507,19 +394,6 @@ ${prepareInput}
 ${returnVar} = K.filters.gaussian_blur2d(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -576,19 +450,6 @@ ${prepareInput}
 ${returnVar} = K.filters.guided_blur(guidance_tensor['value'], input_tensor1['value'], ${inputs
         .slice(3)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[2]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[2]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -645,19 +506,6 @@ ${prepareInput}
 ${returnVar} = K.filters.guided_blur(guidance_tensor['value'], input_tensor1['value'], ${inputs
         .slice(3)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[2]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[2]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -715,19 +563,6 @@ ${prepareInput}
 ${returnVar} = K.filters.joint_bilateral_blur(input_tensor1['value'], guidance_tensor['value'], ${inputs
         .slice(3)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -785,19 +620,6 @@ ${prepareInput}
 ${returnVar} = K.filters.joint_bilateral_blur(input_tensor1['value'], guidance_tensor['value'], ${inputs
         .slice(3)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
 
@@ -836,19 +658,6 @@ ${prepareInput}
 ${returnVar} = K.filters.max_blur_pool2d(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -886,19 +695,6 @@ ${prepareInput}
 ${returnVar} = K.filters.max_blur_pool2d(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
 
@@ -937,19 +733,6 @@ ${prepareInput}
 ${returnVar} = K.filters.median_blur(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -987,19 +770,6 @@ ${prepareInput}
 ${returnVar} = K.filters.median_blur(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -1037,19 +807,6 @@ ${prepareInput}
 ${returnVar} = K.filters.motion_blur(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -1095,19 +852,6 @@ ${prepareInput}
 ${returnVar} = K.filters.motion_blur(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
 
@@ -1146,19 +890,6 @@ ${prepareInput}
 ${returnVar} = K.filters.unsharp_mask(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -1196,19 +927,6 @@ ${prepareInput}
 ${returnVar} = K.filters.unsharp_mask(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
 
@@ -1247,19 +965,6 @@ ${prepareInput}
 ${returnVar} = K.filters.laplacian(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -1297,19 +1002,6 @@ ${prepareInput}
 ${returnVar} = K.filters.laplacian(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
 
@@ -1348,19 +1040,6 @@ ${prepareInput}
 ${returnVar} = K.filters.sobel(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -1398,19 +1077,6 @@ ${prepareInput}
 ${returnVar} = K.filters.sobel(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
 
@@ -1449,19 +1115,6 @@ ${prepareInput}
 ${returnVar} = K.filters.spatial_gradient(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -1499,19 +1152,6 @@ ${prepareInput}
 ${returnVar} = K.filters.spatial_gradient(input_tensor1['value'], ${inputs
         .slice(2)
         .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${
-      inputs[1]
-    }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
   ];

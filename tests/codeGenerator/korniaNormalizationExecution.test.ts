@@ -58,18 +58,6 @@ ${prepareInput}
 ${returnVar} = K.enhance.normalize(input_tensor1['value'], ${inputs
           .slice(2)
           .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -107,18 +95,6 @@ ${prepareInput}
 ${returnVar} = K.enhance.normalize(input_tensor1['value'], ${inputs
           .slice(2)
           .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
 
@@ -157,18 +133,6 @@ ${prepareInput}
 ${returnVar} = K.enhance.normalize_min_max(input_tensor1['value'], ${inputs
           .slice(2)
           .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -206,18 +170,6 @@ ${prepareInput}
 ${returnVar} = K.enhance.normalize_min_max(input_tensor1['value'], ${inputs
           .slice(2)
           .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
 
@@ -256,18 +208,6 @@ ${prepareInput}
 ${returnVar} = K.enhance.denormalize(input_tensor1['value'], ${inputs
           .slice(2)
           .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -310,18 +250,6 @@ ${prepareInput}
 ${returnVar} = K.enhance.denormalize(input_tensor1['value'], ${inputs
           .slice(2)
           .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
   ];

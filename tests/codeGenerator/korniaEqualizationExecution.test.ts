@@ -49,19 +49,6 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.equalize(input_tensor1['value'])
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True if ${inputs[1]
-        }['metadata']['isMiniBatched'] == True else False,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -95,19 +82,6 @@ print(torch.equal(expected, ${returnVar}['value']));`,
       ) => `import kornia as K
 ${prepareInput}
 ${returnVar} = K.enhance.equalize(input_tensor1['value'])
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True if ${inputs[1]
-        }['metadata']['isMiniBatched'] == True else False,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -145,19 +119,6 @@ ${prepareInput}
 ${returnVar} = K.enhance.equalize_clahe(input_tensor1['value'], ${inputs
           .slice(2)
           .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True if ${inputs[1]
-        }['metadata']['isMiniBatched'] == True else False,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
     {
@@ -195,19 +156,6 @@ ${prepareInput}
 ${returnVar} = K.enhance.equalize_clahe(input_tensor1['value'], ${inputs
           .slice(2)
           .join(', ')})
-${returnVar} = {
-  'value': ${returnVar},
-  'dataType': 'torch.tensor',
-  'metadata': {
-    'colorChannel': 'rgb' if ${inputs[1]
-        }['metadata']['colorChannel'] == 'rgb' else 'grayscale',
-    'channelOrder': 'channelFirst',
-    'isMiniBatched': True if ${inputs[1]
-        }['metadata']['isMiniBatched'] == True else False,
-    'intensityRange': '0-1',
-    'device': 'cpu' if ${inputs[1]}['value'].get_device() == -1 else 'gpu'
-  }
-}
 ${execTest(inputs, returnVar)}`,
     },
   ];
