@@ -1,4 +1,3 @@
-import React from 'react';
 import { DeleteIcon } from '@chakra-ui/icons';
 import { type IMenuItem, CreateMenu } from './elements';
 

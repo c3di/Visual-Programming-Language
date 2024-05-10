@@ -21,20 +21,25 @@
     "email": "boxchenfei@gmail.com"
   },
   "dependencies": {
-    "@emotion/react": "^11.10.6",
-    "@emotion/styled": "^11.10.6",
+    "@chakra-ui/icons": "^2.1.1",
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.11.11",
     "@mui/lab": "^5.0.0-alpha.125",
     "@mui/material": "^5.11.15",
     "elkjs": "^0.8.2",
     "filepond": "^4.30.4",
     "filepond-plugin-zipper": "^2.0.0",
+    "framer-motion": "^11.1.9",
     "lodash": "^4.17.21",
     "lodash.debounce": "^4.0.8",
     "mustache": "^4.2.0",
     "react-filepond": "^7.1.2",
     "react-icons": "^4.8.0",
     "reactflow": "^11.7.4",
+    "semantic-ui-css": "^2.5.0",
+    "semantic-ui-react": "^2.1.5",
     "toposort": "^2.0.2"
   },
   "peerDependencies": {

@@ -1,4 +1,4 @@
-import React from 'react';
+import { ChakraProvider } from '@chakra-ui/react'
 import {
   Menu,
   MenuButton,
@@ -25,25 +25,27 @@ export interface IMenuItem {
 
 export const createMenuItemElement = (item: IMenuItem): JSX.Element => {
   return (
-    <MenuItem
-      key={item.title}
-      isDisabled={item.disabled}
-      onClick={item.action}
-    >
-      {item.icon && (
-        <Icon as={item.icon} color="var(--vp-menuitem-icon-color)" w="var(--vp-menuitem-icon-size)" h="var(--vp-menuitem-icon-size)" padding="0.15rem" />
-      )}
-      <Box as="span" style={item.titleStyle}>
-        <Text color="var(--vp-menuitem-font-color)" fontSize="var(--vp-menuitem-font-size)" fontFamily="var(--vp-menuitem-font-family)">
-          {item.title}
-        </Text>
-      </Box>
-      {item.subtitle && (
-        <Text color="var(--vp-menuitem-shortcut-color)" fontSize="var(--vp-menuitem-font-size)" fontFamily="var(--vp-menuitem-font-family)">
-          {item.subtitle}
-        </Text>
-      )}
-    </MenuItem>
+    <ChakraProvider>
+      <MenuItem
+        key={item.title}
+        isDisabled={item.disabled}
+        onClick={item.action}
+      >
+        {item.icon && (
+          <Icon as={item.icon} color="var(--vp-menuitem-icon-color)" w="var(--vp-menuitem-icon-size)" h="var(--vp-menuitem-icon-size)" padding="0.15rem" />
+        )}
+        <Box as="span" style={item.titleStyle}>
+          <Text color="var(--vp-menuitem-font-color)" fontSize="var(--vp-menuitem-font-size)" fontFamily="var(--vp-menuitem-font-family)">
+            {item.title}
+          </Text>
+        </Box>
+        {item.subtitle && (
+          <Text color="var(--vp-menuitem-shortcut-color)" fontSize="var(--vp-menuitem-font-size)" fontFamily="var(--vp-menuitem-font-family)">
+            {item.subtitle}
+          </Text>
+        )}
+      </MenuItem>
+    </ChakraProvider>
   );
 };
 

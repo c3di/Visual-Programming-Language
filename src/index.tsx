@@ -12,7 +12,6 @@ import './index.css';
 import { deepCopy } from './editor/util';
 import { NodeLibraryList } from './editor/gui';
 import { nodeConfigRegistry } from './editor/extension';
-import { ChakraProvider } from '@chakra-ui/react'
 
 Object.entries(extensions).forEach(([name, extension]) => {
   LoadPackageToRegistry(name, extension);
@@ -117,9 +116,9 @@ function MainArea({ id }: { id: string }): JSX.Element {
 
 function App(): JSX.Element {
   return (
-    <ChakraProvider>
+    <>
       <MainArea id={'b1'} />
-    </ChakraProvider>
+    </>
   );
 }
 const root = ReactDOM.createRoot(

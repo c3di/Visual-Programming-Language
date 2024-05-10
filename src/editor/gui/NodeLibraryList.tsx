@@ -1,35 +1,48 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Typography,
-} from '@mui/material';
-import { PlayArrow } from '@mui/icons-material';
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+  Box,
+  Button
+} from '@chakra-ui/react';
 import { FilePond, registerPlugin } from 'react-filepond';
-import {
-  type ActualFileObject,
-  type FilePondErrorDescription,
-  type FilePondFile,
-} from 'filepond';
 import 'filepond/dist/filepond.min.css';
 import FilepondZipper from 'filepond-plugin-zipper';
 import { SearchInput } from './elements';
-import { type NodeConfig, type NodePackage } from '../types';
-import NodeLibraryItem, { type INodeLibraryItem } from './NodeLibraryItem';
-import './NodeLibraryList.css';
+import NodeLibraryItem, { INodeLibraryItem } from './NodeLibraryItem';
 
+interface ITokens {
+  authenticated: boolean;
+  Authorization: string | null;
+  'X-XSRFToken': string | null;
+}
+
+interface INodeLibraryListProps {
+  title: string;
+  nodeExtensions: Record<string, NodePackage | NodeConfig>;
+  onInstall?: (pkg: any) => void;
+  onUninstall?: (pkg: string) => void;
+  onEnable?: (pkg: string) => void;
+  onDisable?: (pkg: string) => void;
+  url?: string;
+  tokens?: ITokens;
+}
+
+// Register Filepond plugin
 registerPlugin(FilepondZipper());
 
+// Helper function to transform node configurations to a list item array
 function nodeConfigsToItemList(
   nodeConfigs: Record<string, NodePackage | NodeConfig>,
   keyword?: string
 ): INodeLibraryItem[] {
   const data: INodeLibraryItem[] = [];
   for (const name in nodeConfigs) {
-    const config = nodeConfigs[name];
-    // if (config.notShowInMenu) continue;
     if (keyword && keyword !== '' && !name.includes(keyword)) continue;
+    const config = nodeConfigs[name];
     data.push({
       title: name,
       href: config.href,
@@ -39,12 +52,7 @@ function nodeConfigsToItemList(
   return data;
 }
 
-export interface ITokens {
-  authenticated: boolean;
-  Authorization: null | string;
-  'X-XSRFToken': null | string;
-}
-
+// Main component definition
 export default function NodeLibraryList({
   title,
   nodeExtensions,
@@ -54,60 +62,41 @@ export default function NodeLibraryList({
   onDisable,
   url,
   tokens,
-}: {
-  title: string;
-  nodeExtensions: Record<string, NodePackage | NodeConfig>;
-  onInstall?: (pkg: any) => void;
-  onUninstall?: (pkg: string) => void;
-  onEnable?: (pkg: string) => void;
-  onDisable?: (pkg: string) => void;
-  url?: string;
-  tokens?: ITokens;
-}): JSX.Element {
+}: INodeLibraryListProps): JSX.Element {
   const [itemList, setItemList] = useState<INodeLibraryItem[]>([]);
   const keyword = useRef<string>('');
+
   useEffect(() => {
     setItemList(nodeConfigsToItemList(nodeExtensions, keyword.current));
   }, [nodeExtensions]);
 
-  const [expanded, setExpanded] = useState<boolean>(true);
+  const [files, setFiles] = useState<FilePondFile[]>([]);
+  const [showClearButton, setShowClearButton] = useState(false);
 
-  const search = useCallback(
-    (searchKeyword: string) => {
-      keyword.current = searchKeyword;
-      setItemList(nodeConfigsToItemList(nodeExtensions, keyword.current));
-    },
-    [nodeExtensions]
-  );
-  const [files, setFiles] = useState<ActualFileObject[]>([]);
-  const [showClearButton, setShowClearButton] = useState<boolean>(false);
-  const handleFileProcess = (
-    error: FilePondErrorDescription | null,
-    fileItem: FilePondFile
-  ): void => {
-    if (!error) {
-      setShowClearButton(true);
-    }
-    setShowClearButton(true);
+  const handleFileProcess = (error: FilePondErrorDescription | null, fileItem: FilePondFile) => {
+    setShowClearButton(!error);
   };
 
-  const handleClear = (): void => {
+  const handleClear = () => {
     setFiles([]);
     setShowClearButton(false);
   };
 
+  const handleUpdateFiles = (fileItems: FilePondFile[]) => {
+    setFiles(fileItems.map(file => file.file));
+  };
+
+  const search = useCallback((searchKeyword: string) => {
+    keyword.current = searchKeyword;
+    setItemList(nodeConfigsToItemList(nodeExtensions, keyword.current));
+  }, [nodeExtensions]);
+
   return (
-    <div
-      className="vp-nodelibrary"
-      style={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-    >
+    <Box className="vp-nodelibrary" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <FilePond
-        credits={false}
-        files={files}
+        files={files.map(file => file.file)}
         onprocessfile={handleFileProcess}
-        onupdatefiles={(fileItems) => {
-          setFiles(fileItems.map((fileItem) => fileItem.file));
-        }}
+        onupdatefiles={handleUpdateFiles}
         allowMultiple={true}
         allowRevert={false}
         server={{
@@ -120,135 +109,36 @@ export default function NodeLibraryList({
               'X-XSRFToken': tokens?.['X-XSRFToken'] ?? '',
             },
             timeout: 7000,
-            onload: (response) => {
-              onInstall?.(response);
-              return response;
-            },
+            onload: (response) => onInstall?.(response),
           },
-          fetch: null,
-          revert: null,
-          restore: null,
         }}
-        name="files" /* sets the file input name, it's filepond by default */
-        labelIdle='<span class="filepond--label">Drop your package file/folder or <span class="filepond--label-action">Browse</span></span>'
-        onerror={(
-          error: FilePondErrorDescription,
-          _file?: FilePondFile,
-          status?: any
-        ) => {
-          console.log(error);
-        }}
+        name="files"
+        labelIdle='Drop your package file/folder or <span class="filepond--label-action">Browse</span>'
       />
-      {showClearButton && (
-        <button className="clear-button" onClick={handleClear}>
-          Clear
-        </button>
-      )}
-
-      <div
-        style={{
-          marginLeft: '4px',
-          marginRight: '4px',
-          marginBottom: '4px',
-          fontSize: '14px',
-        }}
-      >
+      {showClearButton && <Button onClick={handleClear}>Clear</Button>}
+      <Box my="4px" fontSize="14px">
         <SearchInput onChange={search} />
-      </div>
-      <Accordion
-        style={{
-          overflowY: 'scroll',
-        }}
-        disableGutters
-        elevation={0}
-        square
-        sx={{
-          fontFamily: 'var(--vp-accordion-font-family) !important',
-          backgroundColor: 'var(--vp-acccordion-panel-background-color)',
-          borderTop: '0px',
-          border:
-            'var(--vp-accordion-panel-border-width) solid var(--vp-accordion-panel-border-color)',
-
-          '&:not(:last-child)': {
-            borderBottom:
-              'var(--vp-accordion-panel-border-width) solid var(--vp-accordion-panel-border-color)  ',
-            borderRight: '0px  ',
-            borderLeft: '0px  ',
-          },
-          '&:before': {
-            display: 'none',
-          },
-        }}
-        expanded={expanded}
-        onChange={() => {
-          setExpanded((expanded) => {
-            return !expanded;
-          });
-        }}
-      >
-        <AccordionSummary
-          aria-controls="panel1d-content"
-          id="panel1d-header"
-          sx={{
-            minHeight: '10px !important',
-            height: '33px !important',
-            padding: '0px',
-            flexDirection: 'row-reverse',
-            fontSize: '0.8333em',
-            '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
-              transform: 'rotate(90deg) translateX(-2px)',
-            },
-            '&:hover': {
-              backgroundColor: 'var(--vp-accordion-summary-hover-bgcolor)',
-            },
-
-            '& .MuiAccordionSummary-content': {
-              marginLeft: '0px',
-            },
-          }}
-          expandIcon={
-            <PlayArrow
-              sx={{ width: '12px', height: '12px', padding: '6px 8px 8px 8px' }}
-            />
-          }
-        >
-          <Typography
-            sx={{
-              fontSize: 'var(--vp-accordion-summary-font-size)',
-              fontFamily: 'var(--vp-accordion-font-family)',
-              fontWeight: 'var(--vp-accordion-font-weight)',
-            }}
-          >
-            {title}
-          </Typography>
-        </AccordionSummary>
-
-        <AccordionDetails
-          sx={{
-            padding: '0px',
-            borderTop:
-              'var(--vp-accordion-item-border-width) solid var(--vp-accordion-item-border-color)',
-          }}
-        >
-          {itemList.map((item) => (
-            <NodeLibraryItem
-              key={item.title + (item.href ?? '')}
-              title={item.title}
-              href={item.href}
-              description={item.description}
-              onUninstall={() => {
-                onUninstall?.(item.title);
-              }}
-              onEnable={() => {
-                onEnable?.(item.title);
-              }}
-              onDisable={() => {
-                onDisable?.(item.title);
-              }}
-            />
-          ))}
-        </AccordionDetails>
+      </Box>
+      <Accordion allowMultiple>
+        {itemList.map((item, index) => (
+          <AccordionItem key={index}>
+            <AccordionButton>
+              <Box flex="1" textAlign="left">{item.title}</Box>
+              <AccordionIcon />
+            </AccordionButton>
+            <AccordionPanel pb={4}>
+              <NodeLibraryItem
+                title={item.title}
+                href={item.href}
+                description={item.description}
+                onUninstall={() => onUninstall?.(item.title)}
+                onEnable={() => onEnable?.(item.title)}
+                onDisable={() => onDisable?.(item.title)}
+              />
+            </AccordionPanel>
+          </AccordionItem>
+        ))}
       </Accordion>
-    </div>
+    </Box>
   );
 }
