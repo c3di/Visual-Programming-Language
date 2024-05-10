@@ -55,15 +55,11 @@ export default function GetterSetterMenu({
       },
     },
   ];
-  return CreateMenu(
-    true,
-    onClose,
-    anchorPosition,
-    items,
-    undefined,
-    undefined,
-    {
-      width: '80px',
-    }
-  );
+  return CreateMenu({
+    open: true,
+    onClose: onClose,
+    anchorPosition: anchorPosition,
+    items: items,
+    menuStyle: { width: '80px' }
+  });
 }

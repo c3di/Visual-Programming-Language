@@ -1,6 +1,8 @@
-import DeleteIcon from '@mui/icons-material/Delete';
+import React from 'react';
+import { DeleteIcon } from '@chakra-ui/icons'; // Ensure this is installed
 import { type Handle } from '../types/Handle';
 import { CreateMenu, type IMenuItem } from './elements';
+
 export default function HandleMenu({
   onClose,
   anchorPosition,
@@ -14,11 +16,11 @@ export default function HandleMenu({
   onClose: () => void;
   anchorPosition: { top: number; left: number };
   deletable: boolean;
-  connection?: number | undefined;
+  connection?: number;
   onBreakLinks?: () => void;
   onDeleteHandle?: () => void;
   handle?: Handle;
-  watchImage?: (sure: boolean) => void;
+  watchImage?: (watch: boolean) => void;
 }): JSX.Element {
   const items: IMenuItem[] = [
     {
@@ -27,7 +29,7 @@ export default function HandleMenu({
         onDeleteHandle?.();
         onClose();
       },
-      icon: DeleteIcon,
+      icon: DeleteIcon, // Using Chakra UI icon
       disabled: !deletable,
     },
     {
@@ -39,7 +41,7 @@ export default function HandleMenu({
       disabled: connection === 0 || connection === undefined,
     },
     {
-      title: handle?.beWatched ? 'Stop Watch This Image' : 'Watch This Image',
+      title: handle?.beWatched ? 'Stop Watching This Image' : 'Watch This Image',
       action: () => {
         watchImage?.(!handle?.beWatched);
         onClose();
@@ -47,5 +49,14 @@ export default function HandleMenu({
       disabled: handle?.dataType !== 'image',
     },
   ];
-  return CreateMenu(true, onClose, anchorPosition, items);
+
+  return (
+    <CreateMenu
+      open={true}
+      onClose={onClose}
+      anchorPosition={anchorPosition}
+      items={items}
+      menuStyle={{ width: '200px' }}
+    />
+  );
 }

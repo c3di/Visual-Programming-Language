@@ -1,4 +1,5 @@
-import DeleteIcon from '@mui/icons-material/Delete';
+import React from 'react';
+import { DeleteIcon } from '@chakra-ui/icons';
 import { type IMenuItem, CreateMenu } from './elements';
 
 export default function EdgeMenu({
@@ -21,15 +22,14 @@ export default function EdgeMenu({
       subtitle: 'Del',
     },
   ];
-  return CreateMenu(
-    true,
-    onClose,
-    anchorPosition,
-    items,
-    undefined,
-    undefined,
-    {
-      width: '150px',
-    }
+
+  return (
+    <CreateMenu
+      open={true}
+      onClose={onClose}
+      anchorPosition={anchorPosition}
+      items={items}
+      menuStyle={{ width: '150px' }}
+    />
   );
 }

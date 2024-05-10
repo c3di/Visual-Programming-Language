@@ -1,11 +1,14 @@
-import React from 'react';
-import { Divider } from '@mui/material';
 import {
-  Delete,
-  ContentCut,
-  ContentCopy,
-  Difference,
-} from '@mui/icons-material';
+  MenuDivider,
+  Icon,
+  useDisclosure
+} from '@chakra-ui/react';
+import {
+  EditIcon,
+  CopyIcon,
+  RepeatIcon,
+  DeleteIcon,
+} from '@chakra-ui/icons';
 import { type IMenuItem, CreateMenu, createMenuItemElement } from './elements';
 
 export default function NodeMenu({
@@ -29,6 +32,8 @@ export default function NodeMenu({
   anyConnectionToSelectedNode?: boolean;
   onBreakNodeLinks?: () => void;
 }): JSX.Element {
+  const { isOpen, onOpen, onClose: chakraOnClose } = useDisclosure({ defaultIsOpen: true });
+
   const items: IMenuItem[] = [
     {
       title: 'Cut',
@@ -36,7 +41,7 @@ export default function NodeMenu({
         onCut?.();
         onClose();
       },
-      icon: ContentCut,
+      icon: EditIcon,
       subtitle: 'Ctrl+X',
     },
     {
@@ -45,7 +50,7 @@ export default function NodeMenu({
         onCopy?.();
         onClose();
       },
-      icon: ContentCopy,
+      icon: CopyIcon,
       subtitle: 'Ctrl+C',
     },
     {
@@ -54,7 +59,7 @@ export default function NodeMenu({
         onDuplicate?.();
         onClose();
       },
-      icon: Difference,
+      icon: RepeatIcon,
       subtitle: 'Ctrl+D',
     },
     {
@@ -63,24 +68,22 @@ export default function NodeMenu({
         onDelete?.();
         onClose();
       },
-      icon: Delete,
+      icon: DeleteIcon,
       subtitle: 'Del',
     },
   ];
+
   const breakNodeLink = (): JSX.Element | undefined => {
     if (anyConnectableNodeSelected && onBreakNodeLinks) {
       return (
         <div key="breakNodeLink">
-          <Divider
-            sx={{
-              marginTop: '4px !important',
-              marginBottom: '4px !important',
-              borderBottomWidth: 'var(--vp-menu-panel-divider-border-width)',
-            }}
-          />
+          <MenuDivider />
           {createMenuItemElement({
             title: 'Break Node Link(s)',
-            action: onBreakNodeLinks,
+            action: () => {
+              onBreakNodeLinks();
+              onClose();
+            },
             disabled: !anyConnectionToSelectedNode,
             titleStyle: { paddingLeft: '8px' },
           })}
@@ -89,13 +92,13 @@ export default function NodeMenu({
     }
     return undefined;
   };
-  return CreateMenu(
-    true,
-    onClose,
-    anchorPosition,
-    items,
-    [breakNodeLink()],
-    undefined,
-    { width: '230px' }
-  );
+
+  return CreateMenu({
+    open: isOpen,
+    onClose: () => { chakraOnClose(); onClose(); },
+    anchorPosition: anchorPosition,
+    items: items,
+    moreItemElements: [breakNodeLink()],
+    menuStyle: { width: '230px' }
+  });
 }
