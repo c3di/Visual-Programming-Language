@@ -1,17 +1,15 @@
-import { ChakraProvider } from '@chakra-ui/react'
+import { useRef, useState } from 'react';
 import {
+  ChakraProvider,
   Menu,
   MenuButton,
   MenuList,
   MenuItem,
-  MenuItemOption,
-  MenuOptionGroup,
-  MenuGroup,
-  MenuDivider,
   Button,
   Icon,
   Box,
-  Text
+  Text,
+  Portal
 } from '@chakra-ui/react';
 
 export interface IMenuItem {
@@ -25,27 +23,25 @@ export interface IMenuItem {
 
 export const createMenuItemElement = (item: IMenuItem): JSX.Element => {
   return (
-    <ChakraProvider>
-      <MenuItem
-        key={item.title}
-        isDisabled={item.disabled}
-        onClick={item.action}
-      >
-        {item.icon && (
-          <Icon as={item.icon} color="var(--vp-menuitem-icon-color)" w="var(--vp-menuitem-icon-size)" h="var(--vp-menuitem-icon-size)" padding="0.15rem" />
-        )}
-        <Box as="span" style={item.titleStyle}>
-          <Text color="var(--vp-menuitem-font-color)" fontSize="var(--vp-menuitem-font-size)" fontFamily="var(--vp-menuitem-font-family)">
-            {item.title}
-          </Text>
-        </Box>
-        {item.subtitle && (
-          <Text color="var(--vp-menuitem-shortcut-color)" fontSize="var(--vp-menuitem-font-size)" fontFamily="var(--vp-menuitem-font-family)">
-            {item.subtitle}
-          </Text>
-        )}
-      </MenuItem>
-    </ChakraProvider>
+    <MenuItem
+      key={item.title}
+      isDisabled={item.disabled}
+      onClick={item.action}
+    >
+      {item.icon && (
+        <Icon as={item.icon} color="var(--vp-menuitem-icon-color)" w="var(--vp-menuitem-icon-size)" h="var(--vp-menuitem-icon-size)" padding="0.15rem" />
+      )}
+      <Box as="span" style={item.titleStyle}>
+        <Text color="var(--vp-menuitem-font-color)" fontSize="var(--vp-menuitem-font-size)" fontFamily="var(--vp-menuitem-font-family)">
+          {item.title}
+        </Text>
+      </Box>
+      {item.subtitle && (
+        <Text color="var(--vp-menuitem-shortcut-color)" fontSize="var(--vp-menuitem-font-size)" fontFamily="var(--vp-menuitem-font-family)">
+          {item.subtitle}
+        </Text>
+      )}
+    </MenuItem>
   );
 };
 
@@ -66,15 +62,25 @@ export function CreateMenu({
   menuStyle?: Record<string, any>;
   menuListStyle?: Record<string, any>;
 }): JSX.Element {
+
+  const portalContainerRef = useRef(null);
+
   return (
-    <Menu isOpen={open} onClose={onClose} placement="bottom-start">
-      <MenuButton as={Button} aria-label="Options" style={{ display: 'none' }}>
-        Options
-      </MenuButton>
-      <MenuList style={{ ...menuStyle, ...menuListStyle }}>
-        {items.map((item) => createMenuItemElement(item))}
-        {moreItemElements}
-      </MenuList>
-    </Menu>
+    <ChakraProvider>
+      <div
+        ref={portalContainerRef}
+      />
+      <Portal containerRef={portalContainerRef}>
+        <Menu isOpen={open} onClose={onClose} placement="bottom-start">
+          <MenuButton as={Button} aria-label="Options" style={{ display: 'none' }}>
+            Options
+          </MenuButton>
+          <MenuList style={{ ...menuStyle, ...menuListStyle }}>
+            {items.map((item) => createMenuItemElement(item))}
+            {moreItemElements}
+          </MenuList>
+        </Menu>
+      </Portal>
+    </ChakraProvider>
   );
 }
