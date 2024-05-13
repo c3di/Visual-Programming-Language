@@ -15,7 +15,7 @@ import {
 export interface IMenuItem {
   title: string;
   action?: () => void;
-  icon?: any;  // This should ideally be a specific type like React.ElementType
+  icon?: any;
   subtitle?: string;
   disabled?: boolean;
   titleStyle?: Record<string, any>;
