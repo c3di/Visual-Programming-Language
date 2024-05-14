@@ -14,13 +14,12 @@ import type {
   SerializedGraphEdge,
   SerializedGraphNode,
 } from './types';
-// import { MarkerType } from 'reactflow';
 import { MarkerType } from 'reactflow';
 import { nodeConfigRegistry } from './extension';
 
 export class Deserializer {
   private static instance: Deserializer;
-  private constructor() {}
+  private constructor() { }
   public static getInstance(): Deserializer {
     if (!Deserializer.instance) {
       Deserializer.instance = new Deserializer();
@@ -33,8 +32,8 @@ export class Deserializer {
   ): GraphNodeConfig => {
     const nodeConfig = nodeConfigRegistry.getNodeConfig(sNode.type);
     const inputs = Object.entries({
-      ...sNode.inputs,
-      ...nodeConfig.inputs,
+      ...sNode.inputs || {},
+      ...nodeConfig.inputs || {},
     }).reduce<Record<string, HandleData>>((acc, [title, handle]) => {
       acc[title] = {
         ...handle,
@@ -43,8 +42,8 @@ export class Deserializer {
       return acc;
     }, {});
     const outputs = Object.entries({
-      ...sNode.outputs,
-      ...nodeConfig.outputs,
+      ...sNode.outputs || {},
+      ...nodeConfig.outputs || {},
     }).reduce<Record<string, HandleData>>((acc, [title, handle]) => {
       acc[title] = {
         ...handle,
@@ -84,87 +83,87 @@ export class Deserializer {
     string,
     (config: GraphNodeConfig) => Node
   > = {
-    setter: (config: GraphNodeConfig): Node => {
-      config.outputs = this.copyInputsToOutputs(config.inputs);
-      return this.defaultConfigToNode(config);
-    },
-    literal: (config: GraphNodeConfig): Node => {
-      config.outputs = this.copyInputsToOutputs(config.inputs);
-      Object.values(config.outputs ?? {}).forEach((output) => {
-        output.title = 'Return Value';
-      });
-      return this.defaultConfigToNode(config);
-    },
-    createFunction: (config: GraphNodeConfig): Node => {
-      const node = this.defaultConfigToNode(config);
-      node.data = { ...node.data, title: config.title };
-      return node;
-    },
+      setter: (config: GraphNodeConfig): Node => {
+        config.outputs = this.copyInputsToOutputs(config.inputs);
+        return this.defaultConfigToNode(config);
+      },
+      literal: (config: GraphNodeConfig): Node => {
+        config.outputs = this.copyInputsToOutputs(config.inputs);
+        Object.values(config.outputs ?? {}).forEach((output) => {
+          output.title = 'Return Value';
+        });
+        return this.defaultConfigToNode(config);
+      },
+      createFunction: (config: GraphNodeConfig): Node => {
+        const node = this.defaultConfigToNode(config);
+        node.data = { ...node.data, title: config.title };
+        return node;
+      },
 
-    comment: (config: GraphNodeConfig): Node => {
-      const {
-        id,
-        category,
-        comment,
-        tooltip,
-        position,
-        width,
-        height,
-        type,
-        zIndex,
-        defaultEditable,
-      } = config;
-      const w = width ?? 250;
-      const h = height ?? 200;
-      return {
-        id,
-        type: category,
-        dragHandle: '.node__header--enabled',
-        zIndex: zIndex ?? -1001,
-        width: w,
-        height: h,
-        data: {
+      comment: (config: GraphNodeConfig): Node => {
+        const {
+          id,
+          category,
           comment,
           tooltip,
-          width: w,
-          height: h,
-          configType: type,
-          defaultEditable,
-        },
-        position,
-      };
-    },
-    stickyNote: (config: GraphNodeConfig): Node => {
-      const {
-        id,
-        category,
-        stickyNote,
-        tooltip,
-        position,
-        width,
-        height,
-        type,
-        defaultEditable,
-      } = config;
-      return {
-        id,
-        type: category,
-        dragHandle: '.stickyNote__node__body--enabled',
-        zIndex: -1001,
-        width,
-        height,
-        data: {
-          stickyNote,
-          tooltip,
+          position,
           width,
           height,
-          configType: type,
+          type,
+          zIndex,
           defaultEditable,
-        },
-        position,
-      };
-    },
-  };
+        } = config;
+        const w = width ?? 250;
+        const h = height ?? 200;
+        return {
+          id,
+          type: category,
+          dragHandle: '.node__header--enabled',
+          zIndex: zIndex ?? -1001,
+          width: w,
+          height: h,
+          data: {
+            comment,
+            tooltip,
+            width: w,
+            height: h,
+            configType: type,
+            defaultEditable,
+          },
+          position,
+        };
+      },
+      stickyNote: (config: GraphNodeConfig): Node => {
+        const {
+          id,
+          category,
+          stickyNote,
+          tooltip,
+          position,
+          width,
+          height,
+          type,
+          defaultEditable,
+        } = config;
+        return {
+          id,
+          type: category,
+          dragHandle: '.stickyNote__node__body--enabled',
+          zIndex: -1001,
+          width,
+          height,
+          data: {
+            stickyNote,
+            tooltip,
+            width,
+            height,
+            configType: type,
+            defaultEditable,
+          },
+          position,
+        };
+      },
+    };
 
   private readonly defaultConfigToNode = (config: GraphNodeConfig): Node => {
     const {
@@ -209,18 +208,17 @@ export class Deserializer {
       markerEnd:
         dataType === 'exec'
           ? {
-              type: MarkerType.Arrow,
-              width: 15,
-              height: 15,
-              color: `${
-                typeof window !== 'undefined' &&
-                typeof window.getComputedStyle === 'function'
-                  ? getComputedStyle(document.body).getPropertyValue(
-                      '--vp-exec-color'
-                    )
-                  : '#808080'
+            type: MarkerType.Arrow,
+            width: 15,
+            height: 15,
+            color: `${typeof window !== 'undefined' &&
+              typeof window.getComputedStyle === 'function'
+              ? getComputedStyle(document.body).getPropertyValue(
+                '--vp-exec-color'
+              )
+              : '#808080'
               }`,
-            }
+          }
           : undefined,
       data: {
         dataType,

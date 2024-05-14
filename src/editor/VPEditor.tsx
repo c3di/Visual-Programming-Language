@@ -143,6 +143,10 @@ const Scene = ({
     nodeType: string,
     nodeData: NodeData
   ) => {
+    if (!nodeData.inputs) {
+      console.error('Node data missing inputs:', nodeData);
+      throw new Error('Node data must have inputs property');
+    }
     event.dataTransfer.setData('application/reactflow', nodeType);
     event.dataTransfer.setData('nodeData', JSON.stringify(nodeData));
     event.dataTransfer.effectAllowed = 'move';

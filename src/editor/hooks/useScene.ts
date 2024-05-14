@@ -35,10 +35,10 @@ function nodeInsideOfNode(n: Node, containter: Node): boolean {
   return (
     n.position.x > containter.position.x &&
     n.position.x + (n.width ?? 0) <
-      containter.position.x + (containter.width ?? 0) &&
+    containter.position.x + (containter.width ?? 0) &&
     n.position.y > containter.position.y &&
     n.position.y + (n.height ?? 0) <
-      containter.position.y + (containter.height ?? 0)
+    containter.position.y + (containter.height ?? 0)
   );
 }
 
@@ -206,13 +206,13 @@ export default function useScene(
               pasteFromClipboard(
                 menuClientPos
                   ? fromClientCoordToScene(
-                      {
-                        clientX: menuClientPos.left,
-                        clientY: menuClientPos.top,
-                      },
-                      domReference,
-                      project
-                    )
+                    {
+                      clientX: menuClientPos.left,
+                      clientY: menuClientPos.top,
+                    },
+                    domReference,
+                    project
+                  )
                   : undefined
               );
             },
@@ -389,8 +389,8 @@ export default function useScene(
         title: data?.title,
         type: configType,
         position,
-        inputs: data?.inputs,
-        outputs: data?.outputs,
+        inputs: data?.inputs || {},
+        outputs: data?.outputs || {},
         nodeRef: data?.nodeRef,
         ...data,
       });
