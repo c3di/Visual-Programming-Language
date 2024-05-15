@@ -23,3 +23,19 @@
 .drawer-handle:hover {
   background-color: #aaa;
 }
+
+.drawer-handle {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 200px;
+  background-color: rgba(128, 128, 128, 0.5);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 4px;
+  z-index: 1;
+}

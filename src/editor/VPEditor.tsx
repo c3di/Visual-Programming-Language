@@ -29,6 +29,7 @@ import type {
 } from './types';
 import { NodeDrawer } from './gui';
 import { NodeConfig } from './types';
+import { ChakraProvider, Portal } from '@chakra-ui/react';
 
 export interface IVPEditorOption {
   controller?: {
@@ -552,7 +553,7 @@ const Scene = ({
             onClick={() => setDrawerExpanded(!drawerExpanded)}
             style={{
               position: 'absolute',
-              right: drawerExpanded ? '3px' : '5px',
+              right: drawerExpanded ? '303px' : '5px',
               top: '50%',
               transform: 'translateY(-50%)',
               width: '8px',
@@ -568,12 +569,16 @@ const Scene = ({
             }}
           >
           </div>
-          {drawerExpanded && (
-            <NodeDrawer
-              handleNodeDragStart={handleNodeDragStart}
-              portalContainerRef={portalContainerRef}
-            />
-          )}
+          <div>
+            <ChakraProvider>
+              {drawerExpanded && (
+                <NodeDrawer
+                  handleNodeDragStart={handleNodeDragStart}
+                  portalContainerRef={portalContainerRef}
+                />
+              )}
+            </ChakraProvider>
+          </div>
         </div>
         <div ref={portalContainerRef} />
       </div>
