@@ -574,7 +574,6 @@ const Scene = ({
               {drawerExpanded && (
                 <NodeDrawer
                   handleNodeDragStart={handleNodeDragStart}
-                  portalContainerRef={portalContainerRef}
                 />
               )}
             </ChakraProvider>

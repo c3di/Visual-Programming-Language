@@ -1,19 +1,16 @@
-import { ChakraProvider, Box, Input, InputGroup, InputLeftElement, List, ListItem, VStack, Portal, Icon, Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
+import { Box, Input, InputGroup, InputLeftElement, List, ListItem, VStack, Text, Icon, Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import { Search2Icon } from '@chakra-ui/icons';
 import { nodeConfigRegistry } from '../extension';
 import { NodeConfig } from '../types';
-import React, { useState } from 'react';
 
 function NodeDrawer({
     handleNodeDragStart,
-    portalContainerRef,
 }: {
     handleNodeDragStart: (
         event: React.DragEvent<HTMLLIElement>,
         nodeType: string,
         nodeData: NodeConfig
     ) => void;
-    portalContainerRef: React.RefObject<HTMLDivElement>;
 }) {
     const allNodeConfigs = nodeConfigRegistry.getAllNodeConfigs();
     const filteredNodeConfigs = Object.entries(allNodeConfigs).filter(
@@ -25,27 +22,33 @@ function NodeDrawer({
 
     return (
         <Box p={4} width="300px" bg="gray.50" borderRight="1px solid #ccc" height="100%" flexDirection="column">
+            <Text fontSize="lg" fontWeight="bold" mb={4}>Node Library</Text>
             <InputGroup>
-                <InputLeftElement pointerEvents="none">
+                <InputLeftElement pointerEvents="none" mb={4}>
                     <Icon as={Search2Icon} />
                 </InputLeftElement>
                 <Input placeholder="Search node" />
             </InputGroup>
-            <Tabs isFitted variant='soft-rounded' orientation="vertical" mt={8}
+            <Tabs isFitted variant='soft-rounded' orientation="vertical" mt={8} maxHeight="100%"
                 sx={{
                     flex: 1,
                     display: 'flex',
                     flexDirection: 'row',
-                    height: 'calc(100% - 60px)',
                 }}>
-                <TabList sx={{
-                    width: '50px',
+                <TabList overflow="scroll" sx={{
+                    width: '80px',
                     height: '100%',
+                    scrollbarWidth: 'none',
+                    '::-webkit-scrollbar': {
+                        display: 'none',
+                    }
                 }}
                 >
-                    {filteredNodeConfigs.map(([category]) => (
-                        <Tab fontSize='xs' key={category}>{category}</Tab>
-                    ))}
+                    {
+                        filteredNodeConfigs.map(([category]) => (
+                            <Tab fontSize='xs' key={category} flexShrink={0}>{category}</Tab>
+                        ))
+                    }
                 </TabList>
                 <TabPanels
                     sx={{
@@ -87,7 +90,7 @@ function NodeDrawer({
                     })}
                 </TabPanels>
             </Tabs>
-        </Box>
+        </Box >
     );
 }
 
