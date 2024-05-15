@@ -546,27 +546,27 @@ const Scene = ({
         <div
           className={`node-drawer-container ${drawerExpanded ? 'expanded' : 'collapsed'
             }`}
-          style={{
-            width: drawerExpanded ? '0px' : '0px',
-            display: 'flex',
-            flexDirection: 'row-reverse',
-            height: '100%',
-            transition: 'width 0.3s',
-          }}
         >
           <div
             className="drawer-handle"
             onClick={() => setDrawerExpanded(!drawerExpanded)}
             style={{
-              width: '20px',
-              backgroundColor: '#ccc',
+              position: 'absolute',
+              right: drawerExpanded ? '3px' : '5px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              width: '8px',
+              height: '200px',
+              backgroundColor: 'rgba(128, 128, 128, 0.5)',
               cursor: 'pointer',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
+              borderRadius: '10px',
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+              zIndex: 1,
             }}
           >
-            <div style={{ width: '4px', backgroundColor: '#888' }} />
           </div>
           {drawerExpanded && (
             <NodeDrawer
@@ -577,7 +577,7 @@ const Scene = ({
         </div>
         <div ref={portalContainerRef} />
       </div>
-    </SceneStateContext.Provider>
+    </SceneStateContext.Provider >
   );
 };
 

@@ -20,22 +20,6 @@
   transition: width 0.3s;
 }
 
-.drawer-handle {
-  position: absolute;
-  left: -20px;
-  height: 100%;
-  cursor: pointer;
-  background-color: #ccc;
-  width: 20px;
-}
-
-.drawer-handle div {
-  width: 4px;
-  background-color: #888;
-  height: 100%;
-  margin: auto 0;
-}
-
 .drawer-handle:hover {
   background-color: #aaa;
 }

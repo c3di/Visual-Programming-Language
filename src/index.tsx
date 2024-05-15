@@ -69,7 +69,7 @@ function MainArea({ id }: { id: string }): JSX.Element {
         source code
       </button>
       <div style={{ display: 'flex', flexDirection: 'row', marginTop: '10px' }}>
-        <div style={{ width: '100px', height: '700px' }}>
+        <div style={{ width: '100px', height: '824px' }}>
           <NodeLibraryList
             title="INSTALLED"
             nodeExtensions={{ ...nodeExtensions }}
