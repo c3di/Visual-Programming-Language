@@ -28,7 +28,7 @@ import type {
   selectedElementsCounts,
 } from './types';
 import { NodeDrawer } from './gui';
-import { NodeData } from './types/NodeType';
+import { NodeConfig } from './types';
 
 export interface IVPEditorOption {
   controller?: {
@@ -141,14 +141,10 @@ const Scene = ({
   const handleNodeDragStart = (
     event: React.DragEvent<HTMLLIElement>,
     nodeType: string,
-    nodeData: NodeData
+    nodeConfig: NodeConfig
   ) => {
-    if (!nodeData.inputs) {
-      console.error('Node data missing inputs:', nodeData);
-      throw new Error('Node data must have inputs property');
-    }
     event.dataTransfer.setData('application/reactflow', nodeType);
-    event.dataTransfer.setData('nodeData', JSON.stringify(nodeData));
+    event.dataTransfer.setData('nodeConfig', JSON.stringify(nodeConfig));
     event.dataTransfer.effectAllowed = 'move';
   };
 
@@ -157,17 +153,16 @@ const Scene = ({
     if (!sceneDomRef.current || !sceneInstance.current) return;
     const reactFlowBounds = sceneDomRef.current.getBoundingClientRect();
     const type = event.dataTransfer.getData('application/reactflow');
-    const nodeData = JSON.parse(event.dataTransfer.getData('nodeData'));
-    if (typeof type === 'undefined' || !type || !nodeData) {
+    const nodeConfig = JSON.parse(event.dataTransfer.getData('nodeConfig')) as NodeConfig;
+    if (typeof type === 'undefined' || !type || !nodeConfig) {
       return;
     }
-
     const position = sceneInstance.current.project({
       x: event.clientX - reactFlowBounds.left,
       y: event.clientY - reactFlowBounds.top,
     });
 
-    sceneActions?.addNode(type, position, nodeData);
+    sceneActions?.addNode(type, position, nodeConfig);
   };
   const handleDragOver = (event: React.DragEvent) => {
     event.preventDefault();

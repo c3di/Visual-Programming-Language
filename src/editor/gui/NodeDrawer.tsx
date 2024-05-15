@@ -1,29 +1,7 @@
-import React, { useRef, useState } from "react";
-import {
-    ChakraProvider,
-    Box,
-    Input,
-    InputGroup,
-    InputLeftElement,
-    List,
-    ListItem,
-    VStack,
-    Portal,
-    Icon,
-} from '@chakra-ui/react';
+import { ChakraProvider, Box, Input, InputGroup, InputLeftElement, List, ListItem, VStack, Portal, Icon, Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import { Search2Icon } from '@chakra-ui/icons';
-import { NodeData } from '../types/NodeType';
-
-const nodes: Record<string, NodeData[]> = {
-    Input: [
-        { id: 'input1', name: 'Image Input', type: 'InputNode', parameters: [], outputs: {}, inputs: {} },
-        { id: 'input2', name: 'CSV Input', type: 'InputNode', parameters: [], outputs: {}, inputs: {} }
-    ],
-    Effect: [
-        { id: 'effect1', name: 'Blur', type: 'EffectNode', parameters: [], outputs: {}, inputs: {} },
-        { id: 'effect2', name: 'Contrast', type: 'EffectNode', parameters: [], outputs: {}, inputs: {} }
-    ]
-};
+import { nodeConfigRegistry } from '../extension';
+import { NodeConfig } from '../types';
 
 function NodeDrawer({
     handleNodeDragStart,
@@ -32,46 +10,69 @@ function NodeDrawer({
     handleNodeDragStart: (
         event: React.DragEvent<HTMLLIElement>,
         nodeType: string,
-        nodeData: NodeData
+        nodeData: NodeConfig
     ) => void;
     portalContainerRef: React.RefObject<HTMLDivElement>;
 }) {
+    const allNodeConfigs = nodeConfigRegistry.getAllNodeConfigs();
+    const filteredNodeConfigs = Object.entries(allNodeConfigs).filter(
+        ([, config]) => Object.keys(config.nodes ?? {}).length > 0
+    );
+
+    console.log('All Node Configs:', filteredNodeConfigs);
+
     return (
         <ChakraProvider>
             <Portal containerRef={portalContainerRef}>
-                <Box p={4} width="250px" bg="gray.50" borderRight="1px solid #ccc" height="100%">
+                <Box p={4} width="300px" bg="gray.50" borderRight="1px solid #ccc" height="100%">
                     <InputGroup>
                         <InputLeftElement pointerEvents="none">
                             <Icon as={Search2Icon} />
                         </InputLeftElement>
                         <Input placeholder="Search node" />
                     </InputGroup>
-                    <VStack align="stretch" mt={4}>
-                        {Object.entries(nodes).map(([category, items]) => (
-                            <Box key={category}>
-                                <Box fontWeight="bold" mb={2}>
-                                    {category}
-                                </Box>
-                                <List spacing={2}>
-                                    {items.map((node) => (
-                                        <ListItem
-                                            key={node.id}
-                                            draggable
-                                            onDragStart={(e) => handleNodeDragStart(e, node.type, node)}
-                                            opacity={0.5}
-                                            cursor="pointer"
-                                            p={2}
-                                            borderRadius="md"
-                                            bg="gray.100"
-                                            _hover={{ bg: 'gray.200' }}
-                                        >
-                                            {node.name}
-                                        </ListItem>
-                                    ))}
-                                </List>
-                            </Box>
-                        ))}
-                    </VStack>
+                    <Tabs orientation="vertical" mt={4}>
+                        <TabList>
+                            {filteredNodeConfigs.map(([category]) => (
+                                <Tab key={category}>{category}</Tab>
+                            ))}
+                        </TabList>
+                        <TabPanels>
+                            {filteredNodeConfigs.map(([category, config]) => {
+                                console.log('Category:', category);
+                                console.log('Config Nodes:', config.nodes);
+                                return (
+                                    <TabPanel key={category}>
+                                        <VStack align="stretch">
+                                            <List spacing={2}>
+                                                {Object.values(config.nodes ?? {}).map((nodeConfig) => {
+                                                    const typedNodeConfig = nodeConfig as NodeConfig;
+                                                    console.log('Node Config:', typedNodeConfig); // Log each node configuration
+                                                    return (
+                                                        <ListItem
+                                                            key={typedNodeConfig.id}
+                                                            draggable
+                                                            onDragStart={(e) =>
+                                                                handleNodeDragStart(e, typedNodeConfig.type, typedNodeConfig)
+                                                            }
+                                                            opacity={0.5}
+                                                            cursor="pointer"
+                                                            p={2}
+                                                            borderRadius="md"
+                                                            bg="gray.100"
+                                                            _hover={{ bg: 'gray.200' }}
+                                                        >
+                                                            {typedNodeConfig.title}
+                                                        </ListItem>
+                                                    );
+                                                })}
+                                            </List>
+                                        </VStack>
+                                    </TabPanel>
+                                );
+                            })}
+                        </TabPanels>
+                    </Tabs>
                 </Box>
             </Portal>
         </ChakraProvider>
