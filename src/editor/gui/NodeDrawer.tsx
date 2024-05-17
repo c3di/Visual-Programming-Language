@@ -175,7 +175,7 @@ const NodeDrawer = ({
                     sx={{
                         flex: 1,
                         overflowY: 'auto',
-                        height: '100%',
+                        height: '670',
                     }}>
                     {filteredNodeConfigs.map(([category]) => (
                         <TabPanel key={category} mt={2} height="100%" display="flex" flexDirection="column">
