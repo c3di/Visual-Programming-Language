@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Box, Input, InputGroup, InputLeftElement, List, ListItem, VStack, Text, Icon, Tabs, TabList, TabPanels, Tab, TabPanel, Breadcrumb, BreadcrumbItem, BreadcrumbLink,
 } from '@chakra-ui/react';
@@ -22,6 +22,13 @@ function NodeDrawer({
 
     const [currentPath, setCurrentPath] = useState<string[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const [currentTab, setCurrentTab] = useState<string | null>(filteredNodeConfigs.length ? filteredNodeConfigs[0][0] : null);
+
+    useEffect(() => {
+        if (currentTab) {
+            setCurrentPath([currentTab]);
+        }
+    }, [currentTab]);
 
     const getCurrentNodes = (): Record<string, NodeConfig | NodePackage> => {
         let nodes: Record<string, NodeConfig | NodePackage> = allNodeConfigs;
@@ -43,6 +50,15 @@ function NodeDrawer({
     };
 
     const currentNodes = getCurrentNodes();
+
+    const filterNodes = (nodes: Record<string, NodeConfig | NodePackage>, query: string) => {
+        if (!query) return nodes;
+        const lowerQuery = query.toLowerCase();
+        return Object.fromEntries(Object.entries(nodes).filter(([name, config]) =>
+            name.toLowerCase().includes(lowerQuery) ||
+            ('title' in config && config.title?.toLowerCase().includes(lowerQuery))
+        ));
+    };
 
     const renderNodeList = (nodes: Record<string, NodeConfig | NodePackage>) => (
         <List spacing={2}>
@@ -80,20 +96,27 @@ function NodeDrawer({
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
             </InputGroup>
-            <Tabs isFitted variant='soft-rounded' orientation="vertical" mt={8} maxHeight="100%" flex={1}>
-                <TabList overflowY="scroll" sx={{ width: '80px', height: '100%', scrollbarWidth: 'none', '::-webkit-scrollbar': { display: 'none' } }}>
+            <Tabs
+                isFitted
+                variant='soft-rounded'
+                orientation="vertical"
+                mt={8}
+                flex="1"
+                display="flex"
+                flexDirection="row"
+                height="100%"
+                onChange={(index) => setCurrentTab(filteredNodeConfigs[index][0])}
+            >
+                <TabList overflowY="auto" sx={{ width: '80px', height: '100%', scrollbarWidth: 'none', '::-webkit-scrollbar': { display: 'none' } }}>
                     {filteredNodeConfigs.map(([category]) => (
-                        <Tab fontSize='xs' key={category} flexShrink={0} onClick={() => setCurrentPath([category])}>{category}</Tab>
+                        <Tab fontSize='xs' key={category} flexShrink={0}>{category}</Tab>
                     ))}
                 </TabList>
-                <TabPanels flex={1} overflowY="auto">
+                <TabPanels flex={1}>
                     {filteredNodeConfigs.map(([category]) => (
                         <TabPanel key={category} mt={2}>
                             <VStack align="stretch">
                                 <Breadcrumb separator={<ChevronRightIcon color="gray.500" />} mb={4}>
-                                    <BreadcrumbItem>
-                                        <BreadcrumbLink onClick={() => setCurrentPath([])}>Home</BreadcrumbLink>
-                                    </BreadcrumbItem>
                                     {currentPath.map((segment, index) => (
                                         <BreadcrumbItem key={index}>
                                             <BreadcrumbLink onClick={() => handleBreadcrumbClick(index)}>
@@ -102,7 +125,7 @@ function NodeDrawer({
                                         </BreadcrumbItem>
                                     ))}
                                 </Breadcrumb>
-                                {renderNodeList(currentNodes)}
+                                {renderNodeList(filterNodes(currentNodes, searchQuery))}
                             </VStack>
                         </TabPanel>
                     ))}
