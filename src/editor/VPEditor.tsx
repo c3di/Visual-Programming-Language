@@ -189,7 +189,7 @@ const Scene = ({
         }}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
-        style={{ outline: 'none', display: 'flex', height: '100%' }}
+        style={{ outline: 'none', display: 'flex', height: '100vh' }}
       >
         {gui.widget}
         <div style={{ flexGrow: 1 }}>

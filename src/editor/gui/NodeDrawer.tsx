@@ -84,7 +84,7 @@ function NodeDrawer({
     );
 
     return (
-        <Box p={4} width="300px" bg="gray.50" borderRight="1px solid #ccc" height="100%" flexDirection="column">
+        <Box p={4} width="300px" bg="gray.50" borderRight="1px solid #ccc" height="100vh" display="flex" flexDirection="column" overflow="hidden">
             <Text fontSize="lg" fontWeight="bold" mb={4}>Node Library</Text>
             <InputGroup>
                 <InputLeftElement pointerEvents="none" mb={4}>
@@ -100,22 +100,47 @@ function NodeDrawer({
                 isFitted
                 variant='soft-rounded'
                 orientation="vertical"
-                mt={8}
                 flex="1"
-                display="flex"
-                flexDirection="row"
-                height="100%"
                 onChange={(index) => setCurrentTab(filteredNodeConfigs[index][0])}
             >
-                <TabList overflowY="auto" sx={{ width: '80px', height: '100%', scrollbarWidth: 'none', '::-webkit-scrollbar': { display: 'none' } }}>
+                <TabList
+                    width="80px"
+                    height="100%"
+                    style={{
+                        overflowY: 'auto',
+                        scrollbarWidth: 'thin',
+                    }}
+                    sx={{
+                        '::-webkit-scrollbar': {
+                            width: '6px',
+                        },
+                        '::-webkit-scrollbar-thumb': {
+                            background: 'gray',
+                            borderRadius: '3px',
+                        },
+                    }}
+                >
                     {filteredNodeConfigs.map(([category]) => (
                         <Tab fontSize='xs' key={category} flexShrink={0}>{category}</Tab>
                     ))}
                 </TabList>
-                <TabPanels flex={1}>
+                <TabPanels flex={1} overflowY="auto"
+                    style={{
+                        overflowY: 'auto',
+                        scrollbarWidth: 'thin',
+                    }}
+                    sx={{
+                        '::-webkit-scrollbar': {
+                            width: '6px',
+                        },
+                        '::-webkit-scrollbar-thumb': {
+                            background: 'gray',
+                            borderRadius: '3px',
+                        },
+                    }}>
                     {filteredNodeConfigs.map(([category]) => (
-                        <TabPanel key={category} mt={2}>
-                            <VStack align="stretch">
+                        <TabPanel key={category} mt={2} height="100%">
+                            <VStack align="stretch" height="100%">
                                 <Breadcrumb separator={<ChevronRightIcon color="gray.500" />} mb={4}>
                                     {currentPath.map((segment, index) => (
                                         <BreadcrumbItem key={index}>
