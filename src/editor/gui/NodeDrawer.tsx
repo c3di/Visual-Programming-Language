@@ -143,7 +143,14 @@ function NodeDrawer({
                     {filteredNodeConfigs.map(([category]) => (
                         <TabPanel key={category} mt={2} height="100%">
                             <VStack align="stretch" height="100%">
-                                <Breadcrumb separator={<ChevronRightIcon color="gray.500" />} mb={4}>
+                                <Breadcrumb
+                                    separator={<ChevronRightIcon color="gray.500" />}
+                                    mb={4}
+                                    style={{
+                                        whiteSpace: 'normal',
+                                        wordWrap: 'break-word',
+                                    }}
+                                >
                                     {currentPath.map((segment, index) => (
                                         <BreadcrumbItem key={index}>
                                             <BreadcrumbLink onClick={() => handleBreadcrumbClick(index)}>
