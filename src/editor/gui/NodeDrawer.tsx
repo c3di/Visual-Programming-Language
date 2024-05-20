@@ -86,8 +86,8 @@ function NodeDrawer({
     return (
         <Box p={4} width="300px" bg="gray.50" borderRight="1px solid #ccc" height="100vh" display="flex" flexDirection="column" overflow="hidden">
             <Text fontSize="lg" fontWeight="bold" mb={4}>Node Library</Text>
-            <InputGroup>
-                <InputLeftElement pointerEvents="none" mb={4}>
+            <InputGroup mb={8}>
+                <InputLeftElement pointerEvents="none">
                     <Icon as={Search2Icon} />
                 </InputLeftElement>
                 <Input
@@ -100,14 +100,16 @@ function NodeDrawer({
                 isFitted
                 variant='soft-rounded'
                 orientation="vertical"
-                flex="1"
+                flex={1}
+                maxW="100%"
                 onChange={(index) => setCurrentTab(filteredNodeConfigs[index][0])}
             >
                 <TabList
-                    width="80px"
+                    width="100px"
                     height="100%"
                     style={{
-                        overflowY: 'auto',
+                        overflowY: 'scroll',
+                        overflowX: 'hidden',
                         scrollbarWidth: 'thin',
                     }}
                     sx={{
@@ -121,10 +123,10 @@ function NodeDrawer({
                     }}
                 >
                     {filteredNodeConfigs.map(([category]) => (
-                        <Tab fontSize='xs' key={category} flexShrink={0}>{category}</Tab>
+                        <Tab fontSize='2xs' key={category} flexShrink={2}>{category}</Tab>
                     ))}
                 </TabList>
-                <TabPanels flex={1} overflowY="auto"
+                <TabPanels
                     style={{
                         overflowY: 'auto',
                         scrollbarWidth: 'thin',
