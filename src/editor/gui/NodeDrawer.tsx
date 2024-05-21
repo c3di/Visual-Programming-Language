@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Box, Input, InputGroup, InputLeftElement, List, ListItem, VStack, Text, Icon, Tabs, TabList, TabPanels, Tab, TabPanel, Breadcrumb, BreadcrumbItem, BreadcrumbLink,
+    Box, Input, InputGroup, InputLeftElement, List, ListItem, VStack, Text, Icon, Tabs, TabList, TabPanels, Tab, TabPanel, Breadcrumb, BreadcrumbItem, BreadcrumbLink, HStack
 } from '@chakra-ui/react';
 import { Search2Icon, ChevronRightIcon } from '@chakra-ui/icons';
+import { HiFolder } from "react-icons/hi2";
 import { nodeConfigRegistry } from '../extension';
 import { NodeConfig, NodePackage } from '../types';
 
@@ -77,7 +78,12 @@ function NodeDrawer({
                     _hover={{ bg: 'gray.200' }}
                     onClick={() => handleNodeClick(name)}
                 >
-                    {'title' in nodeConfig ? nodeConfig.title || name : name}
+                    <HStack>
+                        {nodeConfig.hasOwnProperty('nodes') && <Icon as={HiFolder} />}
+                        <Text>
+                            {'title' in nodeConfig ? nodeConfig.title || name : name}
+                        </Text>
+                    </HStack>
                 </ListItem>
             ))}
         </List>
