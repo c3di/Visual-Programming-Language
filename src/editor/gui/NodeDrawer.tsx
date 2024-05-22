@@ -24,7 +24,7 @@ function NodeDrawer({
     const [currentPath, setCurrentPath] = useState<string[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [currentTab, setCurrentTab] = useState<string | null>(filteredNodeConfigs.length ? filteredNodeConfigs[0][0] : null);
-    const [searchResults, setSearchResults] = useState<Record<string, Record<string, NodeConfig | NodePackage>>>({});
+    const [searchResults, setSearchResults] = useState<Record<string, { nodes: Record<string, NodeConfig | NodePackage>, packages: Record<string, NodePackage> }>>({});
 
     useEffect(() => {
         if (currentTab) {
@@ -34,11 +34,11 @@ function NodeDrawer({
 
     useEffect(() => {
         if (searchQuery) {
-            const results: Record<string, Record<string, NodeConfig | NodePackage>> = {};
+            const results: Record<string, { nodes: Record<string, NodeConfig | NodePackage>, packages: Record<string, NodePackage> }> = {};
             filteredNodeConfigs.forEach(([category, config]) => {
-                const nodes = searchAllNodes(config.nodes, searchQuery);
-                if (Object.keys(nodes).length > 0) {
-                    results[category] = nodes;
+                const { nodes, packages } = searchAllNodes(config.nodes, searchQuery);
+                if (Object.keys(nodes).length > 0 || Object.keys(packages).length > 0) {
+                    results[category] = { nodes, packages };
                 }
             });
             setSearchResults(results);
@@ -56,7 +56,7 @@ function NodeDrawer({
     };
 
     const handleNodeClick = (nodeName: string) => {
-        const nodes = getCurrentNodes();
+        const nodes = searchQuery ? getCurrentNodes() : getCurrentNodes();
         const node = nodes[nodeName] as NodePackage | NodeConfig;
         if ((node as NodePackage).nodes) {
             setCurrentPath([...currentPath, nodeName]);
@@ -67,34 +67,31 @@ function NodeDrawer({
         setCurrentPath(currentPath.slice(0, index + 1));
     };
 
-    const searchAllNodes = (nodes: Record<string, NodeConfig | NodePackage>, query: string): Record<string, NodeConfig | NodePackage> => {
+    const searchAllNodes = (nodes: Record<string, NodeConfig | NodePackage>, query: string): { nodes: Record<string, NodeConfig | NodePackage>, packages: Record<string, NodePackage> } => {
         const lowerQuery = query.toLowerCase();
-        const results: Record<string, NodeConfig | NodePackage> = {};
+        const nodeResults: Record<string, NodeConfig | NodePackage> = {};
+        const packageResults: Record<string, NodePackage> = {};
 
         Object.entries(nodes).forEach(([name, config]) => {
             if (
                 name.toLowerCase().includes(lowerQuery) ||
                 ('title' in config && config.title?.toLowerCase().includes(lowerQuery))
             ) {
-                results[name] = config;
+                if ((config as NodePackage).nodes) {
+                    packageResults[name] = config as NodePackage;
+                } else {
+                    nodeResults[name] = config;
+                }
             }
 
             if ((config as NodePackage).nodes) {
-                const childResults = searchAllNodes((config as NodePackage).nodes, query);
-                Object.assign(results, childResults);
+                const { nodes: childNodes, packages: childPackages } = searchAllNodes((config as NodePackage).nodes, query);
+                Object.assign(nodeResults, childNodes);
+                Object.assign(packageResults, childPackages);
             }
         });
 
-        return results;
-    };
-
-    const filterNodes = (nodes: Record<string, NodeConfig | NodePackage>, query: string) => {
-        if (!query) return nodes;
-        const lowerQuery = query.toLowerCase();
-        return Object.fromEntries(Object.entries(nodes).filter(([name, config]) =>
-            name.toLowerCase().includes(lowerQuery) ||
-            ('title' in config && config.title?.toLowerCase().includes(lowerQuery))
-        ));
+        return { nodes: nodeResults, packages: packageResults };
     };
 
     const renderNodeList = (nodes: Record<string, NodeConfig | NodePackage>) => (
@@ -115,7 +112,7 @@ function NodeDrawer({
                     onClick={() => handleNodeClick(name)}
                 >
                     <HStack>
-                        {nodeConfig.hasOwnProperty('nodes') && <Icon as={HiFolder} />}
+                        {(nodeConfig as NodePackage).nodes && <Icon as={HiFolder} />}
                         <Text>
                             {'title' in nodeConfig ? nodeConfig.title || name : name}
                         </Text>
@@ -181,7 +178,7 @@ function NodeDrawer({
                                 <Text>{category}</Text>
                                 {searchResults[category] && (
                                     <Badge colorScheme="red" borderRadius="50%" px={2}>
-                                        {Object.keys(searchResults[category]).length}
+                                        {Object.keys(searchResults[category].nodes).length + Object.keys(searchResults[category].packages).length}
                                     </Badge>
                                 )}
                             </HStack>
@@ -221,8 +218,8 @@ function NodeDrawer({
                                         </BreadcrumbItem>
                                     ))}
                                 </Breadcrumb>
-                                {searchQuery && searchResults[category]
-                                    ? renderNodeList(filterNodes(searchResults[category], searchQuery))
+                                {searchQuery && searchResults[currentPath[0]]
+                                    ? renderNodeList(currentPath.length > 1 ? getCurrentNodes() : { ...searchResults[currentPath[0]].packages, ...searchResults[currentPath[0]].nodes, })
                                     : renderNodeList(getCurrentNodes())}
                             </VStack>
                         </TabPanel>
