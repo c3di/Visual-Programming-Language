@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Box, Input, InputGroup, InputLeftElement, List, ListItem, VStack, Text, Icon, Tabs, TabList, TabPanels, Tab, TabPanel, Breadcrumb, BreadcrumbItem, BreadcrumbLink, HStack
+    Box, Input, InputGroup, InputLeftElement, List, ListItem, VStack, Text, Icon, Tabs, TabList, TabPanels, Tab, TabPanel, Breadcrumb, BreadcrumbItem, BreadcrumbLink, HStack, Badge,
 } from '@chakra-ui/react';
 import { Search2Icon, ChevronRightIcon } from '@chakra-ui/icons';
 import { HiFolder } from "react-icons/hi2";
@@ -24,12 +24,28 @@ function NodeDrawer({
     const [currentPath, setCurrentPath] = useState<string[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [currentTab, setCurrentTab] = useState<string | null>(filteredNodeConfigs.length ? filteredNodeConfigs[0][0] : null);
+    const [searchResults, setSearchResults] = useState<Record<string, (NodeConfig | NodePackage)[]>>({});
 
     useEffect(() => {
         if (currentTab) {
             setCurrentPath([currentTab]);
         }
     }, [currentTab]);
+
+    useEffect(() => {
+        if (searchQuery) {
+            const results: Record<string, (NodeConfig | NodePackage)[]> = {};
+            filteredNodeConfigs.forEach(([category, config]) => {
+                const nodes = searchAllNodes(config.nodes, searchQuery);
+                if (nodes.length > 0) {
+                    results[category] = nodes;
+                }
+            });
+            setSearchResults(results);
+        } else {
+            setSearchResults({});
+        }
+    }, [searchQuery]);
 
     const getCurrentNodes = (): Record<string, NodeConfig | NodePackage> => {
         let nodes: Record<string, NodeConfig | NodePackage> = allNodeConfigs;
@@ -40,7 +56,8 @@ function NodeDrawer({
     };
 
     const handleNodeClick = (nodeName: string) => {
-        const node = getCurrentNodes()[nodeName];
+        const nodes = getCurrentNodes();
+        const node = nodes[nodeName] as NodePackage | NodeConfig;
         if ((node as NodePackage).nodes) {
             setCurrentPath([...currentPath, nodeName]);
         }
@@ -50,7 +67,27 @@ function NodeDrawer({
         setCurrentPath(currentPath.slice(0, index + 1));
     };
 
-    const currentNodes = getCurrentNodes();
+    const searchAllNodes = (nodes: Record<string, NodeConfig | NodePackage>, query: string): (NodeConfig | NodePackage)[] => {
+        const lowerQuery = query.toLowerCase();
+        const results: (NodeConfig | NodePackage)[] = [];
+
+        Object.entries(nodes).forEach(([name, config]) => {
+            if (
+                name.toLowerCase().includes(lowerQuery) ||
+                ('title' in config && config.title?.toLowerCase().includes(lowerQuery))
+            ) {
+                results.push(config);
+            }
+
+            if ((config as NodePackage).nodes) {
+                const childResults = searchAllNodes((config as NodePackage).nodes, query);
+                results.push(...childResults);
+            }
+        });
+
+        return results;
+    };
+
 
     const filterNodes = (nodes: Record<string, NodeConfig | NodePackage>, query: string) => {
         if (!query) return nodes;
@@ -89,6 +126,43 @@ function NodeDrawer({
         </List>
     );
 
+    const renderSearchResults = (nodes: (NodeConfig | NodePackage)[]) => (
+        <List spacing={2}>
+            {nodes.map((nodeConfig, index) => (
+                <ListItem
+                    key={index}
+                    draggable
+                    onDragStart={(e) =>
+                        handleNodeDragStart(e, (nodeConfig as NodeConfig).type, nodeConfig as NodeConfig)
+                    }
+                    opacity={0.5}
+                    cursor="pointer"
+                    p={2}
+                    borderRadius="md"
+                    bg="gray.100"
+                    _hover={{ bg: 'gray.200' }}
+                    onClick={() => {
+                        if ((nodeConfig as NodePackage).nodes) {
+                            handleNodeClick((nodeConfig as NodePackage).title || '');
+                        }
+                    }}
+                >
+                    <HStack>
+                        {(nodeConfig as NodePackage).nodes && <Icon as={HiFolder} />}
+                        <Text>
+                            {'title' in nodeConfig ? nodeConfig.title || '' : ''}
+                        </Text>
+                    </HStack>
+                </ListItem>
+            ))}
+        </List>
+    );
+
+    const visibleTabs = !searchQuery
+        ? filteredNodeConfigs
+        : filteredNodeConfigs.filter(([category]) => searchResults[category]);
+
+
     return (
         <Box p={4} width="300px" bg="gray.50" borderRight="1px solid #ccc" height="100vh" display="flex" flexDirection="column" overflow="hidden">
             <Text fontSize="lg" fontWeight="bold" mb={4}>Node Library</Text>
@@ -108,10 +182,10 @@ function NodeDrawer({
                 orientation="vertical"
                 flex={1}
                 maxW="100%"
-                onChange={(index) => setCurrentTab(filteredNodeConfigs[index][0])}
+                onChange={(index) => setCurrentTab(visibleTabs[index][0])}
             >
                 <TabList
-                    width="100px"
+                    width="120px"
                     height="100%"
                     style={{
                         overflowY: 'scroll',
@@ -128,8 +202,17 @@ function NodeDrawer({
                         },
                     }}
                 >
-                    {filteredNodeConfigs.map(([category]) => (
-                        <Tab fontSize='2xs' key={category} flexShrink={2}>{category}</Tab>
+                    {visibleTabs.map(([category]) => (
+                        <Tab fontSize='2xs' key={category} flexShrink={2}>
+                            <HStack>
+                                <Text>{category}</Text>
+                                {searchResults[category] && (
+                                    <Badge colorScheme="red" borderRadius="50%" px={2}>
+                                        {searchResults[category].length}
+                                    </Badge>
+                                )}
+                            </HStack>
+                        </Tab>
                     ))}
                 </TabList>
                 <TabPanels
@@ -146,7 +229,7 @@ function NodeDrawer({
                             borderRadius: '3px',
                         },
                     }}>
-                    {filteredNodeConfigs.map(([category]) => (
+                    {visibleTabs.map(([category]) => (
                         <TabPanel key={category} mt={2} height="100%">
                             <VStack align="stretch" height="100%">
                                 <Breadcrumb
@@ -165,7 +248,9 @@ function NodeDrawer({
                                         </BreadcrumbItem>
                                     ))}
                                 </Breadcrumb>
-                                {renderNodeList(filterNodes(currentNodes, searchQuery))}
+                                {searchQuery && searchResults[category]
+                                    ? renderSearchResults(searchResults[category])
+                                    : renderNodeList(filterNodes(getCurrentNodes(), searchQuery))}
                             </VStack>
                         </TabPanel>
                     ))}
