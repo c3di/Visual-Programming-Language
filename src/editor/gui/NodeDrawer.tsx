@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Box, Input, InputGroup, InputLeftElement, List, ListItem, VStack, Text, Icon, Tabs, TabList, TabPanels, Tab, TabPanel, Breadcrumb, BreadcrumbItem, BreadcrumbLink, HStack, Badge,
+    Box, Input, InputGroup, InputLeftElement, InputRightElement, List, ListItem, VStack, Text, Icon, Tabs, TabList, TabPanels, Tab, TabPanel, Breadcrumb, BreadcrumbItem, BreadcrumbLink, HStack, Badge, CloseButton,
 } from '@chakra-ui/react';
 import { Search2Icon, ChevronRightIcon } from '@chakra-ui/icons';
 import { HiFolder } from "react-icons/hi2";
@@ -56,7 +56,7 @@ function NodeDrawer({
     };
 
     const handleNodeClick = (nodeName: string) => {
-        const nodes = searchQuery ? getCurrentNodes() : getCurrentNodes();
+        const nodes = getCurrentNodes();
         const node = nodes[nodeName] as NodePackage | NodeConfig;
         if ((node as NodePackage).nodes) {
             setCurrentPath([...currentPath, nodeName]);
@@ -113,7 +113,7 @@ function NodeDrawer({
                 >
                     <HStack>
                         {(nodeConfig as NodePackage).nodes && <Icon as={HiFolder} />}
-                        <Text>
+                        <Text style={{ overflowWrap: 'anywhere' }}>
                             {'title' in nodeConfig ? nodeConfig.title || name : name}
                         </Text>
                     </HStack>
@@ -138,16 +138,18 @@ function NodeDrawer({
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
+                <InputRightElement>
+                    {searchQuery && <CloseButton size="sm" onClick={() => setSearchQuery('')} />}
+                </InputRightElement>
             </InputGroup>
             <Tabs
-                isFitted
                 variant='soft-rounded'
                 orientation="vertical"
                 maxW="100%"
                 onChange={(index) => setCurrentTab(visibleTabs[index][0])}
             >
                 <TabList
-                    width="120px"
+                    width={searchQuery ? "170px" : "120px"}
                     height="100%"
                     style={{
                         overflowY: 'scroll',
@@ -166,18 +168,19 @@ function NodeDrawer({
                 >
                     {visibleTabs.map(([category]) => (
                         <Tab key={category}
-                            fontSize="2xs"
-                            height="40px"
+                            fontSize="xs"
+                            height="max-content"
                             minWidth="0"
                             width="100%"
-                            p={6}
+                            p={4}
                             whiteSpace="pre-wrap"
                             textOverflow="ellipsis"
+                            alignItems="flex-start"
                         >
-                            <HStack>
+                            <HStack justifyContent="center" alignItems="center" width="100%" gap="0.2rem">
                                 <Text>{category}</Text>
                                 {searchResults[category] && (
-                                    <Badge colorScheme="red" borderRadius="50%" px={2}>
+                                    <Badge colorScheme="red" borderRadius="50%">
                                         {Object.keys(searchResults[category].nodes).length + Object.keys(searchResults[category].packages).length}
                                     </Badge>
                                 )}
@@ -206,8 +209,7 @@ function NodeDrawer({
                                     separator={<ChevronRightIcon color="gray.500" />}
                                     mb={4}
                                     style={{
-                                        whiteSpace: 'normal',
-                                        wordWrap: 'break-word',
+                                        overflowWrap: 'anywhere'
                                     }}
                                 >
                                     {currentPath.map((segment, index) => (
@@ -219,7 +221,7 @@ function NodeDrawer({
                                     ))}
                                 </Breadcrumb>
                                 {searchQuery && searchResults[currentPath[0]]
-                                    ? renderNodeList(currentPath.length > 1 ? getCurrentNodes() : { ...searchResults[currentPath[0]].packages, ...searchResults[currentPath[0]].nodes, })
+                                    ? renderNodeList(currentPath.length > 1 ? getCurrentNodes() : { ...searchResults[currentPath[0]].packages, ...searchResults[currentPath[0]].nodes })
                                     : renderNodeList(getCurrentNodes())}
                             </VStack>
                         </TabPanel>
