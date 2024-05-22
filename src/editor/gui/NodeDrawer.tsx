@@ -128,9 +128,9 @@ function NodeDrawer({
 
     const renderSearchResults = (nodes: (NodeConfig | NodePackage)[]) => (
         <List spacing={2}>
-            {nodes.map((nodeConfig, index) => (
+            {Object.entries(nodes).map(([name, nodeConfig]) => (
                 <ListItem
-                    key={index}
+                    key={name}
                     draggable
                     onDragStart={(e) =>
                         handleNodeDragStart(e, (nodeConfig as NodeConfig).type, nodeConfig as NodeConfig)
@@ -141,16 +141,12 @@ function NodeDrawer({
                     borderRadius="md"
                     bg="gray.100"
                     _hover={{ bg: 'gray.200' }}
-                    onClick={() => {
-                        if ((nodeConfig as NodePackage).nodes) {
-                            handleNodeClick((nodeConfig as NodePackage).title || '');
-                        }
-                    }}
+                    onClick={() => handleNodeClick(name)}
                 >
                     <HStack>
                         {(nodeConfig as NodePackage).nodes && <Icon as={HiFolder} />}
                         <Text>
-                            {'title' in nodeConfig ? nodeConfig.title || '' : ''}
+                            {'title' in nodeConfig ? nodeConfig.title || name : name}
                         </Text>
                     </HStack>
                 </ListItem>
@@ -180,7 +176,6 @@ function NodeDrawer({
                 isFitted
                 variant='soft-rounded'
                 orientation="vertical"
-                flex={1}
                 maxW="100%"
                 onChange={(index) => setCurrentTab(visibleTabs[index][0])}
             >
@@ -203,7 +198,15 @@ function NodeDrawer({
                     }}
                 >
                     {visibleTabs.map(([category]) => (
-                        <Tab fontSize='2xs' key={category} flexShrink={2}>
+                        <Tab key={category}
+                            fontSize="2xs"
+                            height="40px"
+                            minWidth="0"
+                            width="100%"
+                            p={6}
+                            whiteSpace="pre-wrap"
+                            textOverflow="ellipsis"
+                        >
                             <HStack>
                                 <Text>{category}</Text>
                                 {searchResults[category] && (
