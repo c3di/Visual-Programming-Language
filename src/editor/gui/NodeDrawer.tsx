@@ -1,19 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
-    Box, Input, InputGroup, InputLeftElement, InputRightElement, List, ListItem, VStack, Text, Icon, Tabs, TabList, TabPanels, Tab, TabPanel, Breadcrumb, BreadcrumbItem, BreadcrumbLink, HStack, Badge, CloseButton,
+    Box, Input, InputGroup, InputLeftElement, List, ListItem, VStack, Text, Icon, Tabs, TabList, TabPanels, Tab, TabPanel, Breadcrumb, BreadcrumbItem, BreadcrumbLink, HStack, Badge, InputRightElement,
 } from '@chakra-ui/react';
-import { Search2Icon, ChevronRightIcon } from '@chakra-ui/icons';
+import { Search2Icon, ChevronRightIcon, CloseIcon } from '@chakra-ui/icons';
 import { HiFolder } from "react-icons/hi2";
 import { nodeConfigRegistry } from '../extension';
 import { NodeConfig, NodePackage } from '../types';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 function NodeDrawer({
     handleNodeDragStart,
+    handleNodeClick,
 }: {
     handleNodeDragStart: (
         event: React.DragEvent<HTMLLIElement>,
         nodeType: string,
         nodeData: NodeConfig
+    ) => void;
+    handleNodeClick: (
+        nodeConfig: NodeConfig
     ) => void;
 }) {
     const allNodeConfigs = nodeConfigRegistry.getAllNodeConfigs();
@@ -25,6 +30,10 @@ function NodeDrawer({
     const [searchQuery, setSearchQuery] = useState('');
     const [currentTab, setCurrentTab] = useState<string | null>(filteredNodeConfigs.length ? filteredNodeConfigs[0][0] : null);
     const [searchResults, setSearchResults] = useState<Record<string, { nodes: Record<string, NodeConfig | NodePackage>, packages: Record<string, NodePackage> }>>({});
+    const [focusedNode, setFocusedNode] = useState<number | null>(null);
+
+    const tabListRef = useRef<HTMLDivElement>(null);
+    const nodeListRef = useRef<HTMLUListElement>(null);
 
     useEffect(() => {
         if (currentTab) {
@@ -47,6 +56,54 @@ function NodeDrawer({
         }
     }, [searchQuery]);
 
+    const visibleTabs = !searchQuery
+        ? filteredNodeConfigs
+        : filteredNodeConfigs.filter(([category]) => searchResults[category]);
+
+    useHotkeys('up', () => {
+        if (focusedNode !== null) {
+            setFocusedNode((prev) => (prev !== null && prev > 0 ? prev - 1 : prev));
+        } else {
+            const currentIndex = visibleTabs.findIndex(([tab]) => tab === currentTab);
+            setCurrentTab(visibleTabs[Math.max(0, currentIndex - 1)][0]);
+        }
+    }, [focusedNode, visibleTabs, currentTab]);
+
+    useHotkeys('down', () => {
+        if (focusedNode !== null) {
+            setFocusedNode((prev) => (prev !== null && nodeListRef.current && prev < nodeListRef.current.children.length - 1 ? prev + 1 : prev));
+        } else {
+            const currentIndex = visibleTabs.findIndex(([tab]) => tab === currentTab);
+            setCurrentTab(visibleTabs[Math.min(visibleTabs.length - 1, currentIndex + 1)][0]);
+        }
+    }, [focusedNode, visibleTabs, currentTab]);
+
+    useHotkeys('right', () => {
+        if (focusedNode === null) {
+            setFocusedNode(0);
+        }
+    }, [focusedNode]);
+
+    useHotkeys('left', () => {
+        if (focusedNode !== null) {
+            setFocusedNode(null);
+        }
+    }, [focusedNode]);
+
+    useHotkeys('esc', () => {
+        if (focusedNode !== null || currentTab !== null) {
+            setFocusedNode(null);
+            setCurrentTab(null);
+        }
+    }, [focusedNode, currentTab]);
+
+    useHotkeys('enter', () => {
+        if (focusedNode !== null && nodeListRef.current) {
+            const node = nodeListRef.current.children[focusedNode] as HTMLLIElement;
+            node.click();
+        }
+    }, [focusedNode]);
+
     const getCurrentNodes = (): Record<string, NodeConfig | NodePackage> => {
         let nodes: Record<string, NodeConfig | NodePackage> = allNodeConfigs;
         for (const segment of currentPath) {
@@ -55,11 +112,14 @@ function NodeDrawer({
         return nodes;
     };
 
-    const handleNodeClick = (nodeName: string) => {
+    const handleNodeClickLocal = (nodeName: string) => {
         const nodes = getCurrentNodes();
         const node = nodes[nodeName] as NodePackage | NodeConfig;
         if ((node as NodePackage).nodes) {
             setCurrentPath([...currentPath, nodeName]);
+            setFocusedNode(null);
+        } else {
+            handleNodeClick(node as NodeConfig);
         }
     };
 
@@ -95,8 +155,8 @@ function NodeDrawer({
     };
 
     const renderNodeList = (nodes: Record<string, NodeConfig | NodePackage>) => (
-        <List spacing={2}>
-            {Object.entries(nodes).map(([name, nodeConfig]) => (
+        <List spacing={2} ref={nodeListRef}>
+            {Object.entries(nodes).map(([name, nodeConfig], index) => (
                 <ListItem
                     key={name}
                     draggable
@@ -107,9 +167,10 @@ function NodeDrawer({
                     cursor="pointer"
                     p={2}
                     borderRadius="md"
-                    bg="gray.100"
+                    bg={index === focusedNode ? 'blue.100' : 'gray.100'}
                     _hover={{ bg: 'gray.200' }}
-                    onClick={() => handleNodeClick(name)}
+                    onClick={() => handleNodeClickLocal(name)}
+                    onFocus={() => setFocusedNode(index)}
                 >
                     <HStack>
                         {(nodeConfig as NodePackage).nodes && <Icon as={HiFolder} />}
@@ -121,10 +182,6 @@ function NodeDrawer({
             ))}
         </List>
     );
-
-    const visibleTabs = !searchQuery
-        ? filteredNodeConfigs
-        : filteredNodeConfigs.filter(([category]) => searchResults[category]);
 
     return (
         <Box p={4} width="300px" bg="gray.50" borderRight="1px solid #ccc" height="100vh" display="flex" flexDirection="column" overflow="hidden">
@@ -139,17 +196,21 @@ function NodeDrawer({
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <InputRightElement>
-                    {searchQuery && <CloseButton size="sm" onClick={() => setSearchQuery('')} />}
+                    <Icon as={CloseIcon} cursor="pointer" onClick={() => setSearchQuery('')} />
                 </InputRightElement>
             </InputGroup>
             <Tabs
+                isFitted
                 variant='soft-rounded'
                 orientation="vertical"
                 maxW="100%"
-                onChange={(index) => setCurrentTab(visibleTabs[index][0])}
+                onChange={(index) => {
+                    setCurrentTab(visibleTabs[index][0]);
+                    setFocusedNode(null);
+                }}
             >
                 <TabList
-                    width={searchQuery ? "170px" : "120px"}
+                    width={searchQuery ? "200px" : "120px"}
                     height="100%"
                     style={{
                         overflowY: 'scroll',
@@ -166,16 +227,18 @@ function NodeDrawer({
                         },
                     }}
                 >
-                    {visibleTabs.map(([category]) => (
-                        <Tab key={category}
-                            fontSize="xs"
-                            height="max-content"
+                    {visibleTabs.map(([category], index) => (
+                        <Tab
+                            key={category}
+                            fontSize="2xs"
+                            height="40px"
                             minWidth="0"
                             width="100%"
                             p={4}
                             whiteSpace="pre-wrap"
                             textOverflow="ellipsis"
-                            alignItems="flex-start"
+                            bg={category === currentTab ? 'blue.100' : 'transparent'}
+                            onFocus={() => setFocusedNode(null)}
                         >
                             <HStack justifyContent="center" alignItems="center" width="100%" gap="0.2rem">
                                 <Text>{category}</Text>

@@ -139,6 +139,18 @@ const Scene = ({
   // guide from https://reactflow.dev/docs/guides/remove-attribution/
   const proOptions = { hideAttribution: true };
 
+  const handleNodeClick = (nodeConfig: NodeConfig) => {
+    const reactFlowBounds = sceneDomRef.current?.getBoundingClientRect();
+    const position = sceneInstance.current?.project({
+      x: (reactFlowBounds?.left ?? 0) + 100,
+      y: (reactFlowBounds?.top ?? 0) + 100,
+    });
+
+    if (position && sceneActions) {
+      sceneActions.addNode(nodeConfig.type, position, nodeConfig);
+    }
+  };
+
   const handleNodeDragStart = (
     event: React.DragEvent<HTMLLIElement>,
     nodeType: string,
@@ -574,6 +586,7 @@ const Scene = ({
               {drawerExpanded && (
                 <NodeDrawer
                   handleNodeDragStart={handleNodeDragStart}
+                  handleNodeClick={handleNodeClick}
                 />
               )}
             </ChakraProvider>
