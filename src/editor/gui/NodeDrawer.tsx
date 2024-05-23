@@ -26,9 +26,16 @@ function NodeDrawer({
         ([, config]) => Object.keys(config.nodes ?? {}).length > 0
     );
 
+    const logState = (action) => {
+        console.log(`${action} - Current Tab: ${tabState.currentTab}, Current Tab Index:${tabState.currentTabIndex} Focused Node: ${focusedNode}`);
+    };
+
     const [currentPath, setCurrentPath] = useState<string[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
-    const [currentTab, setCurrentTab] = useState<string | null>(filteredNodeConfigs.length ? filteredNodeConfigs[0][0] : null);
+    const [tabState, setTabState] = useState({
+        currentTabIndex: 0,
+        currentTab: filteredNodeConfigs.length ? filteredNodeConfigs[0][0] : null
+    });
     const [searchResults, setSearchResults] = useState<Record<string, { nodes: Record<string, NodeConfig | NodePackage>, packages: Record<string, NodePackage> }>>({});
     const [focusedNode, setFocusedNode] = useState<number | null>(null);
 
@@ -36,10 +43,11 @@ function NodeDrawer({
     const nodeListRef = useRef<HTMLUListElement>(null);
 
     useEffect(() => {
-        if (currentTab) {
-            setCurrentPath([currentTab]);
+        if (tabState.currentTab && currentPath[0] !== tabState.currentTab) {
+            setCurrentPath([tabState.currentTab]);
         }
-    }, [currentTab]);
+    }, [tabState.currentTab, currentPath]);
+
 
     useEffect(() => {
         if (searchQuery) {
@@ -60,42 +68,83 @@ function NodeDrawer({
         ? filteredNodeConfigs
         : filteredNodeConfigs.filter(([category]) => searchResults[category]);
 
+    const handleTabChange = (index) => {
+        console.log(`Current Tab: ${tabState.currentTab}, Current Tab Index:${tabState.currentTabIndex}, change to index: ${index}`);
+        setTabState(prev => {
+            const newTabState = {
+                ...prev,
+                currentTabIndex: index,
+                currentTab: visibleTabs[index][0]
+            };
+            console.log("Tab state updated:", newTabState);
+            return newTabState;
+        });
+    };
+
+    useEffect(() => {
+        console.log("Tab state updated:", tabState);
+    }, [tabState]);
+
     useHotkeys('up', () => {
-        if (focusedNode !== null) {
-            setFocusedNode((prev) => (prev !== null && prev > 0 ? prev - 1 : prev));
-        } else {
-            const currentIndex = visibleTabs.findIndex(([tab]) => tab === currentTab);
-            setCurrentTab(visibleTabs[Math.max(0, currentIndex - 1)][0]);
-        }
-    }, [focusedNode, visibleTabs, currentTab]);
+        logState("Key up");
+        setTabState(prev => {
+            const newIndex = Math.max(0, prev.currentTabIndex - 1);
+            if (newIndex !== prev.currentTabIndex) {
+                console.log("Updating tab state to index:", newIndex);
+                return {
+                    ...prev,
+                    currentTabIndex: newIndex,
+                    currentTab: visibleTabs[newIndex][0]
+                };
+            }
+            return prev;
+        });
+        logState("Key up After");
+    }, []);
 
     useHotkeys('down', () => {
-        if (focusedNode !== null) {
-            setFocusedNode((prev) => (prev !== null && nodeListRef.current && prev < nodeListRef.current.children.length - 1 ? prev + 1 : prev));
-        } else {
-            const currentIndex = visibleTabs.findIndex(([tab]) => tab === currentTab);
-            setCurrentTab(visibleTabs[Math.min(visibleTabs.length - 1, currentIndex + 1)][0]);
-        }
-    }, [focusedNode, visibleTabs, currentTab]);
+        logState("Key down");
+        setTabState(prev => {
+            const newIndex = Math.min(visibleTabs.length - 1, prev.currentTabIndex + 1);
+            if (newIndex !== prev.currentTabIndex) {
+                console.log("Updating tab state to index:", newIndex);
+                return {
+                    ...prev,
+                    currentTabIndex: newIndex,
+                    currentTab: visibleTabs[newIndex][0]
+                };
+            }
+            return prev;
+        });
+        logState("Key down After");
+    }, []);
+
 
     useHotkeys('right', () => {
-        if (focusedNode === null) {
+        logState("Key right");
+        if (focusedNode === null && nodeListRef.current && nodeListRef.current.children.length > 0) {
             setFocusedNode(0);
         }
+        logState("Key right After");
     }, [focusedNode]);
 
     useHotkeys('left', () => {
+        logState("Key left");
         if (focusedNode !== null) {
             setFocusedNode(null);
+        } else if (currentPath.length > 1) {
+            setCurrentPath((prev) => prev.slice(0, -1));
+            setFocusedNode(0);
         }
-    }, [focusedNode]);
+        logState("Key left After");
+    }, [focusedNode, currentPath]);
+
 
     useHotkeys('esc', () => {
-        if (focusedNode !== null || currentTab !== null) {
-            setFocusedNode(null);
-            setCurrentTab(null);
-        }
-    }, [focusedNode, currentTab]);
+        setFocusedNode(null);
+        setTabState({ currentTabIndex: 0, currentTab: filteredNodeConfigs.length ? filteredNodeConfigs[0][0] : null });
+    }, [focusedNode, tabState]);
+
 
     useHotkeys('enter', () => {
         if (focusedNode !== null && nodeListRef.current) {
@@ -113,18 +162,21 @@ function NodeDrawer({
     };
 
     const handleNodeClickLocal = (nodeName: string) => {
+        logState("Node Click");
         const nodes = getCurrentNodes();
-        const node = nodes[nodeName] as NodePackage | NodeConfig;
-        if ((node as NodePackage).nodes) {
+        const node = nodes[nodeName];
+        if (node && 'nodes' in node) {
             setCurrentPath([...currentPath, nodeName]);
-            setFocusedNode(null);
+            setFocusedNode(0);
         } else {
             handleNodeClick(node as NodeConfig);
         }
+        logState("Node Click After");
     };
 
     const handleBreadcrumbClick = (index: number) => {
         setCurrentPath(currentPath.slice(0, index + 1));
+        setFocusedNode(0);
     };
 
     const searchAllNodes = (nodes: Record<string, NodeConfig | NodePackage>, query: string): { nodes: Record<string, NodeConfig | NodePackage>, packages: Record<string, NodePackage> } => {
@@ -171,6 +223,7 @@ function NodeDrawer({
                     _hover={{ bg: 'gray.200' }}
                     onClick={() => handleNodeClickLocal(name)}
                     onFocus={() => setFocusedNode(index)}
+                    tabIndex={0}
                 >
                     <HStack>
                         {(nodeConfig as NodePackage).nodes && <Icon as={HiFolder} />}
@@ -204,14 +257,11 @@ function NodeDrawer({
                 variant='soft-rounded'
                 orientation="vertical"
                 maxW="100%"
-                onChange={(index) => {
-                    setCurrentTab(visibleTabs[index][0]);
-                    setFocusedNode(null);
-                }}
             >
                 <TabList
                     width={searchQuery ? "200px" : "120px"}
                     height="100%"
+                    ref={tabListRef}
                     style={{
                         overflowY: 'scroll',
                         overflowX: 'hidden',
@@ -237,8 +287,8 @@ function NodeDrawer({
                             p={4}
                             whiteSpace="pre-wrap"
                             textOverflow="ellipsis"
-                            bg={category === currentTab ? 'blue.100' : 'transparent'}
-                            onFocus={() => setFocusedNode(null)}
+                            bg={category === tabState.currentTab ? 'blue.100' : 'transparent'}
+                            onClick={() => { handleTabChange(index); }}
                         >
                             <HStack justifyContent="center" alignItems="center" width="100%" gap="0.2rem">
                                 <Text>{category}</Text>
@@ -270,14 +320,13 @@ function NodeDrawer({
                             <VStack align="stretch" height="100%">
                                 <Breadcrumb
                                     separator={<ChevronRightIcon color="gray.500" />}
-                                    mb={4}
-                                    style={{
-                                        overflowWrap: 'anywhere'
-                                    }}
-                                >
+                                    mb={4}>
                                     {currentPath.map((segment, index) => (
                                         <BreadcrumbItem key={index}>
-                                            <BreadcrumbLink onClick={() => handleBreadcrumbClick(index)}>
+                                            <BreadcrumbLink onClick={() => handleBreadcrumbClick(index)}
+                                                style={{
+                                                    overflowWrap: 'anywhere'
+                                                }}>
                                                 {segment}
                                             </BreadcrumbLink>
                                         </BreadcrumbItem>
