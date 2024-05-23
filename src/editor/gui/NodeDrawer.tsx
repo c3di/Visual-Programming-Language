@@ -26,7 +26,7 @@ function NodeDrawer({
         ([, config]) => Object.keys(config.nodes ?? {}).length > 0
     );
 
-    const logState = (action) => {
+    const logState = (action: string) => {
         console.log(`${action} - Current Tab: ${tabState.currentTab}, Current Tab Index:${tabState.currentTabIndex} Focused Node: ${focusedNode}`);
     };
 
@@ -68,62 +68,53 @@ function NodeDrawer({
         ? filteredNodeConfigs
         : filteredNodeConfigs.filter(([category]) => searchResults[category]);
 
-    const handleTabChange = (index) => {
-        console.log(`Current Tab: ${tabState.currentTab}, Current Tab Index:${tabState.currentTabIndex}, change to index: ${index}`);
-        setTabState(prev => {
-            const newTabState = {
-                ...prev,
-                currentTabIndex: index,
-                currentTab: visibleTabs[index][0]
-            };
-            console.log("Tab state updated:", newTabState);
-            return newTabState;
-        });
-    };
-
-    useEffect(() => {
-        console.log("Tab state updated:", tabState);
-    }, [tabState]);
-
     useHotkeys('up', () => {
         logState("Key up");
-        setTabState(prev => {
-            const newIndex = Math.max(0, prev.currentTabIndex - 1);
-            if (newIndex !== prev.currentTabIndex) {
-                console.log("Updating tab state to index:", newIndex);
-                return {
-                    ...prev,
-                    currentTabIndex: newIndex,
-                    currentTab: visibleTabs[newIndex][0]
-                };
-            }
-            return prev;
-        });
+        if (focusedNode !== null) {
+            setFocusedNode((prev) => (prev !== null && prev > 0 ? prev - 1 : prev));
+        } else {
+            setTabState(prev => {
+                const newIndex = Math.max(0, prev.currentTabIndex - 1);
+                if (newIndex !== prev.currentTabIndex) {
+                    return {
+                        ...prev,
+                        currentTabIndex: newIndex,
+                        currentTab: visibleTabs[newIndex][0]
+                    };
+                }
+                return prev;
+            });
+        }
         logState("Key up After");
-    }, []);
+    }, [visibleTabs.length, focusedNode]);
+
 
     useHotkeys('down', () => {
         logState("Key down");
-        setTabState(prev => {
-            const newIndex = Math.min(visibleTabs.length - 1, prev.currentTabIndex + 1);
-            if (newIndex !== prev.currentTabIndex) {
-                console.log("Updating tab state to index:", newIndex);
-                return {
-                    ...prev,
-                    currentTabIndex: newIndex,
-                    currentTab: visibleTabs[newIndex][0]
-                };
-            }
-            return prev;
-        });
+        if (focusedNode !== null) {
+            setFocusedNode((prev) => (prev !== null && nodeListRef.current && prev < nodeListRef.current.children.length - 1 ? prev + 1 : prev));
+        } else {
+            setTabState(prev => {
+                const newIndex = Math.min(visibleTabs.length - 1, prev.currentTabIndex + 1);
+                if (newIndex !== prev.currentTabIndex) {
+                    console.log("Updating tab state to index:", newIndex);
+                    return {
+                        ...prev,
+                        currentTabIndex: newIndex,
+                        currentTab: visibleTabs[newIndex][0]
+                    };
+                }
+                return prev;
+            });
+        }
         logState("Key down After");
-    }, []);
-
+    }, [visibleTabs.length, focusedNode]);
 
     useHotkeys('right', () => {
         logState("Key right");
         if (focusedNode === null && nodeListRef.current && nodeListRef.current.children.length > 0) {
             setFocusedNode(0);
+            (nodeListRef.current.children[0] as HTMLElement)?.focus();
         }
         logState("Key right After");
     }, [focusedNode]);
@@ -132,6 +123,7 @@ function NodeDrawer({
         logState("Key left");
         if (focusedNode !== null) {
             setFocusedNode(null);
+            tabListRef.current?.focus();
         } else if (currentPath.length > 1) {
             setCurrentPath((prev) => prev.slice(0, -1));
             setFocusedNode(0);
@@ -143,7 +135,7 @@ function NodeDrawer({
     useHotkeys('esc', () => {
         setFocusedNode(null);
         setTabState({ currentTabIndex: 0, currentTab: filteredNodeConfigs.length ? filteredNodeConfigs[0][0] : null });
-    }, [focusedNode, tabState]);
+    }, [focusedNode]);
 
 
     useHotkeys('enter', () => {
@@ -159,6 +151,18 @@ function NodeDrawer({
             nodes = (nodes[segment] as NodePackage).nodes;
         }
         return nodes;
+    };
+
+    const handleTabChange = (index: number) => {
+        setTabState(prev => {
+            const newTabState = {
+                ...prev,
+                currentTabIndex: index,
+                currentTab: visibleTabs[index][0]
+            };
+            return newTabState;
+        });
+        setFocusedNode(null);
     };
 
     const handleNodeClickLocal = (nodeName: string) => {
@@ -223,7 +227,8 @@ function NodeDrawer({
                     _hover={{ bg: 'gray.200' }}
                     onClick={() => handleNodeClickLocal(name)}
                     onFocus={() => setFocusedNode(index)}
-                    tabIndex={0}
+                    onMouseDown={(e) => e.preventDefault()}
+                    tabIndex={-1}
                 >
                     <HStack>
                         {(nodeConfig as NodePackage).nodes && <Icon as={HiFolder} />}
@@ -257,6 +262,7 @@ function NodeDrawer({
                 variant='soft-rounded'
                 orientation="vertical"
                 maxW="100%"
+                onMouseDown={(e) => e.preventDefault()}
             >
                 <TabList
                     width={searchQuery ? "200px" : "120px"}
@@ -289,6 +295,7 @@ function NodeDrawer({
                             textOverflow="ellipsis"
                             bg={category === tabState.currentTab ? 'blue.100' : 'transparent'}
                             onClick={() => { handleTabChange(index); }}
+                            onMouseDown={(e) => e.preventDefault()}
                         >
                             <HStack justifyContent="center" alignItems="center" width="100%" gap="0.2rem">
                                 <Text>{category}</Text>
