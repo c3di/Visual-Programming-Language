@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import {
     Box, Input, InputGroup, InputLeftElement, List, ListItem, VStack, Text, Icon, Tabs, TabList, TabPanels, Tab, TabPanel, Breadcrumb, BreadcrumbItem, BreadcrumbLink, HStack, Badge, InputRightElement, useTheme
 } from '@chakra-ui/react';
@@ -22,9 +22,11 @@ function NodeDrawer({
     ) => void;
 }) {
     const theme = useTheme();
-    const filteredNodeConfigs = Object.entries(nodeConfigRegistry.getAllNodeConfigs()).filter(
-        ([, config]) => Object.keys(config.nodes ?? {}).length > 0
-    );
+    const filteredNodeConfigs = useMemo(() => {
+        return Object.entries(nodeConfigRegistry.getAllNodeConfigs()).filter(
+            ([, config]) => Object.keys(config.nodes ?? {}).length > 0
+        );
+    }, [nodeConfigRegistry]);
     const [currentPath, setCurrentPath] = useState<string[]>([]);
     const [tabState, setTabState] = useState({
         currentTabIndex: 0,
@@ -155,23 +157,7 @@ function NodeDrawer({
     };
 
 
-    const handleTabClick = (index: number) => {
-        const activeElement = document.activeElement as HTMLElement;
-        activeElement?.blur();
-        if (tabState.currentTabIndex === index) {
-            setTabState(prev => ({ ...prev }));
-        } else {
-            setTabState(prev => ({
-                ...prev,
-                currentTabIndex: index,
-                currentTab: visibleTabs[index][0]
-            }));
-        }
-        setFocusedNode(null);
-    };
-
-
-    const handleTabChange = (index: number) => {
+    const handleTabChange = useCallback((index: number) => {
         setTabState(prev => {
             if (index !== prev.currentTabIndex) {
                 return {
@@ -183,6 +169,12 @@ function NodeDrawer({
             return prev;
         });
         setFocusedNode(null);
+    }, [visibleTabs]);
+
+    const handleTabClick = (index: number) => {
+        const activeElement = document.activeElement as HTMLElement;
+        activeElement?.blur();
+        handleTabChange(index);
     };
 
 
