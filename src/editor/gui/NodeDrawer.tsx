@@ -22,26 +22,20 @@ function NodeDrawer({
     ) => void;
 }) {
     const theme = useTheme();
-    const allNodeConfigs = nodeConfigRegistry.getAllNodeConfigs();
-    const filteredNodeConfigs = Object.entries(allNodeConfigs).filter(
+    const filteredNodeConfigs = Object.entries(nodeConfigRegistry.getAllNodeConfigs()).filter(
         ([, config]) => Object.keys(config.nodes ?? {}).length > 0
     );
-
-    const logState = (action: string) => {
-        console.log(`${action} - TabState: ${tabState}, Current Tab: ${tabState.currentTab}, Current Tab Index:${tabState.currentTabIndex} Focused Node: ${focusedNode}`);
-    };
-
     const [currentPath, setCurrentPath] = useState<string[]>([]);
-    const [searchQuery, setSearchQuery] = useState('');
     const [tabState, setTabState] = useState({
         currentTabIndex: 0,
         currentTab: filteredNodeConfigs.length ? filteredNodeConfigs[0][0] : null
     });
+    const [searchQuery, setSearchQuery] = useState<string>('');
     const [searchResults, setSearchResults] = useState<Record<string, { nodes: Record<string, NodeConfig | NodePackage>, packages: Record<string, NodePackage> }>>({});
     const [focusedNode, setFocusedNode] = useState<number | null>(null);
 
-    const tabListRef = useRef<HTMLDivElement>(null);
     const nodeListRef = useRef<HTMLUListElement>(null);
+    const searchInputRef = useRef(null);
 
     useEffect(() => {
         if (tabState.currentTab && currentPath[0] !== tabState.currentTab) {
@@ -65,53 +59,85 @@ function NodeDrawer({
         }
     }, [searchQuery]);
 
+    useEffect(() => {
+        if (searchQuery && nodeListRef.current) {
+            const firstNode = nodeListRef.current.firstChild as HTMLElement;
+            if (firstNode) {
+                firstNode.focus();
+            }
+        }
+    }, [searchResults]);
+
     const visibleTabs = !searchQuery
         ? filteredNodeConfigs
         : filteredNodeConfigs.filter(([category]) => searchResults[category]);
 
-    useHotkeys('up', () => {
-        logState("Key up");
+
+    const upKey = (event: React.KeyboardEvent) => {
+        event.preventDefault();
         if (focusedNode !== null) {
             setFocusedNode((prev) => (prev !== null && prev > 0 ? prev - 1 : prev));
         } else {
             const newIndex = Math.max(0, tabState.currentTabIndex - 1);
             handleTabChange(newIndex);
         }
-        logState("Key up After");
+    }
+
+    useHotkeys('up', (event: KeyboardEvent) => {
+        upKey(event as unknown as React.KeyboardEvent);
     }, [visibleTabs.length, focusedNode, tabState.currentTabIndex]);
 
-    useHotkeys('down', () => {
-        logState("Key down");
+    const downKey = (event: React.KeyboardEvent) => {
+        event.preventDefault();
         if (focusedNode !== null) {
             setFocusedNode((prev) => (prev !== null && nodeListRef.current && prev < nodeListRef.current.children.length - 1 ? prev + 1 : prev));
         } else {
             const newIndex = Math.min(visibleTabs.length - 1, tabState.currentTabIndex + 1);
             handleTabChange(newIndex);
         }
-        logState("Key down After");
+    }
+
+    useHotkeys('down', (event) => {
+        downKey(event as unknown as React.KeyboardEvent);
     }, [visibleTabs.length, focusedNode, tabState.currentTabIndex]);
 
-    useHotkeys('right', () => {
-        logState("Key right");
-        if (focusedNode === null && nodeListRef.current && nodeListRef.current.children.length > 0) {
-            setFocusedNode(0);
-            (nodeListRef.current.children[0] as HTMLElement)?.focus();
-        }
-        logState("Key right After");
-    }, [focusedNode]);
-
-    useHotkeys('left', () => {
-        logState("Key left");
+    const leftKey = (event: React.KeyboardEvent) => {
+        event.preventDefault();
         if (focusedNode !== null) {
             setFocusedNode(null);
-            tabListRef.current?.focus();
         } else if (currentPath.length > 1) {
             setCurrentPath((prev) => prev.slice(0, -1));
             setFocusedNode(0);
         }
-        logState("Key left After");
+    }
+
+    useHotkeys('left', (event) => {
+        leftKey(event as unknown as React.KeyboardEvent)
     }, [focusedNode, currentPath]);
 
+    const rightKey = (event: React.KeyboardEvent) => {
+        event.preventDefault();
+        if (focusedNode === null && nodeListRef.current && nodeListRef.current.children.length > 0) {
+            setFocusedNode(0);
+            (nodeListRef.current.children[0] as HTMLElement)?.focus();
+        }
+    }
+
+    useHotkeys('right', (event) => {
+        rightKey(event as unknown as React.KeyboardEvent);
+    }, [focusedNode]);
+
+    const enterKey = (event: React.KeyboardEvent) => {
+        event.preventDefault();
+        if (focusedNode !== null && nodeListRef.current) {
+            const node = nodeListRef.current.children[focusedNode] as HTMLLIElement;
+            node.click();
+        }
+    }
+
+    useHotkeys('enter', (event) => {
+        enterKey(event as unknown as React.KeyboardEvent);
+    }, [focusedNode]);
 
     useHotkeys('esc', () => {
         setFocusedNode(null);
@@ -119,15 +145,9 @@ function NodeDrawer({
     }, [focusedNode]);
 
 
-    useHotkeys('enter', () => {
-        if (focusedNode !== null && nodeListRef.current) {
-            const node = nodeListRef.current.children[focusedNode] as HTMLLIElement;
-            node.click();
-        }
-    }, [focusedNode]);
 
     const getCurrentNodes = (): Record<string, NodeConfig | NodePackage> => {
-        let nodes: Record<string, NodeConfig | NodePackage> = allNodeConfigs;
+        let nodes: Record<string, NodeConfig | NodePackage> = nodeConfigRegistry.getAllNodeConfigs();
         for (const segment of currentPath) {
             nodes = (nodes[segment] as NodePackage).nodes;
         }
@@ -154,7 +174,6 @@ function NodeDrawer({
     const handleTabChange = (index: number) => {
         setTabState(prev => {
             if (index !== prev.currentTabIndex) {
-                console.log("Updating tab state to index:", index);
                 return {
                     ...prev,
                     currentTabIndex: index,
@@ -168,7 +187,6 @@ function NodeDrawer({
 
 
     const handleNodeClickLocal = (nodeName: string) => {
-        logState("Node Click");
         const nodes = getCurrentNodes();
         const node = nodes[nodeName];
         if (node && 'nodes' in node) {
@@ -177,7 +195,6 @@ function NodeDrawer({
         } else {
             handleNodeClick(node as NodeConfig);
         }
-        logState("Node Click After");
     };
 
     const handleBreadcrumbClick = (index: number) => {
@@ -212,6 +229,20 @@ function NodeDrawer({
         return { nodes: nodeResults, packages: packageResults };
     };
 
+    const handleSearchKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "ArrowUp") {
+            upKey(event);
+        } else if (event.key === "ArrowDown") {
+            downKey(event);
+        } else if (event.key === "ArrowLeft") {
+            leftKey(event);
+        } else if (event.key === "ArrowRight") {
+            rightKey(event);
+        } else if (event.key === "Enter") {
+            enterKey(event);
+        }
+    };
+
     const renderNodeList = (nodes: Record<string, NodeConfig | NodePackage>) => (
         <List spacing={2} ref={nodeListRef}>
             {Object.entries(nodes).map(([name, nodeConfig], index) => (
@@ -228,6 +259,7 @@ function NodeDrawer({
                     bg={index === focusedNode ? 'blue.100' : 'gray.100'}
                     _hover={{ bg: 'gray.200' }}
                     onClick={() => handleNodeClickLocal(name)}
+                    tabIndex={0}
                     onFocus={() => setFocusedNode(index)}
                     onMouseDown={(e) => e.preventDefault()}
                 >
@@ -253,6 +285,8 @@ function NodeDrawer({
                     placeholder="Search node"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={handleSearchKeyDown}
+                    ref={searchInputRef}
                 />
                 <InputRightElement>
                     <Icon as={CloseIcon} cursor="pointer" onClick={() => setSearchQuery('')} />
@@ -269,7 +303,6 @@ function NodeDrawer({
                     key={tabState.currentTabIndex}
                     width={searchQuery ? "200px" : "120px"}
                     height="100%"
-                    ref={tabListRef}
                     style={{
                         overflowY: 'scroll',
                         overflowX: 'hidden',
