@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-    Box, Input, InputGroup, InputLeftElement, List, ListItem, VStack, Text, Icon, Tabs, TabList, TabPanels, Tab, TabPanel, Breadcrumb, BreadcrumbItem, BreadcrumbLink, HStack, Badge, InputRightElement,
+    Box, Input, InputGroup, InputLeftElement, List, ListItem, VStack, Text, Icon, Tabs, TabList, TabPanels, Tab, TabPanel, Breadcrumb, BreadcrumbItem, BreadcrumbLink, HStack, Badge, InputRightElement, useTheme
 } from '@chakra-ui/react';
 import { Search2Icon, ChevronRightIcon, CloseIcon } from '@chakra-ui/icons';
 import { HiFolder } from "react-icons/hi2";
@@ -21,13 +21,14 @@ function NodeDrawer({
         nodeConfig: NodeConfig
     ) => void;
 }) {
+    const theme = useTheme();
     const allNodeConfigs = nodeConfigRegistry.getAllNodeConfigs();
     const filteredNodeConfigs = Object.entries(allNodeConfigs).filter(
         ([, config]) => Object.keys(config.nodes ?? {}).length > 0
     );
 
     const logState = (action: string) => {
-        console.log(`${action} - Current Tab: ${tabState.currentTab}, Current Tab Index:${tabState.currentTabIndex} Focused Node: ${focusedNode}`);
+        console.log(`${action} - TabState: ${tabState}, Current Tab: ${tabState.currentTab}, Current Tab Index:${tabState.currentTabIndex} Focused Node: ${focusedNode}`);
     };
 
     const [currentPath, setCurrentPath] = useState<string[]>([]);
@@ -73,42 +74,22 @@ function NodeDrawer({
         if (focusedNode !== null) {
             setFocusedNode((prev) => (prev !== null && prev > 0 ? prev - 1 : prev));
         } else {
-            setTabState(prev => {
-                const newIndex = Math.max(0, prev.currentTabIndex - 1);
-                if (newIndex !== prev.currentTabIndex) {
-                    return {
-                        ...prev,
-                        currentTabIndex: newIndex,
-                        currentTab: visibleTabs[newIndex][0]
-                    };
-                }
-                return prev;
-            });
+            const newIndex = Math.max(0, tabState.currentTabIndex - 1);
+            handleTabChange(newIndex);
         }
         logState("Key up After");
-    }, [visibleTabs.length, focusedNode]);
-
+    }, [visibleTabs.length, focusedNode, tabState.currentTabIndex]);
 
     useHotkeys('down', () => {
         logState("Key down");
         if (focusedNode !== null) {
             setFocusedNode((prev) => (prev !== null && nodeListRef.current && prev < nodeListRef.current.children.length - 1 ? prev + 1 : prev));
         } else {
-            setTabState(prev => {
-                const newIndex = Math.min(visibleTabs.length - 1, prev.currentTabIndex + 1);
-                if (newIndex !== prev.currentTabIndex) {
-                    console.log("Updating tab state to index:", newIndex);
-                    return {
-                        ...prev,
-                        currentTabIndex: newIndex,
-                        currentTab: visibleTabs[newIndex][0]
-                    };
-                }
-                return prev;
-            });
+            const newIndex = Math.min(visibleTabs.length - 1, tabState.currentTabIndex + 1);
+            handleTabChange(newIndex);
         }
         logState("Key down After");
-    }, [visibleTabs.length, focusedNode]);
+    }, [visibleTabs.length, focusedNode, tabState.currentTabIndex]);
 
     useHotkeys('right', () => {
         logState("Key right");
@@ -153,17 +134,38 @@ function NodeDrawer({
         return nodes;
     };
 
-    const handleTabChange = (index: number) => {
-        setTabState(prev => {
-            const newTabState = {
+
+    const handleTabClick = (index: number) => {
+        const activeElement = document.activeElement as HTMLElement;
+        activeElement?.blur();
+        if (tabState.currentTabIndex === index) {
+            setTabState(prev => ({ ...prev }));
+        } else {
+            setTabState(prev => ({
                 ...prev,
                 currentTabIndex: index,
                 currentTab: visibleTabs[index][0]
-            };
-            return newTabState;
+            }));
+        }
+        setFocusedNode(null);
+    };
+
+
+    const handleTabChange = (index: number) => {
+        setTabState(prev => {
+            if (index !== prev.currentTabIndex) {
+                console.log("Updating tab state to index:", index);
+                return {
+                    ...prev,
+                    currentTabIndex: index,
+                    currentTab: visibleTabs[index][0]
+                };
+            }
+            return prev;
         });
         setFocusedNode(null);
     };
+
 
     const handleNodeClickLocal = (nodeName: string) => {
         logState("Node Click");
@@ -228,7 +230,6 @@ function NodeDrawer({
                     onClick={() => handleNodeClickLocal(name)}
                     onFocus={() => setFocusedNode(index)}
                     onMouseDown={(e) => e.preventDefault()}
-                    tabIndex={-1}
                 >
                     <HStack>
                         {(nodeConfig as NodePackage).nodes && <Icon as={HiFolder} />}
@@ -265,6 +266,7 @@ function NodeDrawer({
                 onMouseDown={(e) => e.preventDefault()}
             >
                 <TabList
+                    key={tabState.currentTabIndex}
                     width={searchQuery ? "200px" : "120px"}
                     height="100%"
                     ref={tabListRef}
@@ -293,8 +295,10 @@ function NodeDrawer({
                             p={4}
                             whiteSpace="pre-wrap"
                             textOverflow="ellipsis"
-                            bg={category === tabState.currentTab ? 'blue.100' : 'transparent'}
-                            onClick={() => { handleTabChange(index); }}
+                            style={{
+                                backgroundColor: tabState.currentTabIndex === index ? theme.colors.blue[100] : 'transparent',
+                            }}
+                            onClick={(e) => { e.preventDefault(); handleTabClick(index) }}
                             onMouseDown={(e) => e.preventDefault()}
                         >
                             <HStack justifyContent="center" alignItems="center" width="100%" gap="0.2rem">
@@ -347,7 +351,7 @@ function NodeDrawer({
                     ))}
                 </TabPanels>
             </Tabs>
-        </Box>
+        </Box >
     );
 }
 
