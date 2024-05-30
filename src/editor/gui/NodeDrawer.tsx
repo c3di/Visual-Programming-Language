@@ -1,12 +1,18 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import {
-    Box, Input, InputGroup, InputLeftElement, List, ListItem, VStack, Text, Icon, Tabs, TabList, TabPanels, Tab, TabPanel, Breadcrumb, BreadcrumbItem, BreadcrumbLink, HStack, Badge, InputRightElement, useTheme
+    Box, Input, InputGroup, InputLeftElement, List, ListItem, VStack, Text, Icon, Tabs, TabList, TabPanels, Tab, TabPanel, Breadcrumb, BreadcrumbItem, BreadcrumbLink, HStack, Badge, InputRightElement, useTheme,
+    Flex
 } from '@chakra-ui/react';
 import { Search2Icon, ChevronRightIcon, CloseIcon } from '@chakra-ui/icons';
 import { HiFolder } from "react-icons/hi2";
 import { nodeConfigRegistry } from '../extension';
 import { NodeConfig, NodePackage } from '../types';
 import { useHotkeys } from 'react-hotkeys-hook';
+
+const bgTabList = "gray.100";
+const bgNodePanel = "gray.50";
+const focusBgColor = "blue.100";
+
 
 function NodeDrawer({
     handleNodeDragStart,
@@ -21,7 +27,6 @@ function NodeDrawer({
         nodeConfig: NodeConfig
     ) => void;
 }) {
-    const theme = useTheme();
     const filteredNodeConfigs = useMemo(() => {
         return Object.entries(nodeConfigRegistry.getAllNodeConfigs()).filter(
             ([, config]) => Object.keys(config.nodes ?? {}).length > 0
@@ -177,7 +182,6 @@ function NodeDrawer({
         handleTabChange(index);
     };
 
-
     const handleNodeClickLocal = (nodeName: string) => {
         const nodes = getCurrentNodes();
         const node = nodes[nodeName];
@@ -248,7 +252,7 @@ function NodeDrawer({
                     cursor="pointer"
                     p={2}
                     borderRadius="md"
-                    bg={index === focusedNode ? 'blue.100' : 'gray.100'}
+                    bg={index === focusedNode ? focusBgColor : 'gray.100'}
                     _hover={{ bg: 'gray.200' }}
                     onClick={() => handleNodeClickLocal(name)}
                     tabIndex={0}
@@ -281,33 +285,30 @@ function NodeDrawer({
                     ref={searchInputRef}
                 />
                 <InputRightElement>
-                    <Icon as={CloseIcon} cursor="pointer" onClick={() => setSearchQuery('')} />
+                    {searchQuery.length > 0 && (
+                        <Icon as={CloseIcon} cursor="pointer" onClick={() => setSearchQuery('')} />
+                    )}
                 </InputRightElement>
             </InputGroup>
             <Tabs
+                index={tabState.currentTabIndex}
+                onChange={(index) => handleTabChange(index)}
                 isFitted
-                variant='soft-rounded'
                 orientation="vertical"
+                variant='enclosed'
                 maxW="100%"
                 onMouseDown={(e) => e.preventDefault()}
             >
                 <TabList
-                    key={tabState.currentTabIndex}
                     width={searchQuery ? "200px" : "120px"}
                     height="100%"
                     style={{
-                        overflowY: 'scroll',
+                        overflowY: 'hidden',
                         overflowX: 'hidden',
-                        scrollbarWidth: 'thin',
                     }}
                     sx={{
-                        '::-webkit-scrollbar': {
-                            width: '6px',
-                        },
-                        '::-webkit-scrollbar-thumb': {
-                            background: 'gray',
-                            borderRadius: '3px',
-                        },
+                        backgroundColor: bgTabList,
+                        borderRightColor: bgNodePanel,
                     }}
                 >
                     {visibleTabs.map(([category], index) => (
@@ -320,11 +321,11 @@ function NodeDrawer({
                             p={4}
                             whiteSpace="pre-wrap"
                             textOverflow="ellipsis"
-                            style={{
-                                backgroundColor: tabState.currentTabIndex === index ? theme.colors.blue[100] : 'transparent',
-                            }}
                             onClick={(e) => { e.preventDefault(); handleTabClick(index) }}
                             onMouseDown={(e) => e.preventDefault()}
+                            sx={{
+                                bg: index === tabState.currentTabIndex ? (focusedNode !== null ? bgNodePanel : focusBgColor) : 'transparent',
+                            }}
                         >
                             <HStack justifyContent="center" alignItems="center" width="100%" gap="0.2rem">
                                 <Text>{category}</Text>
@@ -356,13 +357,17 @@ function NodeDrawer({
                             <VStack align="stretch" height="100%">
                                 <Breadcrumb
                                     separator={<ChevronRightIcon color="gray.500" />}
-                                    mb={4}>
+                                    mb={4}
+                                    sx={{
+                                        '.chakra-breadcrumb__list': {
+                                            display: 'block',
+                                            flexWrap: 'wrap',
+                                        },
+                                    }}
+                                >
                                     {currentPath.map((segment, index) => (
-                                        <BreadcrumbItem key={index}>
-                                            <BreadcrumbLink onClick={() => handleBreadcrumbClick(index)}
-                                                style={{
-                                                    overflowWrap: 'anywhere'
-                                                }}>
+                                        <BreadcrumbItem key={index} isCurrentPage={index === currentPath.length - 1}>
+                                            <BreadcrumbLink onClick={() => handleBreadcrumbClick(index)}>
                                                 {segment}
                                             </BreadcrumbLink>
                                         </BreadcrumbItem>
