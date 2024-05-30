@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import {
-    Box, Input, InputGroup, InputLeftElement, List, ListItem, VStack, Text, Icon, Tabs, TabList, TabPanels, Tab, TabPanel, Breadcrumb, BreadcrumbItem, BreadcrumbLink, HStack, Badge, InputRightElement, useTheme,
-    Flex
+    Box, Input, InputGroup, InputLeftElement, List, ListItem, VStack, Text, Icon, Tabs, TabList, TabPanels, Tab, TabPanel, Breadcrumb, BreadcrumbItem, BreadcrumbLink, HStack, Badge, InputRightElement, Flex
 } from '@chakra-ui/react';
 import { Search2Icon, ChevronRightIcon, CloseIcon } from '@chakra-ui/icons';
 import { HiFolder } from "react-icons/hi2";
@@ -9,7 +8,6 @@ import { nodeConfigRegistry } from '../extension';
 import { NodeConfig, NodePackage } from '../types';
 import { useHotkeys } from 'react-hotkeys-hook';
 
-const bgTabList = "gray.100";
 const bgNodePanel = "gray.50";
 const focusBgColor = "blue.100";
 
@@ -40,6 +38,7 @@ function NodeDrawer({
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [searchResults, setSearchResults] = useState<Record<string, { nodes: Record<string, NodeConfig | NodePackage>, packages: Record<string, NodePackage> }>>({});
     const [focusedNode, setFocusedNode] = useState<number | null>(null);
+    const [focusOnTab, setFocusOnTab] = useState<boolean>(true);
 
     const nodeListRef = useRef<HTMLUListElement>(null);
     const searchInputRef = useRef(null);
@@ -51,30 +50,6 @@ function NodeDrawer({
     }, [tabState.currentTab, currentPath]);
 
 
-    useEffect(() => {
-        if (searchQuery) {
-            const results: Record<string, { nodes: Record<string, NodeConfig | NodePackage>, packages: Record<string, NodePackage> }> = {};
-            filteredNodeConfigs.forEach(([category, config]) => {
-                const { nodes, packages } = searchAllNodes(config.nodes, searchQuery);
-                if (Object.keys(nodes).length > 0 || Object.keys(packages).length > 0) {
-                    results[category] = { nodes, packages };
-                }
-            });
-            setSearchResults(results);
-        } else {
-            setSearchResults({});
-        }
-    }, [searchQuery]);
-
-    useEffect(() => {
-        if (searchQuery && nodeListRef.current) {
-            const firstNode = nodeListRef.current.firstChild as HTMLElement;
-            if (firstNode) {
-                firstNode.focus();
-            }
-        }
-    }, [searchResults]);
-
     const visibleTabs = !searchQuery
         ? filteredNodeConfigs
         : filteredNodeConfigs.filter(([category]) => searchResults[category]);
@@ -82,57 +57,61 @@ function NodeDrawer({
 
     const upKey = (event: React.KeyboardEvent) => {
         event.preventDefault();
-        if (focusedNode !== null) {
+        if (!focusOnTab) {
             setFocusedNode((prev) => (prev !== null && prev > 0 ? prev - 1 : prev));
         } else {
             const newIndex = Math.max(0, tabState.currentTabIndex - 1);
             handleTabChange(newIndex);
         }
     }
-
     useHotkeys('up', (event: KeyboardEvent) => {
         upKey(event as unknown as React.KeyboardEvent);
     }, [visibleTabs.length, focusedNode, tabState.currentTabIndex]);
 
+
     const downKey = (event: React.KeyboardEvent) => {
         event.preventDefault();
-        if (focusedNode !== null) {
+        if (!focusOnTab) {
             setFocusedNode((prev) => (prev !== null && nodeListRef.current && prev < nodeListRef.current.children.length - 1 ? prev + 1 : prev));
         } else {
             const newIndex = Math.min(visibleTabs.length - 1, tabState.currentTabIndex + 1);
             handleTabChange(newIndex);
         }
     }
-
     useHotkeys('down', (event) => {
         downKey(event as unknown as React.KeyboardEvent);
     }, [visibleTabs.length, focusedNode, tabState.currentTabIndex]);
 
+
     const leftKey = (event: React.KeyboardEvent) => {
         event.preventDefault();
         if (focusedNode !== null) {
-            setFocusedNode(null);
-        } else if (currentPath.length > 1) {
-            setCurrentPath((prev) => prev.slice(0, -1));
-            setFocusedNode(0);
+            if (currentPath.length > 1) {
+                setCurrentPath((prev) => prev.slice(0, -1));
+                setFocusedNode(0);
+            } else {
+                setFocusOnTab(true);
+                setFocusedNode(null);
+            }
         }
     }
-
     useHotkeys('left', (event) => {
         leftKey(event as unknown as React.KeyboardEvent)
     }, [focusedNode, currentPath]);
 
+
     const rightKey = (event: React.KeyboardEvent) => {
         event.preventDefault();
         if (focusedNode === null && nodeListRef.current && nodeListRef.current.children.length > 0) {
+            setFocusOnTab(false);
             setFocusedNode(0);
             (nodeListRef.current.children[0] as HTMLElement)?.focus();
         }
     }
-
     useHotkeys('right', (event) => {
         rightKey(event as unknown as React.KeyboardEvent);
     }, [focusedNode]);
+
 
     const enterKey = (event: React.KeyboardEvent) => {
         event.preventDefault();
@@ -141,7 +120,6 @@ function NodeDrawer({
             node.click();
         }
     }
-
     useHotkeys('enter', (event) => {
         enterKey(event as unknown as React.KeyboardEvent);
     }, [focusedNode]);
@@ -197,6 +175,32 @@ function NodeDrawer({
         setCurrentPath(currentPath.slice(0, index + 1));
         setFocusedNode(0);
     };
+
+    useEffect(() => {
+        if (searchQuery) {
+            setFocusedNode(null);
+            setTabState({ currentTabIndex: 0, currentTab: visibleTabs.length ? visibleTabs[0][0] : null });
+            const results: Record<string, { nodes: Record<string, NodeConfig | NodePackage>, packages: Record<string, NodePackage> }> = {};
+            filteredNodeConfigs.forEach(([category, config]) => {
+                const { nodes, packages } = searchAllNodes(config.nodes, searchQuery);
+                if (Object.keys(nodes).length > 0 || Object.keys(packages).length > 0) {
+                    results[category] = { nodes, packages };
+                }
+            });
+            setSearchResults(results);
+        } else {
+            setSearchResults({});
+        }
+    }, [searchQuery]);
+
+    useEffect(() => {
+        if (searchQuery && nodeListRef.current) {
+            const firstNode = nodeListRef.current.firstChild as HTMLElement;
+            if (firstNode) {
+                firstNode.focus();
+            }
+        }
+    }, [searchResults]);
 
     const searchAllNodes = (nodes: Record<string, NodeConfig | NodePackage>, query: string): { nodes: Record<string, NodeConfig | NodePackage>, packages: Record<string, NodePackage> } => {
         const lowerQuery = query.toLowerCase();
@@ -271,116 +275,103 @@ function NodeDrawer({
     );
 
     return (
-        <Box p={4} width="300px" bg="gray.50" borderRight="1px solid #ccc" height="100vh" display="flex" flexDirection="column" overflow="hidden">
-            <Text fontSize="lg" fontWeight="bold" mb={4}>Node Library</Text>
-            <InputGroup mb={8}>
-                <InputLeftElement pointerEvents="none">
-                    <Icon as={Search2Icon} />
-                </InputLeftElement>
-                <Input
-                    placeholder="Search node"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyDown={handleSearchKeyDown}
-                    ref={searchInputRef}
-                />
-                <InputRightElement>
-                    {searchQuery.length > 0 && (
-                        <Icon as={CloseIcon} cursor="pointer" onClick={() => setSearchQuery('')} />
-                    )}
-                </InputRightElement>
-            </InputGroup>
-            <Tabs
-                index={tabState.currentTabIndex}
-                onChange={(index) => handleTabChange(index)}
-                isFitted
-                orientation="vertical"
-                variant='enclosed'
-                maxW="100%"
-                onMouseDown={(e) => e.preventDefault()}
-            >
-                <TabList
-                    width={searchQuery ? "200px" : "120px"}
-                    height="100%"
-                    style={{
-                        overflowY: 'hidden',
-                        overflowX: 'hidden',
-                    }}
-                    sx={{
-                        backgroundColor: bgTabList,
-                        borderRightColor: bgNodePanel,
-                    }}
+        <Box width="300px" bg="gray.100" borderRight="1px solid #ccc" height="100vh" display="flex" flexDirection="column" overflow="hidden">
+            <VStack spacing={8} p={4}>
+                <Text fontSize="lg" fontWeight="bold" mt={4}>Node Library</Text>
+                <InputGroup mb={4}>
+                    <InputLeftElement pointerEvents="none">
+                        <Icon as={Search2Icon} />
+                    </InputLeftElement>
+                    <Input
+                        placeholder="Search node"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyDown={handleSearchKeyDown}
+                        ref={searchInputRef}
+                        borderColor="white"
+                    />
+                    <InputRightElement>
+                        {searchQuery.length > 0 && (
+                            <Icon as={CloseIcon} cursor="pointer" onClick={() => setSearchQuery('')} />
+                        )}
+                    </InputRightElement>
+                </InputGroup>
+            </VStack>
+            <Flex flex="1" direction="column" mt={4}>
+                <Tabs
+                    index={tabState.currentTabIndex}
+                    onChange={(index) => handleTabChange(index)}
+                    isFitted
+                    orientation="vertical"
+                    flex="1"
+                    onMouseDown={(e) => e.preventDefault()}
                 >
-                    {visibleTabs.map(([category], index) => (
-                        <Tab
-                            key={category}
-                            fontSize="2xs"
-                            height="40px"
-                            minWidth="0"
-                            width="100%"
-                            p={4}
-                            whiteSpace="pre-wrap"
-                            textOverflow="ellipsis"
-                            onClick={(e) => { e.preventDefault(); handleTabClick(index) }}
-                            onMouseDown={(e) => e.preventDefault()}
-                            sx={{
-                                bg: index === tabState.currentTabIndex ? (focusedNode !== null ? bgNodePanel : focusBgColor) : 'transparent',
-                            }}
-                        >
-                            <HStack justifyContent="center" alignItems="center" width="100%" gap="0.2rem">
-                                <Text>{category}</Text>
-                                {searchResults[category] && (
-                                    <Badge colorScheme="red" borderRadius="50%">
-                                        {Object.keys(searchResults[category].nodes).length + Object.keys(searchResults[category].packages).length}
-                                    </Badge>
-                                )}
-                            </HStack>
-                        </Tab>
-                    ))}
-                </TabList>
-                <TabPanels
-                    style={{
-                        overflowY: 'auto',
-                        scrollbarWidth: 'thin',
-                    }}
-                    sx={{
-                        '::-webkit-scrollbar': {
-                            width: '6px',
-                        },
-                        '::-webkit-scrollbar-thumb': {
-                            background: 'gray',
-                            borderRadius: '3px',
-                        },
-                    }}>
-                    {visibleTabs.map(([category]) => (
-                        <TabPanel key={category} mt={2} height="100%">
-                            <VStack align="stretch" height="100%">
-                                <Breadcrumb
-                                    separator={<ChevronRightIcon color="gray.500" />}
-                                    mb={4}
-                                    sx={{
-                                        '.chakra-breadcrumb__list': {
-                                            display: 'block',
-                                            flexWrap: 'wrap',
-                                        },
-                                    }}
-                                >
-                                    {currentPath.map((segment, index) => (
-                                        <BreadcrumbItem key={index} isCurrentPage={index === currentPath.length - 1}>
-                                            <BreadcrumbLink onClick={() => handleBreadcrumbClick(index)}>
-                                                {segment}
-                                            </BreadcrumbLink>
-                                        </BreadcrumbItem>
-                                    ))}
-                                </Breadcrumb>
-                                {searchQuery && searchResults[currentPath[0]]
-                                    ? renderNodeList(currentPath.length > 1 ? getCurrentNodes() : { ...searchResults[currentPath[0]].packages, ...searchResults[currentPath[0]].nodes })
-                                    : renderNodeList(getCurrentNodes())}
-                            </VStack>
-                        </TabPanel>
-                    ))}
-                </TabPanels>
-            </Tabs>
+                    <TabList
+                        height="100%"
+                        overflowY="auto"
+                        borderColor={bgNodePanel}
+                    >
+                        {visibleTabs.map(([category], index) => (
+                            <Tab
+                                key={category}
+                                fontSize="2xs"
+                                p={4}
+                                marginInlineStart="0px"
+                                onClick={(e) => { e.preventDefault(); handleTabClick(index) }}
+                                onMouseDown={(e) => e.preventDefault()}
+                                // _selected={{ borderColor: "transparent" }}
+                                sx={{
+                                    bg: index === tabState.currentTabIndex ? (focusOnTab ? focusBgColor : bgNodePanel) : 'transparent',
+                                    _focusVisible: { boxShadow: 'none' }
+                                }}
+                            >
+                                <HStack justifyContent="center" alignItems="center" width="100%" gap="0.2rem">
+                                    <Text>{category}</Text>
+                                    {searchResults[category] && (
+                                        <Badge colorScheme="red" borderRadius="50%">
+                                            {Object.keys(searchResults[category].nodes).length + Object.keys(searchResults[category].packages).length}
+                                        </Badge>
+                                    )}
+                                </HStack>
+                            </Tab>
+                        ))}
+                    </TabList>
+                    <TabPanels
+                        bg={bgNodePanel}
+                        style={{
+                            overflowY: 'auto',
+                            scrollbarWidth: 'thin',
+                        }}>
+                        {visibleTabs.map(([category]) => (
+                            <TabPanel key={category} mt={2} height="100%">
+                                <VStack align="stretch" height="100%">
+                                    <Breadcrumb
+                                        separator={<ChevronRightIcon color="gray.500" />}
+                                        mb={4}
+                                        sx={{
+                                            '.chakra-breadcrumb__list': {
+                                                display: 'block',
+                                                flexWrap: 'wrap',
+                                            },
+                                        }}
+                                    >
+                                        {currentPath.map((segment, index) => (
+                                            <BreadcrumbItem key={index} isCurrentPage={index === currentPath.length - 1}>
+                                                <BreadcrumbLink onClick={() => handleBreadcrumbClick(index)}>
+                                                    {segment}
+                                                </BreadcrumbLink>
+                                            </BreadcrumbItem>
+                                        ))}
+                                    </Breadcrumb>
+                                    {searchQuery && searchResults[currentPath[0]]
+                                        ? renderNodeList(currentPath.length > 1 ? getCurrentNodes() : { ...searchResults[currentPath[0]].packages, ...searchResults[currentPath[0]].nodes })
+                                        : renderNodeList(getCurrentNodes())}
+                                </VStack>
+                            </TabPanel>
+                        ))}
+                    </TabPanels>
+                </Tabs>
+            </Flex>
         </Box >
     );
 }

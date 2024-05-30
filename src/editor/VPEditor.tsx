@@ -565,7 +565,7 @@ const Scene = ({
             onClick={() => setDrawerExpanded(!drawerExpanded)}
             style={{
               position: 'absolute',
-              right: drawerExpanded ? '303px' : '5px',
+              right: drawerExpanded ? '295px' : '5px',
               top: '50%',
               transform: 'translateY(-50%)',
               width: '8px',
