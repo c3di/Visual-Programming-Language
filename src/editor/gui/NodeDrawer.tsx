@@ -7,6 +7,7 @@ import { HiFolder } from "react-icons/hi2";
 import { nodeConfigRegistry } from '../extension';
 import { NodeConfig, NodePackage } from '../types';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { set } from 'lodash';
 
 const bgNodePanel = "gray.50";
 const focusBgColor = "blue.100";
@@ -50,12 +51,13 @@ function NodeDrawer({
     }, [tabState.currentTab, currentPath]);
 
 
-    const visibleTabs = !searchQuery
-        ? filteredNodeConfigs
-        : filteredNodeConfigs.filter(([category]) => searchResults[category]);
+    const visibleTabs = useMemo(() => {
+        return !searchQuery
+            ? filteredNodeConfigs
+            : filteredNodeConfigs.filter(([category]) => searchResults[category]);
+    }, [searchQuery, filteredNodeConfigs, searchResults]);
 
-
-    const upKey = (event: React.KeyboardEvent) => {
+    const upKey = useCallback((event: React.KeyboardEvent) => {
         event.preventDefault();
         if (!focusOnTab) {
             setFocusedNode((prev) => (prev !== null && prev > 0 ? prev - 1 : prev));
@@ -63,13 +65,13 @@ function NodeDrawer({
             const newIndex = Math.max(0, tabState.currentTabIndex - 1);
             handleTabChange(newIndex);
         }
-    }
+    }, [focusOnTab, tabState.currentTabIndex]);
     useHotkeys('up', (event: KeyboardEvent) => {
         upKey(event as unknown as React.KeyboardEvent);
     }, [visibleTabs.length, focusedNode, tabState.currentTabIndex]);
 
 
-    const downKey = (event: React.KeyboardEvent) => {
+    const downKey = useCallback((event: React.KeyboardEvent) => {
         event.preventDefault();
         if (!focusOnTab) {
             setFocusedNode((prev) => (prev !== null && nodeListRef.current && prev < nodeListRef.current.children.length - 1 ? prev + 1 : prev));
@@ -77,13 +79,13 @@ function NodeDrawer({
             const newIndex = Math.min(visibleTabs.length - 1, tabState.currentTabIndex + 1);
             handleTabChange(newIndex);
         }
-    }
+    }, [focusOnTab, tabState.currentTabIndex, visibleTabs.length]);
     useHotkeys('down', (event) => {
         downKey(event as unknown as React.KeyboardEvent);
     }, [visibleTabs.length, focusedNode, tabState.currentTabIndex]);
 
 
-    const leftKey = (event: React.KeyboardEvent) => {
+    const leftKey = useCallback((event: React.KeyboardEvent) => {
         event.preventDefault();
         if (focusedNode !== null) {
             if (currentPath.length > 1) {
@@ -94,32 +96,32 @@ function NodeDrawer({
                 setFocusedNode(null);
             }
         }
-    }
+    }, [focusedNode, currentPath]);
     useHotkeys('left', (event) => {
         leftKey(event as unknown as React.KeyboardEvent)
     }, [focusedNode, currentPath]);
 
 
-    const rightKey = (event: React.KeyboardEvent) => {
+    const rightKey = useCallback((event: React.KeyboardEvent) => {
         event.preventDefault();
         if (focusedNode === null && nodeListRef.current && nodeListRef.current.children.length > 0) {
             setFocusOnTab(false);
             setFocusedNode(0);
             (nodeListRef.current.children[0] as HTMLElement)?.focus();
         }
-    }
+    }, [focusedNode]);
     useHotkeys('right', (event) => {
         rightKey(event as unknown as React.KeyboardEvent);
     }, [focusedNode]);
 
 
-    const enterKey = (event: React.KeyboardEvent) => {
+    const enterKey = useCallback((event: React.KeyboardEvent) => {
         event.preventDefault();
         if (focusedNode !== null && nodeListRef.current) {
             const node = nodeListRef.current.children[focusedNode] as HTMLLIElement;
             node.click();
         }
-    }
+    }, [focusedNode]);
     useHotkeys('enter', (event) => {
         enterKey(event as unknown as React.KeyboardEvent);
     }, [focusedNode]);
@@ -131,13 +133,13 @@ function NodeDrawer({
 
 
 
-    const getCurrentNodes = (): Record<string, NodeConfig | NodePackage> => {
+    const getCurrentNodes = useCallback((): Record<string, NodeConfig | NodePackage> => {
         let nodes: Record<string, NodeConfig | NodePackage> = nodeConfigRegistry.getAllNodeConfigs();
         for (const segment of currentPath) {
             nodes = (nodes[segment] as NodePackage).nodes;
         }
         return nodes;
-    };
+    }, [currentPath]);
 
 
     const handleTabChange = useCallback((index: number) => {
@@ -154,13 +156,13 @@ function NodeDrawer({
         setFocusedNode(null);
     }, [visibleTabs]);
 
-    const handleTabClick = (index: number) => {
+    const handleTabClick = useCallback((index: number) => {
         const activeElement = document.activeElement as HTMLElement;
         activeElement?.blur();
         handleTabChange(index);
-    };
+    }, [handleTabChange]);
 
-    const handleNodeClickLocal = (nodeName: string) => {
+    const handleNodeClickLocal = useCallback((nodeName: string) => {
         const nodes = getCurrentNodes();
         const node = nodes[nodeName];
         if (node && 'nodes' in node) {
@@ -169,19 +171,19 @@ function NodeDrawer({
         } else {
             handleNodeClick(node as NodeConfig);
         }
-    };
+    }, [currentPath, getCurrentNodes, handleNodeClick]);
 
-    const handleBreadcrumbClick = (index: number) => {
+    const handleBreadcrumbClick = useCallback((index: number) => {
         setCurrentPath(currentPath.slice(0, index + 1));
         setFocusedNode(0);
-    };
+    }, [currentPath]);
 
     useEffect(() => {
         if (searchQuery) {
-            setFocusedNode(null);
-            setTabState({ currentTabIndex: 0, currentTab: visibleTabs.length ? visibleTabs[0][0] : null });
+            setFocusOnTab(false);
             const results: Record<string, { nodes: Record<string, NodeConfig | NodePackage>, packages: Record<string, NodePackage> }> = {};
-            filteredNodeConfigs.forEach(([category, config]) => {
+
+            filteredNodeConfigs.forEach(([category, config], index) => {
                 const { nodes, packages } = searchAllNodes(config.nodes, searchQuery);
                 if (Object.keys(nodes).length > 0 || Object.keys(packages).length > 0) {
                     results[category] = { nodes, packages };
@@ -190,19 +192,32 @@ function NodeDrawer({
             setSearchResults(results);
         } else {
             setSearchResults({});
+            setFocusOnTab(true);
         }
-    }, [searchQuery]);
+    }, [searchQuery, filteredNodeConfigs]);
 
     useEffect(() => {
-        if (searchQuery && nodeListRef.current) {
-            const firstNode = nodeListRef.current.firstChild as HTMLElement;
-            if (firstNode) {
-                firstNode.focus();
+        if (searchQuery && visibleTabs.length > 0) {
+            if (visibleTabs.length > 0) {
+                const firstMatchTab = visibleTabs[0][0];
+                setTabState({ currentTabIndex: 0, currentTab: firstMatchTab });
+                setFocusOnTab(false);
+
+                setTimeout(() => {
+                    if (nodeListRef.current && nodeListRef.current.children.length > 0) {
+                        setFocusedNode(0);
+                        (nodeListRef.current.children[0] as HTMLElement).focus();
+                    }
+                }, 0);
+            } else {
+                setTabState({ currentTabIndex: -1, currentTab: null });
+                setFocusOnTab(true);
             }
         }
-    }, [searchResults]);
+    }, [visibleTabs]);
 
-    const searchAllNodes = (nodes: Record<string, NodeConfig | NodePackage>, query: string): { nodes: Record<string, NodeConfig | NodePackage>, packages: Record<string, NodePackage> } => {
+
+    const searchAllNodes = useCallback((nodes: Record<string, NodeConfig | NodePackage>, query: string): { nodes: Record<string, NodeConfig | NodePackage>, packages: Record<string, NodePackage> } => {
         const lowerQuery = query.toLowerCase();
         const nodeResults: Record<string, NodeConfig | NodePackage> = {};
         const packageResults: Record<string, NodePackage> = {};
@@ -227,9 +242,9 @@ function NodeDrawer({
         });
 
         return { nodes: nodeResults, packages: packageResults };
-    };
+    }, []);
 
-    const handleSearchKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleSearchKeyDown = useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === "ArrowUp") {
             upKey(event);
         } else if (event.key === "ArrowDown") {
@@ -241,9 +256,9 @@ function NodeDrawer({
         } else if (event.key === "Enter") {
             enterKey(event);
         }
-    };
+    }, [upKey, downKey, leftKey, rightKey, enterKey]);
 
-    const renderNodeList = (nodes: Record<string, NodeConfig | NodePackage>) => (
+    const renderNodeList = useCallback((nodes: Record<string, NodeConfig | NodePackage>) => (
         <List spacing={2} ref={nodeListRef}>
             {Object.entries(nodes).map(([name, nodeConfig], index) => (
                 <ListItem
@@ -272,7 +287,7 @@ function NodeDrawer({
                 </ListItem>
             ))}
         </List>
-    );
+    ), [handleNodeDragStart, handleNodeClickLocal, focusedNode]);
 
     return (
         <Box width="300px" bg="gray.100" borderRight="1px solid #ccc" height="100vh" display="flex" flexDirection="column" overflow="hidden">
@@ -315,7 +330,7 @@ function NodeDrawer({
                             <Tab
                                 key={category}
                                 fontSize="2xs"
-                                p={4}
+                                p={1}
                                 marginInlineStart="0px"
                                 onClick={(e) => { e.preventDefault(); handleTabClick(index) }}
                                 onMouseDown={(e) => e.preventDefault()}
