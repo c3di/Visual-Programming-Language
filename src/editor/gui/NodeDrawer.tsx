@@ -7,11 +7,9 @@ import { HiFolder } from "react-icons/hi2";
 import { nodeConfigRegistry } from '../extension';
 import { NodeConfig, NodePackage } from '../types';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { set } from 'lodash';
 
 const bgNodePanel = "gray.50";
 const focusBgColor = "blue.100";
-
 
 function NodeDrawer({
     handleNodeDragStart,
@@ -50,7 +48,6 @@ function NodeDrawer({
         }
     }, [tabState.currentTab, currentPath]);
 
-
     const visibleTabs = useMemo(() => {
         return !searchQuery
             ? filteredNodeConfigs
@@ -70,7 +67,6 @@ function NodeDrawer({
         upKey(event as unknown as React.KeyboardEvent);
     }, [visibleTabs.length, focusedNode, tabState.currentTabIndex]);
 
-
     const downKey = useCallback((event: React.KeyboardEvent) => {
         event.preventDefault();
         if (!focusOnTab) {
@@ -83,7 +79,6 @@ function NodeDrawer({
     useHotkeys('down', (event) => {
         downKey(event as unknown as React.KeyboardEvent);
     }, [visibleTabs.length, focusedNode, tabState.currentTabIndex]);
-
 
     const leftKey = useCallback((event: React.KeyboardEvent) => {
         event.preventDefault();
@@ -101,19 +96,18 @@ function NodeDrawer({
         leftKey(event as unknown as React.KeyboardEvent)
     }, [focusedNode, currentPath]);
 
-
     const rightKey = useCallback((event: React.KeyboardEvent) => {
         event.preventDefault();
-        if (focusedNode === null && nodeListRef.current && nodeListRef.current.children.length > 0) {
+        if (focusOnTab) {
             setFocusOnTab(false);
-            setFocusedNode(0);
-            (nodeListRef.current.children[0] as HTMLElement)?.focus();
+            if (nodeListRef.current && nodeListRef.current.children.length > 0) {
+                setFocusedNode(0);
+            }
         }
-    }, [focusedNode]);
+    }, [focusOnTab]);
     useHotkeys('right', (event) => {
         rightKey(event as unknown as React.KeyboardEvent);
-    }, [focusedNode]);
-
+    }, [focusOnTab]);
 
     const enterKey = useCallback((event: React.KeyboardEvent) => {
         event.preventDefault();
@@ -131,8 +125,6 @@ function NodeDrawer({
         setTabState({ currentTabIndex: 0, currentTab: filteredNodeConfigs.length ? filteredNodeConfigs[0][0] : null });
     }, [focusedNode]);
 
-
-
     const getCurrentNodes = useCallback((): Record<string, NodeConfig | NodePackage> => {
         let nodes: Record<string, NodeConfig | NodePackage> = nodeConfigRegistry.getAllNodeConfigs();
         for (const segment of currentPath) {
@@ -140,7 +132,6 @@ function NodeDrawer({
         }
         return nodes;
     }, [currentPath]);
-
 
     const handleTabChange = useCallback((index: number) => {
         setTabState(prev => {
@@ -215,7 +206,6 @@ function NodeDrawer({
             }
         }
     }, [visibleTabs]);
-
 
     const searchAllNodes = useCallback((nodes: Record<string, NodeConfig | NodePackage>, query: string): { nodes: Record<string, NodeConfig | NodePackage>, packages: Record<string, NodePackage> } => {
         const lowerQuery = query.toLowerCase();
@@ -314,27 +304,27 @@ function NodeDrawer({
             </VStack>
             <Flex flex="1" direction="column" mt={4}>
                 <Tabs
+                    flex="1"
                     index={tabState.currentTabIndex}
                     onChange={(index) => handleTabChange(index)}
-                    isFitted
                     orientation="vertical"
-                    flex="1"
                     onMouseDown={(e) => e.preventDefault()}
                 >
                     <TabList
                         height="100%"
-                        overflowY="auto"
+                        width="60%"
+                        overflowY="scroll"
                         borderColor={bgNodePanel}
                     >
                         {visibleTabs.map(([category], index) => (
                             <Tab
                                 key={category}
                                 fontSize="2xs"
+                                height="65px"
                                 p={1}
                                 marginInlineStart="0px"
                                 onClick={(e) => { e.preventDefault(); handleTabClick(index) }}
                                 onMouseDown={(e) => e.preventDefault()}
-                                // _selected={{ borderColor: "transparent" }}
                                 sx={{
                                     bg: index === tabState.currentTabIndex ? (focusOnTab ? focusBgColor : bgNodePanel) : 'transparent',
                                     _focusVisible: { boxShadow: 'none' }
