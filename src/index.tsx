@@ -10,8 +10,10 @@ import {
 } from './editor';
 import './index.css';
 import { deepCopy } from './editor/util';
-import { NodeLibraryList } from './editor/gui';
 import { nodeConfigRegistry } from './editor/extension';
+import DockLayout from 'rc-dock';
+import 'rc-dock/dist/rc-dock.css';
+
 
 Object.entries(extensions).forEach(([name, extension]) => {
   LoadPackageToRegistry(name, extension);
@@ -69,24 +71,6 @@ function MainArea({ id }: { id: string }): JSX.Element {
         source code
       </button>
       <div style={{ display: 'flex', flexDirection: 'row', marginTop: '10px' }}>
-        <div style={{ width: '100px', height: '824px' }}>
-          <NodeLibraryList
-            title="INSTALLED"
-            nodeExtensions={{ ...nodeExtensions }}
-            onUninstall={(name: string) => {
-              nodeConfigRegistry.removeNodeConfig(name);
-              setNodeExtensions({ ...nodeConfigRegistry.getAllNodeConfigs() });
-            }}
-            onDisable={(name: string) => {
-              nodeConfigRegistry.enableNodeConfig(name, false);
-              setNodeExtensions(nodeConfigRegistry.getAllNodeConfigs());
-            }}
-            onEnable={(name: string) => {
-              nodeConfigRegistry.enableNodeConfig(name, true);
-              setNodeExtensions(nodeConfigRegistry.getAllNodeConfigs());
-            }}
-          />
-        </div>
         <div style={{ flexGrow: 1 }}>
           <VPEditor
             id={id}

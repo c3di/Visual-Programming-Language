@@ -37,6 +37,7 @@
     "lodash": "^4.17.21",
     "lodash.debounce": "^4.0.8",
     "mustache": "^4.2.0",
+    "rc-dock": "^3.3.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-filepond": "^7.1.2",
