@@ -349,7 +349,7 @@ function NodeDrawer({
                         }}>
                         {visibleTabs.map(([category]) => (
                             <TabPanel key={category} mt={2} height="100%">
-                                <VStack align="stretch" height="100%">
+                                <VStack align="stretch" height="100%" fontSize="2xs">
                                     <Breadcrumb
                                         separator={<ChevronRightIcon color="gray.500" />}
                                         mb={4}

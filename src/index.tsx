@@ -13,6 +13,10 @@ import { deepCopy } from './editor/util';
 import { nodeConfigRegistry } from './editor/extension';
 import DockLayout from 'rc-dock';
 import 'rc-dock/dist/rc-dock.css';
+import { NodeDrawer } from './editor/gui';
+import { NodeConfig } from './editor/types';
+import { ChakraProvider } from '@chakra-ui/react';
+
 
 
 Object.entries(extensions).forEach(([name, extension]) => {
@@ -26,9 +30,29 @@ function MainArea({ id }: { id: string }): JSX.Element {
     undefined
   );
   const [activated, setActivated] = useState<boolean>(false);
-  const [nodeExtensions, setNodeExtensions] = useState(
-    nodeConfigRegistry.getAllNodeConfigs()
-  );
+  const [drawerExpanded, setDrawerExpanded] = useState<boolean>(false);
+
+  const handleNodeClick = (nodeConfig: NodeConfig) => {
+    const reactFlowBounds = document.querySelector('.vp-editor')?.getBoundingClientRect();
+    const position = sceneActions?.instance?.project({
+      x: (reactFlowBounds?.left ?? 0) + 100,
+      y: (reactFlowBounds?.top ?? 0) + 100,
+    });
+
+    if (position && sceneActions) {
+      sceneActions.addNode(nodeConfig.type, position, nodeConfig);
+    }
+  };
+
+  const handleNodeDragStart = (
+    event: React.DragEvent<HTMLLIElement>,
+    nodeType: string,
+    nodeConfig: NodeConfig
+  ) => {
+    event.dataTransfer.setData('application/reactflow', nodeType);
+    event.dataTransfer.setData('nodeConfig', JSON.stringify(nodeConfig));
+    event.dataTransfer.effectAllowed = 'move';
+  };
 
   return (
     <>
@@ -92,6 +116,38 @@ function MainArea({ id }: { id: string }): JSX.Element {
               },
             }}
           />
+        </div>
+        <div
+          className={`node-drawer-container ${drawerExpanded ? 'expanded' : 'collapsed'}`}
+        >
+          <div
+            className="drawer-handle"
+            onClick={() => setDrawerExpanded(!drawerExpanded)}
+            style={{
+              position: 'absolute',
+              right: drawerExpanded ? '295px' : '5px',
+              top: '550px',
+              transform: 'translateY(-50%)',
+              width: '8px',
+              height: '200px',
+              backgroundColor: 'rgba(128, 128, 128, 0.5)',
+              cursor: 'pointer',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: '10px',
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+              zIndex: 1,
+            }}
+          />
+          <ChakraProvider>
+            {drawerExpanded && (
+              <NodeDrawer
+                handleNodeDragStart={handleNodeDragStart}
+                handleNodeClick={handleNodeClick}
+              />
+            )}
+          </ChakraProvider>
         </div>
       </div>
     </>

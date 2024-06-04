@@ -27,9 +27,7 @@ import type {
   SerializedGraph,
   selectedElementsCounts,
 } from './types';
-import { NodeDrawer } from './gui';
 import { NodeConfig } from './types';
-import { ChakraProvider, Portal } from '@chakra-ui/react';
 
 export interface IVPEditorOption {
   controller?: {
@@ -60,13 +58,11 @@ const Scene = ({
   option?: IVPEditorOption;
 }): JSX.Element => {
   const [initialed, setInitialed] = useState<boolean>(false);
-  const [drawerExpanded, setDrawerExpanded] = useState<boolean>(false);
   const currentContent = useRef<string>('');
   const sceneInstance = useRef<ReactFlowInstance | undefined>(undefined);
   const graphState = useGraph(graph);
   const sceneDomRef = useRef<HTMLDivElement>(null);
   const mouseTracker = useTrackMousePos(sceneDomRef);
-  const portalContainerRef = useRef<HTMLDivElement>(null);
   const sceneState = useScene(
     graphState,
     mouseTracker.mousePos,
@@ -139,49 +135,6 @@ const Scene = ({
   // guide from https://reactflow.dev/docs/guides/remove-attribution/
   const proOptions = { hideAttribution: true };
 
-  const handleNodeClick = (nodeConfig: NodeConfig) => {
-    const reactFlowBounds = sceneDomRef.current?.getBoundingClientRect();
-    const position = sceneInstance.current?.project({
-      x: (reactFlowBounds?.left ?? 0) + 100,
-      y: (reactFlowBounds?.top ?? 0) + 100,
-    });
-
-    if (position && sceneActions) {
-      sceneActions.addNode(nodeConfig.type, position, nodeConfig);
-    }
-  };
-
-  const handleNodeDragStart = (
-    event: React.DragEvent<HTMLLIElement>,
-    nodeType: string,
-    nodeConfig: NodeConfig
-  ) => {
-    event.dataTransfer.setData('application/reactflow', nodeType);
-    event.dataTransfer.setData('nodeConfig', JSON.stringify(nodeConfig));
-    event.dataTransfer.effectAllowed = 'move';
-  };
-
-  const handleDrop = (event: React.DragEvent) => {
-    event.preventDefault();
-    if (!sceneDomRef.current || !sceneInstance.current) return;
-    const reactFlowBounds = sceneDomRef.current.getBoundingClientRect();
-    const type = event.dataTransfer.getData('application/reactflow');
-    const nodeConfig = JSON.parse(event.dataTransfer.getData('nodeConfig')) as NodeConfig;
-    if (typeof type === 'undefined' || !type || !nodeConfig) {
-      return;
-    }
-    const position = sceneInstance.current.project({
-      x: event.clientX - reactFlowBounds.left,
-      y: event.clientY - reactFlowBounds.top,
-    });
-
-    sceneActions?.addNode(type, position, nodeConfig);
-  };
-  const handleDragOver = (event: React.DragEvent) => {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
-  };
-
 
   return (
     <SceneStateContext.Provider value={sceneState}>
@@ -199,8 +152,26 @@ const Scene = ({
         onMouseMoveCapture={(e) => {
           mouseTracker?.updateMousePos(e.clientX, e.clientY);
         }}
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
+        onDrop={(event) => {
+          event.preventDefault();
+          if (!sceneDomRef.current || !sceneInstance.current) return;
+          const reactFlowBounds = sceneDomRef.current.getBoundingClientRect();
+          const type = event.dataTransfer.getData('application/reactflow');
+          const nodeConfig = JSON.parse(event.dataTransfer.getData('nodeConfig')) as NodeConfig;
+          if (typeof type === 'undefined' || !type || !nodeConfig) {
+            return;
+          }
+          const position = sceneInstance.current.project({
+            x: event.clientX - reactFlowBounds.left,
+            y: event.clientY - reactFlowBounds.top,
+          });
+
+          sceneActions?.addNode(type, position, nodeConfig);
+        }}
+        onDragOver={(event) => {
+          event.preventDefault();
+          event.dataTransfer.dropEffect = 'move';
+        }}
         style={{ outline: 'none', display: 'flex', height: '100vh' }}
       >
         {gui.widget}
@@ -556,43 +527,6 @@ const Scene = ({
             />
           </ReactFlow>
         </div>
-        <div
-          className={`node-drawer-container ${drawerExpanded ? 'expanded' : 'collapsed'
-            }`}
-        >
-          <div
-            className="drawer-handle"
-            onClick={() => setDrawerExpanded(!drawerExpanded)}
-            style={{
-              position: 'absolute',
-              right: drawerExpanded ? '295px' : '5px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              width: '8px',
-              height: '200px',
-              backgroundColor: 'rgba(128, 128, 128, 0.5)',
-              cursor: 'pointer',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: '10px',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
-              zIndex: 1,
-            }}
-          >
-          </div>
-          <div>
-            <ChakraProvider>
-              {drawerExpanded && (
-                <NodeDrawer
-                  handleNodeDragStart={handleNodeDragStart}
-                  handleNodeClick={handleNodeClick}
-                />
-              )}
-            </ChakraProvider>
-          </div>
-        </div>
-        <div ref={portalContainerRef} />
       </div>
     </SceneStateContext.Provider >
   );
