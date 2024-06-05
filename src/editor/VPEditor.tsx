@@ -53,7 +53,7 @@ const Scene = ({
   graph?: SerializedGraph | null;
   onContentChange?: (graph: string) => void;
   activated?: boolean;
-  onSceneActionsInit?: (actions: ISceneActions) => void;
+  onSceneActionsInit?: (actions: ISceneActions, instance: ReactFlowInstance | undefined) => void;
   onSelectionChange?: (counts: selectedElementsCounts) => void;
   option?: IVPEditorOption;
 }): JSX.Element => {
@@ -69,11 +69,11 @@ const Scene = ({
     sceneInstance,
     sceneDomRef
   );
+  useEffect(() => {
+    onSceneActionsInit?.(sceneActions, sceneInstance.current);
+  }, []);
 
   const sceneActions = sceneState?.sceneActions;
-  useEffect(() => {
-    onSceneActionsInit?.(sceneActions);
-  }, []);
   const {
     nodes,
     onNodesChange,
@@ -545,7 +545,7 @@ export default function VPEditor({
   content?: SerializedGraph | null;
   onContentChange?: (content: string) => void;
   activated?: boolean;
-  onSceneActionsInit?: (actions: ISceneActions) => void;
+  onSceneActionsInit?: (actions: ISceneActions, instance: ReactFlowInstance | undefined) => void;
   onSelectionChange?: (counts: selectedElementsCounts) => void;
   option?: IVPEditorOption;
 }): JSX.Element {

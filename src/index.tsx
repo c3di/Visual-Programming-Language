@@ -16,6 +16,7 @@ import 'rc-dock/dist/rc-dock.css';
 import { NodeDrawer } from './editor/gui';
 import { NodeConfig } from './editor/types';
 import { ChakraProvider } from '@chakra-ui/react';
+import type { ReactFlowInstance } from 'reactflow';
 
 
 
@@ -24,6 +25,7 @@ Object.entries(extensions).forEach(([name, extension]) => {
 });
 
 let sceneActions: ISceneActions | undefined;
+let sceneInstance: ReactFlowInstance | undefined;
 
 function MainArea({ id }: { id: string }): JSX.Element {
   const [content, setContent] = useState<SerializedGraph | undefined>(
@@ -34,7 +36,7 @@ function MainArea({ id }: { id: string }): JSX.Element {
 
   const handleNodeClick = (nodeConfig: NodeConfig) => {
     const reactFlowBounds = document.querySelector('.vp-editor')?.getBoundingClientRect();
-    const position = sceneActions?.instance?.project({
+    const position = sceneInstance?.project({
       x: (reactFlowBounds?.left ?? 0) + 100,
       y: (reactFlowBounds?.top ?? 0) + 100,
     });
