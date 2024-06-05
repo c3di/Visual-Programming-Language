@@ -77,39 +77,55 @@ function MainArea({ id }: { id: string }): JSX.Element {
   );
 }
 
-
 let count = 0;
 
 function newTab(): TabData {
+  count++;
+  console.log('newTab ', count);
   return {
-    id: `editor${++count}`,
+    id: `editor${count}`,
     title: `Editor ${count}`,
+    closable: true,
     content: <MainArea id={`editor${count}`} key={`editor${count}`} />,
   };
 }
 
-const initialLayout: LayoutData = {
-  dockbox: {
-    mode: 'horizontal',
-    children: [
-      {
-        tabs: [newTab()],
-        panelLock: {
-          minWidth: 200,
-          panelExtra: (panelData: PanelData, dockContext: DockContext) => (
-            <button className='btn'
-              onClick={() => dockContext.dockMove(newTab(), panelData, 'middle')}>
-              add
-            </button>
-          )
-        }
-      },
-    ]
-  },
-};
 
 function App(): JSX.Element {
-  const [layout, setLayout] = useState<LayoutData>(initialLayout);
+  const [layout, setLayout] = useState<LayoutData>({
+    dockbox: {
+      mode: 'horizontal',
+      children: [
+        {
+          id: 'editor',
+          tabs: [newTab()],
+          panelLock: {
+            minWidth: 200,
+            panelExtra: (panelData) => (
+              <div className="dock-extra-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => {
+                    const newTabData = newTab();
+                    const updatedLayout = { ...layout };
+                    const targetPanel = updatedLayout.dockbox.children.find(child => child.id === panelData.id);
+                    if (targetPanel && 'tabs' in targetPanel) {
+                      targetPanel.tabs.push(newTabData);
+                    }
+                    setLayout(updatedLayout);
+                  }}
+                >
+                  Add
+                </button>
+              </div>
+            ),
+          },
+        },
+      ],
+    },
+  });
+
   const [drawerExpanded, setDrawerExpanded] = useState<boolean>(false);
 
   return (
@@ -117,9 +133,10 @@ function App(): JSX.Element {
       <DockLayout
         defaultLayout={layout}
         style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0 }}
-        onLayoutChange={(newLayout) => setLayout(newLayout as LayoutData)}
-      />
-      <div
+        onLayoutChange={(newLayout) => setLayout(newLayout as LayoutData)}>
+      </DockLayout>
+
+      < div
         className={`node-drawer-container ${drawerExpanded ? 'expanded' : 'collapsed'}`}
       >
         <div
@@ -146,19 +163,23 @@ function App(): JSX.Element {
           {drawerExpanded && (
             <NodeDrawer
               handleNodeDragStart={(event, nodeType, nodeConfig) => {
+                console.log('Node drag start');
                 event.dataTransfer.setData('application/reactflow', nodeType);
                 event.dataTransfer.setData('nodeConfig', JSON.stringify(nodeConfig));
                 event.dataTransfer.effectAllowed = 'move';
               }}
               handleNodeClick={(nodeConfig) => {
+                console.log('Node clicked:', nodeConfig);
                 Object.keys(sceneInstanceMap).forEach((id) => {
                   const reactFlowBounds = document.querySelector('.vp-editor')?.getBoundingClientRect();
-                  const position = sceneInstanceMap[id]?.project({
-                    x: (reactFlowBounds?.left ?? 0) + 100,
-                    y: (reactFlowBounds?.top ?? 0) + 100,
-                  });
-
+                  const position = sceneInstanceMap[id]?.project(
+                    {
+                      x: (reactFlowBounds?.left ?? 0) + 100,
+                      y: (reactFlowBounds?.top ?? 0) + 100,
+                    });
+                  console.log('Position:', position, 'sceneActionsMap:', sceneActionsMap[id]);
                   if (position && sceneActionsMap[id]) {
+                    console.log('Adding node to scene', id, ': ', nodeConfig.type, position, nodeConfig);
                     sceneActionsMap[id]?.addNode(nodeConfig.type, position, nodeConfig);
                   }
                 });
@@ -166,8 +187,8 @@ function App(): JSX.Element {
             />
           )}
         </ChakraProvider>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }
 
