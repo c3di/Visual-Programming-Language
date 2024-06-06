@@ -69,11 +69,15 @@ const Scene = ({
     sceneInstance,
     sceneDomRef
   );
-  useEffect(() => {
-    onSceneActionsInit?.(sceneActions, sceneInstance.current);
-  }, []);
 
   const sceneActions = sceneState?.sceneActions;
+
+  useEffect(() => {
+    if (initialed) {
+      onSceneActionsInit?.(sceneActions, sceneInstance.current);
+    }
+  }, [initialed, sceneActions]);
+
   const {
     nodes,
     onNodesChange,
@@ -179,9 +183,11 @@ const Scene = ({
           <ReactFlow
             id={id}
             onInit={(instance) => {
+              console.log("ReactFlow instance initialized:", instance);
               sceneInstance.current = instance;
               setInitialed(true);
             }}
+
             fitView={!initialed}
             onSelectionChange={(elements) => {
               if (!sceneActions) return;

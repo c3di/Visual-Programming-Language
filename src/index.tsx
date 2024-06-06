@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import ReactDOM from 'react-dom/client';
 import { extensions } from './NodeTypePackage';
 import {
@@ -26,7 +26,6 @@ let count = 0;
 
 function newTab(): TabData {
   count++;
-  console.log('newTab ', count);
   return {
     id: `editor${count}`,
     title: `Editor ${count}`,
@@ -34,9 +33,18 @@ function newTab(): TabData {
     content: (
       <VPEditor
         id={`editor${count}`}
+        activated={true}
         onSceneActionsInit={(actions, instance) => {
+
+          if (!instance) {
+            console.error(`Failed to initialize ReactFlow instance for editor${count}`);
+            return;
+          }
           sceneActionsMap[`editor${count}`] = actions;
           sceneInstanceMap[`editor${count}`] = instance;
+        }}
+        onSelectionChange={(selection) => {
+          // ...
         }}
         option={{
           controller: { hidden: false },
@@ -51,16 +59,13 @@ function newTab(): TabData {
 
 
 function App(): JSX.Element {
-  const initialLayout: LayoutData = {
+  const initialLayout = useMemo(() => ({
     dockbox: {
       mode: 'horizontal',
-      size: 200,
       children: [
         {
           id: 'editor-panel',
-          tabs: [
-            newTab()
-          ],
+          tabs: [newTab()],
           panelLock: {
             minWidth: 200,
             panelExtra: (panelData, context) => (
@@ -69,24 +74,101 @@ function App(): JSX.Element {
                   context.dockMove(newTab(), panelData, 'middle');
                 }}
               >
-                add
+                Add
               </button>
             )
           }
         },
       ],
     },
-  };
+  }), []);
+
+  const [drawerExpanded, setDrawerExpanded] = useState<boolean>(false);
+
+  const handleDrawerToggle = useCallback(() => {
+    setDrawerExpanded((prev) => !prev);
+  }, []);
+
+  const renderNodeDrawer = useCallback(() => {
+    return (
+      <NodeDrawer
+        handleNodeDragStart={(event, nodeType, nodeConfig) => {
+          console.log('Node drag start');
+          event.dataTransfer.setData('application/reactflow', nodeType);
+          event.dataTransfer.setData('nodeConfig', JSON.stringify(nodeConfig));
+          event.dataTransfer.effectAllowed = 'move';
+        }}
+        handleNodeClick={(nodeConfig) => {
+          Object.keys(sceneInstanceMap).forEach((id) => {
+            const reactFlowInstance = sceneInstanceMap[id];
+            if (!reactFlowInstance) {
+              console.error(`ReactFlow instance for id ${id} is undefined`);
+              return;
+            }
+
+            const reactFlowBounds = document.querySelector('.vp-editor')?.getBoundingClientRect();
+            console.log('ReactFlow bounds:', reactFlowBounds);
+
+            if (!reactFlowBounds) {
+              console.error('ReactFlow bounds are undefined');
+              return;
+            }
+
+            const position = reactFlowInstance.project({
+              x: reactFlowBounds.left + 100,
+              y: reactFlowBounds.top + 100,
+            });
+
+            console.log('Position:', position, 'sceneActionsMap:', sceneActionsMap[id]);
+
+            if (position && sceneActionsMap[id]) {
+              console.log('Adding node to scene', id, ': ', nodeConfig.type, position, nodeConfig);
+              sceneActionsMap[id]?.addNode(nodeConfig.type, position, nodeConfig);
+            } else {
+              console.log('Position or sceneActionsMap is undefined');
+            }
+          });
+        }}
+      />
+    );
+  }, []);
+
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
       <DockLayout
         defaultLayout={initialLayout}
-        style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0 }}
+        style={{ position: 'absolute', left: 100, top: 0, right: 100, bottom: 30, zIndex: 2 }}
       />
+      <div className={`node-drawer-container ${drawerExpanded ? 'expanded' : 'collapsed'}`}
+        style={{
+          zIndex: drawerExpanded ? 3 : 1
+        }}>
+        <div
+          className="drawer-handle"
+          onClick={handleDrawerToggle}
+          style={{
+            position: 'absolute',
+            right: drawerExpanded ? '295px' : '5px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            width: '8px',
+            height: '200px',
+            backgroundColor: 'rgba(128, 128, 128, 0.5)',
+            cursor: 'pointer',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: '10px',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+          }}
+        />
+        <ChakraProvider>
+          {drawerExpanded && renderNodeDrawer()}
+        </ChakraProvider>
+      </div>
     </div>
   );
 }
-
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(<App />);
