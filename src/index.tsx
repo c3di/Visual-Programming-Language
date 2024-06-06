@@ -22,61 +22,6 @@ Object.entries(extensions).forEach(([name, extension]) => {
 let sceneActionsMap: { [key: string]: ISceneActions | undefined } = {};
 let sceneInstanceMap: { [key: string]: ReactFlowInstance | undefined } = {};
 
-function MainArea({ id }: { id: string }): JSX.Element {
-  const [content, setContent] = useState<SerializedGraph | undefined>(undefined);
-  const [activated, setActivated] = useState<boolean>(false);
-
-  const handleNodeClick = (nodeConfig: NodeConfig) => {
-    const reactFlowBounds = document.querySelector('.vp-editor')?.getBoundingClientRect();
-    const position = sceneInstanceMap[id]?.project({
-      x: (reactFlowBounds?.left ?? 0) + 100,
-      y: (reactFlowBounds?.top ?? 0) + 100,
-    });
-
-    if (position && sceneActionsMap[id]) {
-      sceneActionsMap[id]?.addNode(nodeConfig.type, position, nodeConfig);
-    }
-  };
-
-  const handleNodeDragStart = (
-    event: React.DragEvent<HTMLLIElement>,
-    nodeType: string,
-    nodeConfig: NodeConfig
-  ) => {
-    event.dataTransfer.setData('application/reactflow', nodeType);
-    event.dataTransfer.setData('nodeConfig', JSON.stringify(nodeConfig));
-    event.dataTransfer.effectAllowed = 'move';
-  };
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'row', marginTop: '10px' }}>
-      <div style={{ flexGrow: 1 }}>
-        <VPEditor
-          id={id}
-          content={content}
-          onContentChange={(content) => {
-            // ...
-          }}
-          activated={activated}
-          onSceneActionsInit={(actions, instance) => {
-            sceneActionsMap[id] = actions;
-            sceneInstanceMap[id] = instance;
-          }}
-          onSelectionChange={(selection) => {
-            // ...
-          }}
-          option={{
-            controller: { hidden: false },
-            minimap: {
-              collapsed: true,
-            },
-          }}
-        />
-      </div>
-    </div>
-  );
-}
-
 let count = 0;
 
 function newTab(): TabData {
@@ -86,7 +31,21 @@ function newTab(): TabData {
     id: `editor${count}`,
     title: `Editor ${count}`,
     closable: true,
-    content: <MainArea id={`editor${count}`} key={`editor${count}`} />,
+    content: (
+      <VPEditor
+        id={`editor${count}`}
+        onSceneActionsInit={(actions, instance) => {
+          sceneActionsMap[`editor${count}`] = actions;
+          sceneInstanceMap[`editor${count}`] = instance;
+        }}
+        option={{
+          controller: { hidden: false },
+          minimap: {
+            collapsed: true,
+          },
+        }}
+      />
+    ),
   };
 }
 
@@ -97,44 +56,58 @@ function App(): JSX.Element {
       mode: 'horizontal',
       children: [
         {
-          id: 'editor',
+          id: 'editor-panel',
           tabs: [newTab()],
           panelLock: {
             minWidth: 200,
-            panelExtra: (panelData) => (
-              <div className="dock-extra-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <button
-                  type="button"
-                  className="btn"
-                  onClick={() => {
-                    const newTabData = newTab();
-                    const updatedLayout = { ...layout };
-                    const targetPanel = updatedLayout.dockbox.children.find(child => child.id === panelData.id);
-                    if (targetPanel && 'tabs' in targetPanel) {
-                      targetPanel.tabs.push(newTabData);
-                    }
-                    setLayout(updatedLayout);
-                  }}
-                >
-                  Add
-                </button>
-              </div>
-            ),
+            panelExtra: (panelData) => {
+              console.log("Rendering panelExtra", panelData);
+              return (
+                <div className="dock-extra-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <button
+                    type="button"
+                    className="btn"
+                    onClick={() => {
+                      alert('Button clicked!');
+                      console.log('Add button clicked', panelData.id); // Add log here
+                      const newTabData = newTab();
+                      setLayout((prevLayout) => {
+                        const updatedLayout = { ...prevLayout };
+                        const targetPanel = (updatedLayout.dockbox.children.find(
+                          (child) => 'id' in child && child.id === panelData.id
+                        ) as PanelData);
+                        if (targetPanel && targetPanel.tabs) {
+                          console.log('Adding new tab to panel:', targetPanel.id); // Add log here
+                          targetPanel.tabs.push(newTabData);
+                        } else {
+                          console.error('No matching panel found or panel does not have tabs:', panelData.id);
+                        }
+                        console.log('Updated layout:', updatedLayout); // Add log here
+                        return updatedLayout;
+                      });
+                    }}
+                  >
+                    Add
+                  </button>
+                </div>
+              );
+            },
           },
         },
       ],
     },
   });
-
   const [drawerExpanded, setDrawerExpanded] = useState<boolean>(false);
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
       <DockLayout
         defaultLayout={layout}
-        style={{ position: 'absolute', left: 0, top: 0, right: 0, bottom: 0 }}
-        onLayoutChange={(newLayout) => setLayout(newLayout as LayoutData)}>
-      </DockLayout>
+        style={{ position: 'absolute', left: 10, top: 10, right: 10, bottom: 10 }}
+        onLayoutChange={(newLayout) => {
+          console.log('Layout changed:', newLayout);
+          setLayout(newLayout as LayoutData)
+        }} />
 
       < div
         className={`node-drawer-container ${drawerExpanded ? 'expanded' : 'collapsed'}`}
