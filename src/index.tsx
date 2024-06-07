@@ -26,6 +26,7 @@ let sceneInstanceMap: { [key: string]: ReactFlowInstance | undefined } = {};
 function App(): JSX.Element {
 
   const [activeTabId, setActiveTabId] = useState<string>('editor1');
+  const [drawerExpanded, setDrawerExpanded] = useState<boolean>(false);
   let count = 0;
 
   function newTab(): TabData {
@@ -90,47 +91,39 @@ function App(): JSX.Element {
     setActiveTabId(currentTabId);
   };
 
-  const [drawerExpanded, setDrawerExpanded] = useState<boolean>(false);
-
   const handleDrawerToggle = useCallback(() => {
     setDrawerExpanded((prev) => !prev);
   }, []);
 
-  const renderNodeDrawer = useCallback(() => {
-    return (
-      <NodeDrawer
-        handleNodeDragStart={(event, nodeType, nodeConfig) => {
-          console.log('Node drag start triggered', { nodeType, nodeConfig });
-          event.dataTransfer.setData('application/reactflow', nodeType);
-          event.dataTransfer.setData('nodeConfig', JSON.stringify(nodeConfig));
-          event.dataTransfer.effectAllowed = 'move';
-        }}
-        handleNodeClick={(nodeConfig) => {
-          const reactFlowInstance = sceneInstanceMap[activeTabId || ''];
-          if (!reactFlowInstance) {
-            return;
-          }
+  const handleNodeClick = useCallback((nodeConfig: NodeConfig) => {
+    const reactFlowInstance = sceneInstanceMap[activeTabId || ''];
+    if (!reactFlowInstance) {
+      console.error(`ReactFlow instance for id ${activeTabId} is undefined`);
+      return;
+    }
+    const reactFlowBounds = document.querySelector(`#${activeTabId}`)?.getBoundingClientRect();
+    if (!reactFlowBounds) {
+      console.error('ReactFlow bounds are undefined');
+      return;
+    }
+    const position = reactFlowInstance.project({
+      x: reactFlowBounds.left + 100,
+      y: reactFlowBounds.top + 100,
+    });
+    if (position && sceneActionsMap[activeTabId || '']) {
+      sceneActionsMap[activeTabId || '']?.addNode(nodeConfig.type, position, nodeConfig);
+    } else {
+      console.error('Position or sceneActionsMap is undefined');
+    }
+  }, [activeTabId]);
 
-          const reactFlowBounds = document.querySelector(`#${activeTabId}`)?.getBoundingClientRect();
 
-          if (!reactFlowBounds) {
-            return;
-          }
-
-          const position = reactFlowInstance.project({
-            x: reactFlowBounds.left + 100,
-            y: reactFlowBounds.top + 100,
-          });
-
-          if (position && sceneActionsMap[activeTabId || '']) {
-            sceneActionsMap[activeTabId || '']?.addNode(nodeConfig.type, position, nodeConfig);
-          } else {
-          }
-        }}
-      />
-    );
-  }, [activeTabId, sceneInstanceMap, sceneActionsMap]);
-
+  const handleNodeDragStart = useCallback((event, nodeType, nodeConfig) => {
+    console.log('Node drag start triggered', { nodeType, nodeConfig });
+    event.dataTransfer.setData('application/reactflow', nodeType);
+    event.dataTransfer.setData('nodeConfig', JSON.stringify(nodeConfig));
+    event.dataTransfer.effectAllowed = 'move';
+  }, []);
 
 
   return (
@@ -164,7 +157,7 @@ function App(): JSX.Element {
           }}
         />
         <ChakraProvider>
-          {drawerExpanded && renderNodeDrawer()}
+          {drawerExpanded && <NodeDrawer handleNodeClick={handleNodeClick} handleNodeDragStart={handleNodeDragStart} />}
         </ChakraProvider>
       </div>
     </div>
