@@ -25,7 +25,7 @@ let sceneInstanceMap: { [key: string]: ReactFlowInstance | undefined } = {};
 
 function App(): JSX.Element {
 
-  const [activeTabId, setActiveTabId] = useState<string | null>(null);
+  const [activeTabId, setActiveTabId] = useState<string>('editor1');
   let count = 0;
 
   function newTab(): TabData {
@@ -100,7 +100,7 @@ function App(): JSX.Element {
     return (
       <NodeDrawer
         handleNodeDragStart={(event, nodeType, nodeConfig) => {
-          console.log('Node drag start');
+          console.log('Node drag start triggered', { nodeType, nodeConfig });
           event.dataTransfer.setData('application/reactflow', nodeType);
           event.dataTransfer.setData('nodeConfig', JSON.stringify(nodeConfig));
           event.dataTransfer.effectAllowed = 'move';
