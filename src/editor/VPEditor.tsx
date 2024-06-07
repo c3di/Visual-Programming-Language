@@ -162,12 +162,13 @@ const Scene = ({
           const reactFlowBounds = sceneDomRef.current.getBoundingClientRect();
           const type = event.dataTransfer.getData('application/reactflow');
           const nodeConfig = JSON.parse(event.dataTransfer.getData('nodeConfig')) as NodeConfig;
+
           if (typeof type === 'undefined' || !type || !nodeConfig) {
             return;
           }
           const position = sceneInstance.current.project({
-            x: event.clientX - reactFlowBounds.left,
-            y: event.clientY - reactFlowBounds.top,
+            x: (event.clientX - reactFlowBounds.left) / sceneInstance.current.getZoom(),
+            y: (event.clientY - reactFlowBounds.top) / sceneInstance.current.getZoom(),
           });
 
           sceneActions?.addNode(type, position, nodeConfig);

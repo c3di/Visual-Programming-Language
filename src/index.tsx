@@ -22,43 +22,45 @@ Object.entries(extensions).forEach(([name, extension]) => {
 let sceneActionsMap: { [key: string]: ISceneActions | undefined } = {};
 let sceneInstanceMap: { [key: string]: ReactFlowInstance | undefined } = {};
 
-let count = 0;
-
-function newTab(): TabData {
-  count++;
-  return {
-    id: `editor${count}`,
-    title: `Editor ${count}`,
-    closable: true,
-    content: (
-      <VPEditor
-        id={`editor${count}`}
-        activated={true}
-        onSceneActionsInit={(actions, instance) => {
-
-          if (!instance) {
-            console.error(`Failed to initialize ReactFlow instance for editor${count}`);
-            return;
-          }
-          sceneActionsMap[`editor${count}`] = actions;
-          sceneInstanceMap[`editor${count}`] = instance;
-        }}
-        onSelectionChange={(selection) => {
-          // ...
-        }}
-        option={{
-          controller: { hidden: false },
-          minimap: {
-            collapsed: true,
-          },
-        }}
-      />
-    ),
-  };
-}
-
 
 function App(): JSX.Element {
+
+  const [activeTabId, setActiveTabId] = useState<string | null>(null);
+  let count = 0;
+
+  function newTab(): TabData {
+    count++;
+    return {
+      id: `editor${count}`,
+      title: `Editor ${count}`,
+      closable: true,
+      content: (
+        <VPEditor
+          id={`editor${count}`}
+          activated={activeTabId === `editor${count}`}
+          onSceneActionsInit={(actions, instance) => {
+
+            if (!instance) {
+              return;
+            }
+            sceneActionsMap[`editor${count}`] = actions;
+            sceneInstanceMap[`editor${count}`] = instance;
+          }}
+          onSelectionChange={(selection) => {
+            // ...
+          }}
+          option={{
+            controller: { hidden: false },
+            minimap: {
+              collapsed: true,
+            },
+          }}
+        />
+      ),
+    };
+  }
+
+
   const initialLayout = useMemo(() => ({
     dockbox: {
       mode: 'horizontal',
@@ -83,6 +85,11 @@ function App(): JSX.Element {
     },
   }), []);
 
+  const handleLayoutChange = (layout: LayoutData, currentTabId: string, direction) => {
+    console.log("Layout changed, active tab:", currentTabId);
+    setActiveTabId(currentTabId);
+  };
+
   const [drawerExpanded, setDrawerExpanded] = useState<boolean>(false);
 
   const handleDrawerToggle = useCallback(() => {
@@ -99,45 +106,45 @@ function App(): JSX.Element {
           event.dataTransfer.effectAllowed = 'move';
         }}
         handleNodeClick={(nodeConfig) => {
-          Object.keys(sceneInstanceMap).forEach((id) => {
-            const reactFlowInstance = sceneInstanceMap[id];
-            if (!reactFlowInstance) {
-              console.error(`ReactFlow instance for id ${id} is undefined`);
-              return;
-            }
+          const reactFlowInstance = sceneInstanceMap[activeTabId || ''];
+          if (!reactFlowInstance) {
+            console.error(`ReactFlow instance for id ${activeTabId} is undefined`);
+            return;
+          }
 
-            const reactFlowBounds = document.querySelector('.vp-editor')?.getBoundingClientRect();
-            console.log('ReactFlow bounds:', reactFlowBounds);
+          const reactFlowBounds = document.querySelector('.vp-editor')?.getBoundingClientRect();
+          console.log('ReactFlow bounds:', reactFlowBounds);
 
-            if (!reactFlowBounds) {
-              console.error('ReactFlow bounds are undefined');
-              return;
-            }
+          if (!reactFlowBounds) {
+            console.error('ReactFlow bounds are undefined');
+            return;
+          }
 
-            const position = reactFlowInstance.project({
-              x: reactFlowBounds.left + 100,
-              y: reactFlowBounds.top + 100,
-            });
-
-            console.log('Position:', position, 'sceneActionsMap:', sceneActionsMap[id]);
-
-            if (position && sceneActionsMap[id]) {
-              console.log('Adding node to scene', id, ': ', nodeConfig.type, position, nodeConfig);
-              sceneActionsMap[id]?.addNode(nodeConfig.type, position, nodeConfig);
-            } else {
-              console.log('Position or sceneActionsMap is undefined');
-            }
+          const position = reactFlowInstance.project({
+            x: reactFlowBounds.left + 100,
+            y: reactFlowBounds.top + 100,
           });
+
+          console.log('Position:', position, 'sceneActionsMap:', sceneActionsMap[activeTabId || '']);
+
+          if (position && sceneActionsMap[activeTabId || '']) {
+            console.log('Adding node to scene', activeTabId, ': ', nodeConfig.type, position, nodeConfig);
+            sceneActionsMap[activeTabId || '']?.addNode(nodeConfig.type, position, nodeConfig);
+          } else {
+            console.log('Position or sceneActionsMap is undefined');
+          }
         }}
       />
     );
-  }, []);
+  }, [activeTabId, sceneInstanceMap, sceneActionsMap]);
+
 
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
       <DockLayout
         defaultLayout={initialLayout}
+        onLayoutChange={handleLayoutChange}
         style={{ position: 'absolute', left: 100, top: 0, right: 100, bottom: 30, zIndex: 2 }}
       />
       <div className={`node-drawer-container ${drawerExpanded ? 'expanded' : 'collapsed'}`}
