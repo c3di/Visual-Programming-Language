@@ -111,8 +111,7 @@ function App(): JSX.Element {
             return;
           }
 
-          const editorSelector = `#editor${activeTabId?.slice(6)}`;
-          const reactFlowBounds = document.querySelector(editorSelector)?.getBoundingClientRect();
+          const reactFlowBounds = document.querySelector(`#${activeTabId}`)?.getBoundingClientRect();
 
           if (!reactFlowBounds) {
             return;
