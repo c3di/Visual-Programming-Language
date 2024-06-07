@@ -108,15 +108,13 @@ function App(): JSX.Element {
         handleNodeClick={(nodeConfig) => {
           const reactFlowInstance = sceneInstanceMap[activeTabId || ''];
           if (!reactFlowInstance) {
-            console.error(`ReactFlow instance for id ${activeTabId} is undefined`);
             return;
           }
 
-          const reactFlowBounds = document.querySelector('.vp-editor')?.getBoundingClientRect();
-          console.log('ReactFlow bounds:', reactFlowBounds);
+          const editorSelector = `#editor${activeTabId?.slice(6)}`;
+          const reactFlowBounds = document.querySelector(editorSelector)?.getBoundingClientRect();
 
           if (!reactFlowBounds) {
-            console.error('ReactFlow bounds are undefined');
             return;
           }
 
@@ -125,13 +123,9 @@ function App(): JSX.Element {
             y: reactFlowBounds.top + 100,
           });
 
-          console.log('Position:', position, 'sceneActionsMap:', sceneActionsMap[activeTabId || '']);
-
           if (position && sceneActionsMap[activeTabId || '']) {
-            console.log('Adding node to scene', activeTabId, ': ', nodeConfig.type, position, nodeConfig);
             sceneActionsMap[activeTabId || '']?.addNode(nodeConfig.type, position, nodeConfig);
           } else {
-            console.log('Position or sceneActionsMap is undefined');
           }
         }}
       />
