@@ -86,13 +86,19 @@ function App(): JSX.Element {
     }
   };
 
+  function handleNodeDragStart(event, nodeType, nodeConfig) {
+    console.log('Attempting to start drag:', { nodeType, nodeConfig });
 
-  const handleNodeDragStart = useCallback((event, nodeType, nodeConfig) => {
-    console.log('Node drag start triggered', { nodeType, nodeConfig });
+    if (!event) {
+      console.error('Drag event is undefined.');
+      return;
+    }
+    // event.stopPropagation();
     event.dataTransfer.setData('application/reactflow', nodeType);
     event.dataTransfer.setData('nodeConfig', JSON.stringify(nodeConfig));
     event.dataTransfer.effectAllowed = 'move';
-  }, [setActiveEditorId]);
+    console.log('Node drag start triggered', { nodeType, nodeConfig });
+  };
 
 
   const initialLayout = useMemo(() => ({
@@ -140,9 +146,6 @@ function App(): JSX.Element {
       console.log("No active editor tab was found in the layout change.");
     }
   }, [setActiveEditorId]);
-
-
-
 
   return (
     <DockLayout

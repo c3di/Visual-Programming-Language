@@ -165,6 +165,23 @@ function NodeDrawer({
         }
     }, [currentPath, getCurrentNodes, handleNodeClick]);
 
+    useEffect(() => {
+        const handleDragStart = (event) => {
+            console.log("Drag start event fired");
+        };
+
+        const nodeList = nodeListRef.current;
+        nodeList?.addEventListener("dragstart", handleDragStart);
+
+        return () => {
+            nodeList?.removeEventListener("dragstart", handleDragStart);
+        };
+    }, []);
+
+    document.querySelector('.css-x7wznv')?.addEventListener('dragstart', function (event) {
+        console.log('Drag started!', event);
+    });
+
     const handleBreadcrumbClick = useCallback((index: number) => {
         setCurrentPath(currentPath.slice(0, index + 1));
         setFocusedNode(0);
@@ -254,7 +271,7 @@ function NodeDrawer({
             {Object.entries(nodes).map(([name, nodeConfig], index) => (
                 <ListItem
                     key={name}
-                    draggable
+                    draggable="true"
                     onDragStart={(e) =>
                         handleNodeDragStart(e, (nodeConfig as NodeConfig).type, nodeConfig as NodeConfig)
                     }
@@ -310,6 +327,7 @@ function NodeDrawer({
                         onChange={(index) => handleTabChange(index)}
                         orientation="vertical"
                         onMouseDown={(e) => e.preventDefault()}
+                        onDragOver={(e) => e.stopPropagation()}
                     >
                         <TabList
                             height="100%"
