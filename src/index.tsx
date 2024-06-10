@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom/client';
 import { extensions } from './NodeTypePackage';
 import {
@@ -23,8 +23,14 @@ let sceneInstanceMap: { [key: string]: ReactFlowInstance | undefined } = {};
 
 
 function App(): JSX.Element {
+  const activeEditorIdRef = useRef('editor1');
+  const [activeEditorId, setActiveEditorId] = useState<string>(activeEditorIdRef.current);
 
-  const [activeEditorId, setActiveEditorId] = useState<string>('editor1');
+  useEffect(() => {
+    activeEditorIdRef.current = activeEditorId;
+    console.log("New active editor id:", activeEditorIdRef.current);
+  }, [activeEditorId]);
+
   let count = 0;
 
   function newTab(): TabData {
@@ -56,7 +62,9 @@ function App(): JSX.Element {
     };
   }
 
-  const handleNodeClick = useCallback((nodeConfig: NodeConfig) => {
+  function handleNodeClick(nodeConfig: NodeConfig) {
+    const activeEditorId = activeEditorIdRef.current;
+    console.log("active editor for node click:", activeEditorId)
     const reactFlowInstance = sceneInstanceMap[activeEditorId || ''];
     if (!reactFlowInstance) {
       console.error(`ReactFlow instance for id ${activeEditorId} is undefined`);
@@ -76,7 +84,7 @@ function App(): JSX.Element {
     } else {
       console.error('Position or sceneActionsMap is undefined');
     }
-  }, [activeEditorId]);
+  };
 
 
   const handleNodeDragStart = useCallback((event, nodeType, nodeConfig) => {
@@ -84,7 +92,7 @@ function App(): JSX.Element {
     event.dataTransfer.setData('application/reactflow', nodeType);
     event.dataTransfer.setData('nodeConfig', JSON.stringify(nodeConfig));
     event.dataTransfer.effectAllowed = 'move';
-  }, []);
+  }, [setActiveEditorId]);
 
 
   const initialLayout = useMemo(() => ({
@@ -126,14 +134,14 @@ function App(): JSX.Element {
 
   const handleLayoutChange = useCallback((layoutData: LayoutData, currentTabId, direction) => {
     const editorPanel = layoutData.dockbox.children.find(panel => panel.id === 'editor-panel');
-
     if (editorPanel && editorPanel.activeId) {
-      console.log("Layout changed, active editor:", editorPanel.activeId);
       setActiveEditorId(editorPanel.activeId);
     } else {
       console.log("No active editor tab was found in the layout change.");
     }
-  }, []);
+  }, [setActiveEditorId]);
+
+
 
 
   return (
