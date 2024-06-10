@@ -24,7 +24,7 @@ let sceneInstanceMap: { [key: string]: ReactFlowInstance | undefined } = {};
 
 function App(): JSX.Element {
 
-  const [activeTabId, setActiveTabId] = useState<string>('editor1');
+  const [activeEditorId, setActiveEditorId] = useState<string>('editor1');
   let count = 0;
 
   function newTab(): TabData {
@@ -36,12 +36,9 @@ function App(): JSX.Element {
       content: (
         <VPEditor
           id={`editor${count}`}
-          activated={activeTabId === `editor${count}`}
+          activated={activeEditorId === `editor${count}`}
           onSceneActionsInit={(actions, instance) => {
-
-            if (!instance) {
-              return;
-            }
+            if (!instance) return;
             sceneActionsMap[`editor${count}`] = actions;
             sceneInstanceMap[`editor${count}`] = instance;
           }}
@@ -60,12 +57,12 @@ function App(): JSX.Element {
   }
 
   const handleNodeClick = useCallback((nodeConfig: NodeConfig) => {
-    const reactFlowInstance = sceneInstanceMap[activeTabId || ''];
+    const reactFlowInstance = sceneInstanceMap[activeEditorId || ''];
     if (!reactFlowInstance) {
-      console.error(`ReactFlow instance for id ${activeTabId} is undefined`);
+      console.error(`ReactFlow instance for id ${activeEditorId} is undefined`);
       return;
     }
-    const reactFlowBounds = document.querySelector(`#${activeTabId}`)?.getBoundingClientRect();
+    const reactFlowBounds = document.querySelector(`#${activeEditorId}`)?.getBoundingClientRect();
     if (!reactFlowBounds) {
       console.error('ReactFlow bounds are undefined');
       return;
@@ -74,12 +71,12 @@ function App(): JSX.Element {
       x: reactFlowBounds.left + 100,
       y: reactFlowBounds.top + 100,
     });
-    if (position && sceneActionsMap[activeTabId || '']) {
-      sceneActionsMap[activeTabId || '']?.addNode(nodeConfig.type, position, nodeConfig);
+    if (position && sceneActionsMap[activeEditorId || '']) {
+      sceneActionsMap[activeEditorId || '']?.addNode(nodeConfig.type, position, nodeConfig);
     } else {
       console.error('Position or sceneActionsMap is undefined');
     }
-  }, [activeTabId]);
+  }, [activeEditorId]);
 
 
   const handleNodeDragStart = useCallback((event, nodeType, nodeConfig) => {
@@ -127,20 +124,24 @@ function App(): JSX.Element {
     },
   }), []);
 
-  const handleLayoutChange = (layout: LayoutData, currentTabId: string, direction) => {
-    console.log("Layout changed, active tab:", currentTabId);
-    setActiveTabId(currentTabId);
-  };
+  const handleLayoutChange = useCallback((layoutData: LayoutData, currentTabId, direction) => {
+    const editorPanel = layoutData.dockbox.children.find(panel => panel.id === 'editor-panel');
+
+    if (editorPanel && editorPanel.activeId) {
+      console.log("Layout changed, active editor:", editorPanel.activeId);
+      setActiveEditorId(editorPanel.activeId);
+    } else {
+      console.log("No active editor tab was found in the layout change.");
+    }
+  }, []);
 
 
   return (
-    //<ChakraProvider>
     <DockLayout
       defaultLayout={initialLayout}
       onLayoutChange={handleLayoutChange}
       style={{ position: 'absolute', left: 10, top: 10, right: 10, bottom: 10 }}
     />
-    //</ChakraProvider>
   );
 }
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
