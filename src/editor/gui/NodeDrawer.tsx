@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import {
-    Box, Input, InputGroup, InputLeftElement, List, ListItem, VStack, Text, Icon, Tabs, TabList, TabPanels, Tab, TabPanel, Breadcrumb, BreadcrumbItem, BreadcrumbLink, HStack, Badge, InputRightElement, Flex
+    Box, Input, InputGroup, InputLeftElement, List, ListItem, VStack, Text, Icon, Tabs, TabList, TabPanels, Tab, TabPanel, Breadcrumb, BreadcrumbItem, BreadcrumbLink, HStack, Badge, InputRightElement, Flex,
+    ChakraProvider
 } from '@chakra-ui/react';
 import { Search2Icon, ChevronRightIcon, CloseIcon } from '@chakra-ui/icons';
 import { HiFolder } from "react-icons/hi2";
@@ -280,10 +281,10 @@ function NodeDrawer({
     ), [handleNodeDragStart, handleNodeClickLocal, focusedNode]);
 
     return (
-        <Box width="300px" bg="gray.100" borderRight="1px solid #ccc" height="100vh" display="flex" flexDirection="column" overflow="hidden">
-            <VStack spacing={8} p={4}>
-                <Text fontSize="lg" fontWeight="bold" mt={4}>Node Library</Text>
-                <InputGroup mb={4}>
+        <ChakraProvider>
+            <Box bg="gray.100" borderRight="1px solid #ccc" height="100vh" display="flex" flexDirection="column" overflow="hidden">
+
+                <InputGroup mb={4} mt={8}>
                     <InputLeftElement pointerEvents="none">
                         <Icon as={Search2Icon} />
                     </InputLeftElement>
@@ -301,83 +302,84 @@ function NodeDrawer({
                         )}
                     </InputRightElement>
                 </InputGroup>
-            </VStack>
-            <Flex flex="1" direction="column" mt={4}>
-                <Tabs
-                    flex="1"
-                    index={tabState.currentTabIndex}
-                    onChange={(index) => handleTabChange(index)}
-                    orientation="vertical"
-                    onMouseDown={(e) => e.preventDefault()}
-                >
-                    <TabList
-                        height="100%"
-                        width="60%"
-                        overflowY="scroll"
-                        borderColor={bgNodePanel}
+
+                <Flex flex="1" direction="column" mt={4}>
+                    <Tabs
+                        flex="1"
+                        index={tabState.currentTabIndex}
+                        onChange={(index) => handleTabChange(index)}
+                        orientation="vertical"
+                        onMouseDown={(e) => e.preventDefault()}
                     >
-                        {visibleTabs.map(([category], index) => (
-                            <Tab
-                                key={category}
-                                fontSize="2xs"
-                                height="65px"
-                                p={1}
-                                marginInlineStart="0px"
-                                onClick={(e) => { e.preventDefault(); handleTabClick(index) }}
-                                onMouseDown={(e) => e.preventDefault()}
-                                sx={{
-                                    bg: index === tabState.currentTabIndex ? (focusOnTab ? focusBgColor : bgNodePanel) : 'transparent',
-                                    _focusVisible: { boxShadow: 'none' }
-                                }}
-                            >
-                                <HStack justifyContent="center" alignItems="center" width="100%" gap="0.2rem">
-                                    <Text>{category}</Text>
-                                    {searchResults[category] && (
-                                        <Badge colorScheme="red" borderRadius="50%">
-                                            {Object.keys(searchResults[category].nodes).length + Object.keys(searchResults[category].packages).length}
-                                        </Badge>
-                                    )}
-                                </HStack>
-                            </Tab>
-                        ))}
-                    </TabList>
-                    <TabPanels
-                        bg={bgNodePanel}
-                        style={{
-                            overflowY: 'auto',
-                            scrollbarWidth: 'thin',
-                        }}>
-                        {visibleTabs.map(([category]) => (
-                            <TabPanel key={category} mt={2} height="100%">
-                                <VStack align="stretch" height="100%" fontSize="2xs">
-                                    <Breadcrumb
-                                        separator={<ChevronRightIcon color="gray.500" />}
-                                        mb={4}
-                                        sx={{
-                                            '.chakra-breadcrumb__list': {
-                                                display: 'block',
-                                                flexWrap: 'wrap',
-                                            },
-                                        }}
-                                    >
-                                        {currentPath.map((segment, index) => (
-                                            <BreadcrumbItem key={index} isCurrentPage={index === currentPath.length - 1}>
-                                                <BreadcrumbLink onClick={() => handleBreadcrumbClick(index)}>
-                                                    {segment}
-                                                </BreadcrumbLink>
-                                            </BreadcrumbItem>
-                                        ))}
-                                    </Breadcrumb>
-                                    {searchQuery && searchResults[currentPath[0]]
-                                        ? renderNodeList(currentPath.length > 1 ? getCurrentNodes() : { ...searchResults[currentPath[0]].packages, ...searchResults[currentPath[0]].nodes })
-                                        : renderNodeList(getCurrentNodes())}
-                                </VStack>
-                            </TabPanel>
-                        ))}
-                    </TabPanels>
-                </Tabs>
-            </Flex>
-        </Box >
+                        <TabList
+                            height="100%"
+                            width="60%"
+                            overflowY="scroll"
+                            borderColor={bgNodePanel}
+                        >
+                            {visibleTabs.map(([category], index) => (
+                                <Tab
+                                    key={category}
+                                    fontSize="2xs"
+                                    height="65px"
+                                    p={1}
+                                    marginInlineStart="0px"
+                                    onClick={(e) => { e.preventDefault(); handleTabClick(index) }}
+                                    onMouseDown={(e) => e.preventDefault()}
+                                    sx={{
+                                        bg: index === tabState.currentTabIndex ? (focusOnTab ? focusBgColor : bgNodePanel) : 'transparent',
+                                        _focusVisible: { boxShadow: 'none' }
+                                    }}
+                                >
+                                    <HStack justifyContent="center" alignItems="center" width="100%" gap="0.2rem">
+                                        <Text>{category}</Text>
+                                        {searchResults[category] && (
+                                            <Badge colorScheme="red" borderRadius="50%">
+                                                {Object.keys(searchResults[category].nodes).length + Object.keys(searchResults[category].packages).length}
+                                            </Badge>
+                                        )}
+                                    </HStack>
+                                </Tab>
+                            ))}
+                        </TabList>
+                        <TabPanels
+                            bg={bgNodePanel}
+                            style={{
+                                overflowY: 'auto',
+                                scrollbarWidth: 'thin',
+                            }}>
+                            {visibleTabs.map(([category]) => (
+                                <TabPanel key={category} mt={2} height="100%">
+                                    <VStack align="stretch" height="100%" fontSize="2xs">
+                                        <Breadcrumb
+                                            separator={<ChevronRightIcon color="gray.500" />}
+                                            mb={4}
+                                            sx={{
+                                                '.chakra-breadcrumb__list': {
+                                                    display: 'block',
+                                                    flexWrap: 'wrap',
+                                                },
+                                            }}
+                                        >
+                                            {currentPath.map((segment, index) => (
+                                                <BreadcrumbItem key={index} isCurrentPage={index === currentPath.length - 1}>
+                                                    <BreadcrumbLink onClick={() => handleBreadcrumbClick(index)}>
+                                                        {segment}
+                                                    </BreadcrumbLink>
+                                                </BreadcrumbItem>
+                                            ))}
+                                        </Breadcrumb>
+                                        {searchQuery && searchResults[currentPath[0]]
+                                            ? renderNodeList(currentPath.length > 1 ? getCurrentNodes() : { ...searchResults[currentPath[0]].packages, ...searchResults[currentPath[0]].nodes })
+                                            : renderNodeList(getCurrentNodes())}
+                                    </VStack>
+                                </TabPanel>
+                            ))}
+                        </TabPanels>
+                    </Tabs>
+                </Flex>
+            </Box >
+        </ChakraProvider>
     );
 }
 

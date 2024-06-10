@@ -12,7 +12,6 @@ import DockLayout, { LayoutData, TabData, BoxData, PanelData, DockContext, DockC
 import 'rc-dock/dist/rc-dock.css';
 import { NodeDrawer } from './editor/gui';
 import { NodeConfig } from './editor/types';
-import { ChakraProvider } from '@chakra-ui/react';
 import type { ReactFlowInstance } from 'reactflow';
 
 Object.entries(extensions).forEach(([name, extension]) => {
@@ -26,7 +25,6 @@ let sceneInstanceMap: { [key: string]: ReactFlowInstance | undefined } = {};
 function App(): JSX.Element {
 
   const [activeTabId, setActiveTabId] = useState<string>('editor1');
-  const [drawerExpanded, setDrawerExpanded] = useState<boolean>(false);
   let count = 0;
 
   function newTab(): TabData {
@@ -61,40 +59,6 @@ function App(): JSX.Element {
     };
   }
 
-
-  const initialLayout = useMemo(() => ({
-    dockbox: {
-      mode: 'horizontal',
-      children: [
-        {
-          id: 'editor-panel',
-          tabs: [newTab()],
-          panelLock: {
-            minWidth: 200,
-            panelExtra: (panelData, context) => (
-              <button className='btn'
-                onClick={() => {
-                  context.dockMove(newTab(), panelData, 'middle');
-                }}
-              >
-                Add
-              </button>
-            )
-          }
-        },
-      ],
-    },
-  }), []);
-
-  const handleLayoutChange = (layout: LayoutData, currentTabId: string, direction) => {
-    console.log("Layout changed, active tab:", currentTabId);
-    setActiveTabId(currentTabId);
-  };
-
-  const handleDrawerToggle = useCallback(() => {
-    setDrawerExpanded((prev) => !prev);
-  }, []);
-
   const handleNodeClick = useCallback((nodeConfig: NodeConfig) => {
     const reactFlowInstance = sceneInstanceMap[activeTabId || ''];
     if (!reactFlowInstance) {
@@ -126,41 +90,57 @@ function App(): JSX.Element {
   }, []);
 
 
+  const initialLayout = useMemo(() => ({
+    dockbox: {
+      mode: 'horizontal',
+      children: [
+        {
+          tabs: [
+            {
+              id: 'node-panel',
+              maxWidth: 300,
+              title: 'Node Library',
+              content: (
+                <NodeDrawer handleNodeClick={handleNodeClick} handleNodeDragStart={handleNodeDragStart} />
+              )
+            }
+          ]
+        },
+        {
+          id: 'editor-panel',
+          size: 800,
+          tabs: [newTab()],
+          panelLock: {
+            panelStyle: 'main',
+            panelExtra: (panelData, context) => (
+              <button className='btn'
+                onClick={() => {
+                  context.dockMove(newTab(), panelData, 'middle');
+                }}
+              >
+                Add
+              </button>
+            )
+          }
+        },
+      ],
+    },
+  }), []);
+
+  const handleLayoutChange = (layout: LayoutData, currentTabId: string, direction) => {
+    console.log("Layout changed, active tab:", currentTabId);
+    setActiveTabId(currentTabId);
+  };
+
+
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-      <DockLayout
-        defaultLayout={initialLayout}
-        onLayoutChange={handleLayoutChange}
-        style={{ position: 'absolute', left: 100, top: 0, right: 100, bottom: 30, zIndex: 2 }}
-      />
-      <div className={`node-drawer-container ${drawerExpanded ? 'expanded' : 'collapsed'}`}
-        style={{
-          zIndex: drawerExpanded ? 3 : 1
-        }}>
-        <div
-          className="drawer-handle"
-          onClick={handleDrawerToggle}
-          style={{
-            position: 'absolute',
-            right: drawerExpanded ? '295px' : '5px',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            width: '8px',
-            height: '200px',
-            backgroundColor: 'rgba(128, 128, 128, 0.5)',
-            cursor: 'pointer',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: '10px',
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
-          }}
-        />
-        <ChakraProvider>
-          {drawerExpanded && <NodeDrawer handleNodeClick={handleNodeClick} handleNodeDragStart={handleNodeDragStart} />}
-        </ChakraProvider>
-      </div>
-    </div>
+    //<ChakraProvider>
+    <DockLayout
+      defaultLayout={initialLayout}
+      onLayoutChange={handleLayoutChange}
+      style={{ position: 'absolute', left: 10, top: 10, right: 10, bottom: 10 }}
+    />
+    //</ChakraProvider>
   );
 }
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
