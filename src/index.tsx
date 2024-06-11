@@ -8,15 +8,18 @@ import {
   LoadPackageToRegistry,
 } from './editor';
 import './index.css';
-import DockLayout, { LayoutData, TabData, BoxData, PanelData, DockContext, DockContextType } from 'rc-dock';
+import DockLayout, { LayoutData, TabData } from 'rc-dock';
 import 'rc-dock/dist/rc-dock.css';
 import { NodeDrawer } from './editor/gui';
 import { NodeConfig } from './editor/types';
 import type { ReactFlowInstance } from 'reactflow';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 Object.entries(extensions).forEach(([name, extension]) => {
   LoadPackageToRegistry(name, extension);
 });
+
 
 let sceneActionsMap: { [key: string]: ISceneActions | undefined } = {};
 let sceneInstanceMap: { [key: string]: ReactFlowInstance | undefined } = {};
@@ -86,21 +89,6 @@ function App(): JSX.Element {
     }
   };
 
-  function handleNodeDragStart(event, nodeType, nodeConfig) {
-    console.log('Attempting to start drag:', { nodeType, nodeConfig });
-
-    if (!event) {
-      console.error('Drag event is undefined.');
-      return;
-    }
-    // event.stopPropagation();
-    event.dataTransfer.setData('application/reactflow', nodeType);
-    event.dataTransfer.setData('nodeConfig', JSON.stringify(nodeConfig));
-    event.dataTransfer.effectAllowed = 'move';
-    console.log('Node drag start triggered', { nodeType, nodeConfig });
-  };
-
-
   const initialLayout = useMemo(() => ({
     dockbox: {
       mode: 'horizontal',
@@ -112,7 +100,7 @@ function App(): JSX.Element {
               maxWidth: 300,
               title: 'Node Library',
               content: (
-                <NodeDrawer handleNodeClick={handleNodeClick} handleNodeDragStart={handleNodeDragStart} />
+                <NodeDrawer handleNodeClick={handleNodeClick} />
               )
             }
           ]
@@ -148,11 +136,13 @@ function App(): JSX.Element {
   }, [setActiveEditorId]);
 
   return (
-    <DockLayout
-      defaultLayout={initialLayout}
-      onLayoutChange={handleLayoutChange}
-      style={{ position: 'absolute', left: 10, top: 10, right: 10, bottom: 10 }}
-    />
+    <DndProvider backend={HTML5Backend}>
+      <DockLayout
+        defaultLayout={initialLayout}
+        onLayoutChange={handleLayoutChange}
+        style={{ position: 'absolute', left: 10, top: 10, right: 10, bottom: 10 }}
+      />
+    </DndProvider>
   );
 }
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);

@@ -8,19 +8,59 @@ import { HiFolder } from "react-icons/hi2";
 import { nodeConfigRegistry } from '../extension';
 import { NodeConfig, NodePackage } from '../types';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { useDrag } from 'react-dnd';
+
 
 const bgNodePanel = "gray.50";
 const focusBgColor = "blue.100";
+const ItemType = {
+    NODE: 'node',
+};
+
+interface DraggableListItemProps {
+    name: string;
+    nodeConfig: NodeConfig | NodePackage;
+    isFocused: boolean;
+    onClick: () => void;
+    onFocus: () => void;
+}
+
+const DraggableListItem: React.FC<DraggableListItemProps> = ({ name, nodeConfig, isFocused, onClick, onFocus }) => {
+    const [{ isDragging }, drag] = useDrag(() => ({
+        type: ItemType.NODE,
+        item: { nodeType: (nodeConfig as NodeConfig).type, nodeConfig },
+        collect: (monitor) => ({
+            isDragging: monitor.isDragging(),
+        }),
+    }));
+
+    return (
+        <ListItem
+            ref={drag}
+            opacity={isDragging ? 0.5 : 1}
+            cursor="pointer"
+            p={2}
+            borderRadius="md"
+            bg={isFocused ? 'blue.100' : 'gray.100'}
+            _hover={{ bg: 'gray.200' }}
+            onClick={onClick}
+            tabIndex={0}
+            onFocus={onFocus}
+            onMouseDown={(e) => e.preventDefault()}
+        >
+            <HStack>
+                {(nodeConfig as NodePackage).nodes && <Icon as={HiFolder} />}
+                <Text style={{ overflowWrap: 'anywhere' }}>
+                    {'title' in nodeConfig ? nodeConfig.title || name : name}
+                </Text>
+            </HStack>
+        </ListItem>
+    );
+};
 
 function NodeDrawer({
-    handleNodeDragStart,
     handleNodeClick,
 }: {
-    handleNodeDragStart: (
-        event: React.DragEvent<HTMLLIElement>,
-        nodeType: string,
-        nodeData: NodeConfig
-    ) => void;
     handleNodeClick: (
         nodeConfig: NodeConfig
     ) => void;
@@ -165,23 +205,6 @@ function NodeDrawer({
         }
     }, [currentPath, getCurrentNodes, handleNodeClick]);
 
-    useEffect(() => {
-        const handleDragStart = (event) => {
-            console.log("Drag start event fired");
-        };
-
-        const nodeList = nodeListRef.current;
-        nodeList?.addEventListener("dragstart", handleDragStart);
-
-        return () => {
-            nodeList?.removeEventListener("dragstart", handleDragStart);
-        };
-    }, []);
-
-    document.querySelector('.css-x7wznv')?.addEventListener('dragstart', function (event) {
-        console.log('Drag started!', event);
-    });
-
     const handleBreadcrumbClick = useCallback((index: number) => {
         setCurrentPath(currentPath.slice(0, index + 1));
         setFocusedNode(0);
@@ -269,33 +292,18 @@ function NodeDrawer({
     const renderNodeList = useCallback((nodes: Record<string, NodeConfig | NodePackage>) => (
         <List spacing={2} ref={nodeListRef}>
             {Object.entries(nodes).map(([name, nodeConfig], index) => (
-                <ListItem
+                <DraggableListItem
                     key={name}
-                    draggable="true"
-                    onDragStart={(e) =>
-                        handleNodeDragStart(e, (nodeConfig as NodeConfig).type, nodeConfig as NodeConfig)
-                    }
-                    opacity={0.5}
-                    cursor="pointer"
-                    p={2}
-                    borderRadius="md"
-                    bg={index === focusedNode ? focusBgColor : 'gray.100'}
-                    _hover={{ bg: 'gray.200' }}
+                    name={name}
+                    nodeConfig={nodeConfig}
+                    isFocused={index === focusedNode}
                     onClick={() => handleNodeClickLocal(name)}
-                    tabIndex={0}
                     onFocus={() => setFocusedNode(index)}
-                    onMouseDown={(e) => e.preventDefault()}
-                >
-                    <HStack>
-                        {(nodeConfig as NodePackage).nodes && <Icon as={HiFolder} />}
-                        <Text style={{ overflowWrap: 'anywhere' }}>
-                            {'title' in nodeConfig ? nodeConfig.title || name : name}
-                        </Text>
-                    </HStack>
-                </ListItem>
+                />
             ))}
         </List>
-    ), [handleNodeDragStart, handleNodeClickLocal, focusedNode]);
+    ), [handleNodeClickLocal, focusedNode]);
+
 
     return (
         <ChakraProvider>

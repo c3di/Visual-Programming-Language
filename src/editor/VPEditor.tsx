@@ -28,6 +28,11 @@ import type {
   selectedElementsCounts,
 } from './types';
 import { NodeConfig } from './types';
+import { useDrop } from 'react-dnd';
+
+const ItemType = {
+  NODE: 'node',
+};
 
 export interface IVPEditorOption {
   controller?: {
@@ -139,12 +144,35 @@ const Scene = ({
   // guide from https://reactflow.dev/docs/guides/remove-attribution/
   const proOptions = { hideAttribution: true };
 
+  const [{ isOver }, drop] = useDrop({
+    accept: ItemType.NODE,
+    drop: (item, monitor) => {
+      const offset = monitor.getClientOffset();
+      if (!sceneDomRef.current || !sceneInstance.current || !offset) return;
+      const reactFlowBounds = sceneDomRef.current.getBoundingClientRect();
+      const { nodeConfig } = item as { nodeConfig: NodeConfig };
+
+      const position = sceneInstance.current.project({
+        x: (offset.x - reactFlowBounds.left) / sceneInstance.current.getZoom(),
+        y: (offset.y - reactFlowBounds.top) / sceneInstance.current.getZoom(),
+      });
+
+      sceneActions?.addNode(nodeConfig.type, position, nodeConfig);
+    },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  });
+
 
   return (
     <SceneStateContext.Provider value={sceneState}>
       <div
         className="vp-editor"
-        ref={sceneDomRef}
+        ref={(node) => {
+          sceneDomRef;
+          drop(node);
+        }}
         tabIndex={0}
         onKeyDown={(e) => {
           if (
@@ -155,23 +183,6 @@ const Scene = ({
         }}
         onMouseMoveCapture={(e) => {
           mouseTracker?.updateMousePos(e.clientX, e.clientY);
-        }}
-        onDrop={(event) => {
-          event.preventDefault();
-          if (!sceneDomRef.current || !sceneInstance.current) return;
-          const reactFlowBounds = sceneDomRef.current.getBoundingClientRect();
-          const type = event.dataTransfer.getData('application/reactflow');
-          const nodeConfig = JSON.parse(event.dataTransfer.getData('nodeConfig')) as NodeConfig;
-
-          if (typeof type === 'undefined' || !type || !nodeConfig) {
-            return;
-          }
-          const position = sceneInstance.current.project({
-            x: (event.clientX - reactFlowBounds.left) / sceneInstance.current.getZoom(),
-            y: (event.clientY - reactFlowBounds.top) / sceneInstance.current.getZoom(),
-          });
-
-          sceneActions?.addNode(type, position, nodeConfig);
         }}
         onDragOver={(event) => {
           event.preventDefault();
