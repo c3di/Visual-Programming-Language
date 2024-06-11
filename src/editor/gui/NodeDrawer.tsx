@@ -284,7 +284,6 @@ function NodeDrawer({
                     onClick={() => handleNodeClickLocal(name)}
                     tabIndex={0}
                     onFocus={() => setFocusedNode(index)}
-                    onMouseDown={(e) => e.preventDefault()}
                 >
                     <HStack>
                         {(nodeConfig as NodePackage).nodes && <Icon as={HiFolder} />}
@@ -326,7 +325,6 @@ function NodeDrawer({
                         index={tabState.currentTabIndex}
                         onChange={(index) => handleTabChange(index)}
                         orientation="vertical"
-                        onMouseDown={(e) => e.preventDefault()}
                         onDragOver={(e) => e.stopPropagation()}
                     >
                         <TabList

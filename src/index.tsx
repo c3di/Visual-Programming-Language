@@ -8,7 +8,7 @@ import {
   LoadPackageToRegistry,
 } from './editor';
 import './index.css';
-import DockLayout, { LayoutData, TabData, BoxData, PanelData, DockContext, DockContextType } from 'rc-dock';
+import DockLayout, { LayoutData, TabData } from 'rc-dock';
 import 'rc-dock/dist/rc-dock.css';
 import { NodeDrawer } from './editor/gui';
 import { NodeConfig } from './editor/types';
