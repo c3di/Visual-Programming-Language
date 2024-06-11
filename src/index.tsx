@@ -64,7 +64,6 @@ function App(): JSX.Element {
 
   function handleNodeClick(nodeConfig: NodeConfig) {
     const activeEditorId = activeEditorIdRef.current;
-    console.log("active editor for node click:", activeEditorId)
     const reactFlowInstance = sceneInstanceMap[activeEditorId || ''];
     if (!reactFlowInstance) {
       console.error(`ReactFlow instance for id ${activeEditorId} is undefined`);
@@ -87,17 +86,9 @@ function App(): JSX.Element {
   };
 
   function handleNodeDragStart(event, nodeType, nodeConfig) {
-    console.log('Attempting to start drag:', { nodeType, nodeConfig });
-
-    if (!event) {
-      console.error('Drag event is undefined.');
-      return;
-    }
-    // event.stopPropagation();
     event.dataTransfer.setData('application/reactflow', nodeType);
     event.dataTransfer.setData('nodeConfig', JSON.stringify(nodeConfig));
     event.dataTransfer.effectAllowed = 'move';
-    console.log('Node drag start triggered', { nodeType, nodeConfig });
   };
 
 

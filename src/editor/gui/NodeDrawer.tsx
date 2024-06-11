@@ -165,19 +165,6 @@ function NodeDrawer({
         }
     }, [currentPath, getCurrentNodes, handleNodeClick]);
 
-    useEffect(() => {
-        const handleDragStart = (event) => {
-            console.log("Drag start event fired");
-        };
-
-        const nodeList = nodeListRef.current;
-        nodeList?.addEventListener("dragstart", handleDragStart);
-
-        return () => {
-            nodeList?.removeEventListener("dragstart", handleDragStart);
-        };
-    }, []);
-
     document.querySelector('.css-x7wznv')?.addEventListener('dragstart', function (event) {
         console.log('Drag started!', event);
     });
@@ -267,7 +254,7 @@ function NodeDrawer({
     }, [upKey, downKey, leftKey, rightKey, enterKey]);
 
     const renderNodeList = useCallback((nodes: Record<string, NodeConfig | NodePackage>) => (
-        <List spacing={2} ref={nodeListRef}>
+        <List spacing={4} ref={nodeListRef}>
             {Object.entries(nodes).map(([name, nodeConfig], index) => (
                 <ListItem
                     key={name}
@@ -276,7 +263,7 @@ function NodeDrawer({
                         handleNodeDragStart(e, (nodeConfig as NodeConfig).type, nodeConfig as NodeConfig)
                     }
                     opacity={0.5}
-                    cursor="pointer"
+                    cursor={(nodeConfig as NodePackage).nodes ? 'pointer' : 'move'}
                     p={2}
                     borderRadius="md"
                     bg={index === focusedNode ? focusBgColor : 'gray.100'}
@@ -300,7 +287,7 @@ function NodeDrawer({
         <ChakraProvider>
             <Box bg="gray.100" borderRight="1px solid #ccc" height="100vh" display="flex" flexDirection="column" overflow="hidden">
 
-                <InputGroup mb={4} mt={8}>
+                <InputGroup width="90%" mb={4} mt={8} ml="5%">
                     <InputLeftElement pointerEvents="none">
                         <Icon as={Search2Icon} />
                     </InputLeftElement>
