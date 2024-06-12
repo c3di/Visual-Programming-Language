@@ -7,6 +7,7 @@ export { default as ConnectionTip } from './ConnectionTip';
 export { default as Progress } from './Progress';
 export { default as NodeLibraryList } from './NodeLibraryList';
 export { default as NodeDrawer } from './NodeDrawer';
+export { default as CodePanel } from './CodePanel';
 export {
   default as NodeLibraryItem,
   type INodeLibraryItem,

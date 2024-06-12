@@ -10,8 +10,8 @@ import {
 import './index.css';
 import DockLayout, { LayoutData, TabData } from 'rc-dock';
 import 'rc-dock/dist/rc-dock.css';
-import { NodeDrawer } from './editor/gui';
-import { NodeConfig } from './editor/types';
+import { NodeDrawer, CodePanel } from './editor/gui';
+import { GenResult, NodeConfig } from './editor/types';
 import type { ReactFlowInstance } from 'reactflow';
 
 Object.entries(extensions).forEach(([name, extension]) => {
@@ -25,15 +25,27 @@ let sceneInstanceMap: { [key: string]: ReactFlowInstance | undefined } = {};
 function App(): JSX.Element {
   const activeEditorIdRef = useRef('editor1');
   const [activeEditorId, setActiveEditorId] = useState<string>(activeEditorIdRef.current);
+  const [code, setCode] = useState<GenResult | undefined>();
 
   useEffect(() => {
     activeEditorIdRef.current = activeEditorId;
     console.log("New active editor id:", activeEditorIdRef.current);
   }, [activeEditorId]);
 
+  useEffect(() => {
+    const getCode = () => {
+      const actions = sceneActionsMap[activeEditorId];
+      if (actions && actions.sourceCode()) {
+        const sourceCode = actions.sourceCode();
+        setCode(sourceCode);
+      }
+    }
+    getCode();
+  }, [activeEditorId]);
+
   let count = 0;
 
-  function newTab(): TabData {
+  function newEditorTab(): TabData {
     count++;
     return {
       id: `editor${count}`,
@@ -109,21 +121,36 @@ function App(): JSX.Element {
           ]
         },
         {
-          id: 'editor-panel',
+          mode: 'vertical',
           size: 800,
-          tabs: [newTab()],
-          panelLock: {
-            panelStyle: 'main',
-            panelExtra: (panelData, context) => (
-              <button className='btn'
-                onClick={() => {
-                  context.dockMove(newTab(), panelData, 'middle');
-                }}
-              >
-                Add
-              </button>
-            )
-          }
+          children: [
+            {
+              id: 'editor-panel',
+              tabs: [newEditorTab()],
+              panelLock: {
+                panelStyle: 'main',
+                panelExtra: (panelData, context) => (
+                  <button className='btn'
+                    onClick={() => {
+                      context.dockMove(newEditorTab(), panelData, 'middle');
+                    }}
+                  >
+                    Add
+                  </button>
+                )
+              }
+            },
+            {
+              id: 'code-panel',
+              tabs: [{
+                id: `codepanel${count}`,
+                title: `Code Panel ${count}`,
+                closable: true,
+                content: <CodePanel code={code} />
+              }],
+
+            }
+          ],
         },
       ],
     },
