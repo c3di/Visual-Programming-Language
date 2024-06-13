@@ -184,7 +184,6 @@ const Scene = ({
           <ReactFlow
             id={id}
             onInit={(instance) => {
-              console.log("ReactFlow instance initialized:", instance);
               sceneInstance.current = instance;
               setInitialed(true);
             }}

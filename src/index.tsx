@@ -13,6 +13,8 @@ import 'rc-dock/dist/rc-dock.css';
 import { NodeDrawer, CodePanel } from './editor/gui';
 import { GenResult, NodeConfig } from './editor/types';
 import type { ReactFlowInstance } from 'reactflow';
+import { CodeProvider } from './editor/gui/CodeContext';
+import { Code } from '@chakra-ui/react';
 
 Object.entries(extensions).forEach(([name, extension]) => {
   LoadPackageToRegistry(name, extension);
@@ -25,22 +27,23 @@ let sceneInstanceMap: { [key: string]: ReactFlowInstance | undefined } = {};
 function App(): JSX.Element {
   const activeEditorIdRef = useRef('editor1');
   const [activeEditorId, setActiveEditorId] = useState<string>(activeEditorIdRef.current);
-  const [code, setCode] = useState<GenResult | undefined>();
+  const [code, setCode] = useState<string | undefined>();
 
   useEffect(() => {
     activeEditorIdRef.current = activeEditorId;
-    console.log("New active editor id:", activeEditorIdRef.current);
   }, [activeEditorId]);
 
   useEffect(() => {
     const getCode = () => {
       const actions = sceneActionsMap[activeEditorId];
-      if (actions && actions.sourceCode()) {
-        const sourceCode = actions.sourceCode();
+      if (actions && actions.sourceCode) {
+        const sourceCode = actions.sourceCode().code;
         setCode(sourceCode);
       }
-    }
+    };
     getCode();
+    const interval = setInterval(getCode, 3000);
+    return () => clearInterval(interval);
   }, [activeEditorId]);
 
   let count = 0;
@@ -141,10 +144,9 @@ function App(): JSX.Element {
               }
             },
             {
-              id: 'code-panel',
               tabs: [{
-                id: `codepanel${count}`,
-                title: `Code Panel ${count}`,
+                id: `code-panel`,
+                title: `Code Panel`,
                 closable: true,
                 content: <CodePanel code={code} />
               }],
@@ -154,23 +156,36 @@ function App(): JSX.Element {
         },
       ],
     },
-  }), []);
+  }), [code]);
 
   const handleLayoutChange = useCallback((layoutData: LayoutData, currentTabId, direction) => {
-    const editorPanel = layoutData.dockbox.children.find(panel => panel.id === 'editor-panel');
+
+    const findEditorPanel = (panel) => {
+      if (panel.id === 'editor-panel') {
+        return panel;
+      }
+      if (panel.children) {
+        for (const child of panel.children) {
+          const found = findEditorPanel(child);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+    const editorPanel = findEditorPanel(layoutData.dockbox);
     if (editorPanel && editorPanel.activeId) {
       setActiveEditorId(editorPanel.activeId);
-    } else {
-      console.log("No active editor tab was found in the layout change.");
     }
-  }, [setActiveEditorId]);
+  }, []);
 
   return (
-    <DockLayout
-      defaultLayout={initialLayout}
-      onLayoutChange={handleLayoutChange}
-      style={{ position: 'absolute', left: 10, top: 10, right: 10, bottom: 10 }}
-    />
+    <CodeProvider value={code}>
+      <DockLayout
+        defaultLayout={initialLayout}
+        onLayoutChange={handleLayoutChange}
+        style={{ position: 'absolute', left: 10, top: 10, right: 10, bottom: 10 }}
+      />
+    </CodeProvider>
   );
 }
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
