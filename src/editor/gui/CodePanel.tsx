@@ -1,12 +1,22 @@
 import React, { useContext } from 'react';
 import { Highlight, themes } from 'prism-react-renderer';
-import { ChakraProvider, Box, Button, useClipboard } from '@chakra-ui/react'
+import { ChakraProvider, Box, Button, useClipboard, Text } from '@chakra-ui/react'
 import CodeContext from './CodeContext';
 
 const CodePanel = () => {
-    const code = useContext(CodeContext);
-    console.log("CodePanel code:", code);
-    const { onCopy, hasCopied } = useClipboard(code!)
+    const GenResult = useContext(CodeContext);
+    console.log("CodePanel code:", GenResult);
+    const { onCopy, hasCopied } = useClipboard(GenResult?.code || '// No code available');
+
+    const renderMessages = () => (
+        <Box mb="4">
+            {GenResult?.messages.map((msg, index) => (
+                <Text key={index} color={msg.type === 'error' ? 'red.500' : 'orange.300'} fontSize="sm">
+                    {msg.message}
+                </Text>
+            ))}
+        </Box>
+    );
 
     return (
         <ChakraProvider>
@@ -34,8 +44,9 @@ const CodePanel = () => {
                 >
                     {hasCopied ? 'copied' : 'copy'}
                 </Button>
+                {GenResult && renderMessages()}
                 <Highlight
-                    code={code || '//Getting code… please wait ✨'}
+                    code={GenResult?.code || '// No code available'}
                     theme={themes.nightOwlLight}
                     language="python"
                 >

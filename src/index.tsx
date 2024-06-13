@@ -27,7 +27,7 @@ let sceneInstanceMap: { [key: string]: ReactFlowInstance | undefined } = {};
 function App(): JSX.Element {
   const activeEditorIdRef = useRef('editor1');
   const [activeEditorId, setActiveEditorId] = useState<string>(activeEditorIdRef.current);
-  const [code, setCode] = useState<string | undefined>();
+  const [genResult, setGenResult] = useState<GenResult | undefined>();
 
   useEffect(() => {
     activeEditorIdRef.current = activeEditorId;
@@ -37,8 +37,8 @@ function App(): JSX.Element {
     const getCode = () => {
       const actions = sceneActionsMap[activeEditorId];
       if (actions && actions.sourceCode) {
-        const sourceCode = actions.sourceCode().code;
-        setCode(sourceCode);
+        const sourceCode = actions.sourceCode();
+        setGenResult(sourceCode);
       }
     };
     getCode();
@@ -148,7 +148,7 @@ function App(): JSX.Element {
                 id: `code-panel`,
                 title: `Code Panel`,
                 closable: true,
-                content: <CodePanel code={code} />
+                content: <CodePanel />
               }],
 
             }
@@ -156,7 +156,7 @@ function App(): JSX.Element {
         },
       ],
     },
-  }), [code]);
+  }), [genResult]);
 
   const handleLayoutChange = useCallback((layoutData: LayoutData, currentTabId, direction) => {
 
@@ -179,7 +179,7 @@ function App(): JSX.Element {
   }, []);
 
   return (
-    <CodeProvider value={code}>
+    <CodeProvider value={genResult}>
       <DockLayout
         defaultLayout={initialLayout}
         onLayoutChange={handleLayoutChange}
