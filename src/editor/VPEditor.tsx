@@ -177,7 +177,7 @@ const Scene = ({
           event.preventDefault();
           event.dataTransfer.dropEffect = 'move';
         }}
-        style={{ outline: 'none', display: 'flex', height: '100vh' }}
+        style={{ outline: 'none', display: 'flex', height: '100%' }}
       >
         {gui.widget}
         <div style={{ flexGrow: 1 }}>

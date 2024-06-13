@@ -14,7 +14,6 @@ import { NodeDrawer, CodePanel } from './editor/gui';
 import { GenResult, NodeConfig } from './editor/types';
 import type { ReactFlowInstance } from 'reactflow';
 import { CodeProvider } from './editor/gui/CodeContext';
-import { Code } from '@chakra-ui/react';
 
 Object.entries(extensions).forEach(([name, extension]) => {
   LoadPackageToRegistry(name, extension);
@@ -128,6 +127,7 @@ function App(): JSX.Element {
           size: 800,
           children: [
             {
+              size: 600,
               id: 'editor-panel',
               tabs: [newEditorTab()],
               panelLock: {
@@ -144,10 +144,11 @@ function App(): JSX.Element {
               }
             },
             {
+              size: 200,
               tabs: [{
                 id: `code-panel`,
                 title: `Code Panel`,
-                closable: true,
+                //closable: true,
                 content: <CodePanel />
               }],
 
