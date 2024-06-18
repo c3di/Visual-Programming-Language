@@ -14,6 +14,7 @@ import { NodeDrawer, CodePanel } from './editor/gui';
 import { GenResult, NodeConfig } from './editor/types';
 import type { ReactFlowInstance } from 'reactflow';
 import { CodeProvider } from './editor/gui/CodeContext';
+import { ChakraProvider, Box, Button, VStack, HStack, Text } from '@chakra-ui/react';
 
 Object.entries(extensions).forEach(([name, extension]) => {
   LoadPackageToRegistry(name, extension);
@@ -21,15 +22,37 @@ Object.entries(extensions).forEach(([name, extension]) => {
 
 let sceneInstanceMap: { [key: string]: ReactFlowInstance | undefined } = {};
 
-
 function App(): JSX.Element {
-  const [editors, setEditors] = useState<TabData[]>([]);
   const activeEditorIdRef = useRef('editor1');
-  const countRef = useRef(0);
+  const countRef = useRef(1);
   const dockLayoutRef = useRef<any>(null);
   const [activeEditorId, setActiveEditorId] = useState<string>(activeEditorIdRef.current);
   const [genResult, setGenResult] = useState<GenResult | undefined>();
   const [sceneActionsMap, setSceneActionsMap] = useState<{ [key: string]: ISceneActions | undefined }>({});
+  const sceneActionsMapRef = useRef<{ [key: string]: ISceneActions | undefined }>({});
+  const [editors, setEditors] = useState<TabData[]>([
+    {
+      id: `editor1`,
+      title: `Editor 1`,
+      closable: true,
+      content: (
+        <VPEditor
+          id={`editor1`}
+          activated={activeEditorId === `editor1`}
+          onSceneActionsInit={(actions, instance) => handleSceneActionsInit(actions, instance, `editor1`)}
+          onSelectionChange={(selection) => {
+            // ...
+          }}
+          option={{
+            controller: { hidden: false },
+            minimap: {
+              collapsed: true,
+            },
+          }}
+        />
+      ),
+    }
+  ]);
 
   useEffect(() => {
     activeEditorIdRef.current = activeEditorId;
@@ -37,11 +60,11 @@ function App(): JSX.Element {
 
   const handleSceneActionsInit = (actions: ISceneActions, instance: ReactFlowInstance | undefined, editorId: string) => {
     if (!instance) return;
-    setSceneActionsMap((prevMap) => ({
-      ...prevMap,
-      [editorId]: actions,
-    }));
+    sceneInstanceMap[editorId] = instance;
+    sceneActionsMapRef.current = { ...sceneActionsMapRef.current, [editorId]: actions };
+    setSceneActionsMap({ ...sceneActionsMapRef.current });
   };
+
 
   useEffect(() => {
     const fetchSourceCode = async () => {
@@ -55,11 +78,11 @@ function App(): JSX.Element {
     fetchSourceCode();
   }, [sceneActionsMap]);
 
-  let count = 0;
 
-  function newEditorTab(): TabData {
-    count++;
-    return {
+  const newEditorTab = useCallback((): TabData => {
+    const count = countRef.current + 1;
+    countRef.current = count;
+    const newTab = {
       id: `editor${count}`,
       title: `Editor ${count}`,
       closable: true,
@@ -80,10 +103,22 @@ function App(): JSX.Element {
         />
       ),
     };
-  }
+    setEditors((prevEditors) => [...prevEditors, newTab]);
+    return newTab;
+  }, [activeEditorId]);
+
+  const handleAddEditor = useCallback(() => {
+    const newTab = newEditorTab();
+    dockLayoutRef.current.dockMove(newTab, 'editor-panel', 'middle');
+  }, [newEditorTab]);
+
+  useEffect(() => {
+    console.log('editors', editors);
+  }, [newEditorTab, editors.length]);
 
   function handleNodeClick(nodeConfig: NodeConfig) {
     const activeEditorId = activeEditorIdRef.current;
+    console.log('activeEditorId', activeEditorId);
     const reactFlowInstance = sceneInstanceMap[activeEditorId || ''];
     if (!reactFlowInstance) {
       console.error(`ReactFlow instance for id ${activeEditorId} is undefined`);
@@ -98,8 +133,8 @@ function App(): JSX.Element {
       x: reactFlowBounds.left + 100,
       y: reactFlowBounds.top + 100,
     });
-    if (position && sceneActionsMap[activeEditorId || '']) {
-      sceneActionsMap[activeEditorId || '']?.addNode(nodeConfig.type, position, nodeConfig);
+    if (position && sceneActionsMapRef.current[activeEditorId]) {
+      sceneActionsMapRef.current[activeEditorId]?.addNode(nodeConfig.type, position, nodeConfig);
     } else {
       console.error('Position or sceneActionsMap is undefined');
     }
@@ -137,7 +172,16 @@ function App(): JSX.Element {
                 id: 'editor-management',
                 title: 'Editor Management',
                 content: (
-                  <> </>
+                  <ChakraProvider>
+                    <VStack align="stretch" p={2}>
+                      {editors.map((editor) => (
+                        <HStack key={editor.id} justifyContent="space-between">
+                          <Text>{editor.title}</Text>
+                        </HStack>
+                      ))}
+                      <Button onClick={handleAddEditor}>Add Editor</Button>
+                    </VStack>
+                  </ChakraProvider>
                 ),
               }
               ]
@@ -151,7 +195,7 @@ function App(): JSX.Element {
             {
               size: 600,
               id: 'editor-panel',
-              tabs: [newEditorTab()],
+              tabs: editors,
               panelLock: {
                 panelStyle: 'main',
               }
@@ -193,6 +237,7 @@ function App(): JSX.Element {
   return (
     <CodeProvider value={genResult}>
       <DockLayout
+        ref={dockLayoutRef}
         defaultLayout={initialLayout}
         onLayoutChange={handleLayoutChange}
         style={{ position: 'absolute', left: 10, top: 10, right: 10, bottom: 10 }}
