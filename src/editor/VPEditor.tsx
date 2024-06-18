@@ -26,9 +26,8 @@ import type {
   OnConnectStartParams,
   SerializedGraph,
   selectedElementsCounts,
+  NodeConfig,
 } from './types';
-import { NodeConfig } from './types';
-
 export interface IVPEditorOption {
   controller?: {
     hidden?: boolean;
@@ -99,6 +98,7 @@ const Scene = ({
 
   const [startHandle, setStartHandle] = useState<OnConnectStartParams>();
 
+
   const closeWidget = useCallback(
     (e: React.MouseEvent | undefined | null, force: boolean = false): void => {
       if (!e?.button || force) gui.closeWidget();
@@ -127,14 +127,15 @@ const Scene = ({
     if (content !== currentContent.current) {
       currentContent.current = content;
       onContentChange(content);
+      console.log('content changed:', content);
     }
-  }, []);
+  }, [onContentChange, toJSONString]);
 
   useEffect(() => {
     // block the initial change
     if (!initialed) return;
     triggerContentChange();
-  }, [nodes, edges]);
+  }, [nodes, edges, initialed, triggerContentChange]);
 
   // guide from https://reactflow.dev/docs/guides/remove-attribution/
   const proOptions = { hideAttribution: true };

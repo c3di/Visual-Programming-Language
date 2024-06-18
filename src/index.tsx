@@ -19,7 +19,6 @@ Object.entries(extensions).forEach(([name, extension]) => {
   LoadPackageToRegistry(name, extension);
 });
 
-let sceneActionsMap: { [key: string]: ISceneActions | undefined } = {};
 let sceneInstanceMap: { [key: string]: ReactFlowInstance | undefined } = {};
 
 
@@ -27,23 +26,31 @@ function App(): JSX.Element {
   const activeEditorIdRef = useRef('editor1');
   const [activeEditorId, setActiveEditorId] = useState<string>(activeEditorIdRef.current);
   const [genResult, setGenResult] = useState<GenResult | undefined>();
+  const [sceneActionsMap, setSceneActionsMap] = useState<{ [key: string]: ISceneActions | undefined }>({});
 
   useEffect(() => {
     activeEditorIdRef.current = activeEditorId;
   }, [activeEditorId]);
 
+  const handleSceneActionsInit = (actions: ISceneActions, instance: ReactFlowInstance | undefined, editorId: string) => {
+    if (!instance) return;
+    setSceneActionsMap((prevMap) => ({
+      ...prevMap,
+      [editorId]: actions,
+    }));
+  };
+
   useEffect(() => {
-    const getCode = () => {
-      const actions = sceneActionsMap[activeEditorId];
-      if (actions && actions.sourceCode) {
-        const sourceCode = actions.sourceCode();
-        setGenResult(sourceCode);
+    const fetchSourceCode = async () => {
+      const activeEditorId = activeEditorIdRef.current;
+      const sceneActions = sceneActionsMap[activeEditorId];
+      if (sceneActions && sceneActions.sourceCode) {
+        const sourceCodeResult = await sceneActions.sourceCode();
+        setGenResult(sourceCodeResult);
       }
     };
-    getCode();
-    const interval = setInterval(getCode, 3000);
-    return () => clearInterval(interval);
-  }, [activeEditorId]);
+    fetchSourceCode();
+  }, [sceneActionsMap]);
 
   let count = 0;
 
@@ -57,11 +64,7 @@ function App(): JSX.Element {
         <VPEditor
           id={`editor${count}`}
           activated={activeEditorId === `editor${count}`}
-          onSceneActionsInit={(actions, instance) => {
-            if (!instance) return;
-            sceneActionsMap[`editor${count}`] = actions;
-            sceneInstanceMap[`editor${count}`] = instance;
-          }}
+          onSceneActionsInit={(actions, instance) => handleSceneActionsInit(actions, instance, `editor${count}`)}
           onSelectionChange={(selection) => {
             // ...
           }}
@@ -148,7 +151,6 @@ function App(): JSX.Element {
               tabs: [{
                 id: `code-panel`,
                 title: `Code Panel`,
-                //closable: true,
                 content: <CodePanel />
               }],
 
@@ -160,7 +162,6 @@ function App(): JSX.Element {
   }), [genResult]);
 
   const handleLayoutChange = useCallback((layoutData: LayoutData, currentTabId, direction) => {
-
     const findEditorPanel = (panel) => {
       if (panel.id === 'editor-panel') {
         return panel;
