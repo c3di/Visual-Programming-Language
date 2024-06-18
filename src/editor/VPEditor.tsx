@@ -127,7 +127,6 @@ const Scene = ({
     if (content !== currentContent.current) {
       currentContent.current = content;
       onContentChange(content);
-      console.log('content changed:', content);
     }
   }, [onContentChange, toJSONString]);
 

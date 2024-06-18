@@ -23,7 +23,10 @@ let sceneInstanceMap: { [key: string]: ReactFlowInstance | undefined } = {};
 
 
 function App(): JSX.Element {
+  const [editors, setEditors] = useState<TabData[]>([]);
   const activeEditorIdRef = useRef('editor1');
+  const countRef = useRef(0);
+  const dockLayoutRef = useRef<any>(null);
   const [activeEditorId, setActiveEditorId] = useState<string>(activeEditorIdRef.current);
   const [genResult, setGenResult] = useState<GenResult | undefined>();
   const [sceneActionsMap, setSceneActionsMap] = useState<{ [key: string]: ISceneActions | undefined }>({});
@@ -114,20 +117,36 @@ function App(): JSX.Element {
       mode: 'horizontal',
       children: [
         {
-          tabs: [
+          mode: 'vertical',
+          size: 300,
+          children: [
             {
-              id: 'node-panel',
-              maxWidth: 300,
-              title: 'Node Library',
-              content: (
-                <NodeDrawer handleNodeClick={handleNodeClick} handleNodeDragStart={handleNodeDragStart} />
-              )
-            }
-          ]
+              size: 600,
+              tabs: [{
+                id: 'node-panel',
+                title: 'Node Library',
+                content: (
+                  <NodeDrawer handleNodeClick={handleNodeClick} handleNodeDragStart={handleNodeDragStart} />
+                )
+              }
+              ],
+            },
+            {
+              size: 200,
+              tabs: [{
+                id: 'editor-management',
+                title: 'Editor Management',
+                content: (
+                  <> </>
+                ),
+              }
+              ]
+            },
+          ],
         },
         {
           mode: 'vertical',
-          size: 800,
+          size: 1000,
           children: [
             {
               size: 600,
@@ -135,15 +154,6 @@ function App(): JSX.Element {
               tabs: [newEditorTab()],
               panelLock: {
                 panelStyle: 'main',
-                panelExtra: (panelData, context) => (
-                  <button className='btn'
-                    onClick={() => {
-                      context.dockMove(newEditorTab(), panelData, 'middle');
-                    }}
-                  >
-                    Add
-                  </button>
-                )
               }
             },
             {
@@ -159,7 +169,7 @@ function App(): JSX.Element {
         },
       ],
     },
-  }), [genResult]);
+  }), [editors, genResult]);
 
   const handleLayoutChange = useCallback((layoutData: LayoutData, currentTabId, direction) => {
     const findEditorPanel = (panel) => {

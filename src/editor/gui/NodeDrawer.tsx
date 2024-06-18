@@ -285,7 +285,7 @@ function NodeDrawer({
 
     return (
         <ChakraProvider>
-            <Box bg="gray.100" borderRight="1px solid #ccc" height="100vh" display="flex" flexDirection="column" overflow="hidden">
+            <Box bg="gray.100" borderRight="1px solid #ccc" display="flex" flexDirection="column" overflow="hidden">
 
                 <InputGroup width="90%" mb={4} mt={8} ml="5%">
                     <InputLeftElement pointerEvents="none">
