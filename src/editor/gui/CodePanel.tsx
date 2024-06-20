@@ -5,7 +5,6 @@ import CodeContext from './CodeContext';
 
 const CodePanel = () => {
     const GenResult = useContext(CodeContext);
-    console.log("CodePanel code:", GenResult);
     const { onCopy, hasCopied } = useClipboard(GenResult?.code || '// No code available');
 
     const renderMessages = () => (

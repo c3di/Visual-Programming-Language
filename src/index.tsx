@@ -54,6 +54,7 @@ function App(): JSX.Element {
     }
   ]);
 
+
   useEffect(() => {
     activeEditorIdRef.current = activeEditorId;
   }, [activeEditorId]);
@@ -78,8 +79,7 @@ function App(): JSX.Element {
     fetchSourceCode();
   }, [sceneActionsMap]);
 
-
-  const newEditorTab = useCallback((): TabData => {
+  const handleAddEditor = useCallback(() => {
     const count = countRef.current + 1;
     countRef.current = count;
     const newTab = {
@@ -103,22 +103,23 @@ function App(): JSX.Element {
         />
       ),
     };
-    setEditors((prevEditors) => [...prevEditors, newTab]);
-    return newTab;
-  }, [activeEditorId]);
-
-  const handleAddEditor = useCallback(() => {
-    const newTab = newEditorTab();
+    setEditors(prev => [...prev, newTab]);
     dockLayoutRef.current.dockMove(newTab, 'editor-panel', 'middle');
-  }, [newEditorTab]);
+    setActiveEditorId(newTab.id);
+  }, [setActiveEditorId, setEditors]);
 
-  useEffect(() => {
+  const editorList = useMemo(() => {
     console.log('editors', editors);
-  }, [newEditorTab, editors.length]);
+    return editors.map(editor => (
+      <HStack key={editor.id} justifyContent="space-between">
+        <Text>{editor.title}</Text>
+      </HStack>
+    ));
+  }, [editors]);
+
 
   function handleNodeClick(nodeConfig: NodeConfig) {
     const activeEditorId = activeEditorIdRef.current;
-    console.log('activeEditorId', activeEditorId);
     const reactFlowInstance = sceneInstanceMap[activeEditorId || ''];
     if (!reactFlowInstance) {
       console.error(`ReactFlow instance for id ${activeEditorId} is undefined`);
@@ -173,14 +174,20 @@ function App(): JSX.Element {
                 title: 'Editor Management',
                 content: (
                   <ChakraProvider>
-                    <VStack align="stretch" p={2}>
-                      {editors.map((editor) => (
-                        <HStack key={editor.id} justifyContent="space-between">
-                          <Text>{editor.title}</Text>
-                        </HStack>
-                      ))}
-                    </VStack>
-                  </ChakraProvider>
+                    <Box
+                      bg="gray.50"
+                      overflow="auto"
+                      position="absolute"
+                      top={0}
+                      bottom={0}
+                      left={0}
+                      right={0}
+                    >
+                      <VStack align="stretch" p={2} fontSize="sm">
+                        {editorList}
+                      </VStack>
+                    </Box>
+                  </ChakraProvider >
                 ),
               }
               ],
@@ -238,7 +245,7 @@ function App(): JSX.Element {
     if (editorPanel && editorPanel.activeId) {
       setActiveEditorId(editorPanel.activeId);
     }
-  }, []);
+  }, [editors]);
 
   return (
     <CodeProvider value={genResult}>
