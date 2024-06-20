@@ -14,7 +14,8 @@ import { NodeDrawer, CodePanel } from './editor/gui';
 import { GenResult, NodeConfig } from './editor/types';
 import type { ReactFlowInstance } from 'reactflow';
 import { CodeProvider } from './editor/gui/CodeContext';
-import { ChakraProvider, Box, Button, VStack, HStack, Text } from '@chakra-ui/react';
+import { ChakraProvider, Box, Button, VStack, HStack, List, ListItem, Text, Icon } from '@chakra-ui/react';
+import { CloseIcon } from '@chakra-ui/icons';
 
 Object.entries(extensions).forEach(([name, extension]) => {
   LoadPackageToRegistry(name, extension);
@@ -58,6 +59,7 @@ function App(): JSX.Element {
 
   useEffect(() => {
     activeEditorIdRef.current = activeEditorId;
+    console.log('activeEditorId', activeEditorId);
   }, [activeEditorId]);
 
   const handleSceneActionsInit = (actions: ISceneActions, instance: ReactFlowInstance | undefined, editorId: string) => {
@@ -110,13 +112,41 @@ function App(): JSX.Element {
   }, [setActiveEditorId, setEditors]);
 
   const editorList = useMemo(() => {
-    console.log('editors', editors);
-    return editors.map(editor => (
-      <HStack key={editor.id} justifyContent="space-between">
-        <Text>{editor.title}</Text>
-      </HStack>
-    ));
-  }, [editors]);
+    return (
+      <List spacing={3}>
+        {editors.map(editor => (
+          <ListItem key={editor.id}
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            bg="gray.100"
+            _hover={{ bg: 'gray.200' }}
+            p={2}
+            borderRadius="md"
+            onClick={() => { setActiveEditorId(editor.id); dockLayoutRef.current.dockMove(editor, 'editor-panel', 'middle'); }}
+            cursor="pointer">
+            <Text >
+              {editor.title}
+            </Text>
+            <Icon as={CloseIcon} onClick={() => handleDeleteEditor(editor.id)} />
+          </ListItem>
+        ))}
+      </List>
+    );
+  }, [editors, setActiveEditorId]);
+
+  const handleDeleteEditor = useCallback((editorId: string) => {
+    setEditors(prevEditors => {
+      const filteredEditors = prevEditors.filter(editor => editor.id !== editorId);
+      // If the active editor is deleted, activate the first remaining editor if any
+      if (editorId === activeEditorId && filteredEditors.length > 0) {
+        setActiveEditorId(filteredEditors[0].id);
+      } else if (filteredEditors.length === 0) {
+        setActiveEditorId('');
+      }
+      return filteredEditors;
+    });
+  }, [activeEditorId, setActiveEditorId]);
 
 
   function handleNodeClick(nodeConfig: NodeConfig) {
@@ -174,7 +204,6 @@ function App(): JSX.Element {
                 id: 'editor-management',
                 title: 'Editor Management',
                 content: (
-
                   <ChakraProvider>
                     <Box
                       bg="gray.50"
@@ -202,7 +231,9 @@ function App(): JSX.Element {
               ],
               panelLock: {
                 panelExtra: (panelData, context) => (
-                  <button className='btn' onClick={handleAddEditor}>
+                  <button className='btn'
+                    style={{ marginRight: 20, marginTop: "auto", backgroundColor: "#EDF2F7", padding: "revert" }}
+                    onClick={handleAddEditor}>
                     Add
                   </button>
                 )
