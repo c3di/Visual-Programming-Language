@@ -179,12 +179,18 @@ function App(): JSX.Element {
                           <Text>{editor.title}</Text>
                         </HStack>
                       ))}
-                      <Button onClick={handleAddEditor}>Add Editor</Button>
                     </VStack>
                   </ChakraProvider>
                 ),
               }
-              ]
+              ],
+              panelLock: {
+                panelExtra: (panelData, context) => (
+                  <button className='btn' onClick={handleAddEditor}>
+                    Add
+                  </button>
+                )
+              }
             },
           ],
         },
