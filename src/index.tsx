@@ -80,7 +80,7 @@ function App(): JSX.Element {
       }
     };
     fetchSourceCode();
-  }, [sceneActionsMap]);
+  }, [sceneActionsMap, activeEditorId]);
 
   const handleAddEditor = useCallback(() => {
     const count = countRef.current + 1;
