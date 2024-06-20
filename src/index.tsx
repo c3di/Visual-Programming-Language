@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useMemo, useEffect, useRef, createContext } from 'react';
 import ReactDOM from 'react-dom/client';
 import { extensions } from './NodeTypePackage';
 import {
@@ -21,6 +21,7 @@ Object.entries(extensions).forEach(([name, extension]) => {
 });
 
 let sceneInstanceMap: { [key: string]: ReactFlowInstance | undefined } = {};
+const EditorContext = createContext({});
 
 function App(): JSX.Element {
   const activeEditorIdRef = useRef('editor1');
@@ -173,6 +174,7 @@ function App(): JSX.Element {
                 id: 'editor-management',
                 title: 'Editor Management',
                 content: (
+
                   <ChakraProvider>
                     <Box
                       bg="gray.50"
@@ -184,10 +186,17 @@ function App(): JSX.Element {
                       right={0}
                     >
                       <VStack align="stretch" p={2} fontSize="sm">
-                        {editorList}
+                        <EditorContext.Consumer>
+                          {(editorList) => (
+                            <>
+                              {editorList}
+                            </>
+                          )}
+                        </EditorContext.Consumer>
                       </VStack>
                     </Box>
                   </ChakraProvider >
+
                 ),
               }
               ],
@@ -249,12 +258,14 @@ function App(): JSX.Element {
 
   return (
     <CodeProvider value={genResult}>
-      <DockLayout
-        ref={dockLayoutRef}
-        defaultLayout={initialLayout}
-        onLayoutChange={handleLayoutChange}
-        style={{ position: 'absolute', left: 10, top: 10, right: 10, bottom: 10 }}
-      />
+      <EditorContext.Provider value={editorList}>
+        <DockLayout
+          ref={dockLayoutRef}
+          defaultLayout={initialLayout}
+          onLayoutChange={handleLayoutChange}
+          style={{ position: 'absolute', left: 10, top: 10, right: 10, bottom: 10 }}
+        />
+      </EditorContext.Provider>
     </CodeProvider>
   );
 }
