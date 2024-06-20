@@ -82,6 +82,7 @@ function App(): JSX.Element {
     fetchSourceCode();
   }, [sceneActionsMap, activeEditorId]);
 
+
   const handleAddEditor = useCallback(() => {
     const count = countRef.current + 1;
     countRef.current = count;
@@ -107,9 +108,20 @@ function App(): JSX.Element {
       ),
     };
     setEditors(prev => [...prev, newTab]);
-    dockLayoutRef.current.dockMove(newTab, 'editor-panel', 'middle');
     setActiveEditorId(newTab.id);
-  }, [setActiveEditorId, setEditors]);
+    dockLayoutRef.current.dockMove(newTab, 'editor-panel', 'middle');
+  }, []);
+
+
+  const handleDeleteEditor = useCallback((editortodelete) => {
+    setEditors(prevEditors => {
+      console.log('to delete', editortodelete);
+      const filteredEditors = prevEditors.filter(editor => editor.id !== editortodelete.id);
+      dockLayoutRef.current.dockMove(editortodelete, null, 'remove')
+
+      return filteredEditors;
+    });
+  }, []);
 
   const editorList = useMemo(() => {
     return (
@@ -119,7 +131,7 @@ function App(): JSX.Element {
             display="flex"
             justifyContent="space-between"
             alignItems="center"
-            bg="gray.100"
+            bg={editor.id === activeEditorId ? '#bee3f8ad' : 'gray.100'}
             _hover={{ bg: 'gray.200' }}
             p={2}
             borderRadius="md"
@@ -128,25 +140,12 @@ function App(): JSX.Element {
             <Text >
               {editor.title}
             </Text>
-            <Icon as={CloseIcon} onClick={() => handleDeleteEditor(editor.id)} />
+            <Icon as={CloseIcon} onClick={(e) => { e.stopPropagation(); handleDeleteEditor(editor) }} />
           </ListItem>
         ))}
       </List>
     );
-  }, [editors, setActiveEditorId]);
-
-  const handleDeleteEditor = useCallback((editorId: string) => {
-    setEditors(prevEditors => {
-      const filteredEditors = prevEditors.filter(editor => editor.id !== editorId);
-      // If the active editor is deleted, activate the first remaining editor if any
-      if (editorId === activeEditorId && filteredEditors.length > 0) {
-        setActiveEditorId(filteredEditors[0].id);
-      } else if (filteredEditors.length === 0) {
-        setActiveEditorId('');
-      }
-      return filteredEditors;
-    });
-  }, [activeEditorId, setActiveEditorId]);
+  }, [editors, activeEditorId, handleAddEditor, handleDeleteEditor]);
 
 
   function handleNodeClick(nodeConfig: NodeConfig) {
@@ -281,6 +280,7 @@ function App(): JSX.Element {
       }
       return null;
     };
+    console.log('layout change', layoutData, currentTabId)
     const editorPanel = findEditorPanel(layoutData.dockbox);
     if (editorPanel && editorPanel.activeId) {
       setActiveEditorId(editorPanel.activeId);
