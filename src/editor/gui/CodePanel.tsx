@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Highlight, themes } from 'prism-react-renderer';
 import { ChakraProvider, Box, Button, useClipboard, Text } from '@chakra-ui/react'
-import CodeContext from './CodeContext';
+import { CodeContext } from '../Context';
 
 const CodePanel = () => {
     const GenResult = useContext(CodeContext);

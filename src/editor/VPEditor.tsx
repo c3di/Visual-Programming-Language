@@ -38,7 +38,6 @@ export interface IVPEditorOption {
   };
 }
 
-
 const Scene = ({
   id,
   graph,
@@ -556,6 +555,7 @@ export default function VPEditor({
   option?: IVPEditorOption;
 }): JSX.Element {
   return (
+
     <WidgetFactoryProvider>
       <ReactFlowProvider>
         <Scene

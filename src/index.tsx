@@ -6,6 +6,7 @@ import {
   type ISceneActions,
   type SerializedGraph,
   LoadPackageToRegistry,
+  useGraph
 } from './editor';
 import './index.css';
 import DockLayout, { LayoutData, TabData } from 'rc-dock';
@@ -13,9 +14,10 @@ import 'rc-dock/dist/rc-dock.css';
 import { NodeDrawer, CodePanel } from './editor/gui';
 import { GenResult, NodeConfig } from './editor/types';
 import type { ReactFlowInstance } from 'reactflow';
-import { CodeProvider } from './editor/gui/CodeContext';
+import { CodeProvider, SceneStateContext } from './editor/Context';
 import { ChakraProvider, Box, Button, VStack, HStack, List, ListItem, Text, Icon } from '@chakra-ui/react';
 import { CloseIcon } from '@chakra-ui/icons';
+
 
 Object.entries(extensions).forEach(([name, extension]) => {
   LoadPackageToRegistry(name, extension);
@@ -31,6 +33,7 @@ function App(): JSX.Element {
   const [activeEditorId, setActiveEditorId] = useState<string>(activeEditorIdRef.current);
   const [genResult, setGenResult] = useState<GenResult | undefined>();
   const [sceneActionsMap, setSceneActionsMap] = useState<{ [key: string]: ISceneActions | undefined }>({});
+  const [editorGraphs, setEditorGraphs] = useState<{ [key: string]: SerializedGraph | undefined }>({});
   const sceneActionsMapRef = useRef<{ [key: string]: ISceneActions | undefined }>({});
   const [editors, setEditors] = useState<TabData[]>([
     {
@@ -40,6 +43,10 @@ function App(): JSX.Element {
       content: (
         <VPEditor
           id={`editor1`}
+          content={editorGraphs[`editor1`]}
+          onContentChange={(content) => {
+            setEditorGraphs((prev) => ({ ...prev, [`editor1`]: JSON.parse(content) }));
+          }}
           activated={activeEditorId === `editor1`}
           onSceneActionsInit={(actions, instance) => handleSceneActionsInit(actions, instance, `editor1`)}
           onSelectionChange={(selection) => {
@@ -59,7 +66,6 @@ function App(): JSX.Element {
 
   useEffect(() => {
     activeEditorIdRef.current = activeEditorId;
-    console.log('activeEditorId', activeEditorId);
   }, [activeEditorId]);
 
   const handleSceneActionsInit = (actions: ISceneActions, instance: ReactFlowInstance | undefined, editorId: string) => {
@@ -93,6 +99,10 @@ function App(): JSX.Element {
       content: (
         <VPEditor
           id={`editor${count}`}
+          content={editorGraphs[`editor${count}`]}
+          onContentChange={(content) => {
+            // ...
+          }}
           activated={activeEditorId === `editor${count}`}
           onSceneActionsInit={(actions, instance) => handleSceneActionsInit(actions, instance, `editor${count}`)}
           onSelectionChange={(selection) => {
@@ -115,7 +125,6 @@ function App(): JSX.Element {
 
   const handleDeleteEditor = useCallback((editortodelete) => {
     setEditors(prevEditors => {
-      console.log('to delete', editortodelete);
       const filteredEditors = prevEditors.filter(editor => editor.id !== editortodelete.id);
       dockLayoutRef.current.dockMove(editortodelete, null, 'remove')
 
@@ -124,6 +133,8 @@ function App(): JSX.Element {
   }, []);
 
   const editorList = useMemo(() => {
+    console.log('editors', editors);
+    console.log('editorGraphs', editorGraphs)
     return (
       <List spacing={3}>
         {editors.map(editor => (
@@ -135,7 +146,11 @@ function App(): JSX.Element {
             _hover={{ bg: 'gray.200' }}
             p={2}
             borderRadius="md"
-            onClick={() => { setActiveEditorId(editor.id); dockLayoutRef.current.dockMove(editor, 'editor-panel', 'middle'); }}
+            onClick={() => {
+              setActiveEditorId(editor.id);
+              const graphData = editorGraphs[editor.id];
+              dockLayoutRef.current.dockMove(editor, 'editor-panel', 'middle');
+            }}
             cursor="pointer">
             <Text >
               {editor.title}
@@ -145,7 +160,7 @@ function App(): JSX.Element {
         ))}
       </List>
     );
-  }, [editors, activeEditorId, handleAddEditor, handleDeleteEditor]);
+  }, [editors, activeEditorId, handleAddEditor, handleDeleteEditor, editorGraphs]);
 
 
   function handleNodeClick(nodeConfig: NodeConfig) {
@@ -268,22 +283,10 @@ function App(): JSX.Element {
   }), [editors, genResult]);
 
   const handleLayoutChange = useCallback((layoutData: LayoutData, currentTabId, direction) => {
-    const findEditorPanel = (panel) => {
-      if (panel.id === 'editor-panel') {
-        return panel;
-      }
-      if (panel.children) {
-        for (const child of panel.children) {
-          const found = findEditorPanel(child);
-          if (found) return found;
-        }
-      }
-      return null;
-    };
-    console.log('layout change', layoutData, currentTabId)
-    const editorPanel = findEditorPanel(layoutData.dockbox);
-    if (editorPanel && editorPanel.activeId) {
-      setActiveEditorId(editorPanel.activeId);
+    const editorPanel = dockLayoutRef.current.find('editor-panel');
+    if (currentTabId.includes('editor')) {
+      editorPanel.activeId = currentTabId;
+      setActiveEditorId(currentTabId);
     }
   }, [editors]);
 
