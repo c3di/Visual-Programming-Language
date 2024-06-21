@@ -9,7 +9,7 @@ import {
   useGraph
 } from './editor';
 import './index.css';
-import DockLayout, { LayoutData, TabData } from 'rc-dock';
+import DockLayout, { LayoutData, BoxData, TabData, PanelData } from 'rc-dock';
 import 'rc-dock/dist/rc-dock.css';
 import { NodeDrawer, CodePanel } from './editor/gui';
 import { GenResult, NodeConfig } from './editor/types';
@@ -27,10 +27,9 @@ let sceneInstanceMap: { [key: string]: ReactFlowInstance | undefined } = {};
 const EditorContext = createContext({});
 
 function App(): JSX.Element {
-  const activeEditorIdRef = useRef('editor1');
+  const [activeEditorId, setActiveEditorId] = useState('editor1');
   const countRef = useRef(1);
   const dockLayoutRef = useRef<any>(null);
-  const [activeEditorId, setActiveEditorId] = useState<string>(activeEditorIdRef.current);
   const [genResult, setGenResult] = useState<GenResult | undefined>();
   const [sceneActionsMap, setSceneActionsMap] = useState<{ [key: string]: ISceneActions | undefined }>({});
   const [editorGraphs, setEditorGraphs] = useState<{ [key: string]: SerializedGraph | undefined }>({});
@@ -47,7 +46,7 @@ function App(): JSX.Element {
           onContentChange={(content) => {
             setEditorGraphs((prev) => ({ ...prev, [`editor1`]: JSON.parse(content) }));
           }}
-          activated={activeEditorId === `editor1`}
+          activated={true}
           onSceneActionsInit={(actions, instance) => handleSceneActionsInit(actions, instance, `editor1`)}
           onSelectionChange={(selection) => {
             // ...
@@ -63,11 +62,6 @@ function App(): JSX.Element {
     }
   ]);
 
-
-  useEffect(() => {
-    activeEditorIdRef.current = activeEditorId;
-  }, [activeEditorId]);
-
   const handleSceneActionsInit = (actions: ISceneActions, instance: ReactFlowInstance | undefined, editorId: string) => {
     if (!instance) return;
     sceneInstanceMap[editorId] = instance;
@@ -78,7 +72,7 @@ function App(): JSX.Element {
 
   useEffect(() => {
     const fetchSourceCode = async () => {
-      const activeEditorId = activeEditorIdRef.current;
+      const activeEditorId = dockLayoutRef.current.find('editor-panel').activeId;
       const sceneActions = sceneActionsMap[activeEditorId];
       if (sceneActions && sceneActions.sourceCode) {
         const sourceCodeResult = await sceneActions.sourceCode();
@@ -86,7 +80,7 @@ function App(): JSX.Element {
       }
     };
     fetchSourceCode();
-  }, [sceneActionsMap, activeEditorId]);
+  }, [sceneActionsMap]);
 
 
   const handleAddEditor = useCallback(() => {
@@ -103,7 +97,7 @@ function App(): JSX.Element {
           onContentChange={(content) => {
             setEditorGraphs((prev) => ({ ...prev, [`editor${count}`]: JSON.parse(content) }));
           }}
-          activated={activeEditorId === `editor${count}`}
+          activated={dockLayoutRef.current.find('editor-panel').activeId === `editor${count}`}
           onSceneActionsInit={(actions, instance) => handleSceneActionsInit(actions, instance, `editor${count}`)}
           onSelectionChange={(selection) => {
             // ...
@@ -118,7 +112,6 @@ function App(): JSX.Element {
       ),
     };
     setEditors(prev => [...prev, newTab]);
-    setActiveEditorId(newTab.id);
     dockLayoutRef.current.dockMove(newTab, 'editor-panel', 'middle');
   }, []);
 
@@ -126,40 +119,36 @@ function App(): JSX.Element {
     setActiveEditorId(editorToReopen.id);
     if (!dockLayoutRef.current.find(editorToReopen.id)) {
       const graphData = editorGraphs[editorToReopen.id];
-      console.log('editorToReopen id', editorToReopen.id, 'graphData', graphData, 'editorGraphs', editorGraphs);
-      if (graphData) {
-        const reopenTab = {
-          id: editorToReopen.id,
-          title: editorToReopen.title,
-          closable: true,
-          content: (
-            <VPEditor
-              id={editorToReopen.id}
-              content={graphData}
-              onContentChange={(content) => {
-                setEditorGraphs((prev) => ({ ...prev, [editorToReopen.id]: JSON.parse(content) }));
-              }
-              }
-              activated={activeEditorId === editorToReopen.id}
-              onSceneActionsInit={(actions, instance) => handleSceneActionsInit(actions, instance, editorToReopen.id)}
-              onSelectionChange={(selection) => {
-                // ...
-              }}
-              option={{
-                controller: { hidden: false },
-                minimap: {
-                  collapsed: true,
-                },
-              }}
-            />
-          ),
-        };
-        dockLayoutRef.current.dockMove(reopenTab, 'editor-panel', 'middle');
+      const reopenTab = {
+        id: editorToReopen.id,
+        title: editorToReopen.title,
+        closable: true,
+        content: (
+          <VPEditor
+            id={editorToReopen.id}
+            content={graphData}
+            onContentChange={(content) => {
+              setEditorGraphs((prev) => ({ ...prev, [editorToReopen.id]: JSON.parse(content) }));
+            }
+            }
+            activated={true}
+            onSceneActionsInit={(actions, instance) => handleSceneActionsInit(actions, instance, editorToReopen.id)}
+            onSelectionChange={(selection) => {
+              // ...
+            }}
+            option={{
+              controller: { hidden: false },
+              minimap: {
+                collapsed: true,
+              },
+            }}
+          />
+        ),
       };
+      dockLayoutRef.current.dockMove(reopenTab, 'editor-panel', 'middle');
     } else {
-      dockLayoutRef.current.dockMove(editorToReopen, 'editor-panel', 'middle');
+      dockLayoutRef.current.updateTab(editorToReopen.id, editorToReopen, true);
     }
-
   }, [editorGraphs]);
 
 
@@ -173,8 +162,6 @@ function App(): JSX.Element {
   }, []);
 
   const editorList = useMemo(() => {
-    console.log('editors', editors);
-    console.log('editorGraphs', editorGraphs);
     return (
       <List spacing={3}>
         {editors.map(editor => (
@@ -196,11 +183,12 @@ function App(): JSX.Element {
         ))}
       </List>
     );
-  }, [editors, activeEditorId, handleAddEditor, handleDeleteEditor, editorGraphs]);
+  }, [editors, handleReopenEditor, handleDeleteEditor, handleAddEditor, activeEditorId]);
 
 
   function handleNodeClick(nodeConfig: NodeConfig) {
-    const activeEditorId = activeEditorIdRef.current;
+    const editorPanel = dockLayoutRef.current.find('editor-panel');
+    const activeEditorId = editorPanel.activeId;
     const reactFlowInstance = sceneInstanceMap[activeEditorId || ''];
     if (!reactFlowInstance) {
       console.error(`ReactFlow instance for id ${activeEditorId} is undefined`);
@@ -319,17 +307,10 @@ function App(): JSX.Element {
   }), [editors, genResult]);
 
   const handleLayoutChange = useCallback((layoutData: LayoutData, currentTabId, direction) => {
-    console.log('layoutData', layoutData, currentTabId, direction)
-    const editorPanel = dockLayoutRef.current.find('editor-panel');
-    if (currentTabId.includes('editor')) {
-      if (direction !== 'remove') {
-        editorPanel.activeId = currentTabId;
-        setActiveEditorId(currentTabId);
-      } else {
-      }
-    }
-
-  }, [editors]);
+    const editorPanel = ((layoutData.dockbox.children[1] as BoxData).children[0] as PanelData);
+    const activeEditorId = editorPanel.activeId;
+    setActiveEditorId(activeEditorId ? activeEditorId : 'editor1');
+  }, []);
 
 
   return (
