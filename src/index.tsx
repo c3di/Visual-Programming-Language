@@ -101,7 +101,7 @@ function App(): JSX.Element {
           id={`editor${count}`}
           content={editorGraphs[`editor${count}`]}
           onContentChange={(content) => {
-            // ...
+            setEditorGraphs((prev) => ({ ...prev, [`editor${count}`]: JSON.parse(content) }));
           }}
           activated={activeEditorId === `editor${count}`}
           onSceneActionsInit={(actions, instance) => handleSceneActionsInit(actions, instance, `editor${count}`)}
@@ -122,6 +122,46 @@ function App(): JSX.Element {
     dockLayoutRef.current.dockMove(newTab, 'editor-panel', 'middle');
   }, []);
 
+  const handleReopenEditor = useCallback((editorToReopen) => {
+    setActiveEditorId(editorToReopen.id);
+    if (!dockLayoutRef.current.find(editorToReopen.id)) {
+      const graphData = editorGraphs[editorToReopen.id];
+      console.log('editorToReopen id', editorToReopen.id, 'graphData', graphData, 'editorGraphs', editorGraphs);
+      if (graphData) {
+        const reopenTab = {
+          id: editorToReopen.id,
+          title: editorToReopen.title,
+          closable: true,
+          content: (
+            <VPEditor
+              id={editorToReopen.id}
+              content={graphData}
+              onContentChange={(content) => {
+                setEditorGraphs((prev) => ({ ...prev, [editorToReopen.id]: JSON.parse(content) }));
+              }
+              }
+              activated={activeEditorId === editorToReopen.id}
+              onSceneActionsInit={(actions, instance) => handleSceneActionsInit(actions, instance, editorToReopen.id)}
+              onSelectionChange={(selection) => {
+                // ...
+              }}
+              option={{
+                controller: { hidden: false },
+                minimap: {
+                  collapsed: true,
+                },
+              }}
+            />
+          ),
+        };
+        dockLayoutRef.current.dockMove(reopenTab, 'editor-panel', 'middle');
+      };
+    } else {
+      dockLayoutRef.current.dockMove(editorToReopen, 'editor-panel', 'middle');
+    }
+
+  }, [editorGraphs]);
+
 
   const handleDeleteEditor = useCallback((editortodelete) => {
     setEditors(prevEditors => {
@@ -134,7 +174,7 @@ function App(): JSX.Element {
 
   const editorList = useMemo(() => {
     console.log('editors', editors);
-    console.log('editorGraphs', editorGraphs)
+    console.log('editorGraphs', editorGraphs);
     return (
       <List spacing={3}>
         {editors.map(editor => (
@@ -146,11 +186,7 @@ function App(): JSX.Element {
             _hover={{ bg: 'gray.200' }}
             p={2}
             borderRadius="md"
-            onClick={() => {
-              setActiveEditorId(editor.id);
-              const graphData = editorGraphs[editor.id];
-              dockLayoutRef.current.dockMove(editor, 'editor-panel', 'middle');
-            }}
+            onClick={() => handleReopenEditor(editor)}
             cursor="pointer">
             <Text >
               {editor.title}
@@ -283,12 +319,18 @@ function App(): JSX.Element {
   }), [editors, genResult]);
 
   const handleLayoutChange = useCallback((layoutData: LayoutData, currentTabId, direction) => {
+    console.log('layoutData', layoutData, currentTabId, direction)
     const editorPanel = dockLayoutRef.current.find('editor-panel');
     if (currentTabId.includes('editor')) {
-      editorPanel.activeId = currentTabId;
-      setActiveEditorId(currentTabId);
+      if (direction !== 'remove') {
+        editorPanel.activeId = currentTabId;
+        setActiveEditorId(currentTabId);
+      } else {
+      }
     }
+
   }, [editors]);
+
 
   return (
     <CodeProvider value={genResult}>
