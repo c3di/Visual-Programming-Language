@@ -6,7 +6,6 @@ import {
   type ISceneActions,
   type SerializedGraph,
   LoadPackageToRegistry,
-  useGraph
 } from './editor';
 import './index.css';
 import DockLayout, { LayoutData, BoxData, TabData, PanelData } from 'rc-dock';
@@ -14,7 +13,7 @@ import 'rc-dock/dist/rc-dock.css';
 import { NodeDrawer, CodePanel } from './editor/gui';
 import { GenResult, NodeConfig } from './editor/types';
 import type { ReactFlowInstance } from 'reactflow';
-import { CodeProvider, SceneStateContext } from './editor/Context';
+import { CodeProvider } from './editor/Context';
 import { ChakraProvider, Box, Button, VStack, HStack, List, ListItem, Text, Icon } from '@chakra-ui/react';
 import { CloseIcon } from '@chakra-ui/icons';
 
@@ -28,7 +27,7 @@ const EditorContext = createContext({});
 
 function App(): JSX.Element {
   const [activeEditorId, setActiveEditorId] = useState('editor1');
-  const countRef = useRef(1);
+  const countRef = useRef(0);
   const dockLayoutRef = useRef<any>(null);
   const [genResult, setGenResult] = useState<GenResult | undefined>();
   const [sceneActionsMap, setSceneActionsMap] = useState<{ [key: string]: ISceneActions | undefined }>({});
@@ -36,18 +35,18 @@ function App(): JSX.Element {
   const sceneActionsMapRef = useRef<{ [key: string]: ISceneActions | undefined }>({});
   const [editors, setEditors] = useState<TabData[]>([
     {
-      id: `editor1`,
-      title: `Editor 1`,
+      id: `editor main`,
+      title: `Editor Main`,
       closable: true,
       content: (
         <VPEditor
-          id={`editor1`}
-          content={editorGraphs[`editor1`]}
+          id={`editor0`}
+          content={editorGraphs[`editor0`]}
           onContentChange={(content) => {
-            setEditorGraphs((prev) => ({ ...prev, [`editor1`]: JSON.parse(content) }));
+            setEditorGraphs((prev) => ({ ...prev, [`editor0`]: JSON.parse(content) }));
           }}
           activated={true}
-          onSceneActionsInit={(actions, instance) => handleSceneActionsInit(actions, instance, `editor1`)}
+          onSceneActionsInit={(actions, instance) => handleSceneActionsInit(actions, instance, `editor0`)}
           onSelectionChange={(selection) => {
             // ...
           }}
@@ -178,7 +177,7 @@ function App(): JSX.Element {
             <Text >
               {editor.title}
             </Text>
-            <Icon as={CloseIcon} onClick={(e) => { e.stopPropagation(); handleDeleteEditor(editor) }} />
+            {editor.id !== 'editor main' && (<Icon as={CloseIcon} onClick={(e) => { e.stopPropagation(); handleDeleteEditor(editor) }} />)}
           </ListItem>
         ))}
       </List>
