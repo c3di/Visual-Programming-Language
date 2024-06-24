@@ -35,7 +35,7 @@ function App(): JSX.Element {
   const sceneActionsMapRef = useRef<{ [key: string]: ISceneActions | undefined }>({});
   const [editors, setEditors] = useState<TabData[]>([
     {
-      id: `editor main`,
+      id: `editor0`,
       title: `Editor Main`,
       closable: true,
       content: (
@@ -79,7 +79,7 @@ function App(): JSX.Element {
       }
     };
     fetchSourceCode();
-  }, [sceneActionsMap]);
+  }, [sceneActionsMap, activeEditorId]);
 
 
   const handleAddEditor = useCallback(() => {
@@ -177,7 +177,7 @@ function App(): JSX.Element {
             <Text >
               {editor.title}
             </Text>
-            {editor.id !== 'editor main' && (<Icon as={CloseIcon} onClick={(e) => { e.stopPropagation(); handleDeleteEditor(editor) }} />)}
+            {editor.id !== 'editor0' && (<Icon as={CloseIcon} onClick={(e) => { e.stopPropagation(); handleDeleteEditor(editor) }} />)}
           </ListItem>
         ))}
       </List>
