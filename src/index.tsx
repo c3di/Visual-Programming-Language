@@ -241,7 +241,7 @@ function App(): JSX.Element {
       children: [
         {
           mode: 'vertical',
-          size: 300,
+          size: 200,
           children: [
             {
               size: 600,

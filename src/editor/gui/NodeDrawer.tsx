@@ -285,7 +285,7 @@ function NodeDrawer({
 
     return (
         <ChakraProvider>
-            <Box bg="gray.100" borderRight="1px solid #ccc" display="flex" flexDirection="column" overflow="hidden" sx={{ height: '100% !important' }}>
+            <Box bg="gray.100" borderRight="1px solid #ccc" flexDirection="column" overflow="hidden" height="100%" display="flex">
 
                 <InputGroup width="90%" mb={4} mt={8} ml="5%">
                     <InputLeftElement pointerEvents="none">
@@ -306,26 +306,30 @@ function NodeDrawer({
                     </InputRightElement>
                 </InputGroup>
 
-                <Flex flex="1" direction="column" mt={4}>
+                <Flex flex="1" direction="column" overflow="hidden">
                     <Tabs
                         flex="1"
+                        maxH="100%"
                         index={tabState.currentTabIndex}
                         onChange={(index) => handleTabChange(index)}
                         orientation="vertical"
                         onDragOver={(e) => e.stopPropagation()}
                     >
                         <TabList
-                            height="100%"
                             width="60%"
-                            overflowY="scroll"
+                            overflowY="auto"
+                            overflowX="hidden"
                             borderColor={bgNodePanel}
+                            justifyContent="space-around"
+                            style={{
+                                scrollbarWidth: 'thin',
+                            }}
                         >
                             {visibleTabs.map(([category], index) => (
                                 <Tab
                                     key={category}
                                     fontSize="2xs"
-                                    height="65px"
-                                    p={1}
+                                    paddingBlock="10px"
                                     marginInlineStart="0px"
                                     onClick={(e) => { e.preventDefault(); handleTabClick(index) }}
                                     onMouseDown={(e) => e.preventDefault()}
@@ -345,15 +349,14 @@ function NodeDrawer({
                                 </Tab>
                             ))}
                         </TabList>
-                        <TabPanels
-                            bg={bgNodePanel}
-                            style={{
-                                overflowY: 'auto',
-                                scrollbarWidth: 'thin',
-                            }}>
+                        <TabPanels bg={bgNodePanel}>
                             {visibleTabs.map(([category]) => (
-                                <TabPanel key={category} mt={2} height="100%">
-                                    <VStack align="stretch" height="100%" fontSize="2xs">
+                                <TabPanel key={category} mt={2} height="100%"
+                                    overflowY="auto"
+                                    style={{
+                                        scrollbarWidth: 'thin',
+                                    }}>
+                                    <VStack align="stretch" fontSize="2xs" mb={4}>
                                         <Breadcrumb
                                             separator={<ChevronRightIcon color="gray.500" />}
                                             mb={4}
