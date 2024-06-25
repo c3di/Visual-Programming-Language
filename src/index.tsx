@@ -12,7 +12,7 @@ import DockLayout, { LayoutData, BoxData, TabData, PanelData } from 'rc-dock';
 import 'rc-dock/dist/rc-dock.css';
 import { NodeDrawer, CodePanel } from './editor/gui';
 import { GenResult, NodeConfig } from './editor/types';
-import type { ReactFlowInstance } from 'reactflow';
+import type { ReactFlowInstance, ReactFlowJsonObject } from 'reactflow';
 import { CodeProvider } from './editor/Context';
 import { ChakraProvider, Box, Button, VStack, HStack, List, ListItem, Text, Icon } from '@chakra-ui/react';
 import { CloseIcon } from '@chakra-ui/icons';
@@ -31,6 +31,7 @@ function App(): JSX.Element {
   const dockLayoutRef = useRef<any>(null);
   const [genResult, setGenResult] = useState<GenResult | undefined>();
   const [sceneActionsMap, setSceneActionsMap] = useState<{ [key: string]: ISceneActions | undefined }>({});
+  const [flows, setFlows] = useState<{ [key: string]: ReactFlowJsonObject | undefined }>({});
   const [editorGraphs, setEditorGraphs] = useState<{ [key: string]: SerializedGraph | undefined }>({});
   const sceneActionsMapRef = useRef<{ [key: string]: ISceneActions | undefined }>({});
   const [editors, setEditors] = useState<TabData[]>([
@@ -46,6 +47,7 @@ function App(): JSX.Element {
             setEditorGraphs((prev) => ({ ...prev, [`editor0`]: JSON.parse(content) }));
           }}
           activated={true}
+          onFlowChange={(flow) => setFlows((prev) => ({ ...prev, [`editor0`]: flow }))}
           onSceneActionsInit={(actions, instance) => handleSceneActionsInit(actions, instance, `editor0`)}
           onSelectionChange={(selection) => {
             // ...
@@ -66,6 +68,8 @@ function App(): JSX.Element {
     sceneInstanceMap[editorId] = instance;
     sceneActionsMapRef.current = { ...sceneActionsMapRef.current, [editorId]: actions };
     setSceneActionsMap({ ...sceneActionsMapRef.current });
+    const flow = instance.toObject();
+    setFlows((prev) => ({ ...prev, [editorId]: flow }));
   };
 
   /*useEffect(() => {
@@ -74,7 +78,11 @@ function App(): JSX.Element {
 
   useEffect(() => {
     console.log("active Editor", activeEditorId);
-  }, [activeEditorId]);*/
+  }, [activeEditorId]);
+
+  useEffect(() => {
+    console.log("flows", flows);
+  }, [flows]);*/
 
   useEffect(() => {
     const fetchSourceCode = async () => {
@@ -86,7 +94,7 @@ function App(): JSX.Element {
       }
     };
     fetchSourceCode();
-  }, [sceneActionsMap, activeEditorId]);
+  }, [sceneActionsMap, dockLayoutRef.current]);
 
 
   const handleAddEditor = useCallback(() => {
@@ -125,6 +133,8 @@ function App(): JSX.Element {
     setActiveEditorId(editorToReopen.id);
     if (!dockLayoutRef.current.find(editorToReopen.id)) {
       const graphData = editorGraphs[editorToReopen.id];
+      const flow = flows[editorToReopen.id];
+      console.log("flow", flow, "graphData", graphData);
       const reopenTab = {
         id: editorToReopen.id,
         title: editorToReopen.title,
@@ -133,12 +143,14 @@ function App(): JSX.Element {
           <VPEditor
             id={editorToReopen.id}
             content={graphData}
+            initialFlow={flow}
             onContentChange={(content) => {
               setEditorGraphs((prev) => ({ ...prev, [editorToReopen.id]: JSON.parse(content) }));
             }
             }
             activated={true}
-            onSceneActionsInit={(actions, instance) => handleSceneActionsInit(actions, instance, editorToReopen.id)}
+            onFlowChange={(flow) => setFlows((prev) => ({ ...prev, [editorToReopen.id]: flow }))}
+            //onSceneActionsInit={(actions, instance) => handleSceneActionsInit(actions, instance, editorToReopen.id)}
             onSelectionChange={(selection) => {
               // ...
             }}
@@ -155,7 +167,7 @@ function App(): JSX.Element {
     } else {
       dockLayoutRef.current.updateTab(editorToReopen.id, editorToReopen, true);
     }
-  }, [editorGraphs]);
+  }, [flows, editorGraphs]);
 
 
   const handleDeleteEditor = useCallback((editortodelete) => {

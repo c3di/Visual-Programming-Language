@@ -2,9 +2,11 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactFlow, {
   ConnectionLineType,
   ConnectionMode,
+  ReactFlowJsonObject,
   ReactFlowProvider,
   SelectionMode,
   getRectOfNodes,
+  useReactFlow,
   type Connection,
   type PanelPosition,
   type ReactFlowInstance,
@@ -40,6 +42,7 @@ export interface IVPEditorOption {
 
 const Scene = ({
   id,
+  initialFlow,
   graph,
   onContentChange,
   activated,
@@ -48,6 +51,7 @@ const Scene = ({
   option,
 }: {
   id: string;
+  initialFlow?: ReactFlowJsonObject | null;
   graph?: SerializedGraph | null;
   onContentChange?: (graph: string) => void;
   activated?: boolean;
@@ -61,6 +65,7 @@ const Scene = ({
   const graphState = useGraph(graph);
   const sceneDomRef = useRef<HTMLDivElement>(null);
   const mouseTracker = useTrackMousePos(sceneDomRef);
+  const reactFlowInstance = useReactFlow();
   const sceneState = useScene(
     graphState,
     mouseTracker.mousePos,
@@ -75,6 +80,17 @@ const Scene = ({
       onSceneActionsInit?.(sceneActions, sceneInstance.current);
     }
   }, [initialed, sceneActions]);
+
+  useEffect(() => {
+    if (reactFlowInstance && initialFlow?.viewport) {
+      graphState.setEdges(initialFlow?.edges);
+      graphState.setNodes(initialFlow?.nodes);
+      console.log("initialFlow", initialFlow, "graph", graph)
+      const { x, y, zoom } = initialFlow.viewport;
+      reactFlowInstance.setViewport({ x, y, zoom });
+      sceneInstance.current?.setViewport({ x, y, zoom });
+    }
+  }, [initialFlow, graphState, graph]);
 
   const {
     nodes,
@@ -179,12 +195,16 @@ const Scene = ({
         style={{ outline: 'none', display: 'flex', height: '100%' }}
       >
         {gui.widget}
-        <div style={{ flexGrow: 1 }}>
+        <div style={{ flexGrow: 1, height: "100%" }}>
           <ReactFlow
             id={id}
             onInit={(instance) => {
               sceneInstance.current = instance;
               setInitialed(true);
+
+              if (initialFlow?.viewport) {
+                instance.setViewport(initialFlow.viewport);
+              }
             }}
 
             fitView={!initialed}
@@ -542,6 +562,8 @@ export default function VPEditor({
   content = null,
   onContentChange,
   activated,
+  initialFlow,
+  onFlowChange,
   onSceneActionsInit,
   onSelectionChange,
   option,
@@ -550,6 +572,8 @@ export default function VPEditor({
   content?: SerializedGraph | null;
   onContentChange?: (content: string) => void;
   activated?: boolean;
+  initialFlow?: ReactFlowJsonObject | null;
+  onFlowChange?: (flow: ReactFlowJsonObject) => void;
   onSceneActionsInit?: (actions: ISceneActions, instance: ReactFlowInstance | undefined) => void;
   onSelectionChange?: (counts: selectedElementsCounts) => void;
   option?: IVPEditorOption;
@@ -561,8 +585,9 @@ export default function VPEditor({
         <Scene
           id={id}
           graph={content}
-          onContentChange={onContentChange}
           activated={activated}
+          initialFlow={initialFlow}
+          onContentChange={onContentChange}
           onSceneActionsInit={onSceneActionsInit}
           onSelectionChange={onSelectionChange}
           option={option}
