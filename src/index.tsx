@@ -68,6 +68,13 @@ function App(): JSX.Element {
     setSceneActionsMap({ ...sceneActionsMapRef.current });
   };
 
+  /*useEffect(() => {
+    console.log("editors", editors);
+  }, [editors]);
+
+  useEffect(() => {
+    console.log("active Editor", activeEditorId);
+  }, [activeEditorId]);*/
 
   useEffect(() => {
     const fetchSourceCode = async () => {
@@ -154,11 +161,23 @@ function App(): JSX.Element {
   const handleDeleteEditor = useCallback((editortodelete) => {
     setEditors(prevEditors => {
       const filteredEditors = prevEditors.filter(editor => editor.id !== editortodelete.id);
-      dockLayoutRef.current.dockMove(editortodelete, null, 'remove')
-
       return filteredEditors;
     });
   }, []);
+
+  useEffect(() => {
+    const editorPanel = dockLayoutRef.current.find('editor-panel');
+    if (editorPanel && editorPanel.tabs) {
+      const currentTabs = editorPanel.tabs;
+      const stateTabIds = editors.map(editor => editor.id);
+
+      const tabsToRemove = currentTabs.filter(tab => !stateTabIds.includes(tab.id));
+
+      tabsToRemove.forEach(tab => {
+        dockLayoutRef.current.dockMove(tab, null, 'remove');
+      });
+    }
+  }, [editors, dockLayoutRef.current]);
 
   const editorList = useMemo(() => {
     return (
