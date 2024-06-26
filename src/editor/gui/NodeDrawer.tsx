@@ -321,6 +321,7 @@ function NodeDrawer({
                             overflowX="hidden"
                             borderColor={bgNodePanel}
                             justifyContent="space-around"
+                            rowGap="10px"
                             style={{
                                 scrollbarWidth: 'thin',
                             }}
@@ -331,6 +332,7 @@ function NodeDrawer({
                                     fontSize="2xs"
                                     paddingBlock="10px"
                                     marginInlineStart="0px"
+                                    display="block"
                                     onClick={(e) => { e.preventDefault(); handleTabClick(index) }}
                                     onMouseDown={(e) => e.preventDefault()}
                                     sx={{
