@@ -85,12 +85,11 @@ const Scene = ({
     if (reactFlowInstance && initialFlow?.viewport) {
       graphState.setEdges(initialFlow?.edges);
       graphState.setNodes(initialFlow?.nodes);
-      console.log("initialFlow", initialFlow, "graph", graph)
       const { x, y, zoom } = initialFlow.viewport;
       reactFlowInstance.setViewport({ x, y, zoom });
       sceneInstance.current?.setViewport({ x, y, zoom });
     }
-  }, [initialFlow, graphState, graph]);
+  }, [graph]);
 
   const {
     nodes,

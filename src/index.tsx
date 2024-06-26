@@ -26,7 +26,7 @@ let sceneInstanceMap: { [key: string]: ReactFlowInstance | undefined } = {};
 const EditorContext = createContext({});
 
 function App(): JSX.Element {
-  const [activeEditorId, setActiveEditorId] = useState('editor1');
+  const [activeEditorId, setActiveEditorId] = useState('editor0');
   const countRef = useRef(0);
   const dockLayoutRef = useRef<any>(null);
   const [genResult, setGenResult] = useState<GenResult | undefined>();
@@ -84,9 +84,10 @@ function App(): JSX.Element {
     console.log("flows", flows);
   }, [flows]);*/
 
+
+
   useEffect(() => {
     const fetchSourceCode = async () => {
-      const activeEditorId = dockLayoutRef.current.find('editor-panel').activeId;
       const sceneActions = sceneActionsMap[activeEditorId];
       if (sceneActions && sceneActions.sourceCode) {
         const sourceCodeResult = await sceneActions.sourceCode();
@@ -94,7 +95,7 @@ function App(): JSX.Element {
       }
     };
     fetchSourceCode();
-  }, [sceneActionsMap, dockLayoutRef.current]);
+  }, [activeEditorId, sceneActionsMap]);
 
 
   const handleAddEditor = useCallback(() => {
@@ -134,7 +135,6 @@ function App(): JSX.Element {
     if (!dockLayoutRef.current.find(editorToReopen.id)) {
       const graphData = editorGraphs[editorToReopen.id];
       const flow = flows[editorToReopen.id];
-      console.log("flow", flow, "graphData", graphData);
       const reopenTab = {
         id: editorToReopen.id,
         title: editorToReopen.title,
@@ -150,7 +150,7 @@ function App(): JSX.Element {
             }
             activated={true}
             onFlowChange={(flow) => setFlows((prev) => ({ ...prev, [editorToReopen.id]: flow }))}
-            //onSceneActionsInit={(actions, instance) => handleSceneActionsInit(actions, instance, editorToReopen.id)}
+            onSceneActionsInit={(actions, instance) => handleSceneActionsInit(actions, instance, editorToReopen.id)}
             onSelectionChange={(selection) => {
               // ...
             }}
